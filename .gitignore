@@ -91,7 +91,7 @@ local.properties
 # CDT-specific (C/C++ Development Tooling)
 .cproject
 
-# CDT- autotools 
+# CDT- autotools
 .autotools
 
 # Java annotation processor (APT)
@@ -105,14 +105,6 @@ local.properties
 
 # Tern plugin
 .tern-project
-
-# ANTLR plugin
-/server/engine/gen
-/server/dialect-idms/gen
-/server/dialect-daco/gen
-/server/test/gen
-/server/parser/gen
-/server/parser/src/main/antlr4/org/eclipse/lsp/cobol/core/parser/gen/
 
 # TeXlipse plugin
 .texlipse
@@ -138,3 +130,9 @@ logs/app.log
 clients/cobol-lsp-vscode-extensiontest-report
 clients/cobol-lsp-vscode-extension/test-report.xml
 .scannerwork
+
+**/FlowchartBuildForTestingOnly.java
+**/InterpreterMainForTestingOnly.java
+
+smojol-test-code/
+out/

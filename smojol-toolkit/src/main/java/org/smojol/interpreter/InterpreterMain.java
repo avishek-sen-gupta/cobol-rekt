@@ -2,6 +2,7 @@ package org.smojol.interpreter;
 
 import com.google.common.collect.ImmutableList;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.smojol.analysis.LanguageDialect;
 import org.smojol.common.flowchart.FlowNode;
 import org.smojol.common.flowchart.FlowNodeService;
 import org.smojol.common.flowchart.FlowchartBuilder;
@@ -33,20 +34,11 @@ public class InterpreterMain {
     private final Logger logger = LoggerFactory.getLogger(InterpreterMain.class);
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        File[] copyBookPaths = new File[]{new File("/Users/asgupta/Downloads/mbrdi-poc")};
-        String dialectJarPath = "/Users/asgupta/code/mbrdi-proleap/che4z/che-che4z-lsp-for-cobol-2.1.2/server/dialect-idms/target/dialect-idms.jar";
-        String cobolParseTreeOutputPath = "/Users/asgupta/Downloads/mbrdi-poc/test-cobol.json";
-        String idmsParseTreeOutputPath = "/Users/asgupta/Downloads/mbrdi-poc/test-idms.json";
-        String dotFilePath = "/Users/asgupta/Downloads/mbrdi-poc/flowchart.dot";
-        String imageOutputPath = "/Users/asgupta/Downloads/mbrdi-poc/flowchart.png";
+        File[] copyBookPaths = new File[]{new File("/Users/asgupta/code/smojol/smojol-test-code")};
+        String dialectJarPath = "/Users/asgupta/code/smojol/che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar";
+        String cobolParseTreeOutputPath = "/Users/asgupta/code/smojol/out/test-cobol.json";
 
-//        File source = new File("/Users/asgupta/Downloads/mbrdi-poc/V75234");
-//        File source = new File("/Users/asgupta/Downloads/mbrdi-poc/V7588049");
-//        File source = new File("/Users/asgupta/Downloads/mbrdi-poc/V751C931");
-        File source = new File("/Users/asgupta/Downloads/mbrdi-poc/test-exp.cbl");
-//        File source = new File("/Users/asgupta/Downloads/mbrdi-poc/occurs-test.cbl");
-//        File source = new File("/Users/asgupta/Downloads/mbrdi-poc/test.cbl");
-//        File source = new File("/Users/asgupta/Downloads/mbrdi-poc/if-test.cbl");
+        File source = new File("/Users/asgupta/code/smojol/smojol-test-code/test-exp.cbl");
 
         PocOpsImpl ops = new PocOpsImpl(new CobolTreeVisualiserImpl(),
                 FlowchartBuilderImpl::build, new CobolEntityNavigatorBuilderImpl(), new UnresolvedReferenceDoNothingStrategy());
@@ -54,7 +46,7 @@ public class InterpreterMain {
                 copyBookPaths,
                 dialectJarPath,
                 cobolParseTreeOutputPath,
-                ops);
+                ops, LanguageDialect.COBOL);
 
         CobolEntityNavigator navigator = pipeline.parse();
         FlowchartBuilder flowcharter = pipeline.flowcharter();
@@ -71,9 +63,7 @@ public class InterpreterMain {
         dataStructures.report();
         System.out.println("INTERPRETING\n--------------------------------\n");
         Breakpointer bp = new CobolBreakpointer();
-//        bp.addBreakpoint(n -> n.getClass() == IfChartNode.class && n.originalText().contains("SOME-OTHER-CONDITION"));
 //        bp.addBreakpoint(n -> n.getClass() == DisplayChartNode.class && n.originalText().contains("Hello, world"));
-//        bp.addBreakpoint(n -> n.getClass() == ComputeChartNode.class && n.originalText().contains("WEUR-VALUE(I) ROUNDED"));
 //        bp.addBreakpoint(n -> n.getClass() == AddChartNode.class && n.originalText().contains("SOMETEXT"));
         bp.addBreakpoint(n -> n.getClass() == DisplayFlowNode.class && n.originalText().contains("SOMETEXT"));
         ExecutionListener tracer = new RunFlowchartTracer();

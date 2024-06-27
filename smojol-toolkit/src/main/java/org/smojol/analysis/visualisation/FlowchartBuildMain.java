@@ -17,7 +17,9 @@ package org.smojol.analysis.visualisation;
 import com.google.common.collect.ImmutableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.smojol.analysis.LanguageDialect;
 import org.smojol.flowchart.FlowchartTasks;
+import org.smojol.interpreter.FlowchartGenerationStrategy;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,14 +29,12 @@ public class FlowchartBuildMain {
     private final Logger logger = LoggerFactory.getLogger(FlowchartBuildMain.class);
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        String sourceDir = "/Users/asgupta/Downloads/mbrdi-poc";
-        File[] copyBookPaths = new File[]{new File("/Users/asgupta/Downloads/mbrdi-poc")};
-        String dialectJarPath = "/Users/asgupta/code/mbrdi-proleap/che4z/che-che4z-lsp-for-cobol-2.1.2/server/dialect-idms/target/dialect-idms.jar";
-        String reportRootDir = "/Users/asgupta/Downloads/mbrdi-poc/report";
+        String sourceDir = "/Users/asgupta/code/smojol/smojol-test-code";
+        File[] copyBookPaths = new File[]{new File("/Users/asgupta/code/smojol/smojol-test-code")};
+        String dialectJarPath = "/Users/asgupta/code/smojol/che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar";
+        String reportRootDir = "/Users/asgupta/code/smojol/out/report";
 
-        List<String> programNames = ImmutableList.of("V751C931", "V7588049", "V75234");
-//        List<String> programNames = ImmutableList.of("V75234");
-        new FlowchartTasks(sourceDir, reportRootDir, copyBookPaths, dialectJarPath).generateForPrograms(programNames);
-//        new FlowchartTasks(sourceDir, reportRootDir, copyBookPaths, dialectJarPath).singleFlowchartDemo();
+        List<String> programNames = ImmutableList.of("test-exp.cbl");
+        new FlowchartTasks(sourceDir, reportRootDir, copyBookPaths, dialectJarPath).generateForPrograms(programNames, FlowchartGenerationStrategy.PER_SECTION, LanguageDialect.COBOL);
     }
 }

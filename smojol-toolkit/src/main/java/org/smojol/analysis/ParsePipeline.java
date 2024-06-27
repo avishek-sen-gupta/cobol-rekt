@@ -24,12 +24,10 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.eclipse.lsp.cobol.cli.di.CliModule;
 import org.eclipse.lsp.cobol.cli.modules.CliClientProvider;
-import org.eclipse.lsp.cobol.common.AnalysisConfig;
 import org.eclipse.lsp.cobol.common.ResultWithErrors;
 import org.eclipse.lsp.cobol.common.benchmark.BenchmarkService;
 import org.eclipse.lsp.cobol.common.benchmark.BenchmarkSession;
 import org.eclipse.lsp.cobol.common.benchmark.Measurement;
-import org.eclipse.lsp.cobol.common.copybook.CopybookProcessingMode;
 import org.eclipse.lsp.cobol.common.error.SyntaxError;
 import org.eclipse.lsp.cobol.common.mapping.ExtendedDocument;
 import org.eclipse.lsp.cobol.common.mapping.ExtendedText;
@@ -70,14 +68,16 @@ public class ParsePipeline {
     private final String cobolParseTreeOutputPath;
     private final String dialectJarPath;
     private final PocOps ops;
+    private final LanguageDialect dialect;
     @Getter private CobolEntityNavigator navigator;
     @Getter private CobolDataStructure dataStructures;
 
-    public ParsePipeline(File src, File[] cpyPaths, String dialectJarPath, String cobolParseTreeOutputPath, PocOps ops) {
+    public ParsePipeline(File src, File[] cpyPaths, String dialectJarPath, String cobolParseTreeOutputPath, PocOps ops, LanguageDialect dialect) {
         this.src = src;
         this.cpyPaths = cpyPaths;
         this.cobolParseTreeOutputPath = cobolParseTreeOutputPath;
         this.ops = ops;
+        this.dialect = dialect;
         cpyExt = new String[]{"", ".cpy"};
         this.dialectJarPath = dialectJarPath;
     }
@@ -118,7 +118,7 @@ public class ParsePipeline {
         AnalysisContext ctx =
                 new AnalysisContext(
                         new ExtendedDocument(resultWithErrors.getResult(), text),
-                        createAnalysisConfiguration(dialectJarPath),
+                        dialect.analysisConfig(dialectJarPath),
                         benchmarkService.startSession());
         ctx.getAccumulatedErrors().addAll(resultWithErrors.getErrors());
         PipelineResult pipelineResult = pipeline.run(ctx);
@@ -222,10 +222,6 @@ public class ParsePipeline {
                 .map(Measurement::getTime)
                 .reduce(Long::sum)
                 .ifPresent(totalTime -> tObj.add("total", new JsonPrimitive(totalTime / 1_000_000_000.0)));
-    }
-
-    private static AnalysisConfig createAnalysisConfiguration(String dialectConfigJarPath) {
-        return AnalysisConfig.idmsConfig(dialectConfigJarPath, CopybookProcessingMode.ENABLED);
     }
 
     private JsonObject toJson(SyntaxError syntaxError, Gson gson) {
