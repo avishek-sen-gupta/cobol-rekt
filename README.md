@@ -95,7 +95,7 @@ Some example use cases are listed in the next section.
 - This was built based on a time-boxed PoC, and thus isn't well-covered by tests yet. More are being added on an ongoing basis.
 - Cobol is a large language, and thus the interpreter's capabilities are not exhaustive. However, the hope is that the subset currently present is useful enough to get started with reverse engineering legacy code. Obviously, more capabilities are being added on an ongoing basis.
 
-## How to Use
+## How to Build
 
 Once you have cloned the repository, you can run:
 
@@ -109,8 +109,15 @@ If you want to skip the tests and the Checkstyle targets, you can use:
 mvn clean verify package -Dmaven.test.skip -Dcheckstyle.skip=true
 ```
 
+## How to Use
+
 See ```FlowChartBuildMain.java``` for examples of how flowcharts are created.
 See ```InterpreterMain.java``` for an example of how to run the interpreter on your code.
+
+- CLI support is on the way.
+- More detailed guides are on the way.
+
+The rest of this file is mostly technical notes for my personal documentation.
 
 ## Valid Type Specifications for External Zoned Decimal and Alphanumeric
 
