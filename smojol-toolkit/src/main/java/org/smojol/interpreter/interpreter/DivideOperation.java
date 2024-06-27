@@ -1,0 +1,26 @@
+package org.smojol.interpreter.interpreter;
+
+import org.eclipse.lsp.cobol.core.CobolParser;
+import org.smojol.ast.DivideFlowNode;
+import org.smojol.common.vm.expression.ArithmeticExpressionVisitor;
+import org.smojol.common.vm.structure.CobolDataStructure;
+import org.smojol.common.vm.reference.ReferenceBuilder;
+
+import java.util.List;
+
+public class DivideOperation {
+    private final DivideFlowNode divide;
+
+    public DivideOperation(DivideFlowNode divide) {
+        this.divide = divide;
+    }
+
+    public void run(CobolDataStructure cobolDataStructure) {
+        ArithmeticExpressionVisitor visitor = new ArithmeticExpressionVisitor();
+        CobolParser.DivisorContext divisor = divide.getDivisor();
+        List<CobolParser.DivideIntoContext> dividends = divide.getDividend();
+        ReferenceBuilder builder = new ReferenceBuilder();
+        dividends.forEach(dividend -> builder.getReference(dividend.generalIdentifier(), cobolDataStructure).resolve().divide(builder.getReference(divisor, cobolDataStructure)));
+//        dividends.forEach(dividend -> cobolDataStructure.divide(dividend.generalIdentifier().getText(), builder.getReference(divisor, cobolDataStructure)));
+    }
+}

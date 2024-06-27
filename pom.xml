@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.smojol</groupId>
+    <artifactId>smojol</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0-SNAPSHOT</version>
+
+    <modules>
+        <module>smojol-toolkit</module>
+        <module>smojol-core</module>
+        <module>che-che4z-lsp-for-cobol-integration/server/engine</module>
+        <module>che-che4z-lsp-for-cobol-integration/server/parser</module>
+        <module>che-che4z-lsp-for-cobol-integration/server/dialect-idms</module>
+        <module>che-che4z-lsp-for-cobol-integration/server/dialect-daco</module>
+        <module>che-che4z-lsp-for-cobol-integration/server/test</module>
+        <module>che-che4z-lsp-for-cobol-integration/server/common</module>
+    </modules>
+
+    <properties>
+        <dialect.api.version>1.0.7</dialect.api.version>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <commons.text.version>1.10.0</commons.text.version>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>Broadcom</id>
+            <name>Broadcom Inc</name>
+            <url>https://packages.broadcom.com/artifactory/brightside-maven/</url>
+        </repository>
+    </repositories>
+</project>

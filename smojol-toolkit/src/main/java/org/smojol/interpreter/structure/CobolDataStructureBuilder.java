@@ -1,0 +1,109 @@
+package org.smojol.interpreter.structure;
+
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.eclipse.lsp.cobol.core.CobolParser;
+import org.smojol.common.navigation.CobolEntityNavigator;
+import org.smojol.common.vm.strategy.UnresolvedReferenceStrategy;
+import org.smojol.common.vm.structure.CobolDataStructure;
+import org.smojol.common.vm.structure.ConditionalDataStructure;
+import org.smojol.common.vm.structure.DataStructureBuilder;
+import org.smojol.common.vm.structure.Format1DataStructure;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
+
+public class CobolDataStructureBuilder implements DataStructureBuilder {
+    private final CobolEntityNavigator navigator;
+    private final UnresolvedReferenceStrategy unresolvedReferenceStrategy;
+    private CobolDataStructure zerothStructure;
+
+    public CobolDataStructureBuilder(CobolEntityNavigator navigator, UnresolvedReferenceStrategy unresolvedReferenceStrategy) {
+        this.navigator = navigator;
+        this.unresolvedReferenceStrategy = unresolvedReferenceStrategy;
+    }
+
+    @Override
+    public CobolDataStructure build() {
+        zerothStructure = new Format1DataStructure(0, unresolvedReferenceStrategy);
+        ParseTree dataDivision = navigator.dataDivisionBodyRoot();
+        CobolParser.DataDivisionContext dataDivisionBody = (CobolParser.DataDivisionContext) dataDivision;
+        extractFromWorkingStorage(dataDivisionBody);
+        extractFromLinkage(dataDivisionBody);
+        zerothStructure.expandTables();
+        zerothStructure.calculateMemoryRequirements();
+        zerothStructure.allocateRecordPointers();
+        while (zerothStructure.buildRedefinitions(zerothStructure)) {}
+        return zerothStructure;
+    }
+
+    private void extractFromLinkage(CobolParser.DataDivisionContext dataDivisionBody) {
+        Optional<CobolParser.DataDivisionSectionContext> maybeLinkageSection = dataDivisionBody.dataDivisionSection().stream().filter(s -> s.linkageSection() != null).findFirst();
+        if (maybeLinkageSection.isEmpty()) return;
+        CobolParser.LinkageSectionContext linkageSection = maybeLinkageSection.get().linkageSection();
+        List<CobolParser.DataDescriptionEntryForWorkingStorageAndLinkageSectionContext> linkageSectionDataLayouts = linkageSection.dataDescriptionEntryForWorkingStorageAndLinkageSection();
+        extractFrom(linkageSectionDataLayouts, zerothStructure, this::linkageData);
+    }
+
+    private void extractFromWorkingStorage(CobolParser.DataDivisionContext dataDivisionBody) {
+        Optional<CobolParser.DataDivisionSectionContext> maybeWorkingStorage = dataDivisionBody.dataDivisionSection().stream().filter(s -> s.workingStorageSection() != null).findFirst();
+        if (maybeWorkingStorage.isEmpty()) return;
+        CobolParser.WorkingStorageSectionContext workingStorageSection = maybeWorkingStorage.get().workingStorageSection();
+        List<CobolParser.DataDescriptionEntryForWorkingStorageSectionContext> workingStorageDataLayouts = workingStorageSection.dataDescriptionEntryForWorkingStorageSection();
+        extractFrom(workingStorageDataLayouts, zerothStructure, this::wsData);
+    }
+
+    private CobolParser.DataDescriptionEntryContext wsData(CobolParser.DataDescriptionEntryForWorkingStorageSectionContext e) {
+        return e.dataDescriptionEntryForWorkingStorageAndLinkageSection().dataDescriptionEntry();
+    }
+
+    private CobolParser.DataDescriptionEntryContext linkageData(CobolParser.DataDescriptionEntryForWorkingStorageAndLinkageSectionContext e) {
+        return e.dataDescriptionEntry();
+    }
+
+    // TODO: Refactor to state machine maybe
+    // TODO: Refactor to use builder in addChild(), addPeer() to inject parent directly into constructor
+    private <T> void extractFrom(List<T> dataLayouts, CobolDataStructure root, Function<T, CobolParser.DataDescriptionEntryContext> retriever) {
+        int currentLevel = 0;
+        CobolDataStructure dataStructure = root;
+        // TODO: Does not check if you are adding a structure under a level 77 structure, which is invalid
+        for (T dataDescriptionEntry : dataLayouts) {
+            CobolParser.DataDescriptionEntryContext dataDescription = retriever.apply(dataDescriptionEntry);
+            if (dataDescription.dataDescriptionEntryFormat1() != null) {
+                CobolParser.DataDescriptionEntryFormat1Context format1 = dataDescription.dataDescriptionEntryFormat1();
+                int entryLevel = Integer.parseInt(format1.levelNumber().LEVEL_NUMBER().getSymbol().getText());
+                if (currentLevel == 0) {
+                    if (entryLevel != 1) throw new RuntimeException("Top Level entry must be 01");
+                    dataStructure = dataStructure.addChild(format1(format1, unresolvedReferenceStrategy));
+                } else if (entryLevel == currentLevel) {
+                    dataStructure = dataStructure.addPeer(format1(format1, unresolvedReferenceStrategy));
+                } else if (entryLevel > currentLevel) {
+                    dataStructure = dataStructure.addChild(format1(format1, unresolvedReferenceStrategy));
+                } else if (entryLevel == 77) {
+                    dataStructure = root.addChild(format1(format1, unresolvedReferenceStrategy));
+                    currentLevel = 0;
+                    continue;
+                } else if (entryLevel == 66) {
+                    // TODO: Support RENAME's at some point
+                    System.out.println("Level 66 RENAMEs are not supported yet, skipping...");
+                    continue;
+                } else {
+                    // This is for adding a structure at a lower level than the current level's parent.
+                    dataStructure = dataStructure.parent(entryLevel).addChild(format1(format1, unresolvedReferenceStrategy));
+                }
+            } else if (dataDescription.dataDescriptionEntryFormat3() != null) {
+                CobolParser.DataDescriptionEntryFormat3Context conditionalFormat = dataDescription.dataDescriptionEntryFormat3();
+                dataStructure = dataStructure.addConditionalVariable(new ConditionalDataStructure(conditionalFormat, dataStructure));
+            }
+            currentLevel = dataStructure.level();
+        }
+    }
+
+    private static Format1DataStructure format1(CobolParser.DataDescriptionEntryFormat1Context format1Structure, UnresolvedReferenceStrategy strategy) {
+        if (format1Structure.dataOccursClause().isEmpty()) {
+            return new Format1DataStructure(format1Structure, strategy);
+        }
+        int numOccurrences = Integer.parseInt(format1Structure.dataOccursClause().getFirst().integerLiteral().getText());
+        return new TableDataStructure(format1Structure, numOccurrences, strategy);
+    }
+}
