@@ -113,7 +113,6 @@ mvn clean verify package -Dmaven.test.skip -Dcheckstyle.skip=true
 
 - See ```FlowChartBuildMain.java``` for examples of how flowcharts are created.
 - See ```InterpreterMain.java``` for an example of how to run the interpreter on your code.
-
 - CLI support is on the way.
 - More detailed guides on programmatic use are on the way.
 
