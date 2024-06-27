@@ -28,7 +28,7 @@ Some reverse engineering are listed below. Descriptions of the capabilities whic
 This capability allows the engineer to transform Cobol source (or part of it) into a flowchart. The flowchart stays true to the source but omits syntactic noise to produce a detailed flow of logic through the source. The capability uses Graphviz to generate the flowchart images.
 
 ## Example flowchart of the program test-exp.cbl
-[Flowchart](https://github.com/avishek-sen-gupta/cobol-rekt/blob/main/smojol-examples/test-exp.cbl.png)
+![Flowchart](https://github.com/avishek-sen-gupta/cobol-rekt/blob/main/smojol-examples/test-exp.cbl.png)
 
 ### Interpreting the Flowcharts
 
@@ -86,7 +86,7 @@ Some example use cases are listed in the next section.
 - ...
 
 ## Example interpreter session demonstrating breakpoints, stack traces, and record inspection
-[Interpreter Session](https://github.com/avishek-sen-gupta/cobol-rekt/blob/main/smojol-examples/smojol-interpreter-session.png)
+![Interpreter Session](https://github.com/avishek-sen-gupta/cobol-rekt/blob/main/smojol-examples/smojol-interpreter-session.png)
 
 ## Caveats
 
