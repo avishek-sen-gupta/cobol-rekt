@@ -1,0 +1,3 @@
+[submodule "che-che4z-lsp-for-cobol-integration"]
+	path = che-che4z-lsp-for-cobol-integration
+	url = git@github.com:avishek-sen-gupta/che-che4z-lsp-for-cobol-integration.git
