@@ -27,6 +27,9 @@ Some reverse engineering are listed below. Descriptions of the capabilities whic
 
 This capability allows the engineer to transform Cobol source (or part of it) into a flowchart. The flowchart stays true to the source but omits syntactic noise to produce a detailed flow of logic through the source. The capability uses Graphviz to generate the flowchart images.
 
+Example flowchart of the program test-exp.cbl
+[Flowchart]
+
 ### Interpreting the Flowcharts
 
 ## Parse Tree Generation
