@@ -1,4 +1,5 @@
 fileignoreconfig:
 - filename: che-che4z-lsp-for-cobol-integration
   checksum: 076f2e54e0504ee9b91abce0f6331dd088439246729c151b70c06bad13160fcc
-
+- filename: woof
+  checksum: 7d588457269a756bd01fbea071f543692092ac1f201e319ca2766165574923cd
