@@ -16,6 +16,7 @@ bin/
 .settings/
 .mvn/
 *.project
+smojol-core/gen/
 
 # Downloaded dependencies #
 ###################
