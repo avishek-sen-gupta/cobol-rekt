@@ -1,4 +1,4 @@
-package org.smojol.interpreter;
+package org.smojol.analysis.graph;
 
 import com.google.common.collect.ImmutableList;
 import com.mojo.woof.GraphSDK;
@@ -9,10 +9,10 @@ import org.smojol.common.flowchart.*;
 import java.util.List;
 import java.util.Map;
 
-public class Neo4JVisitor implements FlowNodeVisitor {
+public class Neo4JFlowVisitor implements FlowNodeVisitor {
     private final GraphSDK sdk;
 
-    public Neo4JVisitor(GraphSDK sdk) {
+    public Neo4JFlowVisitor(GraphSDK sdk) {
         this.sdk = sdk;
     }
 
@@ -34,7 +34,10 @@ public class Neo4JVisitor implements FlowNodeVisitor {
     }
 
     private Record newOrExisting(FlowNode node) {
-        return sdk.newOrExisting(Map.of("flowID", node.id()), new WoofNode(Map.of("flowID", node.id(), "text", node.getExecutionContext().getText()), ImmutableList.of("CFG_NODE", node.type().toString())));
+        return sdk.newOrExisting(ImmutableList.of(), Map.of("flowID", node.id()), new WoofNode(Map.of("flowID", node.id(),
+                "text", node.getExecutionContext().getText(),
+                "type", node.type().toString()),
+                ImmutableList.of("CFG_NODE", node.type().toString())));
     }
 
     @Override

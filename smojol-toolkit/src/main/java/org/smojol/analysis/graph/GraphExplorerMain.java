@@ -1,4 +1,4 @@
-package org.smojol.interpreter;
+package org.smojol.analysis.graph;
 
 import com.mojo.woof.GraphSDK;
 import com.mojo.woof.Neo4JDriverBuilder;
@@ -14,10 +14,8 @@ import org.smojol.common.flowchart.FlowNode;
 import org.smojol.common.flowchart.FlowNodeService;
 import org.smojol.common.flowchart.FlowchartBuilder;
 import org.smojol.common.navigation.CobolEntityNavigator;
-import org.smojol.common.vm.interpreter.Breakpointer;
 import org.smojol.common.vm.strategy.UnresolvedReferenceDoNothingStrategy;
 import org.smojol.common.vm.structure.CobolDataStructure;
-import org.smojol.interpreter.interpreter.CobolBreakpointer;
 import org.smojol.interpreter.navigation.CobolEntityNavigatorBuilderImpl;
 
 import java.io.File;
@@ -31,7 +29,7 @@ public class GraphExplorerMain {
         String dialectJarPath = "/Users/asgupta/code/smojol/che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar";
         String cobolParseTreeOutputPath = "/Users/asgupta/code/smojol/out/test-cobol.json";
 
-        File source = new File("/Users/asgupta/code/smojol/smojol-test-code/test.cbl");
+        File source = new File("/Users/asgupta/code/smojol/smojol-test-code/test-exp.cbl");
 
         PocOpsImpl ops = new PocOpsImpl(new CobolTreeVisualiserImpl(),
                 FlowchartBuilderImpl::build, new CobolEntityNavigatorBuilderImpl(), new UnresolvedReferenceDoNothingStrategy());
@@ -52,6 +50,7 @@ public class GraphExplorerMain {
         FlowNodeService nodeService = flowcharter.getChartNodeService();
 
         GraphSDK sdk = new GraphSDK(new Neo4JDriverBuilder().fromEnv());
-        root.accept(new Neo4JVisitor(sdk), -1);
+        root.accept(new Neo4JFlowVisitor(sdk), -1);
+        new Neo4JASTBuilder(sdk).build(root);
     }
 }

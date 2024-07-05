@@ -87,6 +87,11 @@ public class NullFlowNode implements FlowNode {
     }
 
     @Override
+    public List<FlowNode> astChildren() {
+        return List.of();
+    }
+
+    @Override
     public ParseTree getExecutionContext() {
         return null;
     }

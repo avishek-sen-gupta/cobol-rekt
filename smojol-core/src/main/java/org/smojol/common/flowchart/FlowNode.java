@@ -29,6 +29,7 @@ public interface FlowNode {
 
     FlowNode findUpwards(FlowNodeCondition nodeCondition, FlowNode startingNode);
     FlowNode tail();
+    List<FlowNode> astChildren();
 
     DomainDocument getNotes();
 

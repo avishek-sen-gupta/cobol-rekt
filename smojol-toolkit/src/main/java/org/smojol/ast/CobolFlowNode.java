@@ -248,6 +248,11 @@ public class CobolFlowNode implements FlowNode {
     }
 
     @Override
+    public List<FlowNode> astChildren() {
+        return List.of();
+    }
+
+    @Override
     public List<? extends ParseTree> getChildren() {
         return ImmutableList.of();
     }

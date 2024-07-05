@@ -26,6 +26,7 @@ public class FlowchartStylePreferences {
         schemes.put(FlowNodeType.SENTENCE, new GraphvizStyleScheme(Color.WHEAT, Color.BLACK, Shape.POINT));
         schemes.put(FlowNodeType.COMPOSITE, new GraphvizStyleScheme(Color.WHEAT, Color.BLACK));
         schemes.put(FlowNodeType.SECTION, new GraphvizStyleScheme(Color.DEEPSKYBLUE4, Color.WHITE));
+        schemes.put(FlowNodeType.PROCEDURE_DIVISION_BODY, new GraphvizStyleScheme(Color.DEEPSKYBLUE4, Color.WHITE));
         schemes.put(FlowNodeType.PARAGRAPH, new GraphvizStyleScheme(Color.DARKSEAGREEN4, Color.WHITE));
         schemes.put(FlowNodeType.DIALECT, new GraphvizStyleScheme(Color.BLUE4, Color.WHITE, Shape.FOLDER));
         schemes.put(FlowNodeType.SECTION_HEADER, new GraphvizStyleScheme(Color.BLUE4, Color.WHITE, Shape.POINT));

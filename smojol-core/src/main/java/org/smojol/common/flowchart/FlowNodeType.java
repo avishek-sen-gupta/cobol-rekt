@@ -35,5 +35,5 @@ public enum FlowNodeType {
     SUBTRACT,
     MULTIPLY,
     DIVIDE,
-    DIALECT
+    PROCEDURE_DIVISION_BODY, DIALECT
 }

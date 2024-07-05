@@ -10,7 +10,7 @@ import org.smojol.common.vm.stack.StackFrames;
 public class ProcedureDivisionBodyFlowNode extends CompositeCobolFlowNode {
     @Override
     public FlowNodeType type() {
-        return FlowNodeType.SECTION;
+        return FlowNodeType.PROCEDURE_DIVISION_BODY;
     }
 
     public ProcedureDivisionBodyFlowNode(ParseTree parseTree, FlowNode scope, FlowNodeService nodeService, StackFrames stackFrames) {

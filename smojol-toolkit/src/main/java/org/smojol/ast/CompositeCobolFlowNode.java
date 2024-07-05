@@ -10,9 +10,11 @@ import org.smojol.common.vm.interpreter.CobolVmSignal;
 import org.smojol.common.vm.interpreter.FlowControl;
 import org.smojol.common.vm.stack.StackFrames;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CompositeCobolFlowNode extends CobolFlowNode {
+    List<FlowNode> astChildren = new ArrayList<>();
     public static FlowNodeCondition CHILD_IS_CONDITIONAL_STATEMENT = node -> SyntaxIdentity.isOfType(node.getExecutionContext(), CobolParser.ConditionalStatementCallContext.class);
     protected FlowNode internalTreeRoot;
 
@@ -28,12 +30,14 @@ public class CompositeCobolFlowNode extends CobolFlowNode {
         System.out.println("Looking at " + name());
         internalTreeRoot = nodeService.node(children.getFirst(), this, staticFrameContext.add(this));
         FlowNode current = internalTreeRoot;
+        astChildren.add(current);
         for (int i = 0; i <= children.size() - 2; i++) {
             FlowNode nextNode = nodeService.node(children.get(i + 1), this, staticFrameContext.add(this));
             if (".".equals(nextNode.getExecutionContext().getText())) continue;
             FlowNode successor = nextNode;
             current.goesTo(successor);
             current = successor;
+            astChildren.add(successor);
         }
         internalTreeRoot.buildFlow();
     }
@@ -83,8 +87,6 @@ public class CompositeCobolFlowNode extends CobolFlowNode {
 
     @Override
     public FlowNodeType type() {
-        if (executionContext.getClass() == CobolParser.ProcedureSectionContext.class) return FlowNodeType.SECTION;
-        if (executionContext.getClass() == CobolParser.ParagraphContext.class) return FlowNodeType.PARAGRAPH;
         return FlowNodeType.COMPOSITE;
     }
 
@@ -103,6 +105,11 @@ public class CompositeCobolFlowNode extends CobolFlowNode {
         CobolVmSignal signal = internalTreeRoot != null ? internalTreeRoot.acceptInterpreter(interpreter.scope(this), FlowControl::CONTINUE) : CobolVmSignal.CONTINUE;
         interpreter.exit(this, nodeService);
         return signal;
+    }
+
+    @Override
+    public List<FlowNode> astChildren() {
+        return astChildren;
     }
 
     @Override

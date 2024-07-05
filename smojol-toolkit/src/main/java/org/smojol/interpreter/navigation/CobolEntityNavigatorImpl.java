@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
@@ -36,6 +37,7 @@ public class CobolEntityNavigatorImpl implements CobolEntityNavigator {
     public CobolParser.DataDivisionContext dataDivisionBody(ParseTree tree) {
         return (CobolParser.DataDivisionContext) findByConditionRecursive(tree, n -> n instanceof CobolParser.DataDivisionContext, 1, -1);
     }
+
     @Override
     public ParseTree target(String procedureName) {
         return findTargetRecursive(procedureName, procedureBodyRoot);
@@ -139,5 +141,23 @@ public class CobolEntityNavigatorImpl implements CobolEntityNavigator {
         }
 
         return null;
+    }
+
+    public static <T> T build(ParseTree tree, BiFunction<ParseTree, T, T> make, Function<ParseTree, Boolean> stopRecurseCondition) {
+        return internalBuild(tree, null, make, stopRecurseCondition);
+    }
+
+    public static <T> T build(ParseTree tree, BiFunction<ParseTree, T, T> make) {
+        return build(tree, make, CobolEntityNavigatorImpl.NEVER_STOP);
+    }
+
+    public static Function<ParseTree, Boolean> NEVER_STOP = n -> false;
+    public static <T> T internalBuild(ParseTree tree, T parent, BiFunction<ParseTree, T, T> make, Function<ParseTree, Boolean> stopRecurseCondition) {
+        T node = make.apply(tree, parent);
+        if (stopRecurseCondition.apply(tree)) return node;
+        for (int i = 0; i < tree.getChildCount(); i++) {
+            T child = internalBuild(tree.getChild(i), node, make, stopRecurseCondition);
+        }
+        return node;
     }
 }
