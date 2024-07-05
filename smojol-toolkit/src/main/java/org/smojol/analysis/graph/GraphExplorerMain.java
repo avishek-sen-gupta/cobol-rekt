@@ -1,8 +1,9 @@
 package org.smojol.analysis.graph;
 
-import com.mojo.woof.GraphSDK;
-import com.mojo.woof.Neo4JDriverBuilder;
+import com.google.common.collect.ImmutableList;
+import com.mojo.woof.*;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.neo4j.driver.Record;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smojol.analysis.LanguageDialect;
@@ -12,6 +13,7 @@ import org.smojol.analysis.visualisation.PocOpsImpl;
 import org.smojol.ast.FlowchartBuilderImpl;
 import org.smojol.common.flowchart.FlowNode;
 import org.smojol.common.flowchart.FlowNodeService;
+import org.smojol.common.flowchart.FlowNodeType;
 import org.smojol.common.flowchart.FlowchartBuilder;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.vm.strategy.UnresolvedReferenceDoNothingStrategy;
@@ -20,6 +22,7 @@ import org.smojol.interpreter.navigation.CobolEntityNavigatorBuilderImpl;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 
 public class GraphExplorerMain {
     private final Logger logger = LoggerFactory.getLogger(GraphExplorerMain.class);
@@ -52,5 +55,9 @@ public class GraphExplorerMain {
         GraphSDK sdk = new GraphSDK(new Neo4JDriverBuilder().fromEnv());
         root.accept(new Neo4JFlowVisitor(sdk), -1);
         new Neo4JASTBuilder(sdk).build(root);
+
+        Advisor advisor = new Advisor(OpenAICredentials.fromEnv());
+        Record neo4jRoot = sdk.nodeByProperties(ImmutableList.of("AST_NODE"), Map.of("type", FlowNodeType.PROCEDURE_DIVISION_BODY.toString())).getFirst();
+        sdk.traverse(neo4jRoot, new SummariseAction(advisor, sdk), "CONTAINS");
     }
 }
