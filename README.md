@@ -1,9 +1,9 @@
 # Cobol REKT (Cobol Reverse Engineering KiT)
 
-This is an evolving toolkit of capabilities helpful for reverse engineering legacy Cobol code. As of now, there are two main components:
+This is an evolving toolkit of capabilities helpful for reverse engineering legacy Cobol code. As of now, the following capabilities are available:
 
 - Program / section / customisable node level flowchart generation based on AST
-- Parse Tree generation
+- Parse Tree generation (with export to JSON)
 - Control Flow Tree generation
 - The SMOJOL Interpreter (WIP)
 - Injecting AST and Control Flow into Neo4J (using [Woof](https://github.com/asengupta/woof))
