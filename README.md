@@ -47,7 +47,7 @@ Most of the capabilities are already present in the Che4z library. Some new gram
 
 ## Control Flow Tree Generation
 
-This capability allows the engineer to produce a control flow tree for the Cobol source. This can be used for straight-up visualisation (the flowchart capability actually uses the control flow tree behind the scenes), or more dynamic analysis through an interpreter. See [SMOJOL (SMol Java-powered CobOL) Interpreter] for a description of how this can help.
+This capability allows the engineer to produce a control flow tree for the Cobol source. This can be used for straight-up visualisation (the flowchart capability actually uses the control flow tree behind the scenes), or more dynamic analysis through an interpreter. See [link](SMOJOL SMol Java-powered CobOL Interpreter) for a description of how this can help.
 
 ## Neo4J Integration and OpenAI integration
 
@@ -101,7 +101,6 @@ Some example use cases are listed in the next section.
 - ...
 
 ### Example interpreter session demonstrating breakpoints, stack traces, and record inspection
-![Interpreter Session](https://github.com/avishek-sen-gupta/cobol-rekt/blob/main/smojol-examples/smojol-interpreter-session.png)
 ![Interpreter Session](smojol-examples/smojol-interpreter-session.png)
 
 ## Caveats
