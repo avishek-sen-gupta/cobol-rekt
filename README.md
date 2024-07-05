@@ -103,10 +103,23 @@ Some example use cases are listed in the next section.
 ### Example interpreter session demonstrating breakpoints, stack traces, and record inspection
 ![Interpreter Session](smojol-examples/smojol-interpreter-session.png)
 
+## How to Build
+
+Run: ```mvn clean install```.
+
+The Checkstyle step is only applicable for the Eclipse Cobol parser project. You can skip the Checkstyle targets with:
+
+```mvn clean verify package -Dcheckstyle.skip=true```
+
+You can skip the tests as well, using:
+
+```mvn clean verify package -Dmaven.test.skip=true -Dcheckstyle.skip=true```
+
 ## Caveats
 
 - This was built based on a time-boxed PoC, and thus isn't well-covered by tests yet. More are being added on an ongoing basis.
 - Cobol is a large language, and thus the interpreter's capabilities are not exhaustive. However, the hope is that the subset currently present is useful enough to get started with reverse engineering legacy code. Obviously, more capabilities are being added on an ongoing basis.
+- There are 4 superfluous directories at the top (engine, parser, dialect-daco, dialect-idms), which are a hack to get the Che4z Checkstyle targets to run because of a path configuration issue.
 
 ## How to Build
 
@@ -129,6 +142,10 @@ mvn clean verify package -Dmaven.test.skip -Dcheckstyle.skip=true
 - See ```GraphExplorerMain.java``` for an example of how to inject ASTs and CFGs into Neo4J.
 - CLI support is on the way.
 - More detailed guides on programmatic use are on the way.
+
+## Developer Guide
+
+TODO...
 
 The rest of this file is mostly technical notes for my personal documentation.
 

@@ -1,4 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--<project xmlns="http://maven.apache.org/POM/4.0.0"-->
+<!--         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"-->
+<!--         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">-->
+<!--    <modelVersion>4.0.0</modelVersion>-->
+
+<!--    <groupId>org.eclipse.lsp.cobol</groupId>-->
+<!--    <artifactId>server</artifactId>-->
+<!--    <version>1.0-SNAPSHOT</version>-->
+<!--    <name>che4z</name>-->
+
+<!--    <dependencies>-->
+<!--        <dependency>-->
+<!--            <groupId>org.eclipse.lsp.cobol</groupId>-->
+<!--            <artifactId>server</artifactId>-->
+<!--            <version>1.0-SNAPSHOT</version>-->
+<!--        </dependency>-->
+<!--    </dependencies>-->
+
+<!--</project>-->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -13,12 +32,12 @@
         <module>smojol-toolkit</module>
         <module>smojol-core</module>
         <module>woof</module>
-        <module>che-che4z-lsp-for-cobol-integration/server/engine</module>
-        <module>che-che4z-lsp-for-cobol-integration/server/parser</module>
-        <module>che-che4z-lsp-for-cobol-integration/server/dialect-idms</module>
-        <module>che-che4z-lsp-for-cobol-integration/server/dialect-daco</module>
-        <module>che-che4z-lsp-for-cobol-integration/server/test</module>
-        <module>che-che4z-lsp-for-cobol-integration/server/common</module>
+        <module>che-che4z-lsp-for-cobol-integration/server</module>
+<!--        <module>che-che4z-lsp-for-cobol-integration/server/parser</module>-->
+<!--        <module>che-che4z-lsp-for-cobol-integration/server/dialect-idms</module>-->
+<!--        <module>che-che4z-lsp-for-cobol-integration/server/dialect-daco</module>-->
+<!--        <module>che-che4z-lsp-for-cobol-integration/server/test</module>-->
+<!--        <module>che-che4z-lsp-for-cobol-integration/server/common</module>-->
     </modules>
 
     <properties>
