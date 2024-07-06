@@ -11,7 +11,10 @@ This is an evolving toolkit of capabilities helpful for reverse engineering lega
 - Injecting execution traces from the SMOJOL interpreter into Neo4J
 - Integration with OpenAI GPT to summarise nodes using bottom-up node traversal (using [Woof](https://github.com/asengupta/woof))
 
-The toolkit uses the grammar available in the [Eclipse Che4z Cobol Support project](https://github.com/eclipse-che4z/che-che4z-lsp-for-cobol) to create the parse tree.
+## Dependencies
+
+- The toolkit uses the grammar available in the [Eclipse Che4z Cobol Support project](https://github.com/eclipse-che4z/che-che4z-lsp-for-cobol) to create the parse tree.
+- The toolkit uses the API from [Woof](https://github.com/asengupta/woof) to interact with Neo4J.
 
 ## Reverse Engineering Use Cases
 
