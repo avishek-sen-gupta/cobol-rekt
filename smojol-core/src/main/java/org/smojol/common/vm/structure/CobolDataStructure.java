@@ -186,8 +186,9 @@ public abstract class CobolDataStructure extends SimpleTreeNode {
         return this;
     }
 
-    public void accept(DataStructureVisitor visitor, CobolDataStructure parent) {
+    public void accept(DataStructureVisitor visitor, CobolDataStructure parent, Function<CobolDataStructure, Boolean> stopRecurseCondition) {
         CobolDataStructure parentNode = visitor.visit(this, parent);
-        this.structures.forEach(s -> s.accept(visitor, parentNode));
+        if (stopRecurseCondition.apply(parentNode)) return;
+        this.structures.forEach(s -> s.accept(visitor, parentNode, stopRecurseCondition));
     }
 }

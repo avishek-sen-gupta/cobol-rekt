@@ -134,6 +134,7 @@ clients/cobol-lsp-vscode-extension/test-report.xml
 
 **/FlowchartBuildForTestingOnly.java
 **/InterpreterMainForTestingOnly.java
+**/GraphExplorerMainForTestingOnly.java
 
 smojol-test-code/
 out/

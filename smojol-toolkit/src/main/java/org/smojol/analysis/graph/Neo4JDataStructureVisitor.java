@@ -6,6 +6,7 @@ import com.mojo.woof.WoofNode;
 import org.neo4j.driver.Record;
 import org.smojol.common.flowchart.*;
 import org.smojol.common.vm.structure.CobolDataStructure;
+import org.smojol.common.vm.type.CobolDataType;
 
 import java.util.Map;
 import java.util.UUID;

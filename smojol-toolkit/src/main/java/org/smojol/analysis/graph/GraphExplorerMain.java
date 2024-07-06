@@ -65,7 +65,7 @@ public class GraphExplorerMain {
         Record neo4jProgramRoot = sdk.findNode(ImmutableList.of(AST_NODE), Map.of(TYPE, FlowNodeType.PROCEDURE_DIVISION_BODY.toString())).getFirst();
         sdk.traverse(neo4jProgramRoot, new SummariseAction(advisor, sdk), CONTAINS);
 
-        dataStructures.accept(new Neo4JDataStructureVisitor(sdk), null);
+        dataStructures.accept(new Neo4JDataStructureVisitor(sdk), null, n -> false);
         Record neo4jDataStructureSRoot = sdk.findNode(ImmutableList.of(DATA_STRUCTURE, "ROOT"), Map.of()).getFirst();
         sdk.traverse(neo4jDataStructureSRoot, new DataStructureSummariseAction(advisor, sdk), CONTAINS);
     }
