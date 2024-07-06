@@ -129,8 +129,9 @@ You can skip the tests as well, using:
 ## How to Use
 
 - See ```FlowChartBuildMain.java``` for examples of how flowcharts are created.
-- See ```InterpreterMain.java``` for an example of how to run the interpreter on your code.
-- See ```GraphExplorerMain.java``` for an example of how to inject ASTs and CFGs into Neo4J.
+- See ```InterpreterMain.java``` for an example of how to run the interpreter on your code, as well as inject execution traces into Neo4J.
+- See ```GraphExplorerMain.java``` for an example of how to inject ASTs, data structures, and CFGs into Neo4J.
+- All the above examples also output the raw parse tree as a JSON file.
 - CLI support is on the way.
 - More detailed guides on programmatic use are on the way.
 
