@@ -7,6 +7,7 @@ import org.neo4j.driver.Record;
 import org.smojol.analysis.graph.FlowToWoof;
 import org.smojol.common.flowchart.FlowNode;
 import org.smojol.common.flowchart.FlowNodeService;
+import org.smojol.common.flowchart.FlowNodeType;
 import org.smojol.common.vm.interpreter.ExecutionListener;
 
 import java.util.ArrayList;
@@ -26,6 +27,9 @@ public class Neo4JExecutionTracer implements ExecutionListener {
 
     @Override
     public void visit(FlowNode node, FlowNodeService nodeService) {
+        if (node.type() == FlowNodeType.SECTION_HEADER
+        ||  node.type() == FlowNodeType.PARAGRAPH_NAME
+        ||  node.type() == FlowNodeType.EXIT) return;
         path.add(node);
     }
 
