@@ -114,27 +114,7 @@ The Checkstyle step is only applicable for the Eclipse Cobol parser project. You
 
 You can skip the tests as well, using:
 
-```mvn clean verify package -Dmaven.test.skip=true -Dcheckstyle.skip=true```
-
-## Caveats
-
-- This was built based on a time-boxed PoC, and thus isn't well-covered by tests yet. More are being added on an ongoing basis.
-- Cobol is a large language, and thus the interpreter's capabilities are not exhaustive. However, the hope is that the subset currently present is useful enough to get started with reverse engineering legacy code. Obviously, more capabilities are being added on an ongoing basis.
-- There are 4 superfluous directories at the top (engine, parser, dialect-daco, dialect-idms), which are a hack to get the Che4z Checkstyle targets to run because of a path configuration issue.
-
-## How to Build
-
-Once you have cloned the repository, you can run:
-
-```
-mvn clean verify package
-```
-
-If you want to skip the tests and the Checkstyle targets, you can use:
-
-```
-mvn clean verify package -Dmaven.test.skip -Dcheckstyle.skip=true
-```
+```mvn clean verify package -Dmaven.test.skip=true```
 
 ## How to Use
 
@@ -147,6 +127,12 @@ mvn clean verify package -Dmaven.test.skip -Dcheckstyle.skip=true
 ## Developer Guide
 
 TODO...
+
+## Caveats
+
+- This was built based on a time-boxed PoC, and thus isn't well-covered by tests yet. More are being added on an ongoing basis.
+- Cobol is a large language, and thus the interpreter's capabilities are not exhaustive. However, the hope is that the subset currently present is useful enough to get started with reverse engineering legacy code. Obviously, more capabilities are being added on an ongoing basis.
+- There are 4 superfluous directories at the top (engine, parser, dialect-daco, dialect-idms), which are a hack to get the Che4z Checkstyle targets to run because of a path configuration issue.
 
 The rest of this file is mostly technical notes for my personal documentation.
 
