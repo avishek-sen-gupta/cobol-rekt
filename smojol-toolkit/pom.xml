@@ -44,19 +44,11 @@
 
     <licenses>
         <license>
-            <name>Eclipse Public License - v 2.0</name>
-            <url>https://github.com/eclipse-che4z/che-che4z-lsp-for-cobol/blob/development/LICENSE.md</url>
+            <name>MIT License</name>
+            <url>https://opensource.org/license/mit</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
-
-    <scm>
-        <url>https://github.com/eclipse-che4z/che-che4z-lsp-for-cobol.git</url>
-        <connection>scm:git:https://github.com/eclipse-che4z/che-che4z-lsp-for-cobol.git</connection>
-        <developerConnection>scm:git:ssh://github.com/eclipse-che4z/che-che4z-lsp-for-cobol.git</developerConnection>
-        <tag>2.0.1</tag>
-    </scm>
-
     <profiles>
         <profile>
             <id>release</id>

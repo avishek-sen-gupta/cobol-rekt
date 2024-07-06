@@ -128,6 +128,10 @@ You can skip the tests as well, using:
 
 TODO...
 
+## A Note on Copyright
+
+This toolkit is distributed under the MIT License. However, the Eclipse Cobol Parser project is distributed under the Eclipse Public License V2. Accordingly, all modifications to the parser fall under the EPL v2 license, while the toolkit proper falls under the MIT License.
+
 ## Caveats
 
 - This was built based on a time-boxed PoC, and thus isn't well-covered by tests yet. More are being added on an ongoing basis.
