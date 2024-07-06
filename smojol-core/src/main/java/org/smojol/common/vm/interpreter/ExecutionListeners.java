@@ -14,13 +14,13 @@ public class ExecutionListeners implements ExecutionListener {
     }
 
     @Override
-    public void visit(String message, FlowNode node, FlowNodeService nodeService) {
-        listeners.forEach(l -> l.visit(message, node, nodeService));
+    public void notify(String message, FlowNode node, FlowNodeService nodeService) {
+        listeners.forEach(l -> l.notify(message, node, nodeService));
     }
 
     @Override
-    public void notify(String message, FlowNode node, FlowNodeService nodeService) {
-        listeners.forEach(l -> l.notify(message, node, nodeService));
+    public void visit(FlowNode node, FlowNodeService nodeService) {
+        listeners.forEach(l -> l.visit(node, nodeService));
     }
 
     @Override

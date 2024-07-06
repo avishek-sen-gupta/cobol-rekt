@@ -25,6 +25,7 @@ public class ProcedureDivisionBodyFlowNode extends CompositeCobolFlowNode {
     @Override
     public CobolVmSignal acceptInterpreterForCompositeExecution(CobolInterpreter interpreter, FlowControl flowControl) {
         CobolVmSignal signal = super.acceptInterpreterForCompositeExecution(interpreter, flowControl);
+        interpreter.signalTermination();
         System.out.println(ConsoleColors.red("Program has exited"));
         return signal;
     }

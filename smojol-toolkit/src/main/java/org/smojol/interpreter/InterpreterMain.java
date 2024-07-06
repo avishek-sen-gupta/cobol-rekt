@@ -1,6 +1,8 @@
 package org.smojol.interpreter;
 
 import com.google.common.collect.ImmutableList;
+import com.mojo.woof.GraphSDK;
+import com.mojo.woof.Neo4JDriverBuilder;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.smojol.analysis.LanguageDialect;
 import org.smojol.common.flowchart.FlowNode;
@@ -13,10 +15,7 @@ import org.smojol.analysis.ParsePipeline;
 import org.smojol.analysis.visualisation.CobolTreeVisualiserImpl;
 import org.smojol.analysis.visualisation.PocOpsImpl;
 import org.smojol.common.navigation.CobolEntityNavigator;
-import org.smojol.interpreter.interpreter.CobolBreakpointer;
-import org.smojol.interpreter.interpreter.CobolConditionResolver;
-import org.smojol.interpreter.interpreter.CobolInterpreterFactory;
-import org.smojol.interpreter.interpreter.RunLogger;
+import org.smojol.interpreter.interpreter.*;
 import org.smojol.interpreter.navigation.CobolEntityNavigatorBuilderImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,8 +65,8 @@ public class InterpreterMain {
 //        bp.addBreakpoint(n -> n.getClass() == DisplayChartNode.class && n.originalText().contains("Hello, world"));
 //        bp.addBreakpoint(n -> n.getClass() == AddChartNode.class && n.originalText().contains("SOMETEXT"));
         bp.addBreakpoint(n -> n.getClass() == DisplayFlowNode.class && n.originalText().contains("SOMETEXT"));
-        ExecutionListener tracer = new RunFlowchartTracer();
-        ExecutionListeners executionListeners = new ExecutionListeners(ImmutableList.of(new RunLogger(), tracer));
+        GraphSDK sdk = new GraphSDK(new Neo4JDriverBuilder().fromEnv());
+        ExecutionListeners executionListeners = new ExecutionListeners(ImmutableList.of(new RunLogger(), new Neo4JExecutionTracer(sdk)));
         root.acceptInterpreter(CobolInterpreterFactory.interpreter(CobolConditionResolver.EVALUATING_RESOLVER, dataStructures, ImmutableList.of(), executionListeners, bp), FlowControl::CONTINUE);
     }
 }

@@ -38,10 +38,7 @@ public class Neo4JFlowVisitor implements FlowNodeVisitor {
     }
 
     private Record newOrExisting(FlowNode node) {
-        return sdk.newOrExisting(ImmutableList.of(), Map.of(FLOW_ID, node.id()), new WoofNode(Map.of(FLOW_ID, node.id(),
-                TEXT, node.getExecutionContext().getText(),
-                TYPE, node.type().toString()),
-                ImmutableList.of(CFG_NODE, node.type().toString())));
+        return FlowToWoof.newOrExisting(node, sdk);
     }
 
     @Override

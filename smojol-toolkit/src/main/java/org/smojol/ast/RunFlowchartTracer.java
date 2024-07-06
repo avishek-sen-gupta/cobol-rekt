@@ -17,12 +17,12 @@ public class RunFlowchartTracer implements ExecutionListener, GraphWriter {
     private Set<FlowNode> nodes = new HashSet<>();
 
     @Override
-    public void visit(String message, FlowNode node, FlowNodeService nodeService) {
-        nodes.add(node);
+    public void notify(String message, FlowNode node, FlowNodeService nodeService) {
     }
 
     @Override
-    public void notify(String message, FlowNode node, FlowNodeService nodeService) {
+    public void visit(FlowNode node, FlowNodeService nodeService) {
+        nodes.add(node);
     }
 
     @Override

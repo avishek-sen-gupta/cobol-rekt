@@ -25,4 +25,5 @@ public interface CobolInterpreter {
     CobolVmSignal executeCompute(FlowNode node, FlowNodeService nodeService);
     CobolVmSignal executeSearch(FlowNode node, List<FlowNode> whenPhrases, FlowNodeService nodeService, FlowNode searchFlowNode);
     CobolVmSignal executeOnClause(FlowNode node, FlowNodeService nodeService);
+    void signalTermination();
 }

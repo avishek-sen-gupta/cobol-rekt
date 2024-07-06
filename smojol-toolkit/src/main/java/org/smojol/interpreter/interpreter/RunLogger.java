@@ -11,7 +11,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class RunLogger implements ExecutionListener {
-
     private final StringBuilder sb = new StringBuilder();
     private String path = "/Users/asgupta/Downloads/mbrdi-poc/report.md";
 
@@ -28,7 +27,7 @@ public class RunLogger implements ExecutionListener {
     }
 
     @Override
-    public void visit(String message, FlowNode node, FlowNodeService nodeService) {
+    public void notify(String message, FlowNode node, FlowNodeService nodeService) {
         if (node.getClass() == MoveFlowNode.class ||
                 node.getClass() == AddFlowNode.class ||
                 node.getClass() == IfFlowNode.class)
@@ -37,8 +36,7 @@ public class RunLogger implements ExecutionListener {
     }
 
     @Override
-    public void notify(String message, FlowNode node, FlowNodeService nodeService) {
-        visit(message, node, nodeService);
+    public void visit(FlowNode node, FlowNodeService nodeService) {
     }
 
     @Override
