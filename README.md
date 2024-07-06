@@ -8,6 +8,7 @@ This is an evolving toolkit of capabilities helpful for reverse engineering lega
 - The SMOJOL Interpreter (WIP)
 - Injecting AST and Control Flow into Neo4J (using [Woof](https://github.com/asengupta/woof))
 - Injecting Cobol data layouts from Data Division into Neo4J
+- Injecting execution traces from the SMOJOL interpreter into Neo4J
 - Integration with OpenAI GPT to summarise nodes using bottom-up node traversal (using [Woof](https://github.com/asengupta/woof))
 
 The toolkit uses the grammar available in the [Eclipse Che4z Cobol Support project](https://github.com/eclipse-che4z/che-che4z-lsp-for-cobol) to create the parse tree.
@@ -103,6 +104,12 @@ Some example use cases are listed in the next section.
 
 ### Example interpreter session demonstrating breakpoints, stack traces, and record inspection
 ![Interpreter Session](smojol-examples/smojol-interpreter-session.png)
+
+### Integration with Neo4J
+
+The interpreter also supports injecting a complete execution path through the program into Neo4J. The screenshot below shows the execution trace of a reasonably complex program.
+
+![Execution Trace Graph](documentation/execution-trace-graph.png)
 
 ## How to Build
 
