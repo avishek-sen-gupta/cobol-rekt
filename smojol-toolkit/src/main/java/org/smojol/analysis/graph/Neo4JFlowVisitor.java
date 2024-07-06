@@ -9,6 +9,10 @@ import org.smojol.common.flowchart.*;
 import java.util.List;
 import java.util.Map;
 
+import static com.mojo.woof.NodeLabels.*;
+import static com.mojo.woof.NodeProperties.*;
+import static com.mojo.woof.NodeRelations.*;
+
 public class Neo4JFlowVisitor implements FlowNodeVisitor {
     private final GraphSDK sdk;
 
@@ -21,7 +25,7 @@ public class Neo4JFlowVisitor implements FlowNodeVisitor {
         outgoingNodes.forEach(o -> {
             Record sourceRecord = newOrExisting(node);
             Record destinationRecord = newOrExisting(o);
-            sdk.connect(sourceRecord, destinationRecord, "FOLLOWED_BY");
+            sdk.connect(sourceRecord, destinationRecord, FOLLOWED_BY);
         });
     }
 
@@ -30,14 +34,14 @@ public class Neo4JFlowVisitor implements FlowNodeVisitor {
         Record parentRecord = newOrExisting(parent);
         Record childRecord = newOrExisting(internalTreeRoot);
 
-        sdk.connect(parentRecord, childRecord, "STARTS_WITH");
+        sdk.connect(parentRecord, childRecord, STARTS_WITH);
     }
 
     private Record newOrExisting(FlowNode node) {
-        return sdk.newOrExisting(ImmutableList.of(), Map.of("flowID", node.id()), new WoofNode(Map.of("flowID", node.id(),
-                "text", node.getExecutionContext().getText(),
-                "type", node.type().toString()),
-                ImmutableList.of("CFG_NODE", node.type().toString())));
+        return sdk.newOrExisting(ImmutableList.of(), Map.of(FLOW_ID, node.id()), new WoofNode(Map.of(FLOW_ID, node.id(),
+                TEXT, node.getExecutionContext().getText(),
+                TYPE, node.type().toString()),
+                ImmutableList.of(CFG_NODE, node.type().toString())));
     }
 
     @Override
@@ -49,7 +53,7 @@ public class Neo4JFlowVisitor implements FlowNodeVisitor {
     public void visitControlTransfer(FlowNode from, FlowNode to, VisitContext visitContext) {
         Record sourceRecord = newOrExisting(from);
         Record destinationRecord = newOrExisting(to);
-        sdk.connect(sourceRecord, destinationRecord, "JUMPS_TO");
+        sdk.connect(sourceRecord, destinationRecord, JUMPS_TO);
     }
     @Override
     public FlowNodeVisitor newScope(FlowNode enclosingScope) {

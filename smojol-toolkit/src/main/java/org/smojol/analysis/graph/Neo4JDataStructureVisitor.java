@@ -28,7 +28,7 @@ public class Neo4JDataStructureVisitor implements DataStructureVisitor {
 
         Record record = sdk.createNode(node);
         if (parent == null) return data;
-        Record parentNode = sdk.nodeByProperties(ImmutableList.of("DATA_STRUCTURE"), Map.of("name", parent.name())).getFirst();
+        Record parentNode = sdk.findNode(ImmutableList.of("DATA_STRUCTURE"), Map.of("name", parent.name())).getFirst();
         sdk.connect(parentNode, record, "CONTAINS");
         return data;
     }

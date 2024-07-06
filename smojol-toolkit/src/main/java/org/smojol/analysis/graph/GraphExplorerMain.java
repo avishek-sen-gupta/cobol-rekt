@@ -24,6 +24,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
+import static com.mojo.woof.NodeLabels.AST_NODE;
+import static com.mojo.woof.NodeLabels.DATA_STRUCTURE;
+import static com.mojo.woof.NodeProperties.TYPE;
+import static com.mojo.woof.NodeRelations.CONTAINS;
+
 public class GraphExplorerMain {
     private final Logger logger = LoggerFactory.getLogger(GraphExplorerMain.class);
 
@@ -57,8 +62,11 @@ public class GraphExplorerMain {
         new Neo4JASTBuilder(sdk).build(root);
 
         Advisor advisor = new Advisor(OpenAICredentials.fromEnv());
-        Record neo4jRoot = sdk.nodeByProperties(ImmutableList.of("AST_NODE"), Map.of("type", FlowNodeType.PROCEDURE_DIVISION_BODY.toString())).getFirst();
-        sdk.traverse(neo4jRoot, new SummariseAction(advisor, sdk), "CONTAINS");
+        Record neo4jProgramRoot = sdk.findNode(ImmutableList.of(AST_NODE), Map.of(TYPE, FlowNodeType.PROCEDURE_DIVISION_BODY.toString())).getFirst();
+        sdk.traverse(neo4jProgramRoot, new SummariseAction(advisor, sdk), CONTAINS);
+
         dataStructures.accept(new Neo4JDataStructureVisitor(sdk), null);
+        Record neo4jDataStructureSRoot = sdk.findNode(ImmutableList.of(DATA_STRUCTURE, "ROOT"), Map.of()).getFirst();
+        sdk.traverse(neo4jDataStructureSRoot, new DataStructureSummariseAction(advisor, sdk), CONTAINS);
     }
 }

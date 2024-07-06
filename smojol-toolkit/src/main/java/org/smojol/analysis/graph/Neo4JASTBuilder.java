@@ -10,6 +10,10 @@ import org.smojol.interpreter.navigation.FlowNodeASTTraversal;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.mojo.woof.NodeLabels.AST_NODE;
+import static com.mojo.woof.NodeProperties.*;
+import static com.mojo.woof.NodeRelations.CONTAINS;
+
 public class Neo4JASTBuilder {
     private final GraphSDK sdk;
 
@@ -22,13 +26,13 @@ public class Neo4JASTBuilder {
     }
 
     public Record make(FlowNode tree, Record parent) {
-        WoofNode node = new WoofNode(Map.of("flowID", UUID.randomUUID().toString(),
-                "text", NodeText.originalText(tree.getExecutionContext(), NodeText::PASSTHROUGH),
-                "type", tree.type().toString()),
-                ImmutableList.of("AST_NODE", tree.type().toString()));
+        WoofNode node = new WoofNode(Map.of(FLOW_ID, UUID.randomUUID().toString(),
+                TEXT, NodeText.originalText(tree.getExecutionContext(), NodeText::PASSTHROUGH),
+                TYPE, tree.type().toString()),
+                ImmutableList.of(AST_NODE, tree.type().toString()));
         Record record = sdk.createNode(node);
         if (parent == null) return record;
-        sdk.connect(parent, record, "CONTAINS");
+        sdk.connect(parent, record, CONTAINS);
         return record;
     }
 
