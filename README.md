@@ -106,7 +106,7 @@ Some example use cases are listed in the next section.
 - ...
 
 ### Example interpreter session demonstrating breakpoints, stack traces, and record inspection
-![Interpreter Session](smojol-examples/smojol-interpreter-session.png)
+![Interpreter Session](documentation/smojol-interpreter-session.png)
 
 ### Integration with Neo4J
 
