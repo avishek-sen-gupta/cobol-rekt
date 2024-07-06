@@ -57,7 +57,7 @@ The Control Flow Graph is in the SMOJOL AST format.
 
 The OpenAI integration can be leveraged to summarise nodes in a bottom-up fashion (i.e., summarise leaf nodes first, then use those summaries to generate summarise the parent nodes, and so on).
 
-The following diagram shows both the AST, the Control Flow, and the data structures Graph. The yellow nodes are the summary nodes attached to the AST.
+The following diagram shows the AST, the Control Flow Graph, and the data structures graph. The yellow nodes are the summary nodes attached to the AST.
 
 ![ast-cfg-structs-graph](documentation/ast-and-cfg-structs-graph.png)
 
