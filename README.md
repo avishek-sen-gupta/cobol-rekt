@@ -7,6 +7,7 @@ This is an evolving toolkit of capabilities helpful for reverse engineering lega
 - Control Flow Tree generation
 - The SMOJOL Interpreter (WIP)
 - Injecting AST and Control Flow into Neo4J (using [Woof](https://github.com/asengupta/woof))
+- Injecting Cobol data layouts from Data Division into Neo4J
 - Integration with OpenAI GPT to summarise nodes using bottom-up node traversal (using [Woof](https://github.com/asengupta/woof))
 
 The toolkit uses the grammar available in the [Eclipse Che4z Cobol Support project](https://github.com/eclipse-che4z/che-che4z-lsp-for-cobol) to create the parse tree.
@@ -56,9 +57,9 @@ The Control Flow Graph is in the SMOJOL AST format.
 
 The OpenAI integration can be leveraged to summarise nodes in a bottom-up fashion (i.e., summarise leaf nodes first, then use those summaries to generate summarise the parent nodes, and so on).
 
-The following diagram shows both the AST and the Control Flow Graph. The yellow nodes are the summary nodes attached to the AST.
+The following diagram shows both the AST, the Control Flow, and the data structures Graph. The yellow nodes are the summary nodes attached to the AST.
 
-![ast-and-cfg-graph](documentation/ast-and-cfg-graph.png)
+![ast-cfg-structs-graph](documentation/ast-and-cfg-structs-graph.png)
 
 ## SMOJOL (SMol Java-powered CobOL) Interpreter
 
