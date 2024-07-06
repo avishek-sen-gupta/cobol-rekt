@@ -6,6 +6,7 @@ import hu.webarticum.treeprinter.TreeNode;
 import hu.webarticum.treeprinter.printer.listing.ListingTreePrinter;
 import lombok.Getter;
 import org.eclipse.lsp.cobol.core.CobolParser;
+import org.smojol.common.flowchart.DataStructureVisitor;
 import org.smojol.common.vm.memory.DataLayoutBuilder;
 import org.smojol.common.vm.memory.MemoryLayout;
 import org.smojol.common.vm.memory.MemoryRegion;
@@ -19,7 +20,7 @@ import java.util.function.Function;
 
 public abstract class CobolDataStructure extends SimpleTreeNode {
     public static final String THIS = "THIS";
-    @Getter protected CobolDataType dataType;
+    @Getter protected final CobolDataType dataType;
     private final String name;
     @Getter private final int levelNumber;
     protected List<CobolDataStructure> structures;
@@ -78,9 +79,10 @@ public abstract class CobolDataStructure extends SimpleTreeNode {
     }
 
     // Copy constructor
-    protected CobolDataStructure(String name, CobolParser.DataDescriptionEntryFormat1Context dataDescription, List<CobolDataStructure> copy, int level, CobolDataStructure parent, boolean isComposite) {
+    protected CobolDataStructure(String name, List<CobolDataStructure> copy, int level, CobolDataStructure parent, boolean isComposite, CobolDataType dataType) {
         super(name);
         this.name = name;
+        this.dataType = dataType;
         this.levelNumber = level;
         this.structures = copy;
         this.parent = parent;
@@ -182,5 +184,10 @@ public abstract class CobolDataStructure extends SimpleTreeNode {
 
     public CobolDataStructure index(int index) {
         return this;
+    }
+
+    public void accept(DataStructureVisitor visitor, CobolDataStructure parent) {
+        CobolDataStructure parentNode = visitor.visit(this, parent);
+        this.structures.forEach(s -> s.accept(visitor, parentNode));
     }
 }

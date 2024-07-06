@@ -20,22 +20,24 @@ import java.util.stream.IntStream;
 public class TableDataStructure extends Format1DataStructure {
     private final int numElements;
     private int childSize;
+    private CobolDataType elementType;
 
     public TableDataStructure(CobolParser.DataDescriptionEntryFormat1Context structure, int numElements, UnresolvedReferenceStrategy strategy) {
-        super(structure, strategy);
+        super(structure, strategy, CobolDataType.TABLE);
+        elementType = cobolDataType(structure);
         this.numElements = numElements;
     }
 
     // Copy constructor
     public TableDataStructure(Function<CobolParser.DataDescriptionEntryFormat1Context, String> namingScheme, CobolParser.DataDescriptionEntryFormat1Context dataDescription, List<CobolDataStructure> copy, int level, CobolDataStructure parent, boolean isComposite, UnresolvedReferenceStrategy unresolvedReferenceStrategy, List<ConditionalDataStructure> conditions, int numElements) {
-        super(namingScheme, dataDescription, copy, level, parent, isComposite, unresolvedReferenceStrategy, conditions);
+        super(namingScheme, dataDescription, copy, level, parent, isComposite, unresolvedReferenceStrategy, conditions, CobolDataType.TABLE);
         this.numElements = numElements;
     }
 
     @Override
     public void expandTables() {
         if (!isComposite) {
-            structures = IntStream.range(0, numElements).mapToObj(i -> (CobolDataStructure) new Format1DataStructure(NamingScheme.INDEXED.apply(i), dataDescription, copy(structures), level(), this, isComposite, unresolvedReferenceStrategy, conditions)).toList();
+            structures = IntStream.range(0, numElements).mapToObj(i -> (CobolDataStructure) new Format1DataStructure(NamingScheme.INDEXED.apply(i), dataDescription, copy(structures), level(), this, isComposite, unresolvedReferenceStrategy, conditions, elementType)).toList();
         } else {
             structures.forEach(CobolDataStructure::expandTables);
             structures = IntStream.range(0, numElements).mapToObj(i -> copy(NamingScheme.INDEXED.apply(i))).toList();
@@ -59,7 +61,6 @@ public class TableDataStructure extends Format1DataStructure {
         structures.forEach(CobolDataStructure::calculateMemoryRequirements);
         Integer groupSize = primaryDefinitions().stream().map(CobolDataStructure::size).reduce(0, Integer::sum);
         typeSpec = new ImmutablePair<>(new GroupDataTypeSpec(groupSize), groupSize);
-        dataType = CobolDataType.TABLE;
         childSize = groupSize / numElements;
     }
 

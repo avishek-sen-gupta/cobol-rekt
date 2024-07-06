@@ -53,7 +53,11 @@ public class Format1DataStructure extends CobolDataStructure {
     }
 
     public Format1DataStructure(CobolParser.DataDescriptionEntryFormat1Context dataDescription, UnresolvedReferenceStrategy unresolvedReferenceStrategy) {
-        super(NamingScheme.IDENTITY.apply(dataDescription), Integer.parseInt(dataDescription.levelNumber().getText()), cobolDataType(dataDescription));
+        this(dataDescription, unresolvedReferenceStrategy, cobolDataType(dataDescription));
+    }
+
+    protected Format1DataStructure(CobolParser.DataDescriptionEntryFormat1Context dataDescription, UnresolvedReferenceStrategy unresolvedReferenceStrategy, CobolDataType dataType) {
+        super(NamingScheme.IDENTITY.apply(dataDescription), Integer.parseInt(dataDescription.levelNumber().getText()), dataType);
         this.namingScheme = NamingScheme.IDENTITY;
         this.dataDescription = dataDescription;
         System.out.println("Setting value for " + dataDescription.getText());
@@ -69,8 +73,8 @@ public class Format1DataStructure extends CobolDataStructure {
     }
 
     // Copy constructor
-    public Format1DataStructure(Function<CobolParser.DataDescriptionEntryFormat1Context, String> namingScheme, CobolParser.DataDescriptionEntryFormat1Context dataDescription, List<CobolDataStructure> copy, int level, CobolDataStructure parent, boolean isComposite, UnresolvedReferenceStrategy unresolvedReferenceStrategy, List<ConditionalDataStructure> conditions) {
-        super(namingScheme.apply(dataDescription), dataDescription, copy, level, parent, isComposite);
+    public Format1DataStructure(Function<CobolParser.DataDescriptionEntryFormat1Context, String> namingScheme, CobolParser.DataDescriptionEntryFormat1Context dataDescription, List<CobolDataStructure> copy, int level, CobolDataStructure parent, boolean isComposite, UnresolvedReferenceStrategy unresolvedReferenceStrategy, List<ConditionalDataStructure> conditions, CobolDataType dataType) {
+        super(namingScheme.apply(dataDescription), copy, level, parent, isComposite, dataType);
         this.namingScheme = namingScheme;
         this.dataDescription = dataDescription;
         this.unresolvedReferenceStrategy = unresolvedReferenceStrategy;
@@ -81,7 +85,7 @@ public class Format1DataStructure extends CobolDataStructure {
     public CobolDataStructure copy(Function<CobolParser.DataDescriptionEntryFormat1Context, String> namingScheme) {
 //        if (!isComposite)
 //            return new Format1DataStructure(dataDescription, unresolvedReferenceStrategy);
-        return new Format1DataStructure(namingScheme, dataDescription, copy(structures), level(), parent, isComposite, unresolvedReferenceStrategy, conditions);
+        return new Format1DataStructure(namingScheme, dataDescription, copy(structures), level(), parent, isComposite, unresolvedReferenceStrategy, conditions, dataType);
     }
 
     protected List<CobolDataStructure> copy(List<CobolDataStructure> structures) {

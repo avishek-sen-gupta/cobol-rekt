@@ -59,5 +59,6 @@ public class GraphExplorerMain {
         Advisor advisor = new Advisor(OpenAICredentials.fromEnv());
         Record neo4jRoot = sdk.nodeByProperties(ImmutableList.of("AST_NODE"), Map.of("type", FlowNodeType.PROCEDURE_DIVISION_BODY.toString())).getFirst();
         sdk.traverse(neo4jRoot, new SummariseAction(advisor, sdk), "CONTAINS");
+        dataStructures.accept(new Neo4JDataStructureVisitor(sdk), null);
     }
 }
