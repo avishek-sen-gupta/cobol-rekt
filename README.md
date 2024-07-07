@@ -70,7 +70,7 @@ The following diagram shows the AST, the Control Flow Graph, and the data struct
 
 This capability connects records which modify other records, with a ```MODIFIES``` relation. The dependencies traced include variables which are used in expressions, as well as free-standing literals. Below is an example of a set of dependencies from a program with a fairly large data model.
 
-![ast-cfg-structs-graph](documentation/record-dependencies-graph2.png)
+![ast-cfg-structs-graph](documentation/record-dependencies-graph.png)
 
 ## SMOJOL (SMol Java-powered CobOL) Interpreter
 
