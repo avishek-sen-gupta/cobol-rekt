@@ -6,11 +6,11 @@ This is an evolving toolkit of capabilities helpful for reverse engineering lega
 - Parse Tree generation (with export to JSON)
 - Control Flow Tree generation
 - The SMOJOL Interpreter (WIP)
-- Injecting AST and Control Flow into Neo4J (using [Woof](https://github.com/asengupta/woof))
+- Injecting AST and Control Flow into Neo4J
 - Injecting Cobol data layouts from Data Division into Neo4J
 - Injecting execution traces from the SMOJOL interpreter into Neo4J
 - Injecting record dependency connections (MOVE, COMPUTE, etc.) into Neo4J
-- Integration with OpenAI GPT to summarise nodes using bottom-up node traversal (using [Woof](https://github.com/asengupta/woof))
+- Integration with OpenAI GPT to summarise nodes using bottom-up node traversal
 
 ## Dependencies
 
