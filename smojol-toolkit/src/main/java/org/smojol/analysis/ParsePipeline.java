@@ -30,8 +30,8 @@ import org.eclipse.lsp.cobol.core.engine.pipeline.StageResult;
 import org.eclipse.lsp.cobol.core.engine.pipeline.stages.*;
 import org.eclipse.lsp.cobol.core.preprocessor.TextPreprocessor;
 import org.eclipse.lsp.cobol.core.preprocessor.delegates.GrammarPreprocessor;
+import org.smojol.analysis.visualisation.ComponentsBuilder;
 import org.smojol.common.flowchart.FlowchartBuilder;
-import org.smojol.common.flowchart.PocOps;
 import org.smojol.common.idms.DialectIntegratorListener;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.navigation.EntityNavigatorBuilder;
@@ -55,12 +55,12 @@ public class ParsePipeline {
     private final String[] cpyExt;
     private final String cobolParseTreeOutputPath;
     private final String dialectJarPath;
-    private final PocOps ops;
+    private final ComponentsBuilder ops;
     private final LanguageDialect dialect;
     @Getter private CobolEntityNavigator navigator;
     @Getter private CobolDataStructure dataStructures;
 
-    public ParsePipeline(File src, File[] cpyPaths, String dialectJarPath, String cobolParseTreeOutputPath, PocOps ops, LanguageDialect dialect) {
+    public ParsePipeline(File src, File[] cpyPaths, String dialectJarPath, String cobolParseTreeOutputPath, ComponentsBuilder ops, LanguageDialect dialect) {
         this.src = src;
         this.cpyPaths = cpyPaths;
         this.cobolParseTreeOutputPath = cobolParseTreeOutputPath;

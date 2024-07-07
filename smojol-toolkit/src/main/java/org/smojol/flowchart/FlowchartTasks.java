@@ -4,7 +4,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.smojol.analysis.LanguageDialect;
 import org.smojol.analysis.ParsePipeline;
 import org.smojol.analysis.visualisation.CobolTreeVisualiserImpl;
-import org.smojol.analysis.visualisation.PocOpsImpl;
+import org.smojol.analysis.visualisation.ComponentsBuilder;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.ast.FlowchartBuilderImpl;
 import org.eclipse.lsp.cobol.core.CobolParser;
@@ -53,7 +53,7 @@ public class FlowchartTasks {
         Files.createDirectories(dotFileOutputDir);
         Files.createDirectories(imageOutputDir);
 
-        PocOpsImpl ops = new PocOpsImpl(new CobolTreeVisualiserImpl(),
+        ComponentsBuilder ops = new ComponentsBuilder(new CobolTreeVisualiserImpl(),
                 FlowchartBuilderImpl::build, new CobolEntityNavigatorBuilderImpl(), new UnresolvedReferenceThrowStrategy(),
                 new DefaultFormat1DataStructureBuilder());
         ParsePipeline pipeline = new ParsePipeline(source,

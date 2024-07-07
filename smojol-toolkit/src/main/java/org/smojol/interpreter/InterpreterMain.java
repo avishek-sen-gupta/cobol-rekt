@@ -10,17 +10,15 @@ import org.smojol.common.flowchart.FlowNodeService;
 import org.smojol.common.flowchart.FlowchartBuilder;
 import org.smojol.ast.DisplayFlowNode;
 import org.smojol.ast.FlowchartBuilderImpl;
-import org.smojol.ast.RunFlowchartTracer;
 import org.smojol.analysis.ParsePipeline;
 import org.smojol.analysis.visualisation.CobolTreeVisualiserImpl;
-import org.smojol.analysis.visualisation.PocOpsImpl;
+import org.smojol.analysis.visualisation.ComponentsBuilder;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.interpreter.interpreter.*;
 import org.smojol.interpreter.navigation.CobolEntityNavigatorBuilderImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smojol.common.vm.interpreter.Breakpointer;
-import org.smojol.common.vm.interpreter.ExecutionListener;
 import org.smojol.common.vm.interpreter.ExecutionListeners;
 import org.smojol.common.vm.interpreter.FlowControl;
 import org.smojol.common.vm.strategy.UnresolvedReferenceDoNothingStrategy;
@@ -40,7 +38,7 @@ public class InterpreterMain {
 
         File source = new File("/Users/asgupta/code/smojol/smojol-test-code/test-exp.cbl");
 
-        PocOpsImpl ops = new PocOpsImpl(new CobolTreeVisualiserImpl(),
+        ComponentsBuilder ops = new ComponentsBuilder(new CobolTreeVisualiserImpl(),
                 FlowchartBuilderImpl::build, new CobolEntityNavigatorBuilderImpl(), new UnresolvedReferenceDoNothingStrategy(),
                 new DefaultFormat1DataStructureBuilder());
         ParsePipeline pipeline = new ParsePipeline(source,
