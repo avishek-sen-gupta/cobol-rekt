@@ -1,5 +1,6 @@
 package org.smojol.common.vm.expression;
 
+import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 import org.smojol.common.vm.structure.CobolDataStructure;
 
@@ -10,6 +11,7 @@ public class RelationExpression extends CobolExpression {
     private final CobolExpression rhs;
 
     public RelationExpression(ComparisonOperator relationalOperation, CobolExpression rhs) {
+        super(ImmutableList.of(rhs));
         this.relationalOperation = relationalOperation;
         this.rhs = rhs;
     }

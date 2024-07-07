@@ -18,6 +18,7 @@ import org.smojol.common.flowchart.FlowchartBuilder;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.vm.strategy.UnresolvedReferenceDoNothingStrategy;
 import org.smojol.common.vm.structure.CobolDataStructure;
+import org.smojol.common.vm.type.CobolDataType;
 import org.smojol.interpreter.navigation.CobolEntityNavigatorBuilderImpl;
 
 import java.io.File;
@@ -58,15 +59,17 @@ public class GraphExplorerMain {
         FlowNodeService nodeService = flowcharter.getChartNodeService();
 
         GraphSDK sdk = new GraphSDK(new Neo4JDriverBuilder().fromEnv());
-        root.accept(new Neo4JFlowVisitor(sdk), -1);
-        new Neo4JASTBuilder(sdk).build(root);
+//        root.accept(new Neo4JFlowVisitor(sdk), -1);
+        Neo4JASTWalker astWalker = new Neo4JASTWalker(sdk, dataStructures);
+//        astWalker.buildAST(root);
 
         Advisor advisor = new Advisor(OpenAICredentials.fromEnv());
-        Record neo4jProgramRoot = sdk.findNode(ImmutableList.of(AST_NODE), Map.of(TYPE, FlowNodeType.PROCEDURE_DIVISION_BODY.toString())).getFirst();
-        sdk.traverse(neo4jProgramRoot, new SummariseAction(advisor, sdk), CONTAINS);
+//        Record neo4jProgramRoot = sdk.findNode(ImmutableList.of(AST_NODE), Map.of(TYPE, FlowNodeType.PROCEDURE_DIVISION_BODY.toString())).getFirst();
+//        sdk.traverse(neo4jProgramRoot, new SummariseAction(advisor, sdk), CONTAINS);
 
-        dataStructures.accept(new Neo4JDataStructureVisitor(sdk), null, n -> false);
-        Record neo4jDataStructureSRoot = sdk.findNode(ImmutableList.of(DATA_STRUCTURE, "ROOT"), Map.of()).getFirst();
-        sdk.traverse(neo4jDataStructureSRoot, new DataStructureSummariseAction(advisor, sdk), CONTAINS);
+        dataStructures.accept(new Neo4JDataStructureVisitor(sdk), null, n -> n.getDataType() == CobolDataType.TABLE);
+        astWalker.buildDataDependencies(root);
+//        Record neo4jDataStructuresRoot = sdk.findNode(ImmutableList.of(DATA_STRUCTURE, "ROOT"), Map.of()).getFirst();
+//        sdk.traverse(neo4jDataStructuresRoot, new DataStructureSummariseAction(advisor, sdk), CONTAINS);
     }
 }

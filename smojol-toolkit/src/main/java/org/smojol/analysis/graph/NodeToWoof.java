@@ -5,13 +5,16 @@ import com.mojo.woof.GraphSDK;
 import com.mojo.woof.WoofNode;
 import org.neo4j.driver.Record;
 import org.smojol.common.flowchart.FlowNode;
+import org.smojol.common.vm.structure.CobolDataStructure;
 
 import java.util.Map;
+import java.util.UUID;
 
 import static com.mojo.woof.NodeLabels.CFG_NODE;
+import static com.mojo.woof.NodeLabels.DATA_STRUCTURE;
 import static com.mojo.woof.NodeProperties.*;
 
-public class FlowToWoof {
+public class NodeToWoof {
     public static Record newOrExisting(FlowNode node, GraphSDK sdk) {
         return sdk.newOrExisting(ImmutableList.of(), Map.of(FLOW_ID, node.id()), toWoofNode(node));
     }
@@ -21,5 +24,13 @@ public class FlowToWoof {
                 TEXT, node.getExecutionContext().getText(),
                 TYPE, node.type().toString()),
                 ImmutableList.of(CFG_NODE, node.type().toString()));
+    }
+
+    public static WoofNode dataStructureToWoof(CobolDataStructure data) {
+        return new WoofNode(Map.of(ID, UUID.randomUUID().toString(),
+                NAME, data.name(),
+                TYPE, data.getDataType().toString(),
+                LEVEL, data.getLevelNumber()
+        ), ImmutableList.of(DATA_STRUCTURE, data.getDataType().toString()));
     }
 }

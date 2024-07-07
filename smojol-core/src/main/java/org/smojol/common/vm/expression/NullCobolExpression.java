@@ -1,5 +1,6 @@
 package org.smojol.common.vm.expression;
 
+import com.google.common.collect.ImmutableList;
 import org.smojol.common.flowchart.ConsoleColors;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.common.vm.type.TypedRecord;
@@ -9,6 +10,7 @@ public class NullCobolExpression extends CobolExpression {
     private final String referenceID;
 
     public NullCobolExpression(String referenceID) {
+        super(ImmutableList.of());
         this.referenceID = referenceID;
     }
 

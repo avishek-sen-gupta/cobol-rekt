@@ -2,13 +2,9 @@ package org.smojol.common.vm.expression;
 
 import org.smojol.common.vm.structure.CobolDataStructure;
 
-public class SubtractionExpression extends CobolExpression {
-    private final CobolExpression lhs;
-    private final CobolExpression rhs;
-
+public class SubtractionExpression extends BinaryCobolOperatorExpression {
     public SubtractionExpression(CobolExpression lhs, CobolExpression rhs) {
-        this.lhs = lhs;
-        this.rhs = rhs;
+        super(lhs, rhs);
     }
 
     @Override

@@ -1,16 +1,11 @@
 package org.smojol.analysis.graph;
 
-import com.google.common.collect.ImmutableList;
 import com.mojo.woof.GraphSDK;
-import com.mojo.woof.WoofNode;
 import org.neo4j.driver.Record;
 import org.smojol.common.flowchart.*;
 
 import java.util.List;
-import java.util.Map;
 
-import static com.mojo.woof.NodeLabels.*;
-import static com.mojo.woof.NodeProperties.*;
 import static com.mojo.woof.NodeRelations.*;
 
 public class Neo4JFlowVisitor implements FlowNodeVisitor {
@@ -38,7 +33,7 @@ public class Neo4JFlowVisitor implements FlowNodeVisitor {
     }
 
     private Record newOrExisting(FlowNode node) {
-        return FlowToWoof.newOrExisting(node, sdk);
+        return NodeToWoof.newOrExisting(node, sdk);
     }
 
     @Override

@@ -2,13 +2,9 @@ package org.smojol.common.vm.expression;
 
 import org.smojol.common.vm.structure.CobolDataStructure;
 
-public class DivideExpression extends CobolExpression {
-    private final CobolExpression lhs;
-    private final CobolExpression rhs;
-
+public class DivideExpression extends BinaryCobolOperatorExpression {
     public DivideExpression(CobolExpression lhs, CobolExpression rhs) {
-        this.lhs = lhs;
-        this.rhs = rhs;
+        super(lhs, rhs);
     }
 
     @Override

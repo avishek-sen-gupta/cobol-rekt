@@ -1,5 +1,6 @@
 package org.smojol.common.vm.expression;
 
+import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 import org.smojol.common.vm.structure.CobolDataStructure;
 
@@ -9,6 +10,7 @@ public class SimpleConditionExpression extends CobolExpression {
     @Getter private boolean isStandalone = false;
 
     public SimpleConditionExpression(CobolExpression lhs, CobolExpression comparison) {
+        super(ImmutableList.of(lhs, comparison));
         this.lhs = lhs;
         this.comparison = (RelationExpression) comparison;
     }

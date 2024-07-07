@@ -17,7 +17,7 @@ public class DetachedDataStructure extends CobolDataStructure {
     private final TypedRecord value;
 
     public DetachedDataStructure(TypedRecord value) {
-        super("detached", -1, CobolDataType.DETACHED);
+        super(value.toString(), -1, CobolDataType.DETACHED);
         this.value = value;
     }
 
@@ -28,7 +28,7 @@ public class DetachedDataStructure extends CobolDataStructure {
 
     @Override
     public String name() {
-        return "";
+        return value.toString();
     }
 
     @Override

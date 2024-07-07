@@ -1,5 +1,6 @@
 package org.smojol.common.vm.expression;
 
+import com.google.common.collect.ImmutableList;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.common.vm.type.TypedRecord;
 
@@ -9,6 +10,7 @@ public class PrimitiveCobolExpression extends CobolExpression {
     private final TypedRecord value;
 
     public PrimitiveCobolExpression(TypedRecord value) {
+        super(ImmutableList.of());
         this.value = value;
     }
 
@@ -17,6 +19,7 @@ public class PrimitiveCobolExpression extends CobolExpression {
     }
 
     public PrimitiveCobolExpression(CobolExpression value) {
+        super(ImmutableList.of());
         this.value = unwrapped(value);
     }
 
