@@ -21,7 +21,7 @@ This is an evolving toolkit of capabilities helpful for reverse engineering lega
 
 Some reverse engineering are listed below. Descriptions of the capabilities which support these use cases are provided in later sections.
 
-- The parse Tree can be fed to a Graph DB for consumption by an LLM through agents to answer questions about the codebase
+- The Parse Tree can be fed to a Graph DB for consumption by an LLM through agents to answer questions about the codebase
 - Static analysis of the parse tree to reveal important operations (database operations, variable dependencies)
 - The interpreter can be used to trace flows to experiment with different conditions
 - Trace variable impact analysis (Which variables are affected by which in a particular run)
@@ -70,7 +70,7 @@ The following diagram shows the AST, the Control Flow Graph, and the data struct
 
 This capability connects records which modify other records, with a ```MODIFIES``` relation. The dependencies traced include variables which are used in expressions, as well as free-standing literals. Below is an example of a set of dependencies from a program with a fairly large data model.
 
-![ast-cfg-structs-graph](documentation/record-dependencies-graph.png)
+![ast-cfg-structs-graph](documentation/record-dependencies-graph2.png)
 
 ## SMOJOL (SMol Java-powered CobOL) Interpreter
 
