@@ -17,7 +17,7 @@ import java.util.List;
 @Getter
 public class DivideFlowNode extends CobolFlowNode {
     private CobolParser.DivisorContext divisor;
-    private List<CobolParser.DivideIntoContext> dividend;
+    private List<CobolParser.DivideIntoContext> dividends;
 
     public DivideFlowNode(ParseTree parseTree, FlowNode scope, FlowNodeService nodeService, StackFrames stackFrames) {
         super(parseTree, scope, nodeService, stackFrames);
@@ -27,7 +27,7 @@ public class DivideFlowNode extends CobolFlowNode {
     public void buildInternalFlow() {
         CobolParser.DivideStatementContext divideStatement = new SyntaxIdentity<CobolParser.DivideStatementContext>(executionContext).get();
         divisor = divideStatement.divisor();
-        dividend = divideStatement.divideIntoStatement().divideInto();
+        dividends = divideStatement.divideIntoStatement().divideInto();
         super.buildInternalFlow();
     }
 

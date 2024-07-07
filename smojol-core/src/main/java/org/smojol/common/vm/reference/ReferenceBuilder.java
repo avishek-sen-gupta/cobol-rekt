@@ -16,30 +16,25 @@ public class ReferenceBuilder {
 
     private TypedRecord typedValue(CobolParser.MoveToSendingAreaContext from) {
         String v = new LiteralResolver().resolvedLiteral(from.literal());
-//        if (v instanceof Double) return TypedRecord.typedNumber((Double) v);
         return TypedRecord.typedString(v.toString());
     }
 
     public CobolReference getReference(CobolParser.AddFromContext from, CobolDataStructure dataStructure) {
-//        if (from.generalIdentifier() != null) return new VariableCobolReference(from.generalIdentifier().getText(), dataStructure);
         if (from.generalIdentifier() != null) return getReference(from.generalIdentifier(), dataStructure);
         return new PrimitiveReference(TypedRecord.typedNumber(from.literal().getText()));
     }
 
     public CobolReference getReference(CobolParser.SubtractSubtrahendContext rhs, CobolDataStructure dataStructure) {
-//        if (rhs.generalIdentifier() != null) return new VariableCobolReference(rhs.generalIdentifier().getText(), dataStructure);
         if (rhs.generalIdentifier() != null) return getReference(rhs.generalIdentifier(), dataStructure);
         return new PrimitiveReference(TypedRecord.typedNumber(rhs.literal().getText()));
     }
 
     public CobolReference getReference(CobolParser.MultiplyLhsContext lhs, CobolDataStructure dataStructure) {
-//        if (lhs.generalIdentifier() != null) return new VariableCobolReference(lhs.generalIdentifier().getText(), dataStructure);
         if (lhs.generalIdentifier() != null) return getReference(lhs.generalIdentifier(), dataStructure);
         return new PrimitiveReference(TypedRecord.typedNumber(lhs.literal().getText()));
     }
 
     public CobolReference getReference(CobolParser.DivisorContext divisor, CobolDataStructure dataStructure) {
-//        if (divisor.generalIdentifier() != null) return new VariableCobolReference(divisor.generalIdentifier().getText(), dataStructure);
         if (divisor.generalIdentifier() != null) return getReference(divisor.generalIdentifier(), dataStructure);
         return new PrimitiveReference(TypedRecord.typedNumber(divisor.literal().getText()));
     }
@@ -63,6 +58,10 @@ public class ReferenceBuilder {
     public CobolDataStructure resolve(CobolParser.GeneralIdentifierContext to, CobolDataStructure data) {
         CobolParser.QualifiedDataNameContext qualifiedDataNameContext = to.qualifiedDataName();
         return resolve(qualifiedDataNameContext, data);
+    }
+
+    public CobolReference getShallowReference(CobolParser.QualifiedDataNameContext nameContext, CobolDataStructure data) {
+        return new VariableCobolReference(data.reference(nameContext.variableUsageName().getText()));
     }
 
     private static CobolDataStructure resolve(CobolParser.QualifiedDataNameContext qualifiedDataNameContext, CobolDataStructure data) {

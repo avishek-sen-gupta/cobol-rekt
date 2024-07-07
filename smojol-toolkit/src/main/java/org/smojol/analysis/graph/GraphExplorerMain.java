@@ -20,6 +20,8 @@ import org.smojol.common.vm.strategy.UnresolvedReferenceDoNothingStrategy;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.common.vm.type.CobolDataType;
 import org.smojol.interpreter.navigation.CobolEntityNavigatorBuilderImpl;
+import org.smojol.interpreter.structure.DefaultFormat1DataStructureBuilder;
+import org.smojol.interpreter.structure.OccursIgnoringFormat1DataStructureBuilder;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,7 +43,8 @@ public class GraphExplorerMain {
         File source = new File("/Users/asgupta/code/smojol/smojol-test-code/test-exp.cbl");
 
         PocOpsImpl ops = new PocOpsImpl(new CobolTreeVisualiserImpl(),
-                FlowchartBuilderImpl::build, new CobolEntityNavigatorBuilderImpl(), new UnresolvedReferenceDoNothingStrategy());
+                FlowchartBuilderImpl::build, new CobolEntityNavigatorBuilderImpl(), new UnresolvedReferenceDoNothingStrategy(),
+                new OccursIgnoringFormat1DataStructureBuilder());
         ParsePipeline pipeline = new ParsePipeline(source,
                 copyBookPaths,
                 dialectJarPath,
@@ -59,17 +62,28 @@ public class GraphExplorerMain {
         FlowNodeService nodeService = flowcharter.getChartNodeService();
 
         GraphSDK sdk = new GraphSDK(new Neo4JDriverBuilder().fromEnv());
-//        root.accept(new Neo4JFlowVisitor(sdk), -1);
+
+        // Builds Control Flow Graph
+        root.accept(new Neo4JFlowVisitor(sdk), -1);
         Neo4JASTWalker astWalker = new Neo4JASTWalker(sdk, dataStructures);
-//        astWalker.buildAST(root);
+
+        // Builds AST
+        astWalker.buildAST(root);
 
         Advisor advisor = new Advisor(OpenAICredentials.fromEnv());
-//        Record neo4jProgramRoot = sdk.findNode(ImmutableList.of(AST_NODE), Map.of(TYPE, FlowNodeType.PROCEDURE_DIVISION_BODY.toString())).getFirst();
-//        sdk.traverse(neo4jProgramRoot, new SummariseAction(advisor, sdk), CONTAINS);
+        Record neo4jProgramRoot = sdk.findNode(ImmutableList.of(AST_NODE), Map.of(TYPE, FlowNodeType.PROCEDURE_DIVISION_BODY.toString())).getFirst();
 
-        dataStructures.accept(new Neo4JDataStructureVisitor(sdk), null, n -> n.getDataType() == CobolDataType.TABLE);
+        // Summarises AST bottom-up
+        sdk.traverse(neo4jProgramRoot, new SummariseAction(advisor, sdk), CONTAINS);
+
+        // Builds data structures
+        dataStructures.accept(new Neo4JDataStructureVisitor(sdk), null, n -> false);
+
+        // Builds data dependencies
         astWalker.buildDataDependencies(root);
-//        Record neo4jDataStructuresRoot = sdk.findNode(ImmutableList.of(DATA_STRUCTURE, "ROOT"), Map.of()).getFirst();
-//        sdk.traverse(neo4jDataStructuresRoot, new DataStructureSummariseAction(advisor, sdk), CONTAINS);
+        Record neo4jDataStructuresRoot = sdk.findNode(ImmutableList.of(DATA_STRUCTURE, "ROOT"), Map.of()).getFirst();
+
+        // Summarises data structures
+        sdk.traverse(neo4jDataStructuresRoot, new DataStructureSummariseAction(advisor, sdk), CONTAINS);
     }
 }

@@ -11,6 +11,7 @@ import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.interpreter.FlowchartGenerationStrategy;
 import org.smojol.interpreter.navigation.CobolEntityNavigatorBuilderImpl;
 import org.smojol.common.vm.strategy.UnresolvedReferenceThrowStrategy;
+import org.smojol.interpreter.structure.DefaultFormat1DataStructureBuilder;
 
 import java.io.File;
 import java.io.IOException;
@@ -53,7 +54,8 @@ public class FlowchartTasks {
         Files.createDirectories(imageOutputDir);
 
         PocOpsImpl ops = new PocOpsImpl(new CobolTreeVisualiserImpl(),
-                FlowchartBuilderImpl::build, new CobolEntityNavigatorBuilderImpl(), new UnresolvedReferenceThrowStrategy());
+                FlowchartBuilderImpl::build, new CobolEntityNavigatorBuilderImpl(), new UnresolvedReferenceThrowStrategy(),
+                new DefaultFormat1DataStructureBuilder());
         ParsePipeline pipeline = new ParsePipeline(source,
                 copyBookPaths,
                 dialectJarPath,

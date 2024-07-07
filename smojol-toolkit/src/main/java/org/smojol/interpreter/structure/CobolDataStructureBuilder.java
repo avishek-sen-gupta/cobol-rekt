@@ -4,10 +4,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.vm.strategy.UnresolvedReferenceStrategy;
-import org.smojol.common.vm.structure.CobolDataStructure;
-import org.smojol.common.vm.structure.ConditionalDataStructure;
-import org.smojol.common.vm.structure.DataStructureBuilder;
-import org.smojol.common.vm.structure.Format1DataStructure;
+import org.smojol.common.vm.structure.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,10 +14,12 @@ public class CobolDataStructureBuilder implements DataStructureBuilder {
     private final CobolEntityNavigator navigator;
     private final UnresolvedReferenceStrategy unresolvedReferenceStrategy;
     private CobolDataStructure zerothStructure;
+    private final Format1DataStructureBuilder format1DataStructureBuilder;
 
-    public CobolDataStructureBuilder(CobolEntityNavigator navigator, UnresolvedReferenceStrategy unresolvedReferenceStrategy) {
+    public CobolDataStructureBuilder(CobolEntityNavigator navigator, UnresolvedReferenceStrategy unresolvedReferenceStrategy, Format1DataStructureBuilder format1DataStructureBuilder) {
         this.navigator = navigator;
         this.unresolvedReferenceStrategy = unresolvedReferenceStrategy;
+        this.format1DataStructureBuilder = format1DataStructureBuilder;
     }
 
     @Override
@@ -99,11 +98,7 @@ public class CobolDataStructureBuilder implements DataStructureBuilder {
         }
     }
 
-    private static Format1DataStructure format1(CobolParser.DataDescriptionEntryFormat1Context format1Structure, UnresolvedReferenceStrategy strategy) {
-        if (format1Structure.dataOccursClause().isEmpty()) {
-            return new Format1DataStructure(format1Structure, strategy);
-        }
-        int numOccurrences = Integer.parseInt(format1Structure.dataOccursClause().getFirst().integerLiteral().getText());
-        return new TableDataStructure(format1Structure, numOccurrences, strategy);
+    private CobolDataStructure format1(CobolParser.DataDescriptionEntryFormat1Context format1Context, UnresolvedReferenceStrategy unresolvedReferenceStrategy) {
+        return format1DataStructureBuilder.build(format1Context, unresolvedReferenceStrategy);
     }
 }

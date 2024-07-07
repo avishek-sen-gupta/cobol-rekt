@@ -25,6 +25,7 @@ import org.smojol.common.vm.interpreter.ExecutionListeners;
 import org.smojol.common.vm.interpreter.FlowControl;
 import org.smojol.common.vm.strategy.UnresolvedReferenceDoNothingStrategy;
 import org.smojol.common.vm.structure.CobolDataStructure;
+import org.smojol.interpreter.structure.DefaultFormat1DataStructureBuilder;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,7 +41,8 @@ public class InterpreterMain {
         File source = new File("/Users/asgupta/code/smojol/smojol-test-code/test-exp.cbl");
 
         PocOpsImpl ops = new PocOpsImpl(new CobolTreeVisualiserImpl(),
-                FlowchartBuilderImpl::build, new CobolEntityNavigatorBuilderImpl(), new UnresolvedReferenceDoNothingStrategy());
+                FlowchartBuilderImpl::build, new CobolEntityNavigatorBuilderImpl(), new UnresolvedReferenceDoNothingStrategy(),
+                new DefaultFormat1DataStructureBuilder());
         ParsePipeline pipeline = new ParsePipeline(source,
                 copyBookPaths,
                 dialectJarPath,

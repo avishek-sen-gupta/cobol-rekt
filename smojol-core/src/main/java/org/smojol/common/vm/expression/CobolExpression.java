@@ -78,4 +78,9 @@ public abstract class CobolExpression {
     protected CobolExpression not(CobolDataStructure dataStructures) {
         return evaluate(dataStructures).not(dataStructures);
     }
+
+    public void accept(CobolExpressionChildVisitor visitor) {
+        visitor.visit(this);
+        children.forEach(child -> child.accept(visitor));
+    }
 }
