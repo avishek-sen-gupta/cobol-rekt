@@ -2,6 +2,7 @@ package org.smojol.interpreter.interpreter;
 
 import com.mojo.woof.GraphSDK;
 import com.mojo.woof.NodeRelations;
+import com.mojo.woof.WoofNode;
 import org.neo4j.driver.Record;
 import org.smojol.analysis.graph.NodeSpecBuilder;
 import org.smojol.analysis.graph.NodeToWoof;
@@ -37,9 +38,11 @@ public class Neo4JExecutionTracer implements ExecutionListener {
 
     @Override
     public void notifyTermination() {
-        Record current = sdk.createNode(NodeToWoof.toWoofTraceNode(path.getFirst(), qualifier));
+        Record current = sdk.createNode(new WoofNode(qualifier.newTraceNode(path.getFirst())));
+//        Record current = sdk.createNode(NodeToWoof.toWoofTraceNode(path.getFirst(), qualifier));
         for (int i = 0; i <= path.size() - 2; i++) {
-            Record next = sdk.createNode(NodeToWoof.toWoofTraceNode(path.get(i + 1), qualifier));
+//            Record next = sdk.createNode(NodeToWoof.toWoofTraceNode(path.get(i + 1), qualifier));
+            Record next = sdk.createNode(new WoofNode(qualifier.newTraceNode(path.get(i + 1))));
             sdk.connect(current, next, NodeRelations.FOLLOWED_BY);
             current = next;
         }

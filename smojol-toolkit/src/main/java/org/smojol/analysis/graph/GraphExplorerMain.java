@@ -59,7 +59,7 @@ public class GraphExplorerMain {
         GraphSDK sdk = new GraphSDK(new Neo4JDriverBuilder().fromEnv());
 
         // Builds Control Flow Graph
-        NodeSpecBuilder qualifier = new NodeSpecBuilder(null);
+        NodeSpecBuilder qualifier = new NodeSpecBuilder(new NamespaceQualifier("NEW-CODE"));
         root.accept(new Neo4JFlowCFGVisitor(sdk, qualifier), -1);
         Neo4JASTWalker astWalker = new Neo4JASTWalker(sdk, dataStructures, qualifier);
 

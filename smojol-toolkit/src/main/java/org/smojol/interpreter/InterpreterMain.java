@@ -5,6 +5,7 @@ import com.mojo.woof.GraphSDK;
 import com.mojo.woof.Neo4JDriverBuilder;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.smojol.analysis.LanguageDialect;
+import org.smojol.analysis.graph.NamespaceQualifier;
 import org.smojol.analysis.graph.NodeSpecBuilder;
 import org.smojol.common.flowchart.FlowNode;
 import org.smojol.common.flowchart.FlowNodeService;
@@ -67,7 +68,7 @@ public class InterpreterMain {
 //        bp.addBreakpoint(n -> n.getClass() == AddChartNode.class && n.originalText().contains("SOMETEXT"));
         bp.addBreakpoint(n -> n.getClass() == DisplayFlowNode.class && n.originalText().contains("SOMETEXT"));
         GraphSDK sdk = new GraphSDK(new Neo4JDriverBuilder().fromEnv());
-        ExecutionListeners executionListeners = new ExecutionListeners(ImmutableList.of(new RunLogger(), new Neo4JExecutionTracer(sdk, new NodeSpecBuilder(null))));
+        ExecutionListeners executionListeners = new ExecutionListeners(ImmutableList.of(new RunLogger(), new Neo4JExecutionTracer(sdk, new NodeSpecBuilder(new NamespaceQualifier("GLOBAL")))));
         root.acceptInterpreter(CobolInterpreterFactory.interpreter(CobolConditionResolver.EVALUATING_RESOLVER, dataStructures, ImmutableList.of(), executionListeners, bp), FlowControl::CONTINUE);
     }
 }
