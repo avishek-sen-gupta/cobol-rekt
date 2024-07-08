@@ -11,6 +11,7 @@ This is an evolving toolkit of capabilities helpful for reverse engineering lega
 - Injecting execution traces from the SMOJOL interpreter into Neo4J
 - Injecting record dependency connections (MOVE, COMPUTE, etc.) into Neo4J
 - Integration with OpenAI GPT to summarise nodes using bottom-up node traversal
+- Support for namespaces to allow unique addressing of (possibly same) graphs
 
 ## Dependencies
 
