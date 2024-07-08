@@ -8,11 +8,13 @@ import java.util.List;
 
 import static com.mojo.woof.NodeRelations.*;
 
-public class Neo4JFlowVisitor implements FlowNodeVisitor {
+public class Neo4JFlowCFGVisitor implements FlowNodeVisitor {
     private final GraphSDK sdk;
+    private final NodeSpecBuilder qualifier;
 
-    public Neo4JFlowVisitor(GraphSDK sdk) {
+    public Neo4JFlowCFGVisitor(GraphSDK sdk, NodeSpecBuilder qualifier) {
         this.sdk = sdk;
+        this.qualifier = qualifier;
     }
 
     @Override
@@ -33,7 +35,7 @@ public class Neo4JFlowVisitor implements FlowNodeVisitor {
     }
 
     private Record newOrExisting(FlowNode node) {
-        return NodeToWoof.newOrExisting(node, sdk);
+        return NodeToWoof.newOrExistingCFGNode(node, sdk, qualifier);
     }
 
     @Override

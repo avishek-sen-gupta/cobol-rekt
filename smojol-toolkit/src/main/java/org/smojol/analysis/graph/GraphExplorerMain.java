@@ -1,6 +1,5 @@
 package org.smojol.analysis.graph;
 
-import com.google.common.collect.ImmutableList;
 import com.mojo.woof.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.neo4j.driver.Record;
@@ -25,8 +24,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
-import static com.mojo.woof.NodeLabels.AST_NODE;
-import static com.mojo.woof.NodeLabels.DATA_STRUCTURE;
 import static com.mojo.woof.NodeProperties.TYPE;
 import static com.mojo.woof.NodeRelations.CONTAINS;
 
@@ -62,24 +59,25 @@ public class GraphExplorerMain {
         GraphSDK sdk = new GraphSDK(new Neo4JDriverBuilder().fromEnv());
 
         // Builds Control Flow Graph
-        root.accept(new Neo4JFlowVisitor(sdk), -1);
-        Neo4JASTWalker astWalker = new Neo4JASTWalker(sdk, dataStructures);
+        NodeSpecBuilder qualifier = new NodeSpecBuilder(null);
+        root.accept(new Neo4JFlowCFGVisitor(sdk, qualifier), -1);
+        Neo4JASTWalker astWalker = new Neo4JASTWalker(sdk, dataStructures, qualifier);
 
         // Builds AST
         astWalker.buildAST(root);
 
         Advisor advisor = new Advisor(OpenAICredentials.fromEnv());
-        Record neo4jProgramRoot = sdk.findNode(ImmutableList.of(AST_NODE), Map.of(TYPE, FlowNodeType.PROCEDURE_DIVISION_BODY.toString())).getFirst();
+        Record neo4jProgramRoot = sdk.findNode(qualifier.astNodeCriteria(Map.of(TYPE, FlowNodeType.PROCEDURE_DIVISION_BODY.toString()))).getFirst();
 
         // Summarises AST bottom-up
         sdk.traverse(neo4jProgramRoot, new SummariseAction(advisor, sdk), CONTAINS);
 
         // Builds data structures
-        dataStructures.accept(new Neo4JDataStructureVisitor(sdk), null, n -> false);
+        dataStructures.accept(new Neo4JDataStructureVisitor(sdk, qualifier), null, n -> false);
 
         // Builds data dependencies
         astWalker.buildDataDependencies(root);
-        Record neo4jDataStructuresRoot = sdk.findNode(ImmutableList.of(DATA_STRUCTURE, "ROOT"), Map.of()).getFirst();
+        Record neo4jDataStructuresRoot = sdk.findNode(qualifier.dataNodeSearchCriteria(Map.of(TYPE, "ROOT"))).getFirst();
 
         // Summarises data structures
         sdk.traverse(neo4jDataStructuresRoot, new DataStructureSummariseAction(advisor, sdk), CONTAINS);

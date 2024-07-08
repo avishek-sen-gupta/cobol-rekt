@@ -14,10 +14,10 @@ public class FlowNodeASTTraversal<T> {
         return build(tree, make, n -> false);
     }
 
-    public T internalBuild(FlowNode tree, T parent, BiFunction<FlowNode, T, T> make, Function<FlowNode, Boolean> stopRecurseCondition) {
-        T node = make.apply(tree, parent);
+    public T internalBuild(FlowNode tree, T parent, BiFunction<FlowNode, T, T> nodeAction, Function<FlowNode, Boolean> stopRecurseCondition) {
+        T node = nodeAction.apply(tree, parent);
         if (stopRecurseCondition.apply(tree)) return node;
-        tree.astChildren().forEach(c -> internalBuild(c, node, make, stopRecurseCondition));
+        tree.astChildren().forEach(c -> internalBuild(c, node, nodeAction, stopRecurseCondition));
         return node;
     }
 }
