@@ -22,7 +22,7 @@ public class Neo4JFlowCFGVisitor implements FlowNodeVisitor {
         outgoingNodes.forEach(o -> {
             Record sourceRecord = newOrExisting(node);
             Record destinationRecord = newOrExisting(o);
-            sdk.connect(sourceRecord, destinationRecord, FOLLOWED_BY);
+            sdk.isFollowedBy(sourceRecord, destinationRecord);
         });
     }
 
@@ -31,7 +31,7 @@ public class Neo4JFlowCFGVisitor implements FlowNodeVisitor {
         Record parentRecord = newOrExisting(parent);
         Record childRecord = newOrExisting(internalTreeRoot);
 
-        sdk.connect(parentRecord, childRecord, STARTS_WITH);
+        sdk.startsWith(parentRecord, childRecord);
     }
 
     private Record newOrExisting(FlowNode node) {
@@ -47,7 +47,7 @@ public class Neo4JFlowCFGVisitor implements FlowNodeVisitor {
     public void visitControlTransfer(FlowNode from, FlowNode to, VisitContext visitContext) {
         Record sourceRecord = newOrExisting(from);
         Record destinationRecord = newOrExisting(to);
-        sdk.connect(sourceRecord, destinationRecord, JUMPS_TO);
+        sdk.jumpsTo(sourceRecord, destinationRecord);
     }
     @Override
     public FlowNodeVisitor newScope(FlowNode enclosingScope) {

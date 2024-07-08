@@ -44,7 +44,7 @@ public class Neo4JASTWalker {
         WoofNode node = new WoofNode(qualifier.newASTNode(tree));
         Record record = sdk.createNode(node);
         if (parent == null) return record;
-        sdk.connect(parent, record, CONTAINS);
+        sdk.contains(parent, record);
         return record;
     }
 
@@ -99,10 +99,9 @@ public class Neo4JASTWalker {
 
     private void connect(List<CobolDataStructure> froms, List<CobolDataStructure> tos) {
         tos.forEach(to -> froms.forEach(from -> {
-//            Record n4jTo = sdk.findNode(ImmutableList.of(NodeLabels.DATA_STRUCTURE), Map.of(NAME, to.name())).getFirst();
             Record n4jTo = sdk.findNode(qualifier.dataNodeSearchSpec(to)).getFirst();
             Record n4jFrom = sdk.newOrExisting(qualifier.dataNodeSearchSpec(from), NodeToWoof.dataStructureToWoof(from, qualifier));
-            sdk.connect(n4jFrom, n4jTo, MODIFIES);
+            sdk.modifies(n4jFrom, n4jTo);
         }));
     }
 

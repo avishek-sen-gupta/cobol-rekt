@@ -22,10 +22,8 @@ public class Neo4JDataStructureVisitor implements DataStructureVisitor {
         WoofNode node = dataStructureToWoof(data, nodeQualifier);
         Record record = sdk.createNode(node);
         if (parent == null) return data;
-
-//        Record parentNode = sdk.findNode(ImmutableList.of(DATA_STRUCTURE), Map.of(NAME, parent.name())).getFirst();
         Record parentNode = sdk.findNode(nodeQualifier.dataNodeSearchSpec(parent)).getFirst();
-        sdk.connect(parentNode, record, CONTAINS);
+        sdk.contains(parentNode, record);
         return data;
     }
 }

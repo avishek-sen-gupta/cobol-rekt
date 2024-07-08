@@ -43,7 +43,7 @@ public class Neo4JExecutionTracer implements ExecutionListener {
         for (int i = 0; i <= path.size() - 2; i++) {
 //            Record next = sdk.createNode(NodeToWoof.toWoofTraceNode(path.get(i + 1), qualifier));
             Record next = sdk.createNode(new WoofNode(qualifier.newTraceNode(path.get(i + 1))));
-            sdk.connect(current, next, NodeRelations.FOLLOWED_BY);
+            sdk.isFollowedBy(current, next);
             current = next;
         }
     }
