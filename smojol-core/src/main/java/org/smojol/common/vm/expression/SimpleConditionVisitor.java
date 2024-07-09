@@ -7,7 +7,7 @@ import org.smojol.common.vm.structure.ConditionalDataStructure;
 import org.smojol.common.vm.structure.NullDataStructure;
 import org.smojol.common.vm.exception.UnresolvedVariableReferenceException;
 import org.smojol.common.vm.reference.CobolReference;
-import org.smojol.common.vm.reference.ReferenceBuilder;
+import org.smojol.common.vm.reference.DeepReferenceBuilder;
 
 public class SimpleConditionVisitor extends CobolExpressionVisitor {
     private final CobolExpression mostRecentLhs;
@@ -30,7 +30,7 @@ public class SimpleConditionVisitor extends CobolExpressionVisitor {
         lhs = arithmeticExpressionVisitor.getExpression();
         if (lhs.getClass() == VariableExpression.class) {
             CobolParser.QualifiedDataNameContext qualifiedDataNameContext = ((VariableExpression) lhs).getQualifiedDataNameContext();
-            CobolReference reference = new ReferenceBuilder().getReference(qualifiedDataNameContext, dataRoot);
+            CobolReference reference = new DeepReferenceBuilder().getReference(qualifiedDataNameContext, dataRoot);
             String variableName = qualifiedDataNameContext.getText();
 
             if (reference.resolve().getClass() == NullDataStructure.class) throw new UnresolvedVariableReferenceException(variableName);

@@ -4,7 +4,7 @@ import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.ast.DivideFlowNode;
 import org.smojol.common.vm.expression.ArithmeticExpressionVisitor;
 import org.smojol.common.vm.structure.CobolDataStructure;
-import org.smojol.common.vm.reference.ReferenceBuilder;
+import org.smojol.common.vm.reference.DeepReferenceBuilder;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ public class DivideOperation {
         ArithmeticExpressionVisitor visitor = new ArithmeticExpressionVisitor();
         CobolParser.DivisorContext divisor = divide.getDivisor();
         List<CobolParser.DivideIntoContext> dividends = divide.getDividends();
-        ReferenceBuilder builder = new ReferenceBuilder();
+        DeepReferenceBuilder builder = new DeepReferenceBuilder();
         dividends.forEach(dividend -> builder.getReference(dividend.generalIdentifier(), cobolDataStructure).resolve().divide(builder.getReference(divisor, cobolDataStructure)));
 //        dividends.forEach(dividend -> cobolDataStructure.divide(dividend.generalIdentifier().getText(), builder.getReference(divisor, cobolDataStructure)));
     }

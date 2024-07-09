@@ -4,7 +4,7 @@ import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.ast.MultiplyFlowNode;
 import org.smojol.common.vm.expression.ArithmeticExpressionVisitor;
 import org.smojol.common.vm.structure.CobolDataStructure;
-import org.smojol.common.vm.reference.ReferenceBuilder;
+import org.smojol.common.vm.reference.DeepReferenceBuilder;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ public class MultiplyOperation {
         ArithmeticExpressionVisitor visitor = new ArithmeticExpressionVisitor();
         CobolParser.MultiplyLhsContext lhs = multiply.getLhs();
         List<CobolParser.MultiplyRegularOperandContext> rhses = multiply.getRhs();
-        ReferenceBuilder builder = new ReferenceBuilder();
+        DeepReferenceBuilder builder = new DeepReferenceBuilder();
         rhses.forEach(rhs -> builder.getReference(rhs.generalIdentifier(), cobolDataStructure).resolve().divide(builder.getReference(lhs, cobolDataStructure)));
 //        rhses.forEach(rhs -> cobolDataStructure.multiply(rhs.generalIdentifier().getText(), builder.getReference(lhs, cobolDataStructure)));
     }

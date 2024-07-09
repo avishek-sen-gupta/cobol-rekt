@@ -8,7 +8,7 @@ import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.common.vm.type.LiteralResolver;
 import org.smojol.common.vm.type.TypedRecord;
 
-public class ReferenceBuilder {
+public class DeepReferenceBuilder {
     public CobolReference getReference(CobolParser.MoveToSendingAreaContext from, CobolDataStructure dataStructure) {
         if (from.generalIdentifier() != null) return getReference(from.generalIdentifier(), dataStructure);
         return new PrimitiveReference(typedValue(from));

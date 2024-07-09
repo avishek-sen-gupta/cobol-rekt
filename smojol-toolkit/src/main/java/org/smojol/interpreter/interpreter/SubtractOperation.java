@@ -4,7 +4,7 @@ import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.ast.SubtractFlowNode;
 import org.smojol.common.vm.expression.ArithmeticExpressionVisitor;
 import org.smojol.common.vm.structure.CobolDataStructure;
-import org.smojol.common.vm.reference.ReferenceBuilder;
+import org.smojol.common.vm.reference.DeepReferenceBuilder;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ public class SubtractOperation {
         ArithmeticExpressionVisitor visitor = new ArithmeticExpressionVisitor();
         List<CobolParser.SubtractMinuendContext> lhses = subtract.getLhs();
         List<CobolParser.SubtractSubtrahendContext> rhses = subtract.getRhs();
-        ReferenceBuilder builder = new ReferenceBuilder();
+        DeepReferenceBuilder builder = new DeepReferenceBuilder();
         lhses.forEach(lhs -> rhses.forEach(rhs -> builder.getReference(lhs, cobolDataStructure).resolve().subtract(builder.getReference(rhs, cobolDataStructure))));
 //        lhses.forEach(lhs -> rhses.forEach(rhs -> cobolDataStructure.subtract(lhs.generalIdentifier().getText(), builder.getReference(rhs, cobolDataStructure))));
     }
