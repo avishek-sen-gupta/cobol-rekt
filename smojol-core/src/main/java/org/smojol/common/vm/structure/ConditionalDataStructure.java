@@ -162,6 +162,11 @@ public class ConditionalDataStructure extends CobolDataStructure {
         return TypedRecord.FALSE;
     }
 
+    @Override
+    public CobolDataStructure cobolIndex(int index) {
+        throw new UnsupportedOperationException("Cannot index a conditional variable");
+    }
+
     private String resolve(CobolParser.DataValueIntervalFromContext dataValueIntervalFromContext) {
         CobolParser.LiteralContext literal = dataValueIntervalFromContext.literal();
         return new LiteralResolver().resolvedLiteral(literal);
@@ -170,6 +175,11 @@ public class ConditionalDataStructure extends CobolDataStructure {
     @Override
     protected void internalSet(TypedRecord r) {
         throw new UnsupportedOperationException("Cannot set value for a conditional variable");
+    }
+
+    @Override
+    protected AccessChain typeSpecificChain(String subRecordID, AccessChain chain) {
+        throw new UnsupportedOperationException("Cannot find chains in a conditional variable");
     }
 
     public List<CobolDataStructure> matches(String recordID) {

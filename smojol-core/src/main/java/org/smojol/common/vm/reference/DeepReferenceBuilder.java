@@ -4,9 +4,12 @@ import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.vm.expression.ArithmeticExpressionVisitor;
 import org.smojol.common.vm.expression.CobolExpression;
 import org.smojol.common.vm.expression.PrimitiveCobolExpression;
+import org.smojol.common.vm.structure.AccessChain;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.common.vm.type.LiteralResolver;
 import org.smojol.common.vm.type.TypedRecord;
+
+import java.util.List;
 
 public class DeepReferenceBuilder {
     public CobolReference getReference(CobolParser.MoveToSendingAreaContext from, CobolDataStructure dataStructure) {
@@ -67,12 +70,23 @@ public class DeepReferenceBuilder {
     private static CobolDataStructure resolve(CobolParser.QualifiedDataNameContext qualifiedDataNameContext, CobolDataStructure data) {
         CobolDataStructure reference = data.reference(qualifiedDataNameContext.variableUsageName().getText());
         if (qualifiedDataNameContext.tableCall() == null) return reference;
-        CobolParser.ArithmeticExpressionContext indexExpression = qualifiedDataNameContext.tableCall().arithmeticExpression().getFirst();
+
+        // TODO: Might precompute this
+        AccessChain chain = data.chain(qualifiedDataNameContext.variableUsageName().getText());
+        List<CobolParser.ArithmeticExpressionContext> indices = qualifiedDataNameContext.tableCall().arithmeticExpression();
+        List<Integer> resolvedIndices = indices.stream().map(index -> resolve(data, index)).toList();
+        List<Integer> fixedIndices = resolvedIndices.stream().map(i -> i == 0 ? 1 : i).toList();
+
+        CobolDataStructure struct = chain.run(fixedIndices);
+        return struct;
+    }
+
+    private static int resolve(CobolDataStructure data, CobolParser.ArithmeticExpressionContext index) {
         ArithmeticExpressionVisitor arithmeticExpressionVisitor = new ArithmeticExpressionVisitor();
-        indexExpression.accept(arithmeticExpressionVisitor);
+        index.accept(arithmeticExpressionVisitor);
         CobolExpression evaluatedIndex = arithmeticExpressionVisitor.getExpression().evaluate(data);
         int tableIndex = (int) evaluatedIndex.evalAsNumber(data);
-        return reference.index(tableIndex);
+        return tableIndex;
     }
 
     public CobolReference getReference(PrimitiveCobolExpression value) {

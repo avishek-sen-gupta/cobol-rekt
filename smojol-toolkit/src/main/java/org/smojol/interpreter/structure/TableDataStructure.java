@@ -6,13 +6,11 @@ import org.smojol.common.vm.memory.MemoryLayout;
 import org.smojol.common.vm.memory.MemoryRegion;
 import org.smojol.common.vm.memory.RangeMemoryAccess;
 import org.smojol.common.vm.strategy.UnresolvedReferenceStrategy;
-import org.smojol.common.vm.structure.CobolDataStructure;
-import org.smojol.common.vm.structure.ConditionalDataStructure;
-import org.smojol.common.vm.structure.Format1DataStructure;
-import org.smojol.common.vm.structure.NamingScheme;
+import org.smojol.common.vm.structure.*;
 import org.smojol.common.vm.type.CobolDataType;
 import org.smojol.common.vm.type.GroupDataTypeSpec;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.IntStream;
@@ -26,42 +24,63 @@ public class TableDataStructure extends Format1DataStructure {
         super(structure, strategy, CobolDataType.TABLE);
         elementType = cobolDataType(structure);
         this.numElements = numElements;
+        this.isComposite = true;
     }
 
     // Copy constructor
-    public TableDataStructure(Function<CobolParser.DataDescriptionEntryFormat1Context, String> namingScheme, CobolParser.DataDescriptionEntryFormat1Context dataDescription, List<CobolDataStructure> copy, int level, CobolDataStructure parent, boolean isComposite, UnresolvedReferenceStrategy unresolvedReferenceStrategy, List<ConditionalDataStructure> conditions, int numElements) {
-        super(namingScheme, dataDescription, copy, level, parent, isComposite, unresolvedReferenceStrategy, conditions, CobolDataType.TABLE);
+    public TableDataStructure(Function<CobolParser.DataDescriptionEntryFormat1Context, String> namingScheme, CobolParser.DataDescriptionEntryFormat1Context dataDescription, List<CobolDataStructure> childStructures, int level, CobolDataStructure parent, boolean isComposite, UnresolvedReferenceStrategy unresolvedReferenceStrategy, List<ConditionalDataStructure> conditions, int numElements) {
+        super(namingScheme, dataDescription, childStructures, level, parent, isComposite, unresolvedReferenceStrategy, conditions, CobolDataType.TABLE);
         this.numElements = numElements;
+        this.isComposite = true;
     }
 
     @Override
     public void expandTables() {
         if (!isComposite) {
             structures = IntStream.range(0, numElements).mapToObj(i -> (CobolDataStructure) new Format1DataStructure(NamingScheme.INDEXED.apply(i), dataDescription, copy(structures), level(), this, isComposite, unresolvedReferenceStrategy, conditions, elementType)).toList();
+            structures = IntStream.range(0, numElements).mapToObj(i ->
+            {
+                Format1DataStructure format1DataStructure = new Format1DataStructure(NamingScheme.INDEXED.apply(i), dataDescription, copy(structures), level(), this, isComposite, unresolvedReferenceStrategy, conditions, elementType);
+                return (CobolDataStructure) format1DataStructure;
+//                return (CobolDataStructure) new TableDataStructure(NamingScheme.INDEXED.apply(i), dataDescription, ImmutableList.of(format1DataStructure), level(), this, isComposite, unresolvedReferenceStrategy, conditions, numElements);
+            }).toList();
         } else {
             structures.forEach(CobolDataStructure::expandTables);
-            structures = IntStream.range(0, numElements).mapToObj(i -> copy(NamingScheme.INDEXED.apply(i))).toList();
-//            List<List<CobolDataStructure>> childGroups = IntStream.range(0, numElements).mapToObj(i -> structures.stream().map(cobolDataStructure -> cobolDataStructure.copy(NamingScheme.INDEXED)).toList()).toList();
-//            structures = childGroups.stream().flatMap(List::stream).toList();
+//            structures = IntStream.range(0, numElements).mapToObj(i -> copy(NamingScheme.INDEXED.apply(i))).toList();
+            structures = IntStream.range(0, numElements).mapToObj(i -> {
+                List<CobolDataStructure> copiedStructures = structures.stream().map(s -> s.copy(NamingScheme.IDENTITY)).toList();
+                return (CobolDataStructure) new Format1DataStructure(NamingScheme.IDENTITY, dataDescription, copiedStructures, level(), this, isComposite, unresolvedReferenceStrategy, conditions, elementType);
+            }).toList();
         }
     }
 
     @Override
     public CobolDataStructure copy(Function<CobolParser.DataDescriptionEntryFormat1Context, String> namingScheme) {
-        return new TableDataStructure(namingScheme, dataDescription, copy(structures), level(), parent, isComposite, unresolvedReferenceStrategy, conditions, numElements);
+        return new TableDataStructure(namingScheme, dataDescription, copy(structures), level(), this, isComposite, unresolvedReferenceStrategy, conditions, numElements);
+//        return new Format1DataStructure(namingScheme, dataDescription, copy(structures), level(), this, isComposite, unresolvedReferenceStrategy, conditions, elementType);
     }
 
     @Override
-    public CobolDataStructure index(int index) {
-        return structures.get(index);
+    public CobolDataStructure cobolIndex(int index) {
+        return index(index - 1);
+    }
+
+    @Override
+    protected List<CobolDataStructure> primaryDefinitions() {
+        return structures;
     }
 
     @Override
     public void calculateMemoryRequirements() {
         structures.forEach(CobolDataStructure::calculateMemoryRequirements);
-        Integer groupSize = primaryDefinitions().stream().map(CobolDataStructure::size).reduce(0, Integer::sum);
+        Integer groupSize = structures.stream().map(CobolDataStructure::size).reduce(0, Integer::sum);
         typeSpec = new ImmutablePair<>(new GroupDataTypeSpec(groupSize), groupSize);
         childSize = groupSize / numElements;
+    }
+
+    @Override
+    protected AccessChain typeSpecificChain(String subRecordID, AccessChain chain) {
+        return chain(subRecordID, structures.getFirst(), chain.curriedIndex());
     }
 
     @Override
@@ -74,4 +93,5 @@ public class TableDataStructure extends Format1DataStructure {
         }
         return internalHeadPointer;
     }
+
 }

@@ -157,7 +157,17 @@ public class NullDataStructure extends CobolDataStructure {
     }
 
     @Override
+    public CobolDataStructure cobolIndex(int index) {
+        return this;
+    }
+
+    @Override
     protected void internalSet(TypedRecord r) {
 
+    }
+
+    @Override
+    protected AccessChain typeSpecificChain(String subRecordID, AccessChain chain) {
+        return chain;
     }
 }

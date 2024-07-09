@@ -4,6 +4,7 @@ import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.vm.memory.MemoryLayout;
 import org.smojol.common.vm.memory.MemoryRegion;
 import org.smojol.common.vm.memory.NullMemoryLayout;
+import org.smojol.common.vm.structure.AccessChain;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.common.vm.structure.ConditionalDataStructure;
 import org.smojol.common.vm.structure.NamingScheme;
@@ -87,6 +88,11 @@ public class DetachedDataStructure extends CobolDataStructure {
     }
 
     @Override
+    public CobolDataStructure cobolIndex(int index) {
+        throw new UnsupportedOperationException("Indexing is not supported for detached structures");
+    }
+
+    @Override
     public void add(String recordID, CobolReference ref) {
 
     }
@@ -159,5 +165,10 @@ public class DetachedDataStructure extends CobolDataStructure {
     @Override
     protected void internalSet(TypedRecord r) {
 
+    }
+
+    @Override
+    protected AccessChain typeSpecificChain(String subRecordID, AccessChain chain) {
+        throw new UnsupportedOperationException("Type-specific chain is not supported for detached structures");
     }
 }

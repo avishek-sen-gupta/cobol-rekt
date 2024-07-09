@@ -41,6 +41,7 @@ public abstract class CobolDataStructure extends SimpleTreeNode {
     @Deprecated public abstract void reset(String recordID);
     public abstract void reset();
     public abstract TypedRecord getValue();
+    public abstract CobolDataStructure cobolIndex(int index);
 
     @Deprecated public abstract void add(String recordID, CobolReference ref);
     @Deprecated public abstract void subtract(String recordID, CobolReference ref);
@@ -79,14 +80,15 @@ public abstract class CobolDataStructure extends SimpleTreeNode {
     }
 
     // Copy constructor
-    protected CobolDataStructure(String name, List<CobolDataStructure> copy, int level, CobolDataStructure parent, boolean isComposite, CobolDataType dataType) {
+    protected CobolDataStructure(String name, List<CobolDataStructure> childStructures, int level, CobolDataStructure parent, boolean isComposite, CobolDataType dataType) {
         super(name);
         this.name = name;
         this.dataType = dataType;
         this.levelNumber = level;
-        this.structures = copy;
+        this.structures = childStructures;
         this.parent = parent;
         this.isComposite = isComposite;
+        structures.forEach(s -> s.setParent(this));
     }
 
     @Deprecated protected CobolDataStructure(int levelNumber, CobolDataType dataType, List<CobolDataStructure> structures, CobolDataStructure parent) {
@@ -110,7 +112,7 @@ public abstract class CobolDataStructure extends SimpleTreeNode {
         return dataStructure;
     }
 
-    private void setParent(CobolDataStructure dataStructure) {
+    public void setParent(CobolDataStructure dataStructure) {
         this.parent = dataStructure;
     }
 
@@ -139,7 +141,7 @@ public abstract class CobolDataStructure extends SimpleTreeNode {
     }
 
     public List<? extends CobolDataStructure> rootRecord(CobolParser.GeneralIdentifierContext subRecord) {
-        return searchRecursively(subRecord.getText(), this);
+        return searchRecursively(subRecord.getText(), this, new AccessChain(ImmutableList.of(new StaticAccessLink(this))));
     }
 
     public TypedRecord value(String subRecordID) {
@@ -147,18 +149,18 @@ public abstract class CobolDataStructure extends SimpleTreeNode {
     }
 
     public CobolDataStructure reference(String subRecordID) {
-        List<? extends CobolDataStructure> path = searchRecursively(subRecordID, this);
+        List<? extends CobolDataStructure> path = searchRecursively(subRecordID, this, new AccessChain(ImmutableList.of(new StaticAccessLink(this))));
         if (path.isEmpty()) return new NullDataStructure(subRecordID);
         return path.getLast();
     }
 
-    public List<? extends CobolDataStructure> searchRecursively(String subRecordID, CobolDataStructure currentStructure) {
+    public List<? extends CobolDataStructure> searchRecursively(String subRecordID, CobolDataStructure currentStructure, AccessChain chain) {
         if (THIS.equals(subRecordID)) return ImmutableList.of(currentStructure);
         List<CobolDataStructure> matches = currentStructure.matches(subRecordID);
         if (!matches.isEmpty())
             return matches;
         for (CobolDataStructure structure : currentStructure.structures) {
-            List<? extends CobolDataStructure> results = searchRecursively(subRecordID, structure);
+            List<? extends CobolDataStructure> results = searchRecursively(subRecordID, structure, new AccessChain(ImmutableList.of(new StaticAccessLink(this))));
             if (results.isEmpty()) continue;
             List<CobolDataStructure> path = new ArrayList<>(ImmutableList.of(currentStructure));
             path.addAll(results);
@@ -167,6 +169,22 @@ public abstract class CobolDataStructure extends SimpleTreeNode {
 
         return ImmutableList.of();
     }
+
+    public AccessChain chain(String subRecordID) {
+        AccessChain path = chain(subRecordID, this, new AccessChain(ImmutableList.of(new StaticAccessLink(this))));
+        return path;
+    }
+
+    public AccessChain chain(String subRecordID, CobolDataStructure currentStructure, AccessChain chain) {
+        List<CobolDataStructure> matches = currentStructure.matches(subRecordID);
+        if (!matches.isEmpty()) {
+            if (currentStructure.getDataType() == CobolDataType.TABLE) return chain.curriedIndex();
+            return chain;
+        }
+        return currentStructure.typeSpecificChain(subRecordID, chain);
+    }
+
+    protected abstract AccessChain typeSpecificChain(String subRecordID, AccessChain chain);
 
     protected static CobolDataType cobolDataType(CobolParser.DataDescriptionEntryFormat1Context dataDescription) {
         return new DataLayoutBuilder().type(dataDescription);
@@ -183,7 +201,7 @@ public abstract class CobolDataStructure extends SimpleTreeNode {
     }
 
     public CobolDataStructure index(int index) {
-        return this;
+        return structures.get(index);
     }
 
     public void accept(DataStructureVisitor visitor, CobolDataStructure parent, Function<CobolDataStructure, Boolean> stopRecurseCondition) {

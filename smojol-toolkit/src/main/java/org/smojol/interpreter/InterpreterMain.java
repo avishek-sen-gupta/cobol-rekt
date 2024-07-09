@@ -38,7 +38,10 @@ public class InterpreterMain {
         String dialectJarPath = "/Users/asgupta/code/smojol/che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar";
         String cobolParseTreeOutputPath = "/Users/asgupta/code/smojol/out/test-cobol.json";
 
-        File source = new File("/Users/asgupta/code/smojol/smojol-test-code/test-exp.cbl");
+//        File source = new File("/Users/asgupta/code/smojol/smojol-test-code/test-exp.cbl");
+//        File source = new File("/Users/asgupta/code/smojol/smojol-test-code/table-indexing.cbl");
+        File source = new File("/Users/asgupta/code/smojol/smojol-test-code/table-redef.cbl");
+//        File source = new File("/Users/asgupta/code/smojol/smojol-test-code/simple-redef.cbl");
 
         ComponentsBuilder ops = new ComponentsBuilder(new CobolTreeVisualiserImpl(),
                 FlowchartBuilderImpl::build, new CobolEntityNavigatorBuilderImpl(), new UnresolvedReferenceDoNothingStrategy(),
@@ -64,11 +67,12 @@ public class InterpreterMain {
         dataStructures.report();
         System.out.println("INTERPRETING\n--------------------------------\n");
         Breakpointer bp = new CobolBreakpointer();
-//        bp.addBreakpoint(n -> n.getClass() == DisplayChartNode.class && n.originalText().contains("Hello, world"));
+        bp.addBreakpoint(n -> n.getClass() == DisplayFlowNode.class);
 //        bp.addBreakpoint(n -> n.getClass() == AddChartNode.class && n.originalText().contains("SOMETEXT"));
         bp.addBreakpoint(n -> n.getClass() == DisplayFlowNode.class && n.originalText().contains("SOMETEXT"));
         GraphSDK sdk = new GraphSDK(new Neo4JDriverBuilder().fromEnv());
-        ExecutionListeners executionListeners = new ExecutionListeners(ImmutableList.of(new RunLogger(), new Neo4JExecutionTracer(sdk, new NodeSpecBuilder(new NamespaceQualifier("GLOBAL")))));
+//        ExecutionListeners executionListeners = new ExecutionListeners(ImmutableList.of(new RunLogger(), new Neo4JExecutionTracer(sdk, new NodeSpecBuilder(new NamespaceQualifier("GLOBAL")))));
+        ExecutionListeners executionListeners = new ExecutionListeners(ImmutableList.of(new RunLogger()));
         root.acceptInterpreter(CobolInterpreterFactory.interpreter(CobolConditionResolver.EVALUATING_RESOLVER, dataStructures, ImmutableList.of(), executionListeners, bp), FlowControl::CONTINUE);
     }
 }

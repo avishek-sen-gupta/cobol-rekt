@@ -91,6 +91,7 @@ Some example use cases are listed in the next section.
 - Functioning type system (supports zoned decimals and alphanumerics) with a large subset of z/OS behaviour compatibility for scenarios undefined in the Cobol standard
 - Support for fixed-size tables and single subscripting
 - Support for elementary, composite, and recursive REDEFINES (REDEFINES of REDEFINES)
+- Multiple subscript access
 - Automatic detection of types from DATA DIVISION specifications
 - Supports evaluation of level 88 variables
 - Support for tracking variable state
@@ -102,7 +103,6 @@ Some example use cases are listed in the next section.
 
 ## Planned Capabilities
 
-- Cascading subscripting
 - PERFORM VARYING
 - PERFORM INLINE...VARYING
 - Initialise values of variables from DATA DIVISION
