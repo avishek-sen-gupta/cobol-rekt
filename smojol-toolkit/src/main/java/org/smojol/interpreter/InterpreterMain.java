@@ -38,10 +38,10 @@ public class InterpreterMain {
         String dialectJarPath = "/Users/asgupta/code/smojol/che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar";
         String cobolParseTreeOutputPath = "/Users/asgupta/code/smojol/out/test-cobol.json";
 
-//        File source = new File("/Users/asgupta/code/smojol/smojol-test-code/test-exp.cbl");
+        File source = new File("/Users/asgupta/code/smojol/smojol-test-code/test-exp.cbl");
 //        File source = new File("/Users/asgupta/code/smojol/smojol-test-code/table-indexing.cbl");
 //        File source = new File("/Users/asgupta/code/smojol/smojol-test-code/table-redef.cbl");
-        File source = new File("/Users/asgupta/code/smojol/smojol-test-code/simple-redef.cbl");
+//        File source = new File("/Users/asgupta/code/smojol/smojol-test-code/simple-redef.cbl");
 
         ComponentsBuilder ops = new ComponentsBuilder(new CobolTreeVisualiserImpl(),
                 FlowchartBuilderImpl::build, new CobolEntityNavigatorBuilderImpl(), new UnresolvedReferenceDoNothingStrategy(),
