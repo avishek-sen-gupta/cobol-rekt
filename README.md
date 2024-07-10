@@ -79,7 +79,10 @@ The interpreter is a natural extension to building the parse tree for a Cobol so
 
 The primary motivation for the interpreter is to be able to simulate the execution of programs (or fragments of programs) in a sandboxed environment where the engineer needn't worry about fulfilling dependencies required to run the code in a true mainframe environment. Rather, they can inject these dependencies (values of variables, for example) as they see fit, to perform their true task: namely, performing control flow analysis.
 
-Some example use cases are listed in the next section.
+The interpreter can run in two modes:
+
+- **No-Operation mode:** In this mode, none of the processing statements like MOVE, ADD, etc. are actually executed, but control flow is still respected. Decisions which affect control flow are evaluated based on the kind of evaluation strategy specified, so the full expression evaluation strategy will not be effective. More specific strategies can be written, or interactive resolution through the console can be used.
+- **Full evaluation mode (Experimental):** In this mode, expressions are actually evaluated to their final results, and is the closest to actual execution of the program including storing variable state. Note that this is a work in progress, since every nook and cranny of the Cobol standard is not supported yet.
 
 ## Current Capabilities of the Interpreter
 
@@ -99,7 +102,7 @@ Some example use cases are listed in the next section.
 - View current stack at a breakpoint
 - View variable values at a breakpoint
 - Support for different strategies to deal with unresolved record references (ignore / throw exception)
-- Support for listeners to extract specific information about the current state of the program
+- Support for listeners to extract specific information about the current state of the program (all the Neo4J integrations are via these listeners)
 
 ## Planned Capabilities
 
