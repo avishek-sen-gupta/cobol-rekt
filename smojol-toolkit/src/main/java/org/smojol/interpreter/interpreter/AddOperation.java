@@ -5,10 +5,11 @@ import org.smojol.ast.AddFlowNode;
 import org.smojol.common.vm.expression.ArithmeticExpressionVisitor;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.common.vm.reference.DeepReferenceBuilder;
+import org.smojol.common.vm.structure.CobolOperation;
 
 import java.util.List;
 
-public class AddOperation {
+public class AddOperation implements CobolOperation {
     private final AddFlowNode add;
 
     public AddOperation(AddFlowNode add) {

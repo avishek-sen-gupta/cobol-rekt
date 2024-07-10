@@ -5,10 +5,11 @@ import org.smojol.ast.DivideFlowNode;
 import org.smojol.common.vm.expression.ArithmeticExpressionVisitor;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.common.vm.reference.DeepReferenceBuilder;
+import org.smojol.common.vm.structure.CobolOperation;
 
 import java.util.List;
 
-public class DivideOperation {
+public class DivideOperation implements CobolOperation {
     private final DivideFlowNode divide;
 
     public DivideOperation(DivideFlowNode divide) {

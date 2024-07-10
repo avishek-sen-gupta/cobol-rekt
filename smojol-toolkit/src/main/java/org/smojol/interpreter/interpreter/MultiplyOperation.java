@@ -5,10 +5,11 @@ import org.smojol.ast.MultiplyFlowNode;
 import org.smojol.common.vm.expression.ArithmeticExpressionVisitor;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.common.vm.reference.DeepReferenceBuilder;
+import org.smojol.common.vm.structure.CobolOperation;
 
 import java.util.List;
 
-public class MultiplyOperation {
+public class MultiplyOperation implements CobolOperation {
     private final MultiplyFlowNode multiply;
 
     public MultiplyOperation(MultiplyFlowNode multiply) {

@@ -18,6 +18,7 @@ import static org.smojol.common.flowchart.ConsoleColors.*;
 import static org.smojol.common.flowchart.NodeText.formatted;
 
 // TODO: Notify listeners of visit() in a more consistent manner
+@Deprecated
 public class SmojolInterpreter implements CobolInterpreter {
 
     @Getter private final StackFrames runtimeStackFrames;
@@ -47,8 +48,6 @@ public class SmojolInterpreter implements CobolInterpreter {
     @Override
     public CobolVmSignal execute(FlowNode node, FlowNodeService nodeService) {
         return interceptors.run(() -> {
-            listeners.visit(node, nodeService);
-            listeners.notify(coloured("Executing " + node.getClass().getSimpleName() + node.label(), 25), node, nodeService);
             return CobolVmSignal.CONTINUE;
         }, new ExecutionContext(node, runtimeStackFrames, nodeService));
     }
@@ -63,14 +62,11 @@ public class SmojolInterpreter implements CobolInterpreter {
 
     @Override
     public void exit(FlowNode node, FlowNodeService nodeService) {
-        listeners.notify(coloured("Exiting " + node.getClass().getSimpleName() + "/" + formatted(node.label()), 240), node, nodeService);
     }
 
     @Override
     public CobolVmSignal executeIf(FlowNode node, FlowNodeService nodeService) {
         return interceptors.run(() -> {
-            listeners.visit(node, nodeService);
-            System.out.println("Executing an IF condition");
             IfFlowNode ifNode = (IfFlowNode) node;
             boolean trueOrFalse = conditionResolver.resolveIf(node, nodeService);
             if (trueOrFalse) {
@@ -93,7 +89,6 @@ public class SmojolInterpreter implements CobolInterpreter {
     @Override
     public CobolVmSignal executePerformProcedure(FlowNode node, List<FlowNode> procedures, FlowNodeService nodeService) {
         return interceptors.run(() -> {
-            listeners.visit(node, nodeService);
             for (FlowNode procedure : procedures) {
                 listeners.notify(cyan("Executing a PERFORM statement: " + procedures.getFirst()), node, nodeService);
                 CobolVmSignal signal = procedure.acceptInterpreter(this, FlowControl::STOP);
@@ -111,8 +106,6 @@ public class SmojolInterpreter implements CobolInterpreter {
     @Override
     public CobolVmSignal executeGoto(FlowNode node, List<FlowNode> destinationNodes, FlowNodeService nodeService) {
         return interceptors.run(() -> {
-            listeners.visit(node, nodeService);
-            listeners.notify(red("Executing a GOTO statement: " + destinationNodes.getFirst()), node, nodeService);
             FlowNode destination = destinationNodes.getFirst();
             FlowNode continuationNode = actualDestination(destination);
             CobolVmSignal signal = continuationNode.acceptInterpreter(locator(destination), FlowControl::CONTINUE);
@@ -126,7 +119,6 @@ public class SmojolInterpreter implements CobolInterpreter {
     @Override
     public CobolVmSignal executeExit(FlowNode node, FlowNodeService nodeService) {
         return interceptors.run(() -> {
-            listeners.visit(node, nodeService);
             System.out.println(red("Processing EXIT"));
             CobolVmSignal signal = runtimeStackFrames.callSite();
             listeners.notify("EXIT instruction is " + coloured(signal.name(), 207), node, nodeService);
@@ -137,8 +129,6 @@ public class SmojolInterpreter implements CobolInterpreter {
     @Override
     public CobolVmSignal executeNextSentence(FlowNode node, FlowNodeService nodeService) {
         return interceptors.run(() -> {
-            listeners.visit(node, nodeService);
-            listeners.notify(purple("Processing NEXT SENTENCE"), node, nodeService);
             return CobolVmSignal.NEXT_SENTENCE;
         }, new ExecutionContext(node, runtimeStackFrames, nodeService));
     }
@@ -146,8 +136,6 @@ public class SmojolInterpreter implements CobolInterpreter {
     @Override
     public CobolVmSignal executeDisplay(FlowNode node, List<CobolParser.DisplayOperandContext> messages, FlowNodeService nodeService) {
         return interceptors.run(() -> {
-            listeners.visit(node, nodeService);
-            messages.forEach(m -> listeners.notify(coloured("CONSOLE >> " + m.getText(), 154), node, nodeService));
             return CobolVmSignal.CONTINUE;
         }, new ExecutionContext(node, runtimeStackFrames, nodeService));
     }
@@ -155,8 +143,6 @@ public class SmojolInterpreter implements CobolInterpreter {
     @Override
     public CobolVmSignal executeMove(FlowNode node, FlowNodeService nodeService) {
         return interceptors.run(() -> {
-            listeners.visit(node, nodeService);
-            listeners.notify("Moving " + node, node, nodeService);
             MoveFlowNode move = (MoveFlowNode) node;
             move.getTos().forEach(to -> listeners.notify(coloured(String.format("%s was affected by %s", dataDescription(to, nodeService.getDataStructures()), move.getFrom().getText()), 227), node, nodeService));
             new MoveOperation(move).run(runtimeStackFrames.currentData());
@@ -167,8 +153,6 @@ public class SmojolInterpreter implements CobolInterpreter {
     @Override
     public CobolVmSignal executeAdd(FlowNode node, FlowNodeService nodeService) {
         return interceptors.run(() -> {
-            listeners.visit(node, nodeService);
-            listeners.notify("Adding " + node, node, nodeService);
             AddFlowNode add = (AddFlowNode) node;
             add.getTos().forEach(to -> listeners.notify(purple(coloured(String.format("%s was affected by %s", dataDescription(to.generalIdentifier(), nodeService.getDataStructures()), delimited(add.getFroms())), 227)), node, nodeService));
             new AddOperation(add).run(runtimeStackFrames.currentData());
@@ -179,8 +163,6 @@ public class SmojolInterpreter implements CobolInterpreter {
     @Override
     public CobolVmSignal executeSubtract(FlowNode node, FlowNodeService nodeService) {
         return interceptors.run(() -> {
-            listeners.visit(node, nodeService);
-            listeners.notify("Subtracting " + node, node, nodeService);
             SubtractFlowNode subtract = (SubtractFlowNode) node;
             String lhses = delimited(subtract.getLhs());
             String rhses = delimited(subtract.getRhs());
@@ -193,8 +175,6 @@ public class SmojolInterpreter implements CobolInterpreter {
     @Override
     public CobolVmSignal executeMultiply(FlowNode node, FlowNodeService nodeService) {
         return interceptors.run(() -> {
-            listeners.visit(node, nodeService);
-            listeners.notify("Adding " + node, node, nodeService);
             MultiplyFlowNode multiply = (MultiplyFlowNode) node;
             listeners.notify(purple(coloured(String.format("%s was affected by %s", multiply.getLhs(), delimited(multiply.getRhs())), 227)), node, nodeService);
             new MultiplyOperation(multiply).run(runtimeStackFrames.currentData());
@@ -205,8 +185,6 @@ public class SmojolInterpreter implements CobolInterpreter {
     @Override
     public CobolVmSignal executeDivide(FlowNode node, FlowNodeService nodeService) {
         return interceptors.run(() -> {
-            listeners.visit(node, nodeService);
-            listeners.notify("Adding " + node, node, nodeService);
             DivideFlowNode divide = (DivideFlowNode) node;
             listeners.notify(purple(coloured(String.format("%s was affected by %s", delimited(divide.getDividends()), divide.getDivisor()), 227)), node, nodeService);
             new DivideOperation(divide).run(runtimeStackFrames.currentData());
@@ -217,7 +195,6 @@ public class SmojolInterpreter implements CobolInterpreter {
     @Override
     public CobolVmSignal executeSearch(FlowNode atEndBlock, List<FlowNode> whenPhrases, FlowNodeService nodeService, FlowNode node) {
         return interceptors.run(() -> {
-            listeners.visit(node, nodeService);
             SearchFlowNode searchNode = (SearchFlowNode) node;
             listeners.notify("Executing SEARCH statement: " + searchNode.getSearchTerm().getText(), node, nodeService);
             boolean shouldExecuteAtEnd = true;
@@ -241,7 +218,6 @@ public class SmojolInterpreter implements CobolInterpreter {
     @Override
     public CobolVmSignal executeOnClause(FlowNode node, FlowNodeService nodeService) {
         return interceptors.run(() -> {
-            listeners.visit(node, nodeService);
             GenericOnClauseFlowNode onClauseNode = (GenericOnClauseFlowNode) node;
             listeners.notify("Executing ON clause " + formatted(onClauseNode.getCondition().originalText()), node, nodeService);
             boolean trueOrFalse = conditionResolver.resolveOn(onClauseNode, nodeService);
@@ -252,7 +228,7 @@ public class SmojolInterpreter implements CobolInterpreter {
 
     @Override
     public void signalTermination() {
-        listeners.notifyTermination();
+        listeners.visitTermination();
     }
 
     @Override
@@ -263,8 +239,6 @@ public class SmojolInterpreter implements CobolInterpreter {
     @Override
     public CobolVmSignal executeCompute(FlowNode node, FlowNodeService nodeService) {
         return interceptors.run(() -> {
-            listeners.visit(node, nodeService);
-            listeners.notify("Computing " + node, node, nodeService);
             ComputeFlowNode compute = (ComputeFlowNode) node;
             new ComputeOperation(compute).run(runtimeStackFrames.currentData());
             return CobolVmSignal.CONTINUE;
@@ -282,7 +256,7 @@ public class SmojolInterpreter implements CobolInterpreter {
     }
 
     private CobolInterpreter locator(FlowNode specificLocation) {
-        return CobolInterpreterFactory.interpreter(new ExecuteAtTargetFlipCondition(specificLocation), conditionResolver, otherInterceptors, listeners, breakpointer, runtimeStackFrames);
+        return CobolInterpreterFactory.oldInterpreter(new ExecuteAtTargetFlipCondition(specificLocation), conditionResolver, otherInterceptors, listeners, breakpointer, runtimeStackFrames);
     }
 
     private FlowNode actualDestination(FlowNode destination) {

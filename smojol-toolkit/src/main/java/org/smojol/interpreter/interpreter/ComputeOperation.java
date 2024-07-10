@@ -6,8 +6,9 @@ import org.smojol.common.vm.expression.PrimitiveCobolExpression;
 import org.smojol.common.vm.reference.CobolReference;
 import org.smojol.common.vm.reference.DeepReferenceBuilder;
 import org.smojol.common.vm.structure.CobolDataStructure;
+import org.smojol.common.vm.structure.CobolOperation;
 
-public class ComputeOperation {
+public class ComputeOperation implements CobolOperation {
     private final ComputeFlowNode compute;
 
     public ComputeOperation(ComputeFlowNode compute) {

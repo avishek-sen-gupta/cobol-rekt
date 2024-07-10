@@ -5,10 +5,11 @@ import org.smojol.ast.SubtractFlowNode;
 import org.smojol.common.vm.expression.ArithmeticExpressionVisitor;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.common.vm.reference.DeepReferenceBuilder;
+import org.smojol.common.vm.structure.CobolOperation;
 
 import java.util.List;
 
-public class SubtractOperation {
+public class SubtractOperation implements CobolOperation {
     private final SubtractFlowNode subtract;
 
     public SubtractOperation(SubtractFlowNode subtract) {

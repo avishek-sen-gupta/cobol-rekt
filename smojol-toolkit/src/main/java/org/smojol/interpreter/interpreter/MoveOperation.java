@@ -4,8 +4,9 @@ import org.smojol.ast.MoveFlowNode;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.common.vm.reference.CobolReference;
 import org.smojol.common.vm.reference.DeepReferenceBuilder;
+import org.smojol.common.vm.structure.CobolOperation;
 
-public class MoveOperation {
+public class MoveOperation implements CobolOperation {
     private final MoveFlowNode move;
 
     public MoveOperation(MoveFlowNode move) {

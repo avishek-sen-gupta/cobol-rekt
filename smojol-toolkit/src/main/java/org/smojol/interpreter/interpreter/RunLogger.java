@@ -40,11 +40,16 @@ public class RunLogger implements ExecutionListener {
     }
 
     @Override
-    public void notifyTermination() {
+    public void visitTermination() {
         try {
             write();
         } catch (IOException e) {
             System.err.println("WARNING: Couldn't write to file: " + e.getMessage());
         }
+    }
+
+    @Override
+    public void notifyTermination() {
+
     }
 }

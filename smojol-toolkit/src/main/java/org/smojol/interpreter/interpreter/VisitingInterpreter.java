@@ -13,12 +13,12 @@ import java.util.List;
 import static org.smojol.common.flowchart.ConsoleColors.*;
 import static org.smojol.common.flowchart.NodeText.formatted;
 
-public class LoggingInterpreter implements CobolInterpreter {
+public class VisitingInterpreter implements CobolInterpreter {
     private final ExecutionInterceptors interceptors;
     private final ExecutionListener listeners;
     private final CobolInterpreter interpreter;
 
-    public LoggingInterpreter(CobolInterpreter interpreter, List<ExecutionInterceptor> interceptors, ExecutionListener listeners) {
+    public VisitingInterpreter(CobolInterpreter interpreter, List<ExecutionInterceptor> interceptors, ExecutionListener listeners) {
         this.interpreter = interpreter;
         this.listeners = listeners;
         this.interceptors = new ExecutionInterceptors(interceptors);
@@ -168,7 +168,9 @@ public class LoggingInterpreter implements CobolInterpreter {
 
     @Override
     public void signalTermination() {
+        listeners.visitTermination();
         listeners.notifyTermination();
+        interpreter.signalTermination();
     }
 
     @Override

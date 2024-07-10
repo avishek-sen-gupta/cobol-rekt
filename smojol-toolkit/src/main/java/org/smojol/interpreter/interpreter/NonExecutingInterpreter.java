@@ -10,6 +10,7 @@ import org.smojol.common.vm.interpreter.*;
 import org.smojol.common.vm.stack.ExecutionContext;
 import org.smojol.common.vm.stack.StackFrames;
 import org.smojol.common.vm.structure.CobolDataStructure;
+import org.smojol.common.vm.structure.CobolOperations;
 
 import java.util.List;
 
@@ -25,9 +26,10 @@ public class NonExecutingInterpreter implements CobolInterpreter {
     private final ExecutionInterceptors interceptors;
     private final List<ExecutionInterceptor> otherInterceptors;
     private final InterpreterBuilder interpreterBuilder;
+    private final CobolOperations ops;
     private final ExecutionListener listeners;
 
-    public NonExecutingInterpreter(StackFrames runtimeStackFrames, ExecuteCondition condition, ConditionResolver conditionResolver, Breakpointer bp, List<ExecutionInterceptor> otherInterceptors, ExecutionListener listeners, InterpreterBuilder interpreterBuilder) {
+    public NonExecutingInterpreter(StackFrames runtimeStackFrames, ExecuteCondition condition, ConditionResolver conditionResolver, Breakpointer bp, List<ExecutionInterceptor> otherInterceptors, ExecutionListener listeners, InterpreterBuilder interpreterBuilder, CobolOperations ops) {
         this.runtimeStackFrames = runtimeStackFrames;
         this.condition = condition;
         this.conditionResolver = conditionResolver;
@@ -35,13 +37,14 @@ public class NonExecutingInterpreter implements CobolInterpreter {
         interceptors = new ExecutionInterceptors(ImmutableList.of(condition, breakpointer));
         this.otherInterceptors = otherInterceptors;
         this.interpreterBuilder = interpreterBuilder;
+        this.ops = ops;
         interceptors.addAll(otherInterceptors);
         this.listeners = listeners;
     }
 
     @Override
     public CobolInterpreter scope(FlowNode scope) {
-        CobolInterpreter interpreter = CobolInterpreterFactory.nonExecutingInterpreter(runtimeStackFrames.add(scope), condition, conditionResolver, otherInterceptors, listeners, breakpointer, interpreterBuilder);
+        CobolInterpreter interpreter = CobolInterpreterFactory.interpreter(runtimeStackFrames.add(scope), condition, conditionResolver, otherInterceptors, listeners, breakpointer, interpreterBuilder, ops);
         return interpreterBuilder.wrap(interpreter);
     }
 
@@ -144,6 +147,7 @@ public class NonExecutingInterpreter implements CobolInterpreter {
         return interceptors.run(() -> {
             MoveFlowNode move = (MoveFlowNode) node;
             move.getTos().forEach(to -> listeners.notify(coloured(String.format("%s was affected by %s", dataDescription(to, nodeService.getDataStructures()), move.getFrom().getText()), 227), node, nodeService));
+            ops.move().apply(node).run(runtimeStackFrames.currentData());
             return CobolVmSignal.CONTINUE;
         }, new ExecutionContext(node, runtimeStackFrames, nodeService));
     }
@@ -153,6 +157,7 @@ public class NonExecutingInterpreter implements CobolInterpreter {
         return interceptors.run(() -> {
             AddFlowNode add = (AddFlowNode) node;
             add.getTos().forEach(to -> listeners.notify(purple(coloured(String.format("%s was affected by %s", dataDescription(to.generalIdentifier(), nodeService.getDataStructures()), delimited(add.getFroms())), 227)), node, nodeService));
+            ops.add().apply(node).run(runtimeStackFrames.currentData());
             return CobolVmSignal.CONTINUE;
         }, new ExecutionContext(node, runtimeStackFrames, nodeService));
     }
@@ -164,6 +169,7 @@ public class NonExecutingInterpreter implements CobolInterpreter {
             String lhses = delimited(subtract.getLhs());
             String rhses = delimited(subtract.getRhs());
             listeners.notify(purple(coloured(String.format("%s was affected by %s", lhses, rhses), 227)), node, nodeService);
+            ops.subtract().apply(node).run(runtimeStackFrames.currentData());
             return CobolVmSignal.CONTINUE;
         }, new ExecutionContext(node, runtimeStackFrames, nodeService));
     }
@@ -173,6 +179,7 @@ public class NonExecutingInterpreter implements CobolInterpreter {
         return interceptors.run(() -> {
             MultiplyFlowNode multiply = (MultiplyFlowNode) node;
             listeners.notify(purple(coloured(String.format("%s was affected by %s", multiply.getLhs(), delimited(multiply.getRhs())), 227)), node, nodeService);
+            ops.multiply().apply(node).run(runtimeStackFrames.currentData());
             return CobolVmSignal.CONTINUE;
         }, new ExecutionContext(node, runtimeStackFrames, nodeService));
     }
@@ -182,6 +189,7 @@ public class NonExecutingInterpreter implements CobolInterpreter {
         return interceptors.run(() -> {
             DivideFlowNode divide = (DivideFlowNode) node;
             listeners.notify(purple(coloured(String.format("%s was affected by %s", delimited(divide.getDividends()), divide.getDivisor()), 227)), node, nodeService);
+            ops.divide().apply(node).run(runtimeStackFrames.currentData());
             return CobolVmSignal.CONTINUE;
         }, new ExecutionContext(node, runtimeStackFrames, nodeService));
     }
@@ -221,7 +229,7 @@ public class NonExecutingInterpreter implements CobolInterpreter {
 
     @Override
     public void signalTermination() {
-        listeners.notifyTermination();
+        listeners.visitTermination();
     }
 
     @Override
@@ -232,7 +240,7 @@ public class NonExecutingInterpreter implements CobolInterpreter {
     @Override
     public CobolVmSignal executeCompute(FlowNode node, FlowNodeService nodeService) {
         return interceptors.run(() -> {
-            ComputeFlowNode compute = (ComputeFlowNode) node;
+            ops.compute().apply(node).run(runtimeStackFrames.currentData());
             return CobolVmSignal.CONTINUE;
         }, new ExecutionContext(node, runtimeStackFrames, nodeService));
     }
@@ -248,7 +256,7 @@ public class NonExecutingInterpreter implements CobolInterpreter {
     }
 
     private CobolInterpreter locator(FlowNode specificLocation) {
-        CobolInterpreter cobolInterpreter = CobolInterpreterFactory.nonExecutingInterpreter(runtimeStackFrames, new ExecuteAtTargetFlipCondition(specificLocation), conditionResolver, otherInterceptors, listeners, breakpointer, interpreterBuilder);
+        CobolInterpreter cobolInterpreter = CobolInterpreterFactory.interpreter(runtimeStackFrames, new ExecuteAtTargetFlipCondition(specificLocation), conditionResolver, otherInterceptors, listeners, breakpointer, interpreterBuilder, ops);
         return interpreterBuilder.wrap(cobolInterpreter);
     }
 

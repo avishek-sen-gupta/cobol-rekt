@@ -24,6 +24,11 @@ public class ExecutionListeners implements ExecutionListener {
     }
 
     @Override
+    public void visitTermination() {
+        listeners.forEach(ExecutionListener::visitTermination);
+    }
+
+    @Override
     public void notifyTermination() {
         listeners.forEach(ExecutionListener::notifyTermination);
     }

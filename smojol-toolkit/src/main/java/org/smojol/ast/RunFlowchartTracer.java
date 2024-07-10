@@ -26,7 +26,12 @@ public class RunFlowchartTracer implements ExecutionListener, GraphWriter {
     }
 
     @Override
+    public void visitTermination() {
+    }
+
+    @Override
     public void notifyTermination() {
+
     }
 
     @Override
