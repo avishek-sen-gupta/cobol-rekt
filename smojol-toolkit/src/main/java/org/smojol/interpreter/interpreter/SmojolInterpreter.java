@@ -115,7 +115,7 @@ public class SmojolInterpreter implements CobolInterpreter {
             FlowNode continuationNode = actualDestination(destination);
             CobolVmSignal signal = continuationNode.acceptInterpreter(locator(destination), FlowControl::CONTINUE);
             listeners.notify(red("Exit program in progress, unrolling GO TO..."), node, nodeService);
-            listeners.notifyTermination();
+//            listeners.notifyTermination();
 //            System.exit(0);
             return CobolVmSignal.TERMINATE;
         }, new ExecutionContext(node, runtimeStackFrames, nodeService));

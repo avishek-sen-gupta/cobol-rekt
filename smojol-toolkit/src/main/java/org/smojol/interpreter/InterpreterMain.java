@@ -71,8 +71,8 @@ public class InterpreterMain {
 //        bp.addBreakpoint(n -> n.getClass() == AddChartNode.class && n.originalText().contains("SOMETEXT"));
         bp.addBreakpoint(n -> n.getClass() == DisplayFlowNode.class && n.originalText().contains("SOMETEXT"));
         GraphSDK sdk = new GraphSDK(new Neo4JDriverBuilder().fromEnv());
-//        ExecutionListeners executionListeners = new ExecutionListeners(ImmutableList.of(new RunLogger(), new Neo4JExecutionTracer(sdk, new NodeSpecBuilder(new NamespaceQualifier("GLOBAL")))));
-        ExecutionListeners executionListeners = new ExecutionListeners(ImmutableList.of(new RunLogger()));
+        ExecutionListeners executionListeners = new ExecutionListeners(ImmutableList.of(new RunLogger(), new Neo4JExecutionTracer(sdk, new NodeSpecBuilder(new NamespaceQualifier("GLOBAL")))));
+//        ExecutionListeners executionListeners = new ExecutionListeners(ImmutableList.of(new RunLogger()));
         root.acceptInterpreter(CobolInterpreterFactory.interpreter(CobolConditionResolver.EVALUATING_RESOLVER, dataStructures, ImmutableList.of(), executionListeners, bp), FlowControl::CONTINUE);
     }
 }
