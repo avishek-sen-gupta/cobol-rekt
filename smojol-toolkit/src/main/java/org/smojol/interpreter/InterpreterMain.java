@@ -28,6 +28,8 @@ import org.smojol.interpreter.structure.DefaultFormat1DataStructureBuilder;
 import java.io.File;
 import java.io.IOException;
 
+import static org.smojol.common.vm.structure.CobolOperations.NO_OP;
+
 public class InterpreterMain {
     private final Logger logger = LoggerFactory.getLogger(InterpreterMain.class);
 
@@ -70,12 +72,8 @@ public class InterpreterMain {
         bp.addBreakpoint(n -> n.getClass() == DisplayFlowNode.class && n.originalText().contains("SOMETEXT"));
         GraphSDK sdk = new GraphSDK(new Neo4JDriverBuilder().fromEnv());
         Neo4JExecutionTracer executionTracer = new Neo4JExecutionTracer(sdk, new NodeSpecBuilder(new NamespaceQualifier("GLOBAL")));
-//        ExecutionListeners executionListeners = new ExecutionListeners(ImmutableList.of(new RunLogger(), executionTracer));
+        ExecutionListeners executionListeners = new ExecutionListeners(ImmutableList.of(new RunLogger(), executionTracer));
 //        ExecutionListeners executionListeners = new ExecutionListeners(ImmutableList.of(new RunLogger()));
-//        root.acceptInterpreter(CobolInterpreterFactory.interpreter(CobolConditionResolver.EVALUATING_RESOLVER, dataStructures, ImmutableList.of(), executionListeners, bp), FlowControl::CONTINUE);
-        InterpreterBuilder interpreterBuilder = new LoggingInterpreterBuilder(executionTracer, ImmutableList.of());
-        CobolInterpreter coreInterpreter = CobolInterpreterFactory.nonExecutingInterpreter(dataStructures, ExecuteCondition.ALWAYS_EXECUTE, CobolConditionResolver.ALWAYS_YES, ImmutableList.of(), new RunLogger(), bp, interpreterBuilder);
-        CobolInterpreter decoratingInterpreter = interpreterBuilder.wrap(coreInterpreter);
-        root.acceptInterpreter(decoratingInterpreter, FlowControl::CONTINUE);
+        root.acceptInterpreter(CobolInterpreterFactory.oldInterpreter(CobolConditionResolver.EVALUATING_RESOLVER, dataStructures, ImmutableList.of(), executionListeners, bp, NO_OP), FlowControl::CONTINUE);
     }
 }

@@ -10,12 +10,12 @@ import org.smojol.common.vm.structure.CobolDataStructure;
 import java.util.List;
 
 public class CobolInterpreterFactory {
-    public static CobolInterpreter oldInterpreter(ConditionResolver conditionResolver, CobolDataStructure dataStructures, List<ExecutionInterceptor> interceptors, ExecutionListener listeners, Breakpointer bp) {
-        return oldInterpreter(ExecuteCondition.ALWAYS_EXECUTE, conditionResolver, interceptors, listeners, bp, new CobolStackFrames(dataStructures));
+    public static CobolInterpreter oldInterpreter(ConditionResolver conditionResolver, CobolDataStructure dataStructures, List<ExecutionInterceptor> interceptors, ExecutionListener listeners, Breakpointer bp, CobolOperations operations) {
+        return oldInterpreter(ExecuteCondition.ALWAYS_EXECUTE, conditionResolver, interceptors, listeners, bp, new CobolStackFrames(dataStructures), operations);
     }
 
-    public static CobolInterpreter oldInterpreter(ExecuteCondition condition, ConditionResolver conditionResolver, List<ExecutionInterceptor> interceptors, ExecutionListener listeners, Breakpointer bp, StackFrames runtimeStackFrames) {
-        return new SmojolInterpreter(runtimeStackFrames, condition, conditionResolver, bp, interceptors, listeners);
+    public static CobolInterpreter oldInterpreter(ExecuteCondition condition, ConditionResolver conditionResolver, List<ExecutionInterceptor> interceptors, ExecutionListener listeners, Breakpointer bp, StackFrames runtimeStackFrames, CobolOperations operations) {
+        return new SmojolInterpreter(runtimeStackFrames, condition, conditionResolver, bp, interceptors, listeners, operations);
     }
 
     public static CobolInterpreter interpreter(StackFrames stackFrames, ExecuteCondition condition, ConditionResolver conditionResolver, List<ExecutionInterceptor> interceptors, ExecutionListener listeners, Breakpointer bp, InterpreterBuilder interpreterBuilder, CobolOperations ops) {
