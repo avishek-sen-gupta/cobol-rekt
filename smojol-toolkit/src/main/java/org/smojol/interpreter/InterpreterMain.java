@@ -74,6 +74,6 @@ public class InterpreterMain {
         Neo4JExecutionTracer executionTracer = new Neo4JExecutionTracer(sdk, new NodeSpecBuilder(new NamespaceQualifier("GLOBAL")));
         ExecutionListeners executionListeners = new ExecutionListeners(ImmutableList.of(new RunLogger(), executionTracer));
 //        ExecutionListeners executionListeners = new ExecutionListeners(ImmutableList.of(new RunLogger()));
-        root.acceptInterpreter(CobolInterpreterFactory.oldInterpreter(CobolConditionResolver.EVALUATING_RESOLVER, dataStructures, ImmutableList.of(), executionListeners, bp, NO_OP), FlowControl::CONTINUE);
+        root.acceptInterpreter(CobolInterpreterFactory.executingInterpreter(CobolConditionResolver.EVALUATING_RESOLVER, dataStructures, ImmutableList.of(), executionListeners, bp), FlowControl::CONTINUE);
     }
 }

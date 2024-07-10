@@ -260,12 +260,8 @@ public class SmojolInterpreter implements CobolInterpreter {
 
     @Override
     public void signalTermination() {
+        listeners.visitTermination();
         listeners.notifyTermination();
-    }
-
-    @Override
-    public StackFrames getStackFrames() {
-        return runtimeStackFrames;
     }
 
     @Override
@@ -291,7 +287,7 @@ public class SmojolInterpreter implements CobolInterpreter {
     }
 
     private CobolInterpreter locator(FlowNode specificLocation) {
-        return CobolInterpreterFactory.oldInterpreter(new ExecuteAtTargetFlipCondition(specificLocation), conditionResolver, otherInterceptors, listeners, breakpointer, runtimeStackFrames, operations);
+        return CobolInterpreterFactory.interpreter(new ExecuteAtTargetFlipCondition(specificLocation), conditionResolver, otherInterceptors, listeners, breakpointer, runtimeStackFrames, operations);
     }
 
     private FlowNode actualDestination(FlowNode destination) {
