@@ -19,4 +19,12 @@ public class CobolInterpreterFactory {
     public static CobolInterpreter interpreter(ExecuteCondition condition, ConditionResolver conditionResolver, List<ExecutionInterceptor> interceptors, ExecutionListener listeners, Breakpointer bp, StackFrames runtimeStackFrames) {
         return new SmojolInterpreter(runtimeStackFrames, condition, conditionResolver, bp, interceptors, listeners);
     }
+
+    public static CobolInterpreter nonExecutingInterpreter(StackFrames stackFrames, ExecuteCondition condition, ConditionResolver conditionResolver, List<ExecutionInterceptor> interceptors, ExecutionListener listeners, Breakpointer bp, InterpreterBuilder interpreterBuilder) {
+        return new NonExecutingInterpreter(stackFrames, condition, conditionResolver, bp, interceptors, listeners, interpreterBuilder);
+    }
+
+    public static CobolInterpreter breakpointingInterpreter(CobolInterpreter interpreter, List<ExecutionInterceptor> interceptors, ExecutionListener listeners) {
+        return new LoggingInterpreter(interpreter, interceptors, listeners);
+    }
 }

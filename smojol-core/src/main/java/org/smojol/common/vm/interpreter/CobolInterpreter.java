@@ -3,6 +3,7 @@ package org.smojol.common.vm.interpreter;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.flowchart.FlowNode;
 import org.smojol.common.flowchart.FlowNodeService;
+import org.smojol.common.vm.stack.StackFrames;
 
 import java.util.List;
 
@@ -26,4 +27,6 @@ public interface CobolInterpreter {
     CobolVmSignal executeSearch(FlowNode node, List<FlowNode> whenPhrases, FlowNodeService nodeService, FlowNode searchFlowNode);
     CobolVmSignal executeOnClause(FlowNode node, FlowNodeService nodeService);
     void signalTermination();
+
+    StackFrames getStackFrames();
 }

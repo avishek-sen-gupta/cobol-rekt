@@ -5,8 +5,6 @@ import com.mojo.woof.GraphSDK;
 import com.mojo.woof.Neo4JDriverBuilder;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.smojol.analysis.LanguageDialect;
-import org.smojol.analysis.graph.NamespaceQualifier;
-import org.smojol.analysis.graph.NodeSpecBuilder;
 import org.smojol.common.flowchart.FlowNode;
 import org.smojol.common.flowchart.FlowNodeService;
 import org.smojol.common.flowchart.FlowchartBuilder;
@@ -16,15 +14,14 @@ import org.smojol.analysis.ParsePipeline;
 import org.smojol.analysis.visualisation.CobolTreeVisualiserImpl;
 import org.smojol.analysis.visualisation.ComponentsBuilder;
 import org.smojol.common.navigation.CobolEntityNavigator;
+import org.smojol.common.vm.interpreter.*;
 import org.smojol.interpreter.interpreter.*;
 import org.smojol.interpreter.navigation.CobolEntityNavigatorBuilderImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.smojol.common.vm.interpreter.Breakpointer;
-import org.smojol.common.vm.interpreter.ExecutionListeners;
-import org.smojol.common.vm.interpreter.FlowControl;
 import org.smojol.common.vm.strategy.UnresolvedReferenceDoNothingStrategy;
 import org.smojol.common.vm.structure.CobolDataStructure;
+import org.smojol.interpreter.stack.CobolStackFrames;
 import org.smojol.interpreter.structure.DefaultFormat1DataStructureBuilder;
 
 import java.io.File;
@@ -71,8 +68,12 @@ public class InterpreterMain {
 //        bp.addBreakpoint(n -> n.getClass() == AddChartNode.class && n.originalText().contains("SOMETEXT"));
         bp.addBreakpoint(n -> n.getClass() == DisplayFlowNode.class && n.originalText().contains("SOMETEXT"));
         GraphSDK sdk = new GraphSDK(new Neo4JDriverBuilder().fromEnv());
-        ExecutionListeners executionListeners = new ExecutionListeners(ImmutableList.of(new RunLogger(), new Neo4JExecutionTracer(sdk, new NodeSpecBuilder(new NamespaceQualifier("GLOBAL")))));
-//        ExecutionListeners executionListeners = new ExecutionListeners(ImmutableList.of(new RunLogger()));
-        root.acceptInterpreter(CobolInterpreterFactory.interpreter(CobolConditionResolver.EVALUATING_RESOLVER, dataStructures, ImmutableList.of(), executionListeners, bp), FlowControl::CONTINUE);
+//        ExecutionListeners executionListeners = new ExecutionListeners(ImmutableList.of(new RunLogger(), new Neo4JExecutionTracer(sdk, new NodeSpecBuilder(new NamespaceQualifier("GLOBAL")))));
+        ExecutionListeners executionListeners = new ExecutionListeners(ImmutableList.of(new RunLogger()));
+//        root.acceptInterpreter(CobolInterpreterFactory.interpreter(CobolConditionResolver.EVALUATING_RESOLVER, dataStructures, ImmutableList.of(), executionListeners, bp), FlowControl::CONTINUE);
+        InterpreterBuilder interpreterBuilder = new LoggingInterpreterBuilder(executionListeners, ImmutableList.of());
+        CobolInterpreter coreInterpreter = CobolInterpreterFactory.nonExecutingInterpreter(new CobolStackFrames(dataStructures), ExecuteCondition.ALWAYS_EXECUTE, CobolConditionResolver.ALWAYS_YES, ImmutableList.of(), executionListeners, bp, interpreterBuilder);
+        CobolInterpreter decoratingInterpreter = interpreterBuilder.wrap(coreInterpreter);
+        root.acceptInterpreter(decoratingInterpreter, FlowControl::CONTINUE);
     }
 }

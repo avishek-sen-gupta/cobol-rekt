@@ -1,5 +1,6 @@
 package org.smojol.common.vm.interpreter;
 
+import com.google.common.collect.ImmutableList;
 import org.smojol.common.vm.stack.ExecutionContext;
 
 import java.util.ArrayList;
