@@ -48,7 +48,7 @@ public class Format1DataStructure extends CobolDataStructure {
     }
 
     @Override
-    protected MemoryLayout layout() {
+    public MemoryLayout layout() {
         return layout;
     }
 
@@ -271,7 +271,7 @@ public class Format1DataStructure extends CobolDataStructure {
         return true;
     }
 
-    private boolean isInitialisedRedefinition() {
+    protected boolean isInitialisedRedefinition() {
         return isRedefinition() && layout != null;
     }
 

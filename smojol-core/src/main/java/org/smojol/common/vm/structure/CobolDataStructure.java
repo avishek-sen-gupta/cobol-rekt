@@ -31,7 +31,7 @@ public abstract class CobolDataStructure extends SimpleTreeNode {
     public abstract String name();
     public abstract Function<CobolParser.DataDescriptionEntryFormat1Context, String> namingScheme();
     public abstract String content();
-    protected abstract MemoryLayout layout();
+    public abstract MemoryLayout layout();
 
     public abstract List<CobolDataStructure> matches(String recordID);
     public abstract CobolDataStructure addConditionalVariable(ConditionalDataStructure conditionalDataStructure);

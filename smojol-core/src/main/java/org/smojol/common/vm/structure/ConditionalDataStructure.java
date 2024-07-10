@@ -42,7 +42,7 @@ public class ConditionalDataStructure extends CobolDataStructure {
     }
 
     @Override
-    protected MemoryLayout layout() {
+    public MemoryLayout layout() {
         throw new UnsupportedOperationException("Conditional variable cannot be queried for memory layout");
     }
 

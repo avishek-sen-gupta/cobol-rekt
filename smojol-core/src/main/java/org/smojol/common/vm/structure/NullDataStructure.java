@@ -43,7 +43,7 @@ public class NullDataStructure extends CobolDataStructure {
     }
 
     @Override
-    protected MemoryLayout layout() {
+    public MemoryLayout layout() {
         return null;
     }
 

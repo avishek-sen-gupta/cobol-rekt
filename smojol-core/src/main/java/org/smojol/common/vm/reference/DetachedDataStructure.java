@@ -43,7 +43,7 @@ public class DetachedDataStructure extends CobolDataStructure {
     }
 
     @Override
-    protected MemoryLayout layout() {
+    public MemoryLayout layout() {
         return new NullMemoryLayout();
     }
 

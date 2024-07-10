@@ -40,8 +40,8 @@ public class InterpreterMain {
 
 //        File source = new File("/Users/asgupta/code/smojol/smojol-test-code/test-exp.cbl");
 //        File source = new File("/Users/asgupta/code/smojol/smojol-test-code/table-indexing.cbl");
-        File source = new File("/Users/asgupta/code/smojol/smojol-test-code/table-redef.cbl");
-//        File source = new File("/Users/asgupta/code/smojol/smojol-test-code/simple-redef.cbl");
+//        File source = new File("/Users/asgupta/code/smojol/smojol-test-code/table-redef.cbl");
+        File source = new File("/Users/asgupta/code/smojol/smojol-test-code/simple-redef.cbl");
 
         ComponentsBuilder ops = new ComponentsBuilder(new CobolTreeVisualiserImpl(),
                 FlowchartBuilderImpl::build, new CobolEntityNavigatorBuilderImpl(), new UnresolvedReferenceDoNothingStrategy(),
