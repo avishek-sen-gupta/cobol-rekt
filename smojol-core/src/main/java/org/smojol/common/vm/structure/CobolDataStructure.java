@@ -16,13 +16,14 @@ import org.smojol.common.vm.type.TypedRecord;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Function;
 
 public abstract class CobolDataStructure extends SimpleTreeNode {
-    public static final String THIS = "THIS";
     @Getter protected final CobolDataType dataType;
     private final String name;
     @Getter private final int levelNumber;
+    @Getter private final String id;
     protected List<CobolDataStructure> structures;
     protected CobolDataStructure parent;
     protected boolean isComposite;
@@ -32,8 +33,8 @@ public abstract class CobolDataStructure extends SimpleTreeNode {
     public abstract Function<CobolParser.DataDescriptionEntryFormat1Context, String> namingScheme();
     public abstract String content();
     public abstract MemoryLayout layout();
-
     public abstract List<CobolDataStructure> matches(String recordID);
+
     public abstract CobolDataStructure addConditionalVariable(ConditionalDataStructure conditionalDataStructure);
     public abstract CobolDataStructure copy(Function<CobolParser.DataDescriptionEntryFormat1Context, String> namingScheme);
     public abstract void set(CobolReference ref);
@@ -67,11 +68,7 @@ public abstract class CobolDataStructure extends SimpleTreeNode {
     }
 
     public CobolDataStructure(String name, int levelNumber, CobolDataType dataType) {
-        super(name);
-        this.name = name;
-        this.levelNumber = levelNumber;
-        this.dataType = dataType;
-        structures = new ArrayList<>();
+        this(name, new ArrayList<>(), levelNumber, null, false, dataType);
     }
 
     // Root constructor
@@ -82,6 +79,7 @@ public abstract class CobolDataStructure extends SimpleTreeNode {
     // Copy constructor
     protected CobolDataStructure(String name, List<CobolDataStructure> childStructures, int level, CobolDataStructure parent, boolean isComposite, CobolDataType dataType) {
         super(name);
+        this.id = UUID.randomUUID().toString();
         this.name = name;
         this.dataType = dataType;
         this.levelNumber = level;
@@ -89,15 +87,6 @@ public abstract class CobolDataStructure extends SimpleTreeNode {
         this.parent = parent;
         this.isComposite = isComposite;
         structures.forEach(s -> s.setParent(this));
-    }
-
-    @Deprecated protected CobolDataStructure(int levelNumber, CobolDataType dataType, List<CobolDataStructure> structures, CobolDataStructure parent) {
-        super("SOME THING");
-        this.name = "SOME THING";
-        this.levelNumber = levelNumber;
-        this.dataType = dataType;
-        this.structures = structures;
-        this.parent = parent;
     }
 
     public CobolDataStructure parent() {
@@ -155,7 +144,6 @@ public abstract class CobolDataStructure extends SimpleTreeNode {
     }
 
     public List<? extends CobolDataStructure> searchRecursively(String subRecordID, CobolDataStructure currentStructure, AccessChain chain) {
-        if (THIS.equals(subRecordID)) return ImmutableList.of(currentStructure);
         List<CobolDataStructure> matches = currentStructure.matches(subRecordID);
         if (!matches.isEmpty())
             return matches;
@@ -196,7 +184,8 @@ public abstract class CobolDataStructure extends SimpleTreeNode {
             case NUMBER -> TypedRecord.typedNumber(Double.parseDouble(v.toString()));
             case BOOLEAN -> TypedRecord.typedBoolean(Boolean.parseBoolean(v.toString()));
             case ROOT -> throw new IllegalArgumentException("Can't get value of root structure");
-            default -> throw new IllegalArgumentException("Can't get value of type " + dataType + " of structure " + v.toString());
+            default ->
+                    throw new IllegalArgumentException("Can't get value of type " + dataType + " of structure " + v.toString());
         };
     }
 
@@ -204,9 +193,9 @@ public abstract class CobolDataStructure extends SimpleTreeNode {
         return structures.get(index);
     }
 
-    public void accept(DataStructureVisitor visitor, CobolDataStructure parent, Function<CobolDataStructure, Boolean> stopRecurseCondition) {
-        CobolDataStructure parentNode = visitor.visit(this, parent);
+    public void accept(DataStructureVisitor visitor, CobolDataStructure parent, Function<CobolDataStructure, Boolean> stopRecurseCondition, CobolDataStructure root) {
+        CobolDataStructure parentNode = visitor.visit(this, parent, root);
         if (stopRecurseCondition.apply(this)) return;
-        this.structures.forEach(s -> s.accept(visitor, parentNode, stopRecurseCondition));
+        this.structures.forEach(s -> s.accept(visitor, parentNode, stopRecurseCondition, root));
     }
 }

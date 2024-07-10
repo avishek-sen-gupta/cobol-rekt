@@ -67,17 +67,18 @@ public class GraphExplorerMain {
         astWalker.buildAST(root);
 
         Advisor advisor = new Advisor(OpenAICredentials.fromEnv());
-        Record neo4jProgramRoot = sdk.findNode(qualifier.astNodeCriteria(Map.of(TYPE, FlowNodeType.PROCEDURE_DIVISION_BODY.toString()))).getFirst();
+        Record neo4jProgramRoot = sdk.findNodes(qualifier.astNodeCriteria(Map.of(TYPE, FlowNodeType.PROCEDURE_DIVISION_BODY.toString()))).getFirst();
 
         // Summarises AST bottom-up
         sdk.traverse(neo4jProgramRoot, new SummariseAction(advisor, sdk), CONTAINS);
 
         // Builds data structures
-        dataStructures.accept(new Neo4JDataStructureVisitor(sdk, qualifier), null, n -> false);
+        dataStructures.accept(new Neo4JDataStructureVisitor(sdk, qualifier), null, n -> false, dataStructures);
+        dataStructures.accept(new Neo4JRedefinitionVisitor(sdk, qualifier), null, n -> false, dataStructures);
 
         // Builds data dependencies
         astWalker.buildDataDependencies(root);
-        Record neo4jDataStructuresRoot = sdk.findNode(qualifier.dataNodeSearchCriteria(Map.of(TYPE, "ROOT"))).getFirst();
+        Record neo4jDataStructuresRoot = sdk.findNodes(qualifier.dataNodeSearchCriteria(Map.of(TYPE, "ROOT"))).getFirst();
 
         // Summarises data structures
         sdk.traverse(neo4jDataStructuresRoot, new DataStructureSummariseAction(advisor, sdk), CONTAINS);

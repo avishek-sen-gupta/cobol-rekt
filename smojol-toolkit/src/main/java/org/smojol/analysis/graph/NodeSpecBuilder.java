@@ -31,9 +31,10 @@ public class NodeSpecBuilder {
     public NodeSpec newDataNode(CobolDataStructure structure) {
         return new NodeSpec(ImmutableList.of(DATA_STRUCTURE, structure.getDataType().toString()),
                 Map.of(ID, idProvider.next(),
-                        HUMAN_READABLE_ID, structure.name(),
+                        INTERNAL_ID, structure.getId(),
                         NAME, structure.name(),
                         TYPE, structure.getDataType().toString(),
+                        ENTITY_TYPE, DATA_STRUCTURE,
                         LEVEL, structure.getLevelNumber(),
                         NAMESPACE, namespaceQualifier.getNamespace()
                 ));
@@ -42,9 +43,10 @@ public class NodeSpecBuilder {
     public NodeSpec newASTNode(FlowNode node) {
         return new NodeSpec(ImmutableList.of(AST_NODE, node.type().toString()),
                 Map.of(ID, idProvider.next(),
-                        HUMAN_READABLE_ID, node.id(),
+                        INTERNAL_ID, node.id(),
                         TEXT, NodeText.originalText(node.getExecutionContext(), NodeText::PASSTHROUGH),
                         TYPE, node.type().toString(),
+                        ENTITY_TYPE, AST_NODE,
                         NAMESPACE, namespaceQualifier.getNamespace()
                 ));
     }
@@ -52,9 +54,10 @@ public class NodeSpecBuilder {
     public NodeSpec newCFGNode(FlowNode node) {
         return new NodeSpec(ImmutableList.of(CFG_NODE, node.type().toString()), Map.of(
                 ID, idProvider.next(),
-                HUMAN_READABLE_ID, node.id(),
+                INTERNAL_ID, node.id(),
                 TEXT, node.getExecutionContext().getText(),
                 TYPE, node.type().toString(),
+                ENTITY_TYPE, CFG_NODE,
                 NAMESPACE, namespaceQualifier.getNamespace()
         ));
     }
@@ -62,19 +65,20 @@ public class NodeSpecBuilder {
     public NodeSpec newTraceNode(FlowNode node) {
         return new NodeSpec(ImmutableList.of(CFG_TRACE, node.type().toString()),
                 Map.of(ID, idProvider.next(),
-                        HUMAN_READABLE_ID, node.id(),
+                        INTERNAL_ID, node.id(),
                         TEXT, node.getExecutionContext().getText(),
                         TYPE, node.type().toString(),
+                        ENTITY_TYPE, CFG_TRACE,
                         NAMESPACE, namespaceQualifier.getNamespace()
                 ));
     }
 
     public NodeSpec dataNodeSearchSpec(CobolDataStructure structure) {
-        return dataNodeSearchCriteria(Map.of(NAME, structure.name(), NAMESPACE, namespaceQualifier.getNamespace()));
+        return dataNodeSearchCriteria(Map.of(INTERNAL_ID, structure.getId(), NAME, structure.name(), NAMESPACE, namespaceQualifier.getNamespace()));
     }
 
     public NodeSpec cfgNodeSearchSpec(FlowNode node) {
-        return new NodeSpec(ImmutableList.of(CFG_NODE), Map.of(HUMAN_READABLE_ID, node.id(), NAMESPACE, namespaceQualifier.getNamespace()));
+        return new NodeSpec(ImmutableList.of(CFG_NODE), Map.of(INTERNAL_ID, node.id(), NAMESPACE, namespaceQualifier.getNamespace()));
     }
 
     public NodeSpec dataNodeSearchCriteria(Map<String, Object> criteria) {

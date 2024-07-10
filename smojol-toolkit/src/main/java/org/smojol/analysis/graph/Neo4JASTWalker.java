@@ -13,13 +13,6 @@ import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.interpreter.navigation.FlowNodeASTTraversal;
 
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import static com.mojo.woof.NodeLabels.AST_NODE;
-import static com.mojo.woof.NodeProperties.*;
-import static com.mojo.woof.NodeRelations.CONTAINS;
-import static com.mojo.woof.NodeRelations.MODIFIES;
 
 public class Neo4JASTWalker {
     private final GraphSDK sdk;
@@ -99,7 +92,7 @@ public class Neo4JASTWalker {
 
     private void connect(List<CobolDataStructure> froms, List<CobolDataStructure> tos) {
         tos.forEach(to -> froms.forEach(from -> {
-            Record n4jTo = sdk.findNode(qualifier.dataNodeSearchSpec(to)).getFirst();
+            Record n4jTo = sdk.findNodes(qualifier.dataNodeSearchSpec(to)).getFirst();
             Record n4jFrom = sdk.newOrExisting(qualifier.dataNodeSearchSpec(from), NodeToWoof.dataStructureToWoof(from, qualifier));
             sdk.modifies(n4jFrom, n4jTo);
         }));

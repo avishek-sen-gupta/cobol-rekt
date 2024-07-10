@@ -5,7 +5,6 @@ import org.neo4j.driver.Record;
 import org.smojol.common.flowchart.*;
 import org.smojol.common.vm.structure.CobolDataStructure;
 
-import static com.mojo.woof.NodeRelations.CONTAINS;
 import static org.smojol.analysis.graph.NodeToWoof.dataStructureToWoof;
 
 public class Neo4JDataStructureVisitor implements DataStructureVisitor {
@@ -18,11 +17,11 @@ public class Neo4JDataStructureVisitor implements DataStructureVisitor {
     }
 
     @Override
-    public CobolDataStructure visit(CobolDataStructure data, CobolDataStructure parent) {
+    public CobolDataStructure visit(CobolDataStructure data, CobolDataStructure parent, CobolDataStructure root) {
         WoofNode node = dataStructureToWoof(data, nodeQualifier);
         Record record = sdk.createNode(node);
         if (parent == null) return data;
-        Record parentNode = sdk.findNode(nodeQualifier.dataNodeSearchSpec(parent)).getFirst();
+        Record parentNode = sdk.findNodes(nodeQualifier.dataNodeSearchSpec(parent)).getFirst();
         sdk.contains(parentNode, record);
         return data;
     }

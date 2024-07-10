@@ -1,6 +1,7 @@
 package org.smojol.common.vm.structure;
 
 import com.google.common.collect.ImmutableList;
+import lombok.Getter;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.eclipse.lsp.cobol.core.CobolParser;
@@ -21,7 +22,7 @@ import java.util.function.Function;
 public class Format1DataStructure extends CobolDataStructure {
     protected final UnresolvedReferenceStrategy unresolvedReferenceStrategy;
     private final Function<CobolParser.DataDescriptionEntryFormat1Context, String> namingScheme;
-    protected CobolParser.DataDescriptionEntryFormat1Context dataDescription;
+    @Getter protected CobolParser.DataDescriptionEntryFormat1Context dataDescription;
     protected final List<ConditionalDataStructure> conditions = new ArrayList<>();
     protected MemoryLayout layout;
     protected Pair<DataTypeSpec, Integer> typeSpec;
