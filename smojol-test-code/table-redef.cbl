@@ -1,0 +1,16 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. HELLO-WORLD.
+       DATA DIVISION.
+           WORKING-STORAGE SECTION.
+               01  IDMS-AREA PIC X(2) VALUE  LOW-VALUE.
+               01  IDMS REDEFINES IDMS-AREA PIC X OCCURS 2.
+       PROCEDURE DIVISION.
+       SECTION-A SECTION.
+           MOVE "CD" TO IDMS-AREA.
+           DISPLAY "LEVEL-20-A = " IDMS-AREA
+           MOVE "A" TO IDMS(1).
+           MOVE "B" TO IDMS(2).
+           DISPLAY "LEVEL-20-A = " IDMS-AREA
+
+           STOP RUN.
+

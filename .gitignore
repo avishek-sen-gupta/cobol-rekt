@@ -136,5 +136,4 @@ clients/cobol-lsp-vscode-extension/test-report.xml
 **/InterpreterMainForTestingOnly.java
 **/GraphExplorerMainForTestingOnly.java
 
-smojol-test-code/
 out/

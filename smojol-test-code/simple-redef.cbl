@@ -1,0 +1,13 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. HELLO-WORLD.
+       DATA DIVISION.
+           WORKING-STORAGE SECTION.
+               01  AAA PIC X(5) VALUE LOW-VALUE.
+               01  BBB REDEFINES AAA PIC X(5).
+       PROCEDURE DIVISION.
+       SECTION-A SECTION.
+           MOVE "ABCDE" TO BBB.
+           DISPLAY "BBB = " BBB
+
+           STOP RUN.
+

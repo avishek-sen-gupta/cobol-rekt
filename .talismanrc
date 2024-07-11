@@ -3,3 +3,5 @@ fileignoreconfig:
   checksum: 076f2e54e0504ee9b91abce0f6331dd088439246729c151b70c06bad13160fcc
 - filename: woof
   checksum: 7d588457269a756bd01fbea071f543692092ac1f201e319ca2766165574923cd
+- filename: smojol-test-code/nist85.cbl
+  checksum: ab6eb548ef861a2d4b399b74e67ce9ea6234721a82021d07040583f4e15f9648
