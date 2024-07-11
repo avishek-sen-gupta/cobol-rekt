@@ -20,7 +20,6 @@ jobs:
       uses: actions/setup-java@v4.2.1
       with:
         java-version: '21'
-        distribution: 'jdk'
         server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
         settings-path: ${{ github.workspace }} # location for the settings.xml file
 
