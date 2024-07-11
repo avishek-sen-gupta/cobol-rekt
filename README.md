@@ -7,7 +7,7 @@ This is an evolving toolkit of capabilities helpful for reverse engineering lega
 - Control Flow Tree generation
 - The SMOJOL Interpreter (WIP)
 - Injecting AST and Control Flow into Neo4J
-- Injecting Cobol data layouts from Data Division into Neo4J
+- Injecting Cobol data layouts from Data Division into Neo4J (with dependencies)
 - Injecting execution traces from the SMOJOL interpreter into Neo4J
 - Injecting record dependency connections (MOVE, COMPUTE, etc.) into Neo4J
 - Integration with OpenAI GPT to summarise nodes using bottom-up node traversal
@@ -67,11 +67,11 @@ The following diagram shows the AST, the Control Flow Graph, and the data struct
 
 ![ast-cfg-structs-graph](documentation/ast-and-cfg-structs-graph.png)
 
-## Record Dependency Graph
+## Data Dependency Graph
 
-This capability connects records which modify other records, with a ```MODIFIES``` relation. The dependencies traced include variables which are used in expressions, as well as free-standing literals. Below is an example of a set of record dependencies from a program.
+This capability connects records which modify other records, with a ```MODIFIES``` relation. The dependencies traced include variables which are used in expressions, as well as free-standing literals. Below is an example of a set of record dependencies from a program. It also generates connections based on REDEFINES clauses.
 
-![ast-cfg-structs-graph](documentation/record-dependencies-graph.png)
+![ast-cfg-structs-graph](documentation/record-dependencies-graph2.png)
 
 ## SMOJOL (SMol Java-powered CobOL) Interpreter
 
