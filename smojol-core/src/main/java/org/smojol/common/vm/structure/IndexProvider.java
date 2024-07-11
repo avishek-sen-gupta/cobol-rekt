@@ -13,7 +13,7 @@ public class IndexProvider {
 
     public int next() {
         Integer nextIndex = indices.get(counter);
-        counter ++;
+        counter++;
         return nextIndex;
     }
 
