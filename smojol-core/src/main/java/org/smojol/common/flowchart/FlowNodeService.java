@@ -12,5 +12,5 @@ public interface FlowNodeService {
     CobolEntityNavigator getNavigator();
     CobolDataStructure getDataStructures();
     FlowNode existingNode(ParseTree parseTree);
-    int counter();
+    String nextID();
 }

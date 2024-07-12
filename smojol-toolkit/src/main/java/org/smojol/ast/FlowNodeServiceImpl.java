@@ -1,6 +1,7 @@
 package org.smojol.ast;
 
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.smojol.common.id.IdProvider;
 import org.smojol.interpreter.stack.CobolStackFrames;
 import org.smojol.common.flowchart.FlowNode;
 import org.smojol.common.flowchart.FlowNodeService;
@@ -16,10 +17,12 @@ public class FlowNodeServiceImpl implements FlowNodeService {
     private List<FlowNode> nodes = new ArrayList<>();
     private CobolEntityNavigator navigator;
     private final CobolDataStructure dataStructures;
+    private final IdProvider idProvider;
 
-    public FlowNodeServiceImpl(CobolEntityNavigator navigator, CobolDataStructure dataStructures) {
+    public FlowNodeServiceImpl(CobolEntityNavigator navigator, CobolDataStructure dataStructures, IdProvider idProvider) {
         this.navigator = navigator;
         this.dataStructures = dataStructures;
+        this.idProvider = idProvider;
     }
 
     public FlowNode register(FlowNode flowNode) {
@@ -63,8 +66,7 @@ public class FlowNodeServiceImpl implements FlowNodeService {
     }
 
     @Override
-    public int counter() {
-        counter ++;
-        return counter;
+    public String nextID() {
+        return idProvider.next();
     }
 }

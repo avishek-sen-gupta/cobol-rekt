@@ -28,7 +28,7 @@ public class CobolFlowNode implements FlowNode {
     protected final StackFrames staticFrameContext;
 
     public CobolFlowNode(ParseTree executionContext, FlowNode scope, FlowNodeService nodeService, StackFrames stackFrames) {
-        this.uuid = String.valueOf(nodeService.counter());
+        this.uuid = nodeService.nextID();
         this.nodeService = nodeService;
         this.executionContext = executionContext;
         this.scope = scope;
@@ -221,7 +221,8 @@ public class CobolFlowNode implements FlowNode {
 
     @Override
     public String id() {
-        return name() + "." + uuid;
+        return uuid;
+//        return name() + "." + uuid;
     }
 
     @Override

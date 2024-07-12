@@ -1,44 +1,50 @@
 package org.smojol.analysis.graph;
 
 import com.google.common.collect.ImmutableList;
-import com.mojo.woof.GraphSDK;
-import com.mojo.woof.WoofNode;
+import org.jgrapht.Graph;
+import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.graph.DirectedAcyclicGraph;
+import org.jgrapht.nio.Attribute;
+import org.jgrapht.nio.AttributeType;
+import org.jgrapht.nio.DefaultAttribute;
 import org.neo4j.driver.Record;
 import org.smojol.ast.*;
-import org.smojol.common.flowchart.*;
+import org.smojol.common.flowchart.FlowNode;
+import org.smojol.common.flowchart.FlowNodeType;
 import org.smojol.common.vm.expression.ArithmeticExpressionVisitor;
 import org.smojol.common.vm.expression.CobolExpression;
 import org.smojol.common.vm.reference.ShallowReferenceBuilder;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.interpreter.navigation.FlowNodeASTTraversal;
 
+import java.io.File;
 import java.util.List;
+import java.util.Map;
 
-public class Neo4JASTWalker {
-    private final GraphSDK sdk;
+import static com.mojo.woof.NodeRelations.CONTAINS;
+
+public class GraphMLExporter {
     private final CobolDataStructure data;
     private final NodeSpecBuilder qualifier;
+    private final Graph<FlowNode, DefaultEdge> astGraph;
+    private final Graph<CobolDataStructure, DefaultEdge> dataStructuresGraph;
 
-    public Neo4JASTWalker(GraphSDK sdk, CobolDataStructure dataStructures, NodeSpecBuilder qualifier) {
-        this.sdk = sdk;
+    public GraphMLExporter(CobolDataStructure dataStructures, NodeSpecBuilder qualifier) {
         this.data = dataStructures;
         this.qualifier = qualifier;
-    }
-
-    public void buildAST(FlowNode node) {
-        new FlowNodeASTTraversal<Record>().build(node, this::make);
+        astGraph = new DirectedAcyclicGraph<>(DefaultEdge.class);
+        dataStructuresGraph = new DirectedAcyclicGraph<>(DefaultEdge.class);
     }
 
     public void buildDataDependencies(FlowNode root) {
         new FlowNodeASTTraversal<Boolean>().build(root, this::buildDataDependency);
     }
 
-    public Record make(FlowNode tree, Record parent) {
-        WoofNode node = new WoofNode(qualifier.newASTNode(tree));
-        Record record = sdk.createNode(node);
-        if (parent == null) return record;
-        sdk.contains(parent, record);
-        return record;
+    public FlowNode buildGraphML(FlowNode node, FlowNode parent) {
+        astGraph.addVertex(node);
+        if (parent == null) return node;
+        astGraph.addEdge(parent, node);
+        return node;
     }
 
     public Boolean buildDataDependency(FlowNode node, Boolean parent) {
@@ -92,13 +98,29 @@ public class Neo4JASTWalker {
 
     private void connect(List<CobolDataStructure> froms, List<CobolDataStructure> tos) {
         tos.forEach(to -> froms.forEach(from -> {
-            Record n4jTo = sdk.findNodes(qualifier.dataNodeSearchSpec(to)).getFirst();
-            Record n4jFrom = sdk.newOrExisting(qualifier.dataNodeSearchSpec(from), NodeToWoof.dataStructureToWoof(from, qualifier));
-            sdk.modifies(n4jFrom, n4jTo);
+            dataStructuresGraph.addEdge(from, to);
         }));
     }
 
-    private Boolean stopAtSentence(FlowNode tree) {
-        return tree.type() == FlowNodeType.SECTION;
+    public void buildAST(FlowNode root) {
+        org.jgrapht.nio.graphml.GraphMLExporter<FlowNode, DefaultEdge> exporter = new org.jgrapht.nio.graphml.GraphMLExporter<>();
+        exporter.registerAttribute("type", org.jgrapht.nio.graphml.GraphMLExporter.AttributeCategory.NODE, AttributeType.STRING);
+        exporter.registerAttribute("label", org.jgrapht.nio.graphml.GraphMLExporter.AttributeCategory.NODE, AttributeType.STRING);
+        exporter.registerAttribute("text", org.jgrapht.nio.graphml.GraphMLExporter.AttributeCategory.NODE, AttributeType.STRING);
+        exporter.registerAttribute("relationshipType", org.jgrapht.nio.graphml.GraphMLExporter.AttributeCategory.EDGE, AttributeType.STRING);
+        exporter.setVertexAttributeProvider(n -> Map.of(
+                "id", attr(n.id()),
+                "type", attr(n.type().toString()),
+                "label", attr(n.label()),
+                "text", attr(n.originalText())));
+
+        exporter.setEdgeAttributeProvider(e -> Map.of("relationshipType", attr(CONTAINS)));
+        exporter.setVertexIdProvider(FlowNode::id);
+        new FlowNodeASTTraversal<FlowNode>().build(root, this::buildGraphML);
+        exporter.exportGraph(astGraph, new File("/Users/asgupta/code/smojol/out/test.graphml"));
+    }
+
+    private Attribute attr(String attribute) {
+        return new DefaultAttribute<>(attribute, AttributeType.STRING);
     }
 }

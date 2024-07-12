@@ -10,10 +10,10 @@ import java.util.List;
 
 public class NullFlowNode implements FlowNode {
 
-    private final int uuid;
+    private final String uuid;
 
     public NullFlowNode(FlowNodeService nodeService) {
-        uuid = nodeService.counter();
+        uuid = nodeService.nextID();
     }
 
     @Override

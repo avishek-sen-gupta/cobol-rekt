@@ -19,7 +19,7 @@ public class GenericProcessingFlowNode implements FlowNode {
     private String uuid;
 
     public GenericProcessingFlowNode(FlowNode node, FlowNode enclosingScope, FlowNodeService nodeService) {
-        this.uuid = String.valueOf(nodeService.counter());
+        this.uuid = nodeService.nextID();
         this.enclosingScope = enclosingScope;
         nodes.add(node);
         type = node.getClass();

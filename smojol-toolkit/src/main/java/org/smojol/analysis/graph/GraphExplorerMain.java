@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.util.Map;
 
 import static com.mojo.woof.NodeProperties.TYPE;
-import static com.mojo.woof.NodeRelations.CONTAINS;
 
 public class GraphExplorerMain {
     private final Logger logger = LoggerFactory.getLogger(GraphExplorerMain.class);
@@ -57,10 +56,11 @@ public class GraphExplorerMain {
         // Builds Control Flow Graph
         NodeSpecBuilder qualifier = new NodeSpecBuilder(new NamespaceQualifier("NEW-CODE"));
         root.accept(new Neo4JFlowCFGVisitor(sdk, qualifier), -1);
-        Neo4JASTWalker astWalker = new Neo4JASTWalker(sdk, dataStructures, qualifier);
+        Neo4JASTExporter neo4JExporter = new Neo4JASTExporter(sdk, dataStructures, qualifier);
+        GraphMLExporter graphMLExporter = new GraphMLExporter(dataStructures, qualifier);
 
         // Builds AST
-        astWalker.buildAST(root);
+        neo4JExporter.buildAST(root);
 
         Advisor advisor = new Advisor(OpenAICredentials.fromEnv());
         Record neo4jProgramRoot = sdk.findNodes(qualifier.astNodeCriteria(Map.of(TYPE, FlowNodeType.PROCEDURE_DIVISION_BODY.toString()))).getFirst();
@@ -70,12 +70,14 @@ public class GraphExplorerMain {
         dataStructures.accept(new Neo4JRedefinitionVisitor(sdk, qualifier), null, n -> false, dataStructures);
 
         // Builds data dependencies
-        astWalker.buildDataDependencies(root);
+        neo4JExporter.buildDataDependencies(root);
         Record neo4jDataStructuresRoot = sdk.findNodes(qualifier.dataNodeSearchCriteria(Map.of(TYPE, "ROOT"))).getFirst();
 
-        GraphPatternMatcher visitor = new GraphPatternMatcher(sdk);
-        root.accept(visitor, node -> node.type() == FlowNodeType.SENTENCE, -1);
-        System.out.printf("Number of groups = %s%n", visitor.getMatches().size());
+//        GraphPatternMatcher visitor = new GraphPatternMatcher(sdk);
+//        root.accept(visitor, node -> node.type() == FlowNodeType.SENTENCE, -1);
+//        System.out.printf("Number of groups = %s%n", visitor.getMatches().size());
+
+        graphMLExporter.buildAST(root);
 
         // Summarises AST bottom-up
 //        sdk.traverse(neo4jProgramRoot, new SummariseAction(advisor, sdk), CONTAINS);

@@ -8,6 +8,7 @@ import guru.nidi.graphviz.model.MutableGraph;
 import guru.nidi.graphviz.model.MutableNode;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.smojol.common.flowchart.*;
+import org.smojol.common.id.UUIDProvider;
 import org.smojol.interpreter.stack.CobolStackFrames;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.vm.structure.CobolDataStructure;
@@ -29,7 +30,7 @@ public class FlowchartBuilderImpl implements FlowchartBuilder {
 
     public FlowchartBuilderImpl(CobolEntityNavigator cobolEntityNavigator, CobolDataStructure dataStructures) {
         this.cobolEntityNavigator = cobolEntityNavigator;
-        flowNodeService = new FlowNodeServiceImpl(cobolEntityNavigator, dataStructures);
+        flowNodeService = new FlowNodeServiceImpl(cobolEntityNavigator, dataStructures, new UUIDProvider());
         this.dataStructures = dataStructures;
         graph = Factory.mutGraph("example1").setDirected(true).setCluster(true);
         Graphviz.useEngine(new GraphvizCmdLineEngine().timeout(5, java.util.concurrent.TimeUnit.HOURS));
