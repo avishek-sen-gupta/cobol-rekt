@@ -65,9 +65,6 @@ public class GraphExplorerMain {
         Advisor advisor = new Advisor(OpenAICredentials.fromEnv());
         Record neo4jProgramRoot = sdk.findNodes(qualifier.astNodeCriteria(Map.of(TYPE, FlowNodeType.PROCEDURE_DIVISION_BODY.toString()))).getFirst();
 
-        // Summarises AST bottom-up
-//        sdk.traverse(neo4jProgramRoot, new SummariseAction(advisor, sdk), CONTAINS);
-
         // Builds data structures
         dataStructures.accept(new Neo4JDataStructureVisitor(sdk, qualifier), null, n -> false, dataStructures);
         dataStructures.accept(new Neo4JRedefinitionVisitor(sdk, qualifier), null, n -> false, dataStructures);
@@ -76,11 +73,13 @@ public class GraphExplorerMain {
         astWalker.buildDataDependencies(root);
         Record neo4jDataStructuresRoot = sdk.findNodes(qualifier.dataNodeSearchCriteria(Map.of(TYPE, "ROOT"))).getFirst();
 
-        // Summarises data structures
-//        sdk.traverse(neo4jDataStructuresRoot, new DataStructureSummariseAction(advisor, sdk), CONTAINS);
-
         GraphPatternMatcher visitor = new GraphPatternMatcher(sdk);
         root.accept(visitor, node -> node.type() == FlowNodeType.SENTENCE, -1);
         System.out.printf("Number of groups = %s%n", visitor.getMatches().size());
+
+        // Summarises AST bottom-up
+//        sdk.traverse(neo4jProgramRoot, new SummariseAction(advisor, sdk), CONTAINS);
+        // Summarises data structures
+//        sdk.traverse(neo4jDataStructuresRoot, new DataStructureSummariseAction(advisor, sdk), CONTAINS);
     }
 }
