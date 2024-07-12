@@ -60,8 +60,8 @@ public class CobolEntityNavigator {
         List<ParseTree> trees = new ArrayList<>();
         findAllByConditionRecursive(scope, trees, n ->
 //                !StatementIdentity.isOneOfTypes(n, ImmutableList.of(CobolParser.ParagraphContext.class, CobolParser.ProcedureSectionContext.class)) &&
-                SyntaxIdentity.isOfType(n, CobolParser.StatementContext.class) &&
-                        n.getText().contains(symbol), 1, -1);
+                SyntaxIdentity.isOfType(n, CobolParser.StatementContext.class)
+                        && n.getText().contains(symbol), 1, -1);
         return trees;
     }
 
@@ -140,6 +140,7 @@ public class CobolEntityNavigator {
     }
 
     public static Function<ParseTree, Boolean> NEVER_STOP = n -> false;
+
     public static <T> T internalBuild(ParseTree tree, T parent, BiFunction<ParseTree, T, T> make, Function<ParseTree, Boolean> stopRecurseCondition) {
         T node = make.apply(tree, parent);
         if (stopRecurseCondition.apply(tree)) return node;
