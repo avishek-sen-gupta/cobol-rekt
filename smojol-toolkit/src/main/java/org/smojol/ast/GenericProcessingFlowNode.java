@@ -71,6 +71,11 @@ public class GenericProcessingFlowNode implements FlowNode {
     }
 
     @Override
+    public void accept(FlowNodeVisitor visitor, FlowNodeCondition stopCondition, int level) {
+
+    }
+
+    @Override
     public List<? extends ParseTree> getChildren() {
         return List.of();
     }

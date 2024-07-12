@@ -18,8 +18,7 @@ public class MergingChartOverlay implements ChartOverlay {
         if (containingGroups.isEmpty()) return node;
         if (containingGroups.size() == 1) return containingGroups.getFirst();
         // Filters out lower-level groups which are GenericStatement aggregations
-        // TODO: This is very similar to the OverlayVisitor's condition. Maybe some refactoring to isAtomicType() is needed
-        return containingGroups.stream().filter(g -> !isAtomic2(g)).findFirst().get();
+        return containingGroups.stream().filter(g -> !isAtomic(g)).findFirst().get();
     }
 
     public static boolean isAtomic(FlowNode node) {
@@ -31,9 +30,5 @@ public class MergingChartOverlay implements ChartOverlay {
                 node.getClass() == MultiplyFlowNode.class ||
                 node.getClass() == DivideFlowNode.class ||
                 node.getClass() == AddFlowNode.class;
-    }
-
-    private static boolean isAtomic2(GenericProcessingFlowNode g) {
-        return isAtomic(g);
     }
 }

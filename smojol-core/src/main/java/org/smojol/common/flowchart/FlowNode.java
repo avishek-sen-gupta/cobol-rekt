@@ -23,6 +23,7 @@ public interface FlowNode {
 
     void linkParentToChild(FlowNodeVisitor visitor, int level);
     void accept(FlowNodeVisitor visitor, int level);
+    void accept(FlowNodeVisitor visitor, FlowNodeCondition stopCondition, int level);
     void acceptUnvisited(FlowNodeVisitor visitor, int level);
 
     List<? extends ParseTree> getChildren();

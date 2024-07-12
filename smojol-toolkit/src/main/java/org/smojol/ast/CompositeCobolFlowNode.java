@@ -65,6 +65,17 @@ public class CompositeCobolFlowNode extends CobolFlowNode {
     }
 
     @Override
+    public void acceptUnvisited(FlowNodeVisitor visitor, FlowNodeCondition stopRecurseCondition, int level) {
+        visitor.visit(this, outgoingNodes, incomingNodes, new VisitContext(level), nodeService);
+        if (!stopRecurseCondition.apply(this) && internalTreeRoot != null) {
+            linkParentToChild(visitor, level);
+            FlowNode current = internalTreeRoot;
+            current.accept(visitor.newScope(this), stopRecurseCondition, level + 1);
+        }
+        outgoingNodes.forEach(c -> c.accept(visitor, stopRecurseCondition, level));
+    }
+
+    @Override
     public FlowNode next(FlowNodeCondition nodeCondition, FlowNode startingNode, boolean isComplete) {
         System.out.println("Moved up to " + executionContext.getClass() + executionContext.getText());
         CobolEntityNavigator navigator = nodeService.getNavigator();

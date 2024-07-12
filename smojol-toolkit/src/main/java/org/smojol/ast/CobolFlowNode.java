@@ -135,10 +135,18 @@ public class CobolFlowNode implements FlowNode {
         acceptUnvisited(visitor, level);
     }
 
+    @Override
+    public void accept(FlowNodeVisitor visitor, FlowNodeCondition stopRecurseCondition, int level) {
+        acceptUnvisited(visitor, stopRecurseCondition, level);
+    }
+
     public void acceptUnvisited(FlowNodeVisitor visitor, int level) {
-//        System.out.println("Current level: " + level);
         visitor.visit(this, outgoingNodes, incomingNodes, new VisitContext(level), nodeService);
         outgoingNodes.forEach(c -> c.accept(visitor, level));
+    }
+
+    public void acceptUnvisited(FlowNodeVisitor visitor, FlowNodeCondition stopCondition, int level) {
+        acceptUnvisited(visitor, level);
     }
 
     @Override

@@ -6,8 +6,6 @@ import org.smojol.common.flowchart.*;
 
 import java.util.List;
 
-import static com.mojo.woof.NodeRelations.*;
-
 public class Neo4JFlowCFGVisitor implements FlowNodeVisitor {
     private final GraphSDK sdk;
     private final NodeSpecBuilder qualifier;
@@ -49,6 +47,7 @@ public class Neo4JFlowCFGVisitor implements FlowNodeVisitor {
         Record destinationRecord = newOrExisting(to);
         sdk.jumpsTo(sourceRecord, destinationRecord);
     }
+
     @Override
     public FlowNodeVisitor newScope(FlowNode enclosingScope) {
         return this;
