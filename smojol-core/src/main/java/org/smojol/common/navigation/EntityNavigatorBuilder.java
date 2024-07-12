@@ -2,6 +2,8 @@ package org.smojol.common.navigation;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 
-public interface EntityNavigatorBuilder {
-    CobolEntityNavigator navigator(ParserRuleContext fullProgramTree);
+public class EntityNavigatorBuilder {
+    public CobolEntityNavigator navigator(ParserRuleContext fullProgramTree) {
+        return new CobolEntityNavigator(fullProgramTree);
+    }
 }

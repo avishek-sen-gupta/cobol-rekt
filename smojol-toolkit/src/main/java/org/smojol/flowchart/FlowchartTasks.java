@@ -3,13 +3,13 @@ package org.smojol.flowchart;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.smojol.analysis.LanguageDialect;
 import org.smojol.analysis.ParsePipeline;
-import org.smojol.analysis.visualisation.CobolTreeVisualiserImpl;
 import org.smojol.analysis.visualisation.ComponentsBuilder;
+import org.smojol.common.flowchart.CobolTreeVisualiser;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.ast.FlowchartBuilderImpl;
 import org.eclipse.lsp.cobol.core.CobolParser;
+import org.smojol.common.navigation.EntityNavigatorBuilder;
 import org.smojol.interpreter.FlowchartGenerationStrategy;
-import org.smojol.interpreter.navigation.CobolEntityNavigatorBuilderImpl;
 import org.smojol.common.vm.strategy.UnresolvedReferenceThrowStrategy;
 import org.smojol.interpreter.structure.DefaultFormat1DataStructureBuilder;
 
@@ -53,8 +53,8 @@ public class FlowchartTasks {
         Files.createDirectories(dotFileOutputDir);
         Files.createDirectories(imageOutputDir);
 
-        ComponentsBuilder ops = new ComponentsBuilder(new CobolTreeVisualiserImpl(),
-                FlowchartBuilderImpl::build, new CobolEntityNavigatorBuilderImpl(), new UnresolvedReferenceThrowStrategy(),
+        ComponentsBuilder ops = new ComponentsBuilder(new CobolTreeVisualiser(),
+                FlowchartBuilderImpl::build, new EntityNavigatorBuilder(), new UnresolvedReferenceThrowStrategy(),
                 new DefaultFormat1DataStructureBuilder());
         ParsePipeline pipeline = new ParsePipeline(source,
                 copyBookPaths,

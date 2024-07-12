@@ -7,18 +7,18 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.smojol.analysis.LanguageDialect;
 import org.smojol.analysis.graph.NamespaceQualifier;
 import org.smojol.analysis.graph.NodeSpecBuilder;
+import org.smojol.common.flowchart.CobolTreeVisualiser;
 import org.smojol.common.flowchart.FlowNode;
 import org.smojol.common.flowchart.FlowNodeService;
 import org.smojol.common.flowchart.FlowchartBuilder;
 import org.smojol.ast.DisplayFlowNode;
 import org.smojol.ast.FlowchartBuilderImpl;
 import org.smojol.analysis.ParsePipeline;
-import org.smojol.analysis.visualisation.CobolTreeVisualiserImpl;
 import org.smojol.analysis.visualisation.ComponentsBuilder;
 import org.smojol.common.navigation.CobolEntityNavigator;
+import org.smojol.common.navigation.EntityNavigatorBuilder;
 import org.smojol.common.vm.interpreter.*;
 import org.smojol.interpreter.interpreter.*;
-import org.smojol.interpreter.navigation.CobolEntityNavigatorBuilderImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smojol.common.vm.strategy.UnresolvedReferenceDoNothingStrategy;
@@ -43,8 +43,8 @@ public class InterpreterMain {
 //        File source = new File("/Users/asgupta/code/smojol/smojol-test-code/table-redef.cbl");
 //        File source = new File("/Users/asgupta/code/smojol/smojol-test-code/simple-redef.cbl");
 
-        ComponentsBuilder ops = new ComponentsBuilder(new CobolTreeVisualiserImpl(),
-                FlowchartBuilderImpl::build, new CobolEntityNavigatorBuilderImpl(), new UnresolvedReferenceDoNothingStrategy(),
+        ComponentsBuilder ops = new ComponentsBuilder(new CobolTreeVisualiser(),
+                FlowchartBuilderImpl::build, new EntityNavigatorBuilder(), new UnresolvedReferenceDoNothingStrategy(),
                 new DefaultFormat1DataStructureBuilder());
         ParsePipeline pipeline = new ParsePipeline(source,
                 copyBookPaths,
