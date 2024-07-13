@@ -1,5 +1,6 @@
 package org.smojol.analysis.graph;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DirectedAcyclicGraph;
@@ -62,6 +63,7 @@ public class GraphMLExportCommands {
 
     public Boolean buildDataDependency(FlowNode node, Boolean parent) {
         Map.Entry<List<CobolDataStructure>, List<CobolDataStructure>> pairs = DataDependencyPairComputer.dependencyPairs(node, data);
+        if (ImmutablePair.nullPair().equals(pairs)) return false;
         connect(pairs.getKey(), pairs.getValue());
         return true;
     }

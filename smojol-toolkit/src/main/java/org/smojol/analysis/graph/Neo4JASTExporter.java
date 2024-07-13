@@ -3,6 +3,7 @@ package org.smojol.analysis.graph;
 import com.google.common.collect.ImmutableList;
 import com.mojo.woof.GraphSDK;
 import com.mojo.woof.WoofNode;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
 import org.neo4j.driver.Record;
@@ -47,6 +48,7 @@ public class Neo4JASTExporter {
 
     public Boolean buildDataDependency(FlowNode node, Boolean parent) {
         Map.Entry<List<CobolDataStructure>, List<CobolDataStructure>> pairs = DataDependencyPairComputer.dependencyPairs(node, data);
+        if (ImmutablePair.nullPair().equals(pairs)) return false;
         connect(pairs.getKey(), pairs.getValue());
         return true;
     }

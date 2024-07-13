@@ -54,7 +54,7 @@ public class GraphExplorerMain {
 
         NodeSpecBuilder qualifier = new NodeSpecBuilder(new NamespaceQualifier("NEW-CODE"));
         GraphSDK sdk = new GraphSDK(new Neo4JDriverBuilder().fromEnv());
-//        exportToNeo4J(root, dataStructures, sdk);
+        exportToNeo4J(astRoot, dataStructures, sdk);
 
 //        GraphPatternMatcher visitor = new GraphPatternMatcher(sdk);
 //        root.accept(visitor, node -> node.type() == FlowNodeType.SENTENCE, -1);
