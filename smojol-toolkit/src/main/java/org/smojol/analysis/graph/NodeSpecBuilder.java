@@ -44,6 +44,7 @@ public class NodeSpecBuilder {
         return new NodeSpec(ImmutableList.of(AST_NODE, node.type().toString()),
                 Map.of(ID, idProvider.next(),
                         INTERNAL_ID, node.id(),
+                        NAME, node.name(),
                         TEXT, NodeText.originalText(node.getExecutionContext(), NodeText::PASSTHROUGH),
                         TYPE, node.type().toString(),
                         ENTITY_TYPE, AST_NODE,
@@ -55,6 +56,7 @@ public class NodeSpecBuilder {
         return new NodeSpec(ImmutableList.of(CFG_NODE, node.type().toString()), Map.of(
                 ID, idProvider.next(),
                 INTERNAL_ID, node.id(),
+                NAME, node.name(),
                 TEXT, node.getExecutionContext().getText(),
                 TYPE, node.type().toString(),
                 ENTITY_TYPE, CFG_NODE,

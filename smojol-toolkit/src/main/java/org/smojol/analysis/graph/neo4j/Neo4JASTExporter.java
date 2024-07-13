@@ -47,15 +47,18 @@ public class Neo4JASTExporter {
     public Boolean buildDataDependency(FlowNode node, Boolean parent) {
         Map.Entry<List<CobolDataStructure>, List<CobolDataStructure>> pairs = DataDependencyPairComputer.dependencyPairs(node, data);
         if (ImmutablePair.nullPair().equals(pairs)) return false;
-        connect(pairs.getKey(), pairs.getValue());
+        connect(pairs.getKey(), pairs.getValue(), node);
         return true;
     }
 
-    private void connect(List<CobolDataStructure> froms, List<CobolDataStructure> tos) {
+    private void connect(List<CobolDataStructure> froms, List<CobolDataStructure> tos, FlowNode cfgNode) {
+        Record cfgNodeRecord = sdk.findNodes(qualifier.cfgNodeSearchSpec(cfgNode)).getFirst();
         tos.forEach(to -> froms.forEach(from -> {
             Record n4jTo = sdk.findNodes(qualifier.dataNodeSearchSpec(to)).getFirst();
             Record n4jFrom = sdk.newOrExisting(qualifier.dataNodeSearchSpec(from), NodeToWoof.dataStructureToWoof(from, qualifier));
-            sdk.modifies(n4jFrom, n4jTo);
+            sdk.flowsInto(n4jFrom, n4jTo);
+            sdk.modifies(cfgNodeRecord, n4jTo);
+            sdk.accesses(cfgNodeRecord, n4jFrom);
         }));
     }
 
