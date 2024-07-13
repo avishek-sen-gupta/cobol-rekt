@@ -33,6 +33,7 @@ public class NodeSpecBuilder {
                 Map.of(ID, idProvider.next(),
                         INTERNAL_ID, structure.getId(),
                         NAME, structure.name(),
+                        TEXT, structure.content(),
                         TYPE, structure.getDataType().toString(),
                         ENTITY_TYPE, DATA_STRUCTURE,
                         LEVEL, structure.getLevelNumber(),
@@ -64,6 +65,7 @@ public class NodeSpecBuilder {
         return new NodeSpec(ImmutableList.of(CFG_TRACE, node.type().toString()),
                 Map.of(ID, idProvider.next(),
                         INTERNAL_ID, node.id(),
+                        NAME, node.name(),
                         TEXT, node.getExecutionContext().getText(),
                         TYPE, node.type().toString(),
                         ENTITY_TYPE, CFG_TRACE,
@@ -77,12 +79,10 @@ public class NodeSpecBuilder {
 
     public NodeSpec cfgNodeSearchSpec(FlowNode node) {
         return labelledNodeSearchSpec(node, CFG_NODE);
-//        return new NodeSpec(ImmutableList.of(CFG_NODE), Map.of(INTERNAL_ID, node.id(), NAMESPACE, namespaceQualifier.getNamespace()));
     }
 
     public NodeSpec astNodeSearchSpec(FlowNode node) {
         return labelledNodeSearchSpec(node, AST_NODE);
-//        return new NodeSpec(ImmutableList.of(AST_NODE), Map.of(INTERNAL_ID, node.id(), NAMESPACE, namespaceQualifier.getNamespace()));
     }
 
     public NodeSpec labelledNodeSearchSpec(FlowNode node, String nodeType) {
