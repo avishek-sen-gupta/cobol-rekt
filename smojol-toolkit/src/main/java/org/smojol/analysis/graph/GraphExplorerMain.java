@@ -2,6 +2,7 @@ package org.smojol.analysis.graph;
 
 import org.smojol.analysis.LanguageDialect;
 import org.smojol.analysis.ParsePipeline;
+import org.smojol.analysis.graph.neo4j.NodeReferenceStrategy;
 import org.smojol.analysis.pipeline.SmojolPipeline;
 import org.smojol.analysis.visualisation.ComponentsBuilder;
 import org.smojol.ast.FlowchartBuilderImpl;
@@ -30,7 +31,6 @@ public class GraphExplorerMain {
                 cobolParseTreeOutputPath,
                 ops, LanguageDialect.COBOL);
 
-        new SmojolPipeline().run(pipeline);
+        new SmojolPipeline(NodeReferenceStrategy.EXISTING_CFG_NODE, NodeReferenceStrategy.EXISTING_CFG_NODE).run(pipeline);
     }
-
 }

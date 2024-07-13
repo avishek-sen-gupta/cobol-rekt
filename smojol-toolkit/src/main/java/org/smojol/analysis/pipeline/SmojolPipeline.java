@@ -25,6 +25,14 @@ import static com.mojo.woof.NodeProperties.TYPE;
 import static com.mojo.woof.NodeRelations.CONTAINS;
 
 public class SmojolPipeline {
+    private final NodeReferenceStrategy astNodeReferenceStrategy;
+    private final NodeReferenceStrategy dataDependencyAttachmentStrategy;
+
+    public SmojolPipeline(NodeReferenceStrategy astNodeReferenceStrategy, NodeReferenceStrategy dataDependencyAttachmentStrategy) {
+        this.astNodeReferenceStrategy = astNodeReferenceStrategy;
+        this.dataDependencyAttachmentStrategy = dataDependencyAttachmentStrategy;
+    }
+
     public void run(ParsePipeline pipeline) throws IOException {
         CobolEntityNavigator navigator = pipeline.parse();
         FlowchartBuilder flowcharter = pipeline.flowcharter();
@@ -50,12 +58,12 @@ public class SmojolPipeline {
         graphMLExporter.buildCFG(new File("/Users/asgupta/code/smojol/out/cfg.graphml"));
     }
 
-    private static void exportToNeo4J(FlowNode root, CobolDataStructure dataStructures, NodeSpecBuilder qualifier, GraphSDK sdk) {
+    private void exportToNeo4J(FlowNode root, CobolDataStructure dataStructures, NodeSpecBuilder qualifier, GraphSDK sdk) {
         // Builds Control Flow Graph
         root.accept(new Neo4JFlowCFGVisitor(sdk, qualifier), -1);
 
         // Builds AST
-        Neo4JASTExporter neo4JExporter = new Neo4JASTExporter(sdk, dataStructures, qualifier, NodeReferenceStrategy.EXISTING_CFG_NODE, NodeReferenceStrategy.EXISTING_CFG_NODE);
+        Neo4JASTExporter neo4JExporter = new Neo4JASTExporter(sdk, dataStructures, qualifier, this.astNodeReferenceStrategy, this.dataDependencyAttachmentStrategy);
         neo4JExporter.buildAST(root);
 
         // Builds data structures

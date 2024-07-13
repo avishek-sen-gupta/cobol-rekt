@@ -128,6 +128,10 @@ The interpreter also supports injecting a complete execution path through the pr
 
 ![Execution Trace Graph](documentation/execution-trace-graph.png)
 
+When generating the AST and CFG, the library allows configuring them to be the same, i.e., the same nodes are reused for creating both AST and CFG connections. For example, in the screenshot below: the same CFG has CONTAINS (AST relationship), FOLLOWED_BY (CFG relationship), and the MODIFIES/ACCESSES relationships (data structure relationship). This provides a rich unified view of the entire program, without having to jump between multiple disconnected views of the source code, for analysis.
+
+![Unified AST-CFG-Data Graph](documentation/unified-ast-cfg-dependency.png)
+
 ## GraphML Export
 The toolkit allows exporting the following entities to the GraphML format, so that they can be consumed further downstream for analysis:
 
@@ -138,6 +142,8 @@ The toolkit allows exporting the following entities to the GraphML format, so th
 The screenshot below shows a sample program's data structures exported to GraphML and loaded through the yEd Graph Editor.
 
 ![yEd Screenshot of GraphML Exported Data Structures](documentation/graphml-data-structures-export.png)
+
+Unified graph export to GraphML is not yet available.
 
 ## How to Build
 
