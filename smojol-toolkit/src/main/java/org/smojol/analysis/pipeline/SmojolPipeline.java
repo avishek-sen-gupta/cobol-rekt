@@ -50,7 +50,7 @@ public class SmojolPipeline {
         GraphMLExportCommands graphMLExporter = new GraphMLExportCommands(dataStructures, astRoot, qualifier);
         graphMLExporter.buildAST(new File("/Users/asgupta/code/smojol/out/ast.graphml"));
         graphMLExporter.buildDataStructures(new File("/Users/asgupta/code/smojol/out/data_structures.graphml"));
-        graphMLExporter.exportCFG(new File("/Users/asgupta/code/smojol/out/cfg.graphml"));
+        graphMLExporter.buildCFG(new File("/Users/asgupta/code/smojol/out/cfg.graphml"));
     }
 
     private static void exportToNeo4J(FlowNode root, CobolDataStructure dataStructures, NodeSpecBuilder qualifier, GraphSDK sdk) {

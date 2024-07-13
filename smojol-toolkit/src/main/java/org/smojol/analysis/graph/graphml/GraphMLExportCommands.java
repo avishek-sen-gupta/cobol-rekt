@@ -106,7 +106,7 @@ public class GraphMLExportCommands {
         return new DefaultAttribute<>(attribute, AttributeType.STRING);
     }
 
-    public void exportCFG(File outputPath) {
+    public void buildCFG(File outputPath) {
         cfgRoot.accept(new GraphMLCFGVisitor(cfgGraph, qualifier), -1);
         GraphMLExporter<FlowNode, TypedGraphMLEdge> exporter = new GraphMLExporter<>();
         exporter.registerAttribute(TYPE, GraphMLExporter.AttributeCategory.NODE, AttributeType.STRING);
@@ -123,4 +123,5 @@ public class GraphMLExportCommands {
         exporter.setVertexIdProvider(FlowNode::id);
         exporter.exportGraph(cfgGraph, outputPath);
     }
+
 }

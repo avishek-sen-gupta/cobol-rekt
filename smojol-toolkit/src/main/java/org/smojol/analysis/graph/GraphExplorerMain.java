@@ -14,7 +14,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class GraphExplorerMain {
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws IOException {
         File[] copyBookPaths = new File[]{new File("/Users/asgupta/code/smojol/smojol-test-code")};
         String dialectJarPath = "/Users/asgupta/code/smojol/che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar";
         String cobolParseTreeOutputPath = "/Users/asgupta/code/smojol/out/test-cobol.json";
