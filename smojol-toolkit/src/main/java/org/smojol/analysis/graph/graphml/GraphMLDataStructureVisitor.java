@@ -1,7 +1,8 @@
-package org.smojol.analysis.graph;
+package org.smojol.analysis.graph.graphml;
 
 import lombok.Getter;
 import org.jgrapht.Graph;
+import org.smojol.analysis.graph.NodeSpecBuilder;
 import org.smojol.common.flowchart.DataStructureVisitor;
 import org.smojol.common.vm.structure.CobolDataStructure;
 

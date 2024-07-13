@@ -1,4 +1,4 @@
-package org.smojol.analysis.graph;
+package org.smojol.analysis.graph.graphml;
 
 import lombok.Getter;
 

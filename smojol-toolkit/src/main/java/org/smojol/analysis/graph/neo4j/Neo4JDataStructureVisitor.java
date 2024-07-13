@@ -1,7 +1,8 @@
-package org.smojol.analysis.graph;
+package org.smojol.analysis.graph.neo4j;
 
 import com.mojo.woof.*;
 import org.neo4j.driver.Record;
+import org.smojol.analysis.graph.NodeSpecBuilder;
 import org.smojol.common.flowchart.*;
 import org.smojol.common.vm.structure.CobolDataStructure;
 

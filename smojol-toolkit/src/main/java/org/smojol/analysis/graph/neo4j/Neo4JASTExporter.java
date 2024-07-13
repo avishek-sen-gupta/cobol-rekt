@@ -1,17 +1,15 @@
-package org.smojol.analysis.graph;
+package org.smojol.analysis.graph.neo4j;
 
-import com.google.common.collect.ImmutableList;
 import com.mojo.woof.GraphSDK;
 import com.mojo.woof.WoofNode;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
 import org.neo4j.driver.Record;
-import org.smojol.ast.*;
+import org.smojol.analysis.graph.DataDependencyPairComputer;
+import org.smojol.analysis.graph.NodeSpecBuilder;
+import org.smojol.analysis.graph.NodeToWoof;
 import org.smojol.common.flowchart.*;
-import org.smojol.common.vm.expression.ArithmeticExpressionVisitor;
-import org.smojol.common.vm.expression.CobolExpression;
-import org.smojol.common.vm.reference.ShallowReferenceBuilder;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.interpreter.navigation.FlowNodeASTTraversal;
 

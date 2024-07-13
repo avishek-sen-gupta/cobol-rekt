@@ -1,7 +1,9 @@
-package org.smojol.analysis.graph;
+package org.smojol.analysis.graph.neo4j;
 
 import com.mojo.woof.GraphSDK;
 import org.neo4j.driver.Record;
+import org.smojol.analysis.graph.NodeSpecBuilder;
+import org.smojol.analysis.graph.NodeToWoof;
 import org.smojol.common.flowchart.*;
 
 import java.util.List;

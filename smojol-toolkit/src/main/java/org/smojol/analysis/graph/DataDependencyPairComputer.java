@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 public class DataDependencyPairComputer {
-    static Map.Entry<List<CobolDataStructure>, List<CobolDataStructure>> dependencyPairs(FlowNode node, CobolDataStructure dataRoot) {
+    public static Map.Entry<List<CobolDataStructure>, List<CobolDataStructure>> dependencyPairs(FlowNode node, CobolDataStructure dataRoot) {
         if (node.type() != FlowNodeType.MOVE
                 && node.type() != FlowNodeType.COMPUTE
                 && node.type() != FlowNodeType.ADD

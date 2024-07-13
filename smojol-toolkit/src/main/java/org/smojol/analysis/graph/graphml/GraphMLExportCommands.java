@@ -1,4 +1,4 @@
-package org.smojol.analysis.graph;
+package org.smojol.analysis.graph.graphml;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.jgrapht.Graph;
@@ -8,6 +8,8 @@ import org.jgrapht.nio.Attribute;
 import org.jgrapht.nio.AttributeType;
 import org.jgrapht.nio.DefaultAttribute;
 import org.jgrapht.nio.graphml.GraphMLExporter;
+import org.smojol.analysis.graph.DataDependencyPairComputer;
+import org.smojol.analysis.graph.NodeSpecBuilder;
 import org.smojol.common.flowchart.FlowNode;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.interpreter.navigation.FlowNodeASTTraversal;
@@ -20,24 +22,28 @@ import static com.mojo.woof.NodeProperties.*;
 import static com.mojo.woof.NodeRelations.*;
 
 public class GraphMLExportCommands {
-    private final CobolDataStructure data;
+    private final CobolDataStructure dataRoot;
     private final NodeSpecBuilder qualifier;
-    private final FlowNode root;
+    private final FlowNode astRoot;
     private final Graph<FlowNode, TypedGraphMLEdge> astGraph;
     private final Graph<CobolDataStructure, TypedGraphMLEdge> dataStructuresGraph;
 
     public GraphMLExportCommands(CobolDataStructure dataStructures, FlowNode root, NodeSpecBuilder qualifier) {
-        this.data = dataStructures;
+        this.dataRoot = dataStructures;
+        this.astRoot = root;
         this.qualifier = qualifier;
-        this.root = root;
         astGraph = new DirectedAcyclicGraph<>(TypedGraphMLEdge.class);
         dataStructuresGraph = new DefaultDirectedGraph<>(TypedGraphMLEdge.class);
     }
 
     public void buildDataStructures() {
-        GraphMLDataStructureVisitor graphMLDataStructuresExporter = new GraphMLDataStructureVisitor(dataStructuresGraph, qualifier);
-        data.accept(graphMLDataStructuresExporter, null, n -> false, data);
-        new FlowNodeASTTraversal<Boolean>().build(root, this::buildDataDependency);
+        dataRoot.accept(new GraphMLDataStructureVisitor(dataStructuresGraph, qualifier), null, n -> false, dataRoot);
+        dataRoot.accept(new GraphMLRedefinitionVisitor(dataStructuresGraph, qualifier), null, n -> false, dataRoot);
+        new FlowNodeASTTraversal<Boolean>().build(astRoot, this::buildDataDependency);
+        export(dataStructuresGraph);
+    }
+
+    private void export(Graph<CobolDataStructure, TypedGraphMLEdge> dataStructuresGraph) {
         GraphMLExporter<CobolDataStructure, TypedGraphMLEdge> exporter = new GraphMLExporter<>();
         exporter.registerAttribute(TYPE, GraphMLExporter.AttributeCategory.NODE, AttributeType.STRING);
         exporter.registerAttribute(NAME, GraphMLExporter.AttributeCategory.NODE, AttributeType.STRING);
@@ -51,7 +57,7 @@ public class GraphMLExportCommands {
 
         exporter.setEdgeAttributeProvider(e -> Map.of(RELATIONSHIP_TYPE, attr(e.getRelationshipType())));
         exporter.setVertexIdProvider(CobolDataStructure::getId);
-        exporter.exportGraph(graphMLDataStructuresExporter.getDataStructuresGraph(), new File("/Users/asgupta/code/smojol/out/data_structures.graphml"));
+        exporter.exportGraph(dataStructuresGraph, new File("/Users/asgupta/code/smojol/out/data_structures.graphml"));
     }
 
     public FlowNode buildGraphML(FlowNode node, FlowNode parent) {
@@ -62,7 +68,7 @@ public class GraphMLExportCommands {
     }
 
     public Boolean buildDataDependency(FlowNode node, Boolean parent) {
-        Map.Entry<List<CobolDataStructure>, List<CobolDataStructure>> pairs = DataDependencyPairComputer.dependencyPairs(node, data);
+        Map.Entry<List<CobolDataStructure>, List<CobolDataStructure>> pairs = DataDependencyPairComputer.dependencyPairs(node, dataRoot);
         if (ImmutablePair.nullPair().equals(pairs)) return false;
         connect(pairs.getKey(), pairs.getValue());
         return true;
@@ -89,7 +95,7 @@ public class GraphMLExportCommands {
 
         exporter.setEdgeAttributeProvider(e -> Map.of(RELATIONSHIP_TYPE, attr(e.getRelationshipType())));
         exporter.setVertexIdProvider(FlowNode::id);
-        new FlowNodeASTTraversal<FlowNode>().build(root, this::buildGraphML);
+        new FlowNodeASTTraversal<FlowNode>().build(astRoot, this::buildGraphML);
         exporter.exportGraph(astGraph, new File("/Users/asgupta/code/smojol/out/ast.graphml"));
     }
 
