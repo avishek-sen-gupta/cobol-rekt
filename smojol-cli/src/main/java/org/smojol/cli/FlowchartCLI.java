@@ -14,7 +14,7 @@ import java.util.List;
 Use something like:
 java -jar smojol-cli/target/smojol-cli.jar --src test-exp.cbl --srcDir /Users/asgupta/code/smojol/smojol-test-code --copyBooksDir /Users/asgupta/code/smojol/smojol-test-code --dialectJarPath /Users/asgupta/code/smojol/che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar --reportDir /Users/asgupta/code/smojol/out/report
  */
-public class FlowChartCLI {
+public class FlowchartCLI {
     public static void main(String[] args) throws ParseException, IOException, InterruptedException {
         CliOptionsReader optionsReader = new CliOptionsReader(args);
         String source = optionsReader.getSource();

@@ -147,7 +147,7 @@
                             <finalName>smojol-cli</finalName>
                             <archive>
                                 <manifest>
-                                    <mainClass>org.smojol.cli.FlowChartCLI</mainClass>
+                                    <mainClass>org.smojol.cli.FlowchartCLI</mainClass>
                                 </manifest>
                             </archive>
                             <descriptorRefs>
@@ -260,7 +260,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>org.smojol.cli.FlowChartCLI</mainClass>
+                            <mainClass>org.smojol.cli.FlowchartCLI</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

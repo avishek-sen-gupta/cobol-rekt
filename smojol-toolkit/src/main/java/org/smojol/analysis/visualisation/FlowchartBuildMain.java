@@ -12,8 +12,6 @@ import java.io.IOException;
 import java.util.List;
 
 public class FlowchartBuildMain {
-    private final Logger logger = LoggerFactory.getLogger(FlowchartBuildMain.class);
-
     public static void main(String[] args) throws IOException, InterruptedException {
         String sourceDir = "/Users/asgupta/code/smojol/smojol-test-code";
         File[] copyBookPaths = new File[]{new File("/Users/asgupta/code/smojol/smojol-test-code")};
