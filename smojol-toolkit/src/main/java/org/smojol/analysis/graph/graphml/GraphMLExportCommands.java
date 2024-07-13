@@ -25,25 +25,28 @@ public class GraphMLExportCommands {
     private final CobolDataStructure dataRoot;
     private final NodeSpecBuilder qualifier;
     private final FlowNode astRoot;
+    private final FlowNode cfgRoot;
     private final Graph<FlowNode, TypedGraphMLEdge> astGraph;
+    private final Graph<FlowNode, TypedGraphMLEdge> cfgGraph;
     private final Graph<CobolDataStructure, TypedGraphMLEdge> dataStructuresGraph;
 
-    public GraphMLExportCommands(CobolDataStructure dataStructures, FlowNode root, NodeSpecBuilder qualifier) {
+    public GraphMLExportCommands(CobolDataStructure dataStructures, FlowNode procedureRoot, NodeSpecBuilder qualifier) {
         this.dataRoot = dataStructures;
-        this.astRoot = root;
+        this.astRoot = this.cfgRoot = procedureRoot;
         this.qualifier = qualifier;
         astGraph = new DirectedAcyclicGraph<>(TypedGraphMLEdge.class);
+        cfgGraph = new DirectedAcyclicGraph<>(TypedGraphMLEdge.class);
         dataStructuresGraph = new DefaultDirectedGraph<>(TypedGraphMLEdge.class);
     }
 
-    public void buildDataStructures() {
+    public void buildDataStructures(File outputPath) {
         dataRoot.accept(new GraphMLDataStructureVisitor(dataStructuresGraph, qualifier), null, n -> false, dataRoot);
         dataRoot.accept(new GraphMLRedefinitionVisitor(dataStructuresGraph, qualifier), null, n -> false, dataRoot);
         new FlowNodeASTTraversal<Boolean>().build(astRoot, this::buildDataDependency);
-        export(dataStructuresGraph);
+        export(dataStructuresGraph, outputPath);
     }
 
-    private void export(Graph<CobolDataStructure, TypedGraphMLEdge> dataStructuresGraph) {
+    private void export(Graph<CobolDataStructure, TypedGraphMLEdge> dataStructuresGraph, File outputPath) {
         GraphMLExporter<CobolDataStructure, TypedGraphMLEdge> exporter = new GraphMLExporter<>();
         exporter.registerAttribute(TYPE, GraphMLExporter.AttributeCategory.NODE, AttributeType.STRING);
         exporter.registerAttribute(NAME, GraphMLExporter.AttributeCategory.NODE, AttributeType.STRING);
@@ -57,7 +60,7 @@ public class GraphMLExportCommands {
 
         exporter.setEdgeAttributeProvider(e -> Map.of(RELATIONSHIP_TYPE, attr(e.getRelationshipType())));
         exporter.setVertexIdProvider(CobolDataStructure::getId);
-        exporter.exportGraph(dataStructuresGraph, new File("/Users/asgupta/code/smojol/out/data_structures.graphml"));
+        exporter.exportGraph(dataStructuresGraph, outputPath);
     }
 
     public FlowNode buildGraphML(FlowNode node, FlowNode parent) {
@@ -81,7 +84,8 @@ public class GraphMLExportCommands {
         }));
     }
 
-    public void buildAST() {
+    public void buildAST(File outputPath) {
+        new FlowNodeASTTraversal<FlowNode>().build(astRoot, this::buildGraphML);
         GraphMLExporter<FlowNode, TypedGraphMLEdge> exporter = new GraphMLExporter<>();
         exporter.registerAttribute(TYPE, GraphMLExporter.AttributeCategory.NODE, AttributeType.STRING);
         exporter.registerAttribute(NAME, GraphMLExporter.AttributeCategory.NODE, AttributeType.STRING);
@@ -95,11 +99,28 @@ public class GraphMLExportCommands {
 
         exporter.setEdgeAttributeProvider(e -> Map.of(RELATIONSHIP_TYPE, attr(e.getRelationshipType())));
         exporter.setVertexIdProvider(FlowNode::id);
-        new FlowNodeASTTraversal<FlowNode>().build(astRoot, this::buildGraphML);
-        exporter.exportGraph(astGraph, new File("/Users/asgupta/code/smojol/out/ast.graphml"));
+        exporter.exportGraph(astGraph, outputPath);
     }
 
     private Attribute attr(String attribute) {
         return new DefaultAttribute<>(attribute, AttributeType.STRING);
+    }
+
+    public void exportCFG(File outputPath) {
+        cfgRoot.accept(new GraphMLCFGVisitor(cfgGraph, qualifier), -1);
+        GraphMLExporter<FlowNode, TypedGraphMLEdge> exporter = new GraphMLExporter<>();
+        exporter.registerAttribute(TYPE, GraphMLExporter.AttributeCategory.NODE, AttributeType.STRING);
+        exporter.registerAttribute(NAME, GraphMLExporter.AttributeCategory.NODE, AttributeType.STRING);
+        exporter.registerAttribute(TEXT, GraphMLExporter.AttributeCategory.NODE, AttributeType.STRING);
+        exporter.registerAttribute(RELATIONSHIP_TYPE, GraphMLExporter.AttributeCategory.EDGE, AttributeType.STRING);
+        exporter.setVertexAttributeProvider(n -> Map.of(
+                ID, attr(n.id()),
+                TYPE, attr(n.type().toString()),
+                NAME, attr(n.label()),
+                TEXT, attr(n.originalText())));
+
+        exporter.setEdgeAttributeProvider(e -> Map.of(RELATIONSHIP_TYPE, attr(e.getRelationshipType())));
+        exporter.setVertexIdProvider(FlowNode::id);
+        exporter.exportGraph(cfgGraph, outputPath);
     }
 }

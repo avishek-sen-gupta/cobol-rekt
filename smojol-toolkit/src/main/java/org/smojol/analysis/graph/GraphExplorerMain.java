@@ -59,22 +59,20 @@ public class GraphExplorerMain {
 
         NodeSpecBuilder qualifier = new NodeSpecBuilder(new NamespaceQualifier("NEW-CODE"));
         GraphSDK sdk = new GraphSDK(new Neo4JDriverBuilder().fromEnv());
-        exportToNeo4J(astRoot, dataStructures, sdk);
-
-//        GraphPatternMatcher visitor = new GraphPatternMatcher(sdk);
-//        root.accept(visitor, node -> node.type() == FlowNodeType.SENTENCE, -1);
-//        System.out.printf("Number of groups = %s%n", visitor.getMatches().size());
-
-        GraphMLExportCommands graphMLExporter = new GraphMLExportCommands(dataStructures, astRoot, qualifier);
-        graphMLExporter.buildAST();
-        graphMLExporter.buildDataStructures();
-
-//        summariseThroughLLM(qualifier, sdk);
+        exportToNeo4J(astRoot, dataStructures, sdk, qualifier);
+        exportToGraphML(astRoot, dataStructures, qualifier);
+        summariseThroughLLM(qualifier, sdk);
     }
 
-    private static void exportToNeo4J(FlowNode root, CobolDataStructure dataStructures, GraphSDK sdk) {
+    private static void exportToGraphML(FlowNode astRoot, CobolDataStructure dataStructures, NodeSpecBuilder qualifier) {
+        GraphMLExportCommands graphMLExporter = new GraphMLExportCommands(dataStructures, astRoot, qualifier);
+        graphMLExporter.buildAST(new File("/Users/asgupta/code/smojol/out/ast.graphml"));
+        graphMLExporter.buildDataStructures(new File("/Users/asgupta/code/smojol/out/data_structures.graphml"));
+        graphMLExporter.exportCFG(new File("/Users/asgupta/code/smojol/out/cfg.graphml"));
+    }
+
+    private static void exportToNeo4J(FlowNode root, CobolDataStructure dataStructures, GraphSDK sdk, NodeSpecBuilder qualifier) {
         // Builds Control Flow Graph
-        NodeSpecBuilder qualifier = new NodeSpecBuilder(new NamespaceQualifier("NEW-CODE"));
         root.accept(new Neo4JFlowCFGVisitor(sdk, qualifier), -1);
         Neo4JASTExporter neo4JExporter = new Neo4JASTExporter(sdk, dataStructures, qualifier);
 
