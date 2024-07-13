@@ -35,7 +35,7 @@ public class GraphMLExportCommands {
         this.astRoot = this.cfgRoot = procedureRoot;
         this.qualifier = qualifier;
         astGraph = new DirectedAcyclicGraph<>(TypedGraphMLEdge.class);
-        cfgGraph = new DirectedAcyclicGraph<>(TypedGraphMLEdge.class);
+        cfgGraph = new DefaultDirectedGraph<>(TypedGraphMLEdge.class);
         dataStructuresGraph = new DefaultDirectedGraph<>(TypedGraphMLEdge.class);
     }
 

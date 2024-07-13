@@ -28,8 +28,6 @@ import org.smojol.interpreter.structure.DefaultFormat1DataStructureBuilder;
 import java.io.File;
 import java.io.IOException;
 
-import static org.smojol.common.vm.structure.CobolOperations.NO_OP;
-
 public class InterpreterMain {
     private final Logger logger = LoggerFactory.getLogger(InterpreterMain.class);
 
@@ -59,7 +57,7 @@ public class InterpreterMain {
         // This one is root
         ParseTree procedure = navigator.procedureBodyRoot();
 
-        flowcharter.buildChartAST(procedure).buildControlFlow().buildOverlay();
+        flowcharter.buildFlowAST(procedure).buildControlFlow().buildOverlay();
         FlowNode root = flowcharter.getRoot();
         FlowNodeService nodeService = flowcharter.getChartNodeService();
 

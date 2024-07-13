@@ -8,7 +8,7 @@ import java.util.function.Function;
 public interface FlowchartBuilder {
     FlowchartBuilder buildDotStructure(Function<VisitContext, Boolean> stopCondition);
     FlowchartBuilder buildDotStructure();
-    FlowchartBuilder buildChartAST(ParseTree node);
+    FlowchartBuilder buildFlowAST(ParseTree node);
     FlowchartBuilder write(String dotFilePath);
     FlowchartBuilder outline(ParseTree groupRoot, String clusterLabel);
     FlowchartBuilder connectToComment(String explanation, ParseTree symbol);

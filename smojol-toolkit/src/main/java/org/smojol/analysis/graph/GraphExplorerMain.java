@@ -1,36 +1,19 @@
 package org.smojol.analysis.graph;
 
-import com.mojo.woof.*;
-import org.antlr.v4.runtime.tree.ParseTree;
-import org.neo4j.driver.Record;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.smojol.analysis.LanguageDialect;
 import org.smojol.analysis.ParsePipeline;
-import org.smojol.analysis.graph.graphml.GraphMLExportCommands;
-import org.smojol.analysis.graph.neo4j.Neo4JASTExporter;
-import org.smojol.analysis.graph.neo4j.Neo4JDataStructureVisitor;
-import org.smojol.analysis.graph.neo4j.Neo4JFlowCFGVisitor;
-import org.smojol.analysis.graph.neo4j.Neo4JRedefinitionVisitor;
+import org.smojol.analysis.pipeline.SmojolPipeline;
 import org.smojol.analysis.visualisation.ComponentsBuilder;
 import org.smojol.ast.FlowchartBuilderImpl;
 import org.smojol.common.flowchart.*;
-import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.navigation.EntityNavigatorBuilder;
 import org.smojol.common.vm.strategy.UnresolvedReferenceDoNothingStrategy;
-import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.interpreter.structure.OccursIgnoringFormat1DataStructureBuilder;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
-
-import static com.mojo.woof.NodeProperties.TYPE;
-import static com.mojo.woof.NodeRelations.CONTAINS;
 
 public class GraphExplorerMain {
-    private final Logger logger = LoggerFactory.getLogger(GraphExplorerMain.class);
-
     public static void main(String[] args) throws IOException, InterruptedException {
         File[] copyBookPaths = new File[]{new File("/Users/asgupta/code/smojol/smojol-test-code")};
         String dialectJarPath = "/Users/asgupta/code/smojol/che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar";
@@ -47,54 +30,7 @@ public class GraphExplorerMain {
                 cobolParseTreeOutputPath,
                 ops, LanguageDialect.COBOL);
 
-        CobolEntityNavigator navigator = pipeline.parse();
-        FlowchartBuilder flowcharter = pipeline.flowcharter();
-        CobolDataStructure dataStructures = pipeline.getDataStructures();
-
-        ParseTree procedure = navigator.procedureBodyRoot();
-
-        flowcharter.buildChartAST(procedure).buildControlFlow().buildOverlay();
-        FlowNode astRoot = flowcharter.getRoot();
-        FlowNodeService nodeService = flowcharter.getChartNodeService();
-
-        NodeSpecBuilder qualifier = new NodeSpecBuilder(new NamespaceQualifier("NEW-CODE"));
-        GraphSDK sdk = new GraphSDK(new Neo4JDriverBuilder().fromEnv());
-        exportToNeo4J(astRoot, dataStructures, sdk, qualifier);
-        exportToGraphML(astRoot, dataStructures, qualifier);
-        summariseThroughLLM(qualifier, sdk);
+        new SmojolPipeline().run(pipeline);
     }
 
-    private static void exportToGraphML(FlowNode astRoot, CobolDataStructure dataStructures, NodeSpecBuilder qualifier) {
-        GraphMLExportCommands graphMLExporter = new GraphMLExportCommands(dataStructures, astRoot, qualifier);
-        graphMLExporter.buildAST(new File("/Users/asgupta/code/smojol/out/ast.graphml"));
-        graphMLExporter.buildDataStructures(new File("/Users/asgupta/code/smojol/out/data_structures.graphml"));
-        graphMLExporter.exportCFG(new File("/Users/asgupta/code/smojol/out/cfg.graphml"));
-    }
-
-    private static void exportToNeo4J(FlowNode root, CobolDataStructure dataStructures, GraphSDK sdk, NodeSpecBuilder qualifier) {
-        // Builds Control Flow Graph
-        root.accept(new Neo4JFlowCFGVisitor(sdk, qualifier), -1);
-        Neo4JASTExporter neo4JExporter = new Neo4JASTExporter(sdk, dataStructures, qualifier);
-
-        // Builds AST
-        neo4JExporter.buildAST(root);
-
-        // Builds data structures
-        dataStructures.accept(new Neo4JDataStructureVisitor(sdk, qualifier), null, n -> false, dataStructures);
-        dataStructures.accept(new Neo4JRedefinitionVisitor(sdk, qualifier), null, n -> false, dataStructures);
-
-
-        // Builds data dependencies
-        neo4JExporter.buildDataDependencies(root);
-    }
-
-    private static void summariseThroughLLM(NodeSpecBuilder qualifier, GraphSDK sdk) {
-        Record neo4jProgramRoot = sdk.findNodes(qualifier.astNodeCriteria(Map.of(TYPE, FlowNodeType.PROCEDURE_DIVISION_BODY.toString()))).getFirst();
-        Record neo4jDataStructuresRoot = sdk.findNodes(qualifier.dataNodeSearchCriteria(Map.of(TYPE, "ROOT"))).getFirst();
-        Advisor advisor = new Advisor(OpenAICredentials.fromEnv());
-        // Summarises AST bottom-up
-        sdk.traverse(neo4jProgramRoot, new SummariseAction(advisor, sdk), CONTAINS);
-        // Summarises data structures
-        sdk.traverse(neo4jDataStructuresRoot, new DataStructureSummariseAction(advisor, sdk), CONTAINS);
-    }
 }

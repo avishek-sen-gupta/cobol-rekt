@@ -47,7 +47,7 @@ public class FlowchartBuilderImpl implements FlowchartBuilder {
     }
 
     @Override
-    public FlowchartBuilder buildChartAST(ParseTree node) {
+    public FlowchartBuilder buildFlowAST(ParseTree node) {
         FlowNode rootFlowNode = flowNodeService.node(node, null, new CobolStackFrames());
         rootFlowNode.buildFlow();
         graphRoot = rootFlowNode;
@@ -119,7 +119,7 @@ public class FlowchartBuilderImpl implements FlowchartBuilder {
 
     @Override
     public void generateFlowchart(ParseTree procedure, String dotFilePath, String imageOutputPath, String splineStyle) throws IOException, InterruptedException {
-        buildChartAST(procedure)
+        buildFlowAST(procedure)
                 .buildControlFlow()
                 .buildOverlay()
 //        .buildDotStructure(VisitContext.VISIT_UPTO_LEVEL(4)) // Level 4 for only sections and paragraphs
