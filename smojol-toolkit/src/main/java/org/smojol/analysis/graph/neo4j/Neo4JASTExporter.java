@@ -41,9 +41,6 @@ public class Neo4JASTExporter {
 
     public Record make(FlowNode tree, Record parent) {
         Record record = astNodeReferenceStrategy.reference(tree, sdk, qualifier);
-//        WoofNode node = new WoofNode(qualifier.newASTNode(tree));
-//        Record record = sdk.createNode(node);
-//        Record record = findNode(tree, sdk, qualifier);
         if (parent == null) return record;
         sdk.contains(parent, record);
         return record;
@@ -56,19 +53,14 @@ public class Neo4JASTExporter {
         return true;
     }
 
-    private void connect(List<CobolDataStructure> froms, List<CobolDataStructure> tos, FlowNode cfgNode) {
-//        Record cfgNodeRecord = sdk.findNodes(qualifier.cfgNodeSearchSpec(cfgNode)).getFirst();
-        Record cfgNodeRecord = dependencyAttachmentStrategy.reference(cfgNode, sdk, qualifier);
+    private void connect(List<CobolDataStructure> froms, List<CobolDataStructure> tos, FlowNode attachmentNode) {
+        Record attachmentNodeRecord = dependencyAttachmentStrategy.reference(attachmentNode, sdk, qualifier);
         tos.forEach(to -> froms.forEach(from -> {
             Record n4jTo = sdk.findNodes(qualifier.dataNodeSearchSpec(to)).getFirst();
             Record n4jFrom = sdk.newOrExisting(qualifier.dataNodeSearchSpec(from), NodeToWoof.dataStructureToWoof(from, qualifier));
             sdk.flowsInto(n4jFrom, n4jTo);
-            sdk.modifies(cfgNodeRecord, n4jTo);
-            sdk.accesses(cfgNodeRecord, n4jFrom);
+            sdk.modifies(attachmentNodeRecord, n4jTo);
+            sdk.accesses(attachmentNodeRecord, n4jFrom);
         }));
-    }
-
-    private Boolean stopAtSentence(FlowNode tree) {
-        return tree.type() == FlowNodeType.SECTION;
     }
 }
