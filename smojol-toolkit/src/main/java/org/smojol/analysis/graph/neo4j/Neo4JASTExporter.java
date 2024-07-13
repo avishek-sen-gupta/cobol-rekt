@@ -1,7 +1,6 @@
 package org.smojol.analysis.graph.neo4j;
 
 import com.mojo.woof.GraphSDK;
-import com.mojo.woof.WoofNode;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
@@ -20,12 +19,16 @@ public class Neo4JASTExporter {
     private final GraphSDK sdk;
     private final CobolDataStructure data;
     private final NodeSpecBuilder qualifier;
+    private final NodeReferenceStrategy astNodeReferenceStrategy;
+    private final NodeReferenceStrategy dependencyAttachmentStrategy;
     private Graph<FlowNode, DefaultEdge> graph;
 
-    public Neo4JASTExporter(GraphSDK sdk, CobolDataStructure dataStructures, NodeSpecBuilder qualifier) {
+    public Neo4JASTExporter(GraphSDK sdk, CobolDataStructure dataStructures, NodeSpecBuilder qualifier, NodeReferenceStrategy nodeReferenceStrategy, NodeReferenceStrategy dependencyAttachmentStrategy) {
         this.sdk = sdk;
         this.data = dataStructures;
         this.qualifier = qualifier;
+        this.astNodeReferenceStrategy = nodeReferenceStrategy;
+        this.dependencyAttachmentStrategy = dependencyAttachmentStrategy;
     }
 
     public void buildAST(FlowNode node) {
@@ -37,8 +40,10 @@ public class Neo4JASTExporter {
     }
 
     public Record make(FlowNode tree, Record parent) {
-        WoofNode node = new WoofNode(qualifier.newASTNode(tree));
-        Record record = sdk.createNode(node);
+        Record record = astNodeReferenceStrategy.reference(tree, sdk, qualifier);
+//        WoofNode node = new WoofNode(qualifier.newASTNode(tree));
+//        Record record = sdk.createNode(node);
+//        Record record = findNode(tree, sdk, qualifier);
         if (parent == null) return record;
         sdk.contains(parent, record);
         return record;
@@ -52,7 +57,8 @@ public class Neo4JASTExporter {
     }
 
     private void connect(List<CobolDataStructure> froms, List<CobolDataStructure> tos, FlowNode cfgNode) {
-        Record cfgNodeRecord = sdk.findNodes(qualifier.cfgNodeSearchSpec(cfgNode)).getFirst();
+//        Record cfgNodeRecord = sdk.findNodes(qualifier.cfgNodeSearchSpec(cfgNode)).getFirst();
+        Record cfgNodeRecord = dependencyAttachmentStrategy.reference(cfgNode, sdk, qualifier);
         tos.forEach(to -> froms.forEach(from -> {
             Record n4jTo = sdk.findNodes(qualifier.dataNodeSearchSpec(to)).getFirst();
             Record n4jFrom = sdk.newOrExisting(qualifier.dataNodeSearchSpec(from), NodeToWoof.dataStructureToWoof(from, qualifier));

@@ -53,15 +53,14 @@ public class SmojolPipeline {
     private static void exportToNeo4J(FlowNode root, CobolDataStructure dataStructures, NodeSpecBuilder qualifier, GraphSDK sdk) {
         // Builds Control Flow Graph
         root.accept(new Neo4JFlowCFGVisitor(sdk, qualifier), -1);
-        Neo4JASTExporter neo4JExporter = new Neo4JASTExporter(sdk, dataStructures, qualifier);
 
         // Builds AST
+        Neo4JASTExporter neo4JExporter = new Neo4JASTExporter(sdk, dataStructures, qualifier, NodeReferenceStrategy.EXISTING_CFG_NODE, NodeReferenceStrategy.EXISTING_CFG_NODE);
         neo4JExporter.buildAST(root);
 
         // Builds data structures
         dataStructures.accept(new Neo4JDataStructureVisitor(sdk, qualifier), null, n -> false, dataStructures);
         dataStructures.accept(new Neo4JRedefinitionVisitor(sdk, qualifier), null, n -> false, dataStructures);
-
 
         // Builds data dependencies
         neo4JExporter.buildDataDependencies(root);

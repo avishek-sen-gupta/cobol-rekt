@@ -41,27 +41,23 @@ public class NodeSpecBuilder {
     }
 
     public NodeSpec newASTNode(FlowNode node) {
-        return new NodeSpec(ImmutableList.of(AST_NODE, node.type().toString()),
+        return labelledCodeNode(node, AST_NODE);
+    }
+
+    public NodeSpec newCFGNode(FlowNode node) {
+        return labelledCodeNode(node, CFG_NODE);
+    }
+
+    public NodeSpec labelledCodeNode(FlowNode node, String nodeType) {
+        return new NodeSpec(ImmutableList.of(nodeType, node.type().toString()),
                 Map.of(ID, idProvider.next(),
                         INTERNAL_ID, node.id(),
                         NAME, node.name(),
                         TEXT, NodeText.originalText(node.getExecutionContext(), NodeText::PASSTHROUGH),
                         TYPE, node.type().toString(),
-                        ENTITY_TYPE, AST_NODE,
+                        ENTITY_TYPE, nodeType,
                         NAMESPACE, namespaceQualifier.getNamespace()
                 ));
-    }
-
-    public NodeSpec newCFGNode(FlowNode node) {
-        return new NodeSpec(ImmutableList.of(CFG_NODE, node.type().toString()), Map.of(
-                ID, idProvider.next(),
-                INTERNAL_ID, node.id(),
-                NAME, node.name(),
-                TEXT, node.getExecutionContext().getText(),
-                TYPE, node.type().toString(),
-                ENTITY_TYPE, CFG_NODE,
-                NAMESPACE, namespaceQualifier.getNamespace()
-        ));
     }
 
     public NodeSpec newTraceNode(FlowNode node) {
@@ -80,7 +76,17 @@ public class NodeSpecBuilder {
     }
 
     public NodeSpec cfgNodeSearchSpec(FlowNode node) {
-        return new NodeSpec(ImmutableList.of(CFG_NODE), Map.of(INTERNAL_ID, node.id(), NAMESPACE, namespaceQualifier.getNamespace()));
+        return labelledNodeSearchSpec(node, CFG_NODE);
+//        return new NodeSpec(ImmutableList.of(CFG_NODE), Map.of(INTERNAL_ID, node.id(), NAMESPACE, namespaceQualifier.getNamespace()));
+    }
+
+    public NodeSpec astNodeSearchSpec(FlowNode node) {
+        return labelledNodeSearchSpec(node, AST_NODE);
+//        return new NodeSpec(ImmutableList.of(AST_NODE), Map.of(INTERNAL_ID, node.id(), NAMESPACE, namespaceQualifier.getNamespace()));
+    }
+
+    public NodeSpec labelledNodeSearchSpec(FlowNode node, String nodeType) {
+        return new NodeSpec(ImmutableList.of(nodeType), Map.of(INTERNAL_ID, node.id(), ENTITY_TYPE, nodeType, NAMESPACE, namespaceQualifier.getNamespace()));
     }
 
     public NodeSpec dataNodeSearchCriteria(Map<String, Object> criteria) {
