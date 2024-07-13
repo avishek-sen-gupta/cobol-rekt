@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import static com.mojo.woof.NodeProperties.TYPE;
+import static com.mojo.woof.NodeRelations.CONTAINS;
 
 public class GraphExplorerMain {
     private final Logger logger = LoggerFactory.getLogger(GraphExplorerMain.class);
@@ -48,40 +49,49 @@ public class GraphExplorerMain {
         ParseTree procedure = navigator.procedureBodyRoot();
 
         flowcharter.buildChartAST(procedure).buildControlFlow().buildOverlay();
-        FlowNode root = flowcharter.getRoot();
+        FlowNode astRoot = flowcharter.getRoot();
         FlowNodeService nodeService = flowcharter.getChartNodeService();
 
-        GraphSDK sdk = new GraphSDK(new Neo4JDriverBuilder().fromEnv());
-
-        // Builds Control Flow Graph
         NodeSpecBuilder qualifier = new NodeSpecBuilder(new NamespaceQualifier("NEW-CODE"));
-        root.accept(new Neo4JFlowCFGVisitor(sdk, qualifier), -1);
-        Neo4JASTExporter neo4JExporter = new Neo4JASTExporter(sdk, dataStructures, qualifier);
-        GraphMLExporter graphMLExporter = new GraphMLExporter(dataStructures, qualifier);
-
-        // Builds AST
-        neo4JExporter.buildAST(root);
-
-        Advisor advisor = new Advisor(OpenAICredentials.fromEnv());
-        Record neo4jProgramRoot = sdk.findNodes(qualifier.astNodeCriteria(Map.of(TYPE, FlowNodeType.PROCEDURE_DIVISION_BODY.toString()))).getFirst();
-
-        // Builds data structures
-        dataStructures.accept(new Neo4JDataStructureVisitor(sdk, qualifier), null, n -> false, dataStructures);
-        dataStructures.accept(new Neo4JRedefinitionVisitor(sdk, qualifier), null, n -> false, dataStructures);
-
-        // Builds data dependencies
-        neo4JExporter.buildDataDependencies(root);
-        Record neo4jDataStructuresRoot = sdk.findNodes(qualifier.dataNodeSearchCriteria(Map.of(TYPE, "ROOT"))).getFirst();
+        GraphSDK sdk = new GraphSDK(new Neo4JDriverBuilder().fromEnv());
+//        exportToNeo4J(root, dataStructures, sdk);
 
 //        GraphPatternMatcher visitor = new GraphPatternMatcher(sdk);
 //        root.accept(visitor, node -> node.type() == FlowNodeType.SENTENCE, -1);
 //        System.out.printf("Number of groups = %s%n", visitor.getMatches().size());
 
-        graphMLExporter.buildAST(root);
+        GraphMLExportCommands graphMLExporter = new GraphMLExportCommands(dataStructures, astRoot, qualifier);
+        graphMLExporter.buildAST();
+        graphMLExporter.buildDataStructures();
 
+//        summariseThroughLLM(qualifier, sdk);
+    }
+
+    private static void exportToNeo4J(FlowNode root, CobolDataStructure dataStructures, GraphSDK sdk) {
+        // Builds Control Flow Graph
+        NodeSpecBuilder qualifier = new NodeSpecBuilder(new NamespaceQualifier("NEW-CODE"));
+        root.accept(new Neo4JFlowCFGVisitor(sdk, qualifier), -1);
+        Neo4JASTExporter neo4JExporter = new Neo4JASTExporter(sdk, dataStructures, qualifier);
+
+        // Builds AST
+        neo4JExporter.buildAST(root);
+
+        // Builds data structures
+        dataStructures.accept(new Neo4JDataStructureVisitor(sdk, qualifier), null, n -> false, dataStructures);
+        dataStructures.accept(new Neo4JRedefinitionVisitor(sdk, qualifier), null, n -> false, dataStructures);
+
+
+        // Builds data dependencies
+        neo4JExporter.buildDataDependencies(root);
+    }
+
+    private static void summariseThroughLLM(NodeSpecBuilder qualifier, GraphSDK sdk) {
+        Record neo4jProgramRoot = sdk.findNodes(qualifier.astNodeCriteria(Map.of(TYPE, FlowNodeType.PROCEDURE_DIVISION_BODY.toString()))).getFirst();
+        Record neo4jDataStructuresRoot = sdk.findNodes(qualifier.dataNodeSearchCriteria(Map.of(TYPE, "ROOT"))).getFirst();
+        Advisor advisor = new Advisor(OpenAICredentials.fromEnv());
         // Summarises AST bottom-up
-//        sdk.traverse(neo4jProgramRoot, new SummariseAction(advisor, sdk), CONTAINS);
+        sdk.traverse(neo4jProgramRoot, new SummariseAction(advisor, sdk), CONTAINS);
         // Summarises data structures
-//        sdk.traverse(neo4jDataStructuresRoot, new DataStructureSummariseAction(advisor, sdk), CONTAINS);
+        sdk.traverse(neo4jDataStructuresRoot, new DataStructureSummariseAction(advisor, sdk), CONTAINS);
     }
 }

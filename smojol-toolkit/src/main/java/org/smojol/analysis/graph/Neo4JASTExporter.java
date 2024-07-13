@@ -5,11 +5,6 @@ import com.mojo.woof.GraphSDK;
 import com.mojo.woof.WoofNode;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.graph.DirectedAcyclicGraph;
-import org.jgrapht.nio.Attribute;
-import org.jgrapht.nio.AttributeType;
-import org.jgrapht.nio.DefaultAttribute;
-import org.jgrapht.nio.graphml.GraphMLExporter;
 import org.neo4j.driver.Record;
 import org.smojol.ast.*;
 import org.smojol.common.flowchart.*;
@@ -19,11 +14,7 @@ import org.smojol.common.vm.reference.ShallowReferenceBuilder;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.interpreter.navigation.FlowNodeASTTraversal;
 
-import java.io.File;
 import java.util.List;
-import java.util.Map;
-
-import static com.mojo.woof.NodeRelations.CONTAINS;
 
 public class Neo4JASTExporter {
     private final GraphSDK sdk;
@@ -43,13 +34,6 @@ public class Neo4JASTExporter {
 
     public void buildDataDependencies(FlowNode root) {
         new FlowNodeASTTraversal<Boolean>().build(root, this::buildDataDependency);
-    }
-
-    public FlowNode buildGraphML(FlowNode node, FlowNode parent) {
-        graph.addVertex(node);
-        if (parent == null) return node;
-        graph.addEdge(parent, node);
-        return node;
     }
 
     public Record make(FlowNode tree, Record parent) {
@@ -119,28 +103,5 @@ public class Neo4JASTExporter {
 
     private Boolean stopAtSentence(FlowNode tree) {
         return tree.type() == FlowNodeType.SECTION;
-    }
-
-    public void export(FlowNode root) {
-        graph = new DirectedAcyclicGraph<>(DefaultEdge.class);
-        GraphMLExporter<FlowNode, DefaultEdge> exporter = new GraphMLExporter<>();
-        exporter.registerAttribute("type", GraphMLExporter.AttributeCategory.NODE, AttributeType.STRING);
-        exporter.registerAttribute("label", GraphMLExporter.AttributeCategory.NODE, AttributeType.STRING);
-        exporter.registerAttribute("text", GraphMLExporter.AttributeCategory.NODE, AttributeType.STRING);
-        exporter.registerAttribute("relationshipType", GraphMLExporter.AttributeCategory.EDGE, AttributeType.STRING);
-        exporter.setVertexAttributeProvider(n -> Map.of(
-                "id", attr(n.id()),
-                "type", attr(n.type().toString()),
-                "label", attr(n.label()),
-                "text", attr(n.originalText())));
-
-        exporter.setEdgeAttributeProvider(e -> Map.of("relationshipType", attr(CONTAINS)));
-        exporter.setVertexIdProvider(FlowNode::id);
-        new FlowNodeASTTraversal<FlowNode>().build(root, this::buildGraphML);
-        exporter.exportGraph(graph, new File("/Users/asgupta/code/smojol/out/test.graphml"));
-    }
-
-    private Attribute attr(String attribute) {
-        return new DefaultAttribute<>(attribute, AttributeType.STRING);
     }
 }
