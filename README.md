@@ -14,6 +14,7 @@ This is an evolving toolkit of capabilities helpful for reverse engineering lega
 - Injecting record dependency connections (MOVE, COMPUTE, etc.) into Neo4J
 - Integration with OpenAI GPT to summarise nodes using bottom-up node traversal
 - Support for namespaces to allow unique addressing of (possibly same) graphs
+- Exporting ASTs, CFGs, and record dependencies to GraphML format
 
 ## Dependencies
 
@@ -126,6 +127,17 @@ The interpreter can run in two modes:
 The interpreter also supports injecting a complete execution path through the program into Neo4J. The screenshot below shows the execution trace of a reasonably complex program.
 
 ![Execution Trace Graph](documentation/execution-trace-graph.png)
+
+## GraphML Export
+The toolkit allows exporting the following entities to the GraphML format, so that they can be consumed further downstream for analysis:
+
+- Abstract Syntax Tree
+- Control Flow Graph
+- Data Structures (and their dependencies)
+
+The screenshot below shows a sample program's data structures exported to GraphML and loaded through the yEd Graph Editor.
+
+![yEd Screenshot of GraphML Exported Data Structures](documentation/graphml-data-structures-export.png)
 
 ## How to Build
 
