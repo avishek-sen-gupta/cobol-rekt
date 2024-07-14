@@ -24,9 +24,7 @@ public class GraphMLDataStructureVisitor implements DataStructureVisitor {
     @Override
     public CobolDataStructure visit(CobolDataStructure data, CobolDataStructure parent, CobolDataStructure root) {
         graphOperations.addNode(data);
-//        dataStructuresGraph.addVertex(data);
         if (parent == null) return data;
-//        dataStructuresGraph.addEdge(parent, data, new TypedGraphMLEdge(CONTAINS));
         graphOperations.connect(parent, data, CONTAINS);
         return data;
     }

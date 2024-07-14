@@ -28,7 +28,6 @@ public class GraphMLRedefinitionVisitor implements DataStructureVisitor {
         Map.Entry<CobolDataStructure, CobolDataStructure> redefinitionPair = redefinitionPair(data, root);
         if (ImmutablePair.nullPair().equals(redefinitionPair)) return data;
         graphOperations.connect(redefinitionPair.getKey(), redefinitionPair.getValue(), REDEFINES);
-//        graph.addEdge(redefinitionPair.getKey(), redefinitionPair.getValue(), new TypedGraphMLEdge(REDEFINES));
         return data;
     }
 

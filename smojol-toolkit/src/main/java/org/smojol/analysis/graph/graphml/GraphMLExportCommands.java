@@ -71,10 +71,8 @@ public class GraphMLExportCommands {
 
     public FlowNode buildGraphML(FlowNode node, FlowNode parent) {
         astGraphOperations.addNode(node);
-//        astGraph.addVertex(node);
         if (parent == null) return node;
         astGraphOperations.connect(parent, node, CONTAINS);
-//        astGraph.addEdge(parent, node, new TypedGraphMLEdge(CONTAINS));
         return node;
     }
 
@@ -87,10 +85,8 @@ public class GraphMLExportCommands {
 
     private void connect(List<CobolDataStructure> froms, List<CobolDataStructure> tos) {
         tos.forEach(to -> froms.forEach(from -> {
-//            if (!dataStructuresGraph.containsVertex(from)) dataStructuresGraph.addVertex(from);
-            if (!dataStructuresGraph.containsVertex(from)) dataGraphOperations.addNode(from);
+            if (!dataGraphOperations.containsVertex(from)) dataGraphOperations.addNode(from);
             dataGraphOperations.connect(from, to, MODIFIES);
-//            dataStructuresGraph.addEdge(from, to, new TypedGraphMLEdge(MODIFIES));
         }));
     }
 

@@ -19,4 +19,8 @@ public class JGraphTDataOperations {
     public boolean connect(CobolDataStructure from, CobolDataStructure to, String edgeType) {
         return graph.addEdge(from, to, new TypedGraphMLEdge(edgeType));
     }
+
+    public boolean containsVertex(CobolDataStructure structure) {
+        return graph.containsVertex(structure);
+    }
 }
