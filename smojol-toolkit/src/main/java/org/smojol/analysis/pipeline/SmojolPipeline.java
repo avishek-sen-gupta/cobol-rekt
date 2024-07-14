@@ -65,7 +65,7 @@ public class SmojolPipeline {
 
         // Builds AST
         Neo4JGraphBuilder neo4JExporter = new Neo4JGraphBuilder(sdk, dataStructures, qualifier, this.astNodeReferenceStrategy, this.dataDependencyAttachmentStrategy);
-        neo4JExporter.buildAST(root);
+//        neo4JExporter.buildAST(root);
 
         // Builds data structures
         dataStructures.accept(new Neo4JDataStructureVisitor(sdk, qualifier), null, n -> false, dataStructures);

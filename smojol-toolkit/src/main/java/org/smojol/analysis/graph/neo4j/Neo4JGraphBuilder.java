@@ -42,7 +42,7 @@ public class Neo4JGraphBuilder {
     public Record make(FlowNode tree, Record parent) {
         Record record = astNodeReferenceStrategy.reference(tree, sdk, qualifier);
         if (parent == null) return record;
-        sdk.contains(parent, record);
+        sdk.containsCodeNode(parent, record);
         return record;
     }
 

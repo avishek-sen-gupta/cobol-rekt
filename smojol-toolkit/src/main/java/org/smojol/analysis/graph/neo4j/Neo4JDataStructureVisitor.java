@@ -23,7 +23,7 @@ public class Neo4JDataStructureVisitor implements DataStructureVisitor {
         Record record = sdk.createNode(node);
         if (parent == null) return data;
         Record parentNode = sdk.findNodes(nodeQualifier.dataNodeSearchSpec(parent)).getFirst();
-        sdk.contains(parentNode, record);
+        sdk.containsDataNode(parentNode, record);
         return data;
     }
 }

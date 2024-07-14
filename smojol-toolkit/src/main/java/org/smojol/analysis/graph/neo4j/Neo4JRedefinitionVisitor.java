@@ -27,7 +27,7 @@ public class Neo4JRedefinitionVisitor implements DataStructureVisitor {
         if (ImmutablePair.nullPair().equals(redefinitionPair)) return data;
         Record redefinition = sdk.findNodes(nodeQualifier.dataNodeSearchSpec(redefinitionPair.getKey())).getFirst();
         Record redefinedRecord = sdk.findNodes(nodeQualifier.dataNodeSearchSpec(redefinitionPair.getValue())).getFirst();
-        sdk.connect(redefinition, redefinedRecord, REDEFINES);
+        sdk.redefines(redefinition, redefinedRecord);
         return data;
     }
 
