@@ -144,7 +144,7 @@ You can export to GraphML from Neo4J pretty easily. If you don't have Neo4J set 
 - Control Flow Graph
 - Data Structures (and their dependencies)
 
-The screenshot below shows a sample program's data structures exported to GraphML and loaded through the yEd Graph Editor.
+The screenshot below shows a sample program's unified model exported to GraphML and loaded through the yEd Graph Editor.
 
 ![yEd Screenshot of GraphML Exported Data Structures](documentation/unified-ast-cfg-dependency-graphml.png)
 
