@@ -55,12 +55,14 @@ public class Neo4JASTExporter {
 
     private void connect(List<CobolDataStructure> froms, List<CobolDataStructure> tos, FlowNode attachmentNode) {
         Record attachmentNodeRecord = dependencyAttachmentStrategy.reference(attachmentNode, sdk, qualifier);
-        tos.forEach(to -> froms.forEach(from -> {
+        tos.forEach(to -> {
             Record n4jTo = sdk.findNodes(qualifier.dataNodeSearchSpec(to)).getFirst();
-            Record n4jFrom = sdk.newOrExisting(qualifier.dataNodeSearchSpec(from), NodeToWoof.dataStructureToWoof(from, qualifier));
-            sdk.flowsInto(n4jFrom, n4jTo);
             sdk.modifies(attachmentNodeRecord, n4jTo);
-            sdk.accesses(attachmentNodeRecord, n4jFrom);
-        }));
+            froms.forEach(from -> {
+                Record n4jFrom = sdk.newOrExisting(qualifier.dataNodeSearchSpec(from), NodeToWoof.dataStructureToWoof(from, qualifier));
+                sdk.flowsInto(n4jFrom, n4jTo);
+                sdk.accesses(attachmentNodeRecord, n4jFrom);
+            });
+        });
     }
 }

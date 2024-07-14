@@ -2,7 +2,7 @@ package org.smojol.analysis.graph.graphml;
 
 import org.jgrapht.Graph;
 import org.smojol.analysis.graph.NodeSpecBuilder;
-import org.smojol.analysis.graph.jgrapht.JGraphTOperations;
+import org.smojol.analysis.graph.jgrapht.JGraphTCodeOperations;
 import org.smojol.common.flowchart.*;
 
 import java.util.List;
@@ -11,12 +11,12 @@ import static com.mojo.woof.NodeRelations.FOLLOWED_BY;
 import static com.mojo.woof.NodeRelations.STARTS_WITH;
 
 public class GraphMLCFGVisitor implements FlowNodeVisitor {
-    private final Graph<FlowNode, TypedGraphMLEdge> graph;
+    private final Graph<TypedGraphVertex, TypedGraphEdge> graph;
     private final NodeSpecBuilder qualifier;
-    private final JGraphTOperations operations;
+    private final JGraphTCodeOperations operations;
 
-    public GraphMLCFGVisitor(Graph<FlowNode, TypedGraphMLEdge> graph, NodeSpecBuilder qualifier) {
-        operations = new JGraphTOperations(graph);
+    public GraphMLCFGVisitor(Graph<TypedGraphVertex, TypedGraphEdge> graph, NodeSpecBuilder qualifier) {
+        operations = new JGraphTCodeOperations(graph);
         this.graph = graph;
         this.qualifier = qualifier;
     }

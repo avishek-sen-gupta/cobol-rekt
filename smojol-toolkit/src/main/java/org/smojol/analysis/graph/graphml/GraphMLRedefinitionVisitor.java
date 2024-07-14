@@ -13,11 +13,11 @@ import static com.mojo.woof.NodeRelations.REDEFINES;
 import static org.smojol.analysis.graph.DataRedefinitionComputer.redefinitionPair;
 
 public class GraphMLRedefinitionVisitor implements DataStructureVisitor {
-    private final Graph<CobolDataStructure, TypedGraphMLEdge> graph;
+    private final Graph<TypedGraphVertex, TypedGraphEdge> graph;
     private final NodeSpecBuilder nodeQualifier;
     private final JGraphTDataOperations graphOperations;
 
-    public GraphMLRedefinitionVisitor(Graph<CobolDataStructure, TypedGraphMLEdge> graph, NodeSpecBuilder nodeQualifier) {
+    public GraphMLRedefinitionVisitor(Graph<TypedGraphVertex, TypedGraphEdge> graph, NodeSpecBuilder nodeQualifier) {
         this.graph = graph;
         this.nodeQualifier = nodeQualifier;
         graphOperations = new JGraphTDataOperations(this.graph);

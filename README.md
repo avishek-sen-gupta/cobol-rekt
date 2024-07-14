@@ -137,7 +137,7 @@ The interpreter also supports injecting a complete execution path through the pr
 ![Execution Trace Graph](documentation/execution-trace-graph.png)
 
 ## GraphML Export
-You can export to GraphML from Neo4J pretty easily. If you don't have Neo4J set up though, the toolkit allows exporting the following entities to the GraphML format, so that they can be consumed further downstream for analysis:
+You can export to GraphML from Neo4J pretty easily. If you don't have Neo4J set up though, the toolkit allows exporting the following entities to the GraphML format (with all interconnections) as a single supergraph, so that they can be consumed further downstream for analysis:
 
 - Abstract Syntax Tree
 - Control Flow Graph
@@ -145,13 +145,15 @@ You can export to GraphML from Neo4J pretty easily. If you don't have Neo4J set 
 
 The screenshot below shows a sample program's data structures exported to GraphML and loaded through the yEd Graph Editor.
 
-![yEd Screenshot of GraphML Exported Data Structures](documentation/graphml-data-structures-export.png)
+![yEd Screenshot of GraphML Exported Data Structures](documentation/unified-ast-cfg-dependency-graphml.png)
 
-To export the unified graph to GraphML, you can simply export from Neo4J with the following command:
+To export the unified graph to GraphML from Neo4J, you can run the following command:
 
 ```
 CALL apoc.export.graphml.all("<export.graphml>", {})
 ```
+
+The file will be in the ```import``` directory inside the directory where the current database files are stored (in Neo4J Desktop).
 
 ## How to Build
 
