@@ -2,6 +2,7 @@ package org.smojol.analysis.graph.graphml;
 
 import org.jgrapht.Graph;
 import org.smojol.analysis.graph.NodeSpecBuilder;
+import org.smojol.analysis.graph.jgrapht.JGraphTOperations;
 import org.smojol.common.flowchart.*;
 
 import java.util.List;
@@ -12,8 +13,10 @@ import static com.mojo.woof.NodeRelations.STARTS_WITH;
 public class GraphMLCFGVisitor implements FlowNodeVisitor {
     private final Graph<FlowNode, TypedGraphMLEdge> graph;
     private final NodeSpecBuilder qualifier;
+    private final JGraphTOperations operations;
 
     public GraphMLCFGVisitor(Graph<FlowNode, TypedGraphMLEdge> graph, NodeSpecBuilder qualifier) {
+        operations = new JGraphTOperations(graph);
         this.graph = graph;
         this.qualifier = qualifier;
     }
@@ -21,17 +24,17 @@ public class GraphMLCFGVisitor implements FlowNodeVisitor {
     @Override
     public void visit(FlowNode node, List<FlowNode> outgoingNodes, List<FlowNode> incomingNodes, VisitContext context, FlowNodeService nodeService) {
         outgoingNodes.forEach(o -> {
-            graph.addVertex(node);
-            graph.addVertex(o);
-            graph.addEdge(node, o, new TypedGraphMLEdge(FOLLOWED_BY));
+            operations.addNode(node);
+            operations.addNode(o);
+            operations.connect(node, o, FOLLOWED_BY);
         });
     }
 
     @Override
     public void visitParentChildLink(FlowNode parent, FlowNode internalTreeRoot, VisitContext ctx, FlowNodeService nodeService) {
-        graph.addVertex(parent);
-        graph.addVertex(internalTreeRoot);
-        graph.addEdge(parent, internalTreeRoot, new TypedGraphMLEdge(STARTS_WITH));
+        operations.addNode(parent);
+        operations.addNode(internalTreeRoot);
+        operations.connect(parent, internalTreeRoot, STARTS_WITH);
     }
 
     @Override
@@ -41,9 +44,9 @@ public class GraphMLCFGVisitor implements FlowNodeVisitor {
 
     @Override
     public void visitControlTransfer(FlowNode from, FlowNode to, VisitContext visitContext) {
-        graph.addVertex(from);
-        graph.addVertex(to);
-        graph.addEdge(from, to, new TypedGraphMLEdge(FOLLOWED_BY));
+        operations.addNode(from);
+        operations.addNode(to);
+        operations.connect(from, to, FOLLOWED_BY);
     }
 
     @Override

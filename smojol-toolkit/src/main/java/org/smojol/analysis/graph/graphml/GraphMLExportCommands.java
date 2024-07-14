@@ -10,6 +10,8 @@ import org.jgrapht.nio.DefaultAttribute;
 import org.jgrapht.nio.graphml.GraphMLExporter;
 import org.smojol.analysis.graph.DataDependencyPairComputer;
 import org.smojol.analysis.graph.NodeSpecBuilder;
+import org.smojol.analysis.graph.jgrapht.JGraphTDataOperations;
+import org.smojol.analysis.graph.jgrapht.JGraphTOperations;
 import org.smojol.common.flowchart.FlowNode;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.interpreter.navigation.FlowNodeASTTraversal;
@@ -29,6 +31,8 @@ public class GraphMLExportCommands {
     private final Graph<FlowNode, TypedGraphMLEdge> astGraph;
     private final Graph<FlowNode, TypedGraphMLEdge> cfgGraph;
     private final Graph<CobolDataStructure, TypedGraphMLEdge> dataStructuresGraph;
+    private final JGraphTOperations astGraphOperations;
+    private final JGraphTDataOperations dataGraphOperations;
 
     public GraphMLExportCommands(CobolDataStructure dataStructures, FlowNode procedureRoot, NodeSpecBuilder qualifier) {
         this.dataRoot = dataStructures;
@@ -37,6 +41,8 @@ public class GraphMLExportCommands {
         astGraph = new DirectedAcyclicGraph<>(TypedGraphMLEdge.class);
         cfgGraph = new DefaultDirectedGraph<>(TypedGraphMLEdge.class);
         dataStructuresGraph = new DefaultDirectedGraph<>(TypedGraphMLEdge.class);
+        astGraphOperations = new JGraphTOperations(astGraph);
+        dataGraphOperations = new JGraphTDataOperations(dataStructuresGraph);
     }
 
     public void buildDataStructures(File outputPath) {
@@ -64,9 +70,11 @@ public class GraphMLExportCommands {
     }
 
     public FlowNode buildGraphML(FlowNode node, FlowNode parent) {
-        astGraph.addVertex(node);
+        astGraphOperations.addNode(node);
+//        astGraph.addVertex(node);
         if (parent == null) return node;
-        astGraph.addEdge(parent, node, new TypedGraphMLEdge(CONTAINS));
+        astGraphOperations.connect(parent, node, CONTAINS);
+//        astGraph.addEdge(parent, node, new TypedGraphMLEdge(CONTAINS));
         return node;
     }
 
@@ -79,8 +87,10 @@ public class GraphMLExportCommands {
 
     private void connect(List<CobolDataStructure> froms, List<CobolDataStructure> tos) {
         tos.forEach(to -> froms.forEach(from -> {
-            if (!dataStructuresGraph.containsVertex(from)) dataStructuresGraph.addVertex(from);
-            dataStructuresGraph.addEdge(from, to, new TypedGraphMLEdge(MODIFIES));
+//            if (!dataStructuresGraph.containsVertex(from)) dataStructuresGraph.addVertex(from);
+            if (!dataStructuresGraph.containsVertex(from)) dataGraphOperations.addNode(from);
+            dataGraphOperations.connect(from, to, MODIFIES);
+//            dataStructuresGraph.addEdge(from, to, new TypedGraphMLEdge(MODIFIES));
         }));
     }
 
