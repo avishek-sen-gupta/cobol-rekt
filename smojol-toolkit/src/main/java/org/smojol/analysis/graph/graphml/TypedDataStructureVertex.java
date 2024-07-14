@@ -1,7 +1,6 @@
 package org.smojol.analysis.graph.graphml;
 
 import lombok.Getter;
-import org.smojol.common.flowchart.FlowNode;
 import org.smojol.common.vm.structure.CobolDataStructure;
 
 import java.util.Objects;
@@ -9,9 +8,11 @@ import java.util.Objects;
 @Getter
 public class TypedDataStructureVertex implements TypedGraphVertex {
     private final CobolDataStructure node;
+    private final String namespace;
 
-    public TypedDataStructureVertex(CobolDataStructure dataNode) {
+    public TypedDataStructureVertex(CobolDataStructure dataNode, String namespace) {
         this.node = dataNode;
+        this.namespace = namespace;
     }
 
     public String id() {
@@ -33,6 +34,11 @@ public class TypedDataStructureVertex implements TypedGraphVertex {
 
     public String text() {
         return node.content();
+    }
+
+    @Override
+    public String namespace() {
+        return namespace;
     }
 
     @Override

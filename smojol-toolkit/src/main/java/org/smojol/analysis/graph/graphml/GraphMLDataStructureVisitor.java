@@ -14,10 +14,10 @@ public class GraphMLDataStructureVisitor implements DataStructureVisitor {
     private final NodeSpecBuilder nodeQualifier;
     private final JGraphTDataOperations graphOperations;
 
-    public GraphMLDataStructureVisitor(Graph<TypedGraphVertex, TypedGraphEdge> dataStructuresGraph, NodeSpecBuilder nodeQualifier) {
-        this.nodeQualifier = nodeQualifier;
+    public GraphMLDataStructureVisitor(Graph<TypedGraphVertex, TypedGraphEdge> dataStructuresGraph, NodeSpecBuilder qualifier) {
+        this.nodeQualifier = qualifier;
         this.dataStructuresGraph = dataStructuresGraph;
-        graphOperations = new JGraphTDataOperations(this.dataStructuresGraph);
+        graphOperations = new JGraphTDataOperations(this.dataStructuresGraph, qualifier);
     }
 
     @Override

@@ -31,7 +31,8 @@ public class JGraphTGraphBuilder {
     private final Graph<TypedGraphVertex, TypedGraphEdge> astGraph;
     private final Graph<TypedGraphVertex, TypedGraphEdge> cfgGraph;
     private final Graph<TypedGraphVertex, TypedGraphEdge> dataStructuresGraph;
-    @Getter private final Graph<TypedGraphVertex, TypedGraphEdge> model;
+    @Getter
+    private final Graph<TypedGraphVertex, TypedGraphEdge> model;
     private final JGraphTCodeOperations astGraphOperations;
     private final JGraphTDataOperations dataGraphOperations;
 
@@ -43,8 +44,16 @@ public class JGraphTGraphBuilder {
 //        astGraph = new DirectedAcyclicGraph<>(TypedGraphEdge.class);
 //        cfgGraph = new DefaultDirectedGraph<>(TypedGraphEdge.class);
 //        dataStructuresGraph = new DefaultDirectedGraph<>(TypedGraphEdge.class);
-        astGraphOperations = new JGraphTCodeOperations(astGraph);
-        dataGraphOperations = new JGraphTDataOperations(dataStructuresGraph);
+        astGraphOperations = new JGraphTCodeOperations(astGraph, qualifier);
+        dataGraphOperations = new JGraphTDataOperations(dataStructuresGraph, qualifier);
+    }
+
+    public void buildAST() {
+        new FlowNodeASTTraversal<FlowNode>().build(astRoot, this::buildJGraphTNodes);
+    }
+
+    public void buildCFG() {
+        cfgRoot.accept(new GraphMLCFGVisitor(cfgGraph, qualifier), -1);
     }
 
     public void buildDataStructures() {
@@ -78,16 +87,8 @@ public class JGraphTGraphBuilder {
         });
     }
 
-    public void buildAST() {
-        new FlowNodeASTTraversal<FlowNode>().build(astRoot, this::buildJGraphTNodes);
-    }
-
     private Attribute attr(String attribute) {
         return new DefaultAttribute<>(attribute, AttributeType.STRING);
-    }
-
-    public void buildCFG() {
-        cfgRoot.accept(new GraphMLCFGVisitor(cfgGraph, qualifier), -1);
     }
 
     private void export(Graph<TypedGraphVertex, TypedGraphEdge> graph, File outputPath) {
@@ -97,15 +98,20 @@ public class JGraphTGraphBuilder {
         exporter.registerAttribute(NAME, GraphMLExporter.AttributeCategory.NODE, AttributeType.STRING);
         exporter.registerAttribute(TEXT, GraphMLExporter.AttributeCategory.NODE, AttributeType.STRING);
         exporter.registerAttribute(LABEL, GraphMLExporter.AttributeCategory.NODE, AttributeType.STRING);
+        exporter.registerAttribute(NAMESPACE, GraphMLExporter.AttributeCategory.NODE, AttributeType.STRING);
+//        exporter.registerAttribute(NAMESPACE, GraphMLExporter.AttributeCategory.EDGE, AttributeType.STRING);
         exporter.registerAttribute(RELATIONSHIP_TYPE, GraphMLExporter.AttributeCategory.EDGE, AttributeType.STRING);
         exporter.setVertexAttributeProvider(s -> Map.of(
                 ID, attr(s.id()),
                 NAME, attr(s.name()),
                 TYPE, attr(s.type()),
                 LABEL, attr(s.label()),
-                TEXT, attr(s.text())));
+                TEXT, attr(s.text()),
+                NAMESPACE, attr(s.namespace())));
 
-        exporter.setEdgeAttributeProvider(e -> Map.of(RELATIONSHIP_TYPE, attr(e.getRelationshipType())));
+        exporter.setEdgeAttributeProvider(e -> Map.of(
+                RELATIONSHIP_TYPE, attr(e.getRelationshipType()),
+                NAMESPACE, attr(e.getNamespace())));
         exporter.setVertexIdProvider(TypedGraphVertex::id);
         exporter.exportGraph(graph, outputPath);
     }

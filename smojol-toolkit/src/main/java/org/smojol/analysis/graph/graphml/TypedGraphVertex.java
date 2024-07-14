@@ -6,4 +6,5 @@ public interface TypedGraphVertex {
     String label();
     String name();
     String text();
+    String namespace();
 }

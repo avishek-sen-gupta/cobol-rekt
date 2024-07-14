@@ -16,7 +16,7 @@ public class GraphMLCFGVisitor implements FlowNodeVisitor {
     private final JGraphTCodeOperations operations;
 
     public GraphMLCFGVisitor(Graph<TypedGraphVertex, TypedGraphEdge> graph, NodeSpecBuilder qualifier) {
-        operations = new JGraphTCodeOperations(graph);
+        operations = new JGraphTCodeOperations(graph, qualifier);
         this.graph = graph;
         this.qualifier = qualifier;
     }

@@ -2,6 +2,10 @@ package org.smojol.analysis.graph;
 
 import com.google.common.collect.ImmutableList;
 import com.mojo.woof.NodeSpec;
+import org.smojol.analysis.graph.graphml.TypedCodeVertex;
+import org.smojol.analysis.graph.graphml.TypedDataStructureVertex;
+import org.smojol.analysis.graph.graphml.TypedGraphEdge;
+import org.smojol.analysis.graph.graphml.TypedGraphVertex;
 import org.smojol.common.flowchart.FlowNode;
 import org.smojol.common.flowchart.NodeText;
 import org.smojol.common.id.IdProvider;
@@ -101,5 +105,17 @@ public class NodeSpecBuilder {
         finalCriteria.put(NAMESPACE, namespaceQualifier.getNamespace());
         finalCriteria.putAll(criteria);
         return new NodeSpec(ImmutableList.of(AST_NODE), finalCriteria);
+    }
+
+    public TypedGraphVertex newCodeVertex(FlowNode node) {
+        return new TypedCodeVertex(node, namespaceQualifier.getNamespace());
+    }
+
+    public TypedGraphEdge newEdge(String edgeType) {
+        return new TypedGraphEdge(edgeType, namespaceQualifier.getNamespace());
+    }
+
+    public TypedGraphVertex newDataVertex(CobolDataStructure structure) {
+        return new TypedDataStructureVertex(structure, namespaceQualifier.getNamespace());
     }
 }

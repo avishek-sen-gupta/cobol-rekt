@@ -17,10 +17,10 @@ public class GraphMLRedefinitionVisitor implements DataStructureVisitor {
     private final NodeSpecBuilder nodeQualifier;
     private final JGraphTDataOperations graphOperations;
 
-    public GraphMLRedefinitionVisitor(Graph<TypedGraphVertex, TypedGraphEdge> graph, NodeSpecBuilder nodeQualifier) {
+    public GraphMLRedefinitionVisitor(Graph<TypedGraphVertex, TypedGraphEdge> graph, NodeSpecBuilder qualifier) {
         this.graph = graph;
-        this.nodeQualifier = nodeQualifier;
-        graphOperations = new JGraphTDataOperations(this.graph);
+        this.nodeQualifier = qualifier;
+        graphOperations = new JGraphTDataOperations(this.graph, qualifier);
     }
 
     @Override

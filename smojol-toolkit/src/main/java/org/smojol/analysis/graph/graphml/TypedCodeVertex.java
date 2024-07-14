@@ -8,9 +8,11 @@ import java.util.Objects;
 @Getter
 public class TypedCodeVertex implements TypedGraphVertex {
     private final FlowNode node;
+    private final String namespace;
 
-    public TypedCodeVertex(FlowNode node) {
+    public TypedCodeVertex(FlowNode node, String namespace) {
         this.node = node;
+        this.namespace = namespace;
     }
 
     public String id() {
@@ -32,6 +34,11 @@ public class TypedCodeVertex implements TypedGraphVertex {
 
     public String text() {
         return node.originalText();
+    }
+
+    @Override
+    public String namespace() {
+        return namespace;
     }
 
     @Override
