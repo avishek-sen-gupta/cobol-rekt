@@ -15,7 +15,7 @@ import org.smojol.interpreter.navigation.FlowNodeASTTraversal;
 import java.util.List;
 import java.util.Map;
 
-public class Neo4JASTExporter {
+public class Neo4JGraphBuilder {
     private final GraphSDK sdk;
     private final CobolDataStructure data;
     private final NodeSpecBuilder qualifier;
@@ -23,7 +23,7 @@ public class Neo4JASTExporter {
     private final NodeReferenceStrategy dependencyAttachmentStrategy;
     private Graph<FlowNode, DefaultEdge> graph;
 
-    public Neo4JASTExporter(GraphSDK sdk, CobolDataStructure dataStructures, NodeSpecBuilder qualifier, NodeReferenceStrategy nodeReferenceStrategy, NodeReferenceStrategy dependencyAttachmentStrategy) {
+    public Neo4JGraphBuilder(GraphSDK sdk, CobolDataStructure dataStructures, NodeSpecBuilder qualifier, NodeReferenceStrategy nodeReferenceStrategy, NodeReferenceStrategy dependencyAttachmentStrategy) {
         this.sdk = sdk;
         this.data = dataStructures;
         this.qualifier = qualifier;

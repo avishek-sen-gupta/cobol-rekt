@@ -8,7 +8,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.neo4j.driver.Record;
 import org.smojol.analysis.ParsePipeline;
 import org.smojol.analysis.graph.*;
-import org.smojol.analysis.graph.graphml.GraphMLExportCommands;
+import org.smojol.analysis.graph.graphml.JGraphTGraphBuilder;
 import org.smojol.analysis.graph.neo4j.*;
 import org.smojol.common.flowchart.FlowNode;
 import org.smojol.common.flowchart.FlowNodeService;
@@ -52,7 +52,7 @@ public class SmojolPipeline {
     }
 
     private static void exportToGraphML(FlowNode astRoot, CobolDataStructure dataStructures, NodeSpecBuilder qualifier) {
-        GraphMLExportCommands graphMLExporter = new GraphMLExportCommands(dataStructures, astRoot, qualifier);
+        JGraphTGraphBuilder graphMLExporter = new JGraphTGraphBuilder(dataStructures, astRoot, qualifier);
         graphMLExporter.buildAST();
         graphMLExporter.buildCFG();
         graphMLExporter.buildDataStructures();
@@ -64,7 +64,7 @@ public class SmojolPipeline {
         root.accept(new Neo4JFlowCFGVisitor(sdk, qualifier), -1);
 
         // Builds AST
-        Neo4JASTExporter neo4JExporter = new Neo4JASTExporter(sdk, dataStructures, qualifier, this.astNodeReferenceStrategy, this.dataDependencyAttachmentStrategy);
+        Neo4JGraphBuilder neo4JExporter = new Neo4JGraphBuilder(sdk, dataStructures, qualifier, this.astNodeReferenceStrategy, this.dataDependencyAttachmentStrategy);
         neo4JExporter.buildAST(root);
 
         // Builds data structures

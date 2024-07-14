@@ -13,6 +13,7 @@ This is an evolving toolkit of capabilities helpful for reverse engineering lega
 - Injecting execution traces from the SMOJOL interpreter into Neo4J
 - Injecting record dependency connections (MOVE, COMPUTE, etc.) into Neo4J
 - Integration with OpenAI GPT to summarise nodes using bottom-up node traversal
+- Exposes a unified model (AST, CFG, Data Structures with appropriate interconnections) which can be analysed through [JGraphT](https://jgrapht.org/) (which is embedded in the library)
 - Support for namespaces to allow unique addressing of (possibly same) graphs
 - Exporting ASTs, CFGs, and record dependencies to GraphML format
 
@@ -154,6 +155,12 @@ CALL apoc.export.graphml.all("<export.graphml>", {})
 ```
 
 The file will be in the ```import``` directory inside the directory where the current database files are stored (in Neo4J Desktop).
+
+## Analysis through JGraphT
+
+The library embeds [JGraphT](https://jgrapht.org/), a powerful library of graph algorithms. The ```JGraphTBuilder``` class converts the unified model (AST, CFG, Data Structures) into a DirectedPseudograph (because there can be both loops and parallel edges between two nodes), for consequent analysis through the JGraphT API.
+
+Custom analyses are a work in progress.
 
 ## How to Build
 

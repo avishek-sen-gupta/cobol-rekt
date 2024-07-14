@@ -1,5 +1,6 @@
 package org.smojol.analysis.graph.graphml;
 
+import lombok.Getter;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DirectedPseudograph;
@@ -22,7 +23,7 @@ import java.util.Map;
 import static com.mojo.woof.NodeProperties.*;
 import static com.mojo.woof.NodeRelations.*;
 
-public class GraphMLExportCommands {
+public class JGraphTGraphBuilder {
     private final CobolDataStructure dataRoot;
     private final NodeSpecBuilder qualifier;
     private final FlowNode astRoot;
@@ -30,14 +31,15 @@ public class GraphMLExportCommands {
     private final Graph<TypedGraphVertex, TypedGraphEdge> astGraph;
     private final Graph<TypedGraphVertex, TypedGraphEdge> cfgGraph;
     private final Graph<TypedGraphVertex, TypedGraphEdge> dataStructuresGraph;
+    @Getter private final Graph<TypedGraphVertex, TypedGraphEdge> model;
     private final JGraphTCodeOperations astGraphOperations;
     private final JGraphTDataOperations dataGraphOperations;
 
-    public GraphMLExportCommands(CobolDataStructure dataStructures, FlowNode procedureRoot, NodeSpecBuilder qualifier) {
+    public JGraphTGraphBuilder(CobolDataStructure dataStructures, FlowNode procedureRoot, NodeSpecBuilder qualifier) {
         this.dataRoot = dataStructures;
         this.astRoot = this.cfgRoot = procedureRoot;
         this.qualifier = qualifier;
-        cfgGraph = astGraph = dataStructuresGraph = new DirectedPseudograph<>(TypedGraphEdge.class);
+        model = cfgGraph = astGraph = dataStructuresGraph = new DirectedPseudograph<>(TypedGraphEdge.class);
 //        astGraph = new DirectedAcyclicGraph<>(TypedGraphEdge.class);
 //        cfgGraph = new DefaultDirectedGraph<>(TypedGraphEdge.class);
 //        dataStructuresGraph = new DefaultDirectedGraph<>(TypedGraphEdge.class);
