@@ -161,6 +161,7 @@ The file will be in the ```import``` directory inside the directory where the cu
 In addition to writing to Neo4J and leveraging its data science capabilities to analyse the graph(s), the library also embeds [JGraphT](https://jgrapht.org/), a powerful library of graph algorithms. The ```JGraphTBuilder``` class converts the unified model (AST, CFG, Data Structures) into a DirectedPseudograph (because there can be both loops and parallel edges between two nodes), for consequent analysis through the JGraphT API.
 
 Custom analyses are a work in progress.
+You can find some useful Neo4J-based analysis queries in [Analysis](neo4j-analysis.md)
 
 ## How to Build
 
