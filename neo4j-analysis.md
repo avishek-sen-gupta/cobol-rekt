@@ -1,6 +1,6 @@
 # Neo4J Analysis Catalog
 
-This document lists useful analyses that can be performed through Neo4J. These can substantially reduce the surface area of investigation of an unknown program. These will probably end up being useful functions you can directly call through the code, but for now, this document catalogs useful queries that might add your reverse engineering effort.
+This document lists useful analyses that can be performed through Neo4J. These can substantially reduce the surface area of investigation of an unknown program. These will probably end up being useful functions you can directly call through the code, but for now, this document catalogs useful queries that might aid your reverse engineering effort.
 
 ## Variable Trees
 
