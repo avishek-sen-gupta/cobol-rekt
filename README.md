@@ -17,6 +17,8 @@ This is an evolving toolkit of capabilities helpful for reverse engineering lega
 - Support for namespaces to allow unique addressing of (possibly same) graphs
 - Exporting ASTs, CFGs, and record dependencies to GraphML format
 
+Cobol-REKT is more of a library of useful things intended to be embedded in more formal reverse engineering workflows/pipelines, rather than being a standalone tool (though you can certainly use it as such). Many of the higher-level wrappers are merely sensible defaults; you are encouraged to modify them to suit your needs.
+
 ## Dependencies
 
 - The toolkit uses the grammar available in the [Eclipse Che4z Cobol Support project](https://github.com/eclipse-che4z/che-che4z-lsp-for-cobol) to create the parse tree.
