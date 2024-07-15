@@ -31,6 +31,6 @@ public class GraphExplorerMain {
                 cobolParseTreeOutputPath,
                 ops, LanguageDialect.COBOL);
 
-        new SmojolPipeline(NodeReferenceStrategy.EXISTING_CFG_NODE, NodeReferenceStrategy.EXISTING_CFG_NODE).run(pipeline);
+        new SmojolPipeline(NodeReferenceStrategy.NEW_AST_NODE, NodeReferenceStrategy.EXISTING_AST_NODE).run(pipeline);
     }
 }

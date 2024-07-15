@@ -5,6 +5,7 @@ import lombok.Getter;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.eclipse.lsp.cobol.core.CobolParser;
+import org.smojol.common.flowchart.DataStructureVisitor;
 import org.smojol.common.vm.memory.*;
 import org.smojol.common.vm.reference.CobolReference;
 import org.smojol.common.vm.reference.PrimitiveReference;
@@ -55,6 +56,12 @@ public class Format1DataStructure extends CobolDataStructure {
 
     public Format1DataStructure(CobolParser.DataDescriptionEntryFormat1Context dataDescription, UnresolvedReferenceStrategy unresolvedReferenceStrategy) {
         this(dataDescription, unresolvedReferenceStrategy, cobolDataType(dataDescription));
+    }
+
+    @Override
+    public void accept(DataStructureVisitor visitor, CobolDataStructure parent, Function<CobolDataStructure, Boolean> stopRecurseCondition, CobolDataStructure root) {
+        super.accept(visitor, parent, stopRecurseCondition, root);
+        this.conditions.forEach(c -> c.accept(visitor, this, stopRecurseCondition, root));
     }
 
     protected Format1DataStructure(CobolParser.DataDescriptionEntryFormat1Context dataDescription, UnresolvedReferenceStrategy unresolvedReferenceStrategy, CobolDataType dataType) {

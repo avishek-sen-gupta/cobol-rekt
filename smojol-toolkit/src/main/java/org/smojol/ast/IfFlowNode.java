@@ -13,7 +13,7 @@ import org.smojol.common.vm.stack.StackFrames;
 public class IfFlowNode extends CobolFlowNode {
     private FlowNode ifThenBlock;
     private FlowNode ifElseBlock;
-    private CobolParser.ConditionContext condition;
+    @Getter private CobolParser.ConditionContext condition;
 
     public IfFlowNode(ParseTree parseTree, FlowNode scope, FlowNodeService nodeService, StackFrames stackFrames) {
         super(parseTree, scope, nodeService, stackFrames);

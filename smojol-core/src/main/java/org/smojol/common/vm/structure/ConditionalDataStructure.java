@@ -2,6 +2,7 @@ package org.smojol.common.vm.structure;
 
 import com.google.common.collect.ImmutableList;
 import org.eclipse.lsp.cobol.core.CobolParser;
+import org.smojol.common.flowchart.DataStructureVisitor;
 import org.smojol.common.vm.memory.MemoryLayout;
 import org.smojol.common.vm.memory.MemoryRegion;
 import org.smojol.common.vm.reference.CobolReference;
@@ -23,12 +24,17 @@ public class ConditionalDataStructure extends CobolDataStructure {
 
     @Override
     protected boolean isRedefinition() {
-        throw new UnsupportedOperationException("Conditional variable cannot be queried for redefinitions");
+        return false;
+    }
+
+    @Override
+    public void accept(DataStructureVisitor visitor, CobolDataStructure parent, Function<CobolDataStructure, Boolean> stopRecurseCondition, CobolDataStructure root) {
+        visitor.visit(this, parent, root);
     }
 
     @Override
     public String name() {
-        return dataDescription.getText();
+        return dataDescription.entryName() != null ? dataDescription.entryName().getText() : "UNNAMED-88";
     }
 
     @Override
@@ -38,7 +44,7 @@ public class ConditionalDataStructure extends CobolDataStructure {
 
     @Override
     public String content() {
-        return "";
+        return dataDescription.getText();
     }
 
     @Override

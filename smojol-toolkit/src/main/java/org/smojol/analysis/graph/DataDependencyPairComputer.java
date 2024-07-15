@@ -2,11 +2,13 @@ package org.smojol.analysis.graph;
 
 import com.google.common.collect.ImmutableList;
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.ast.*;
 import org.smojol.common.flowchart.FlowNode;
 import org.smojol.common.flowchart.FlowNodeType;
 import org.smojol.common.vm.expression.ArithmeticExpressionVisitor;
 import org.smojol.common.vm.expression.CobolExpression;
+import org.smojol.common.vm.expression.ConditionVisitor;
 import org.smojol.common.vm.reference.ShallowReferenceBuilder;
 import org.smojol.common.vm.structure.CobolDataStructure;
 
@@ -21,9 +23,22 @@ public class DataDependencyPairComputer {
                 && node.type() != FlowNodeType.SUBTRACT
                 && node.type() != FlowNodeType.MULTIPLY
                 && node.type() != FlowNodeType.DIVIDE
+                && node.type() != FlowNodeType.IF_BRANCH
         ) return ImmutablePair.nullPair();
 
         ShallowReferenceBuilder referenceBuilder = new ShallowReferenceBuilder();
+        if (node.type() == FlowNodeType.IF_BRANCH) {
+            IfFlowNode ifNode = (IfFlowNode) node;
+            CobolParser.ConditionContext condition = ifNode.getCondition();
+            System.out.println("Condition is " + condition.getText());
+            ConditionVisitor visitor = new ConditionVisitor(dataRoot);
+            condition.accept(visitor);
+            CobolExpression expression = visitor.getExpression();
+            StaticExpressionCollector expressionCollector = new StaticExpressionCollector(dataRoot);
+            expression.accept(expressionCollector);
+            List<CobolDataStructure> conditionStructures = expressionCollector.structures();
+            return ImmutablePair.of(conditionStructures, ImmutableList.of());
+        }
         if (node.type() == FlowNodeType.MOVE) {
             MoveFlowNode move = (MoveFlowNode) node;
             List<CobolDataStructure> froms = ImmutableList.of(referenceBuilder.getShallowReference(move.getFrom(), dataRoot).resolve());
