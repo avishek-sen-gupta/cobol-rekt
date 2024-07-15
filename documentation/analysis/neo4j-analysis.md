@@ -58,33 +58,13 @@ YIELD
 To find a path between any two code nodes (this will show actual execution paths, as well as unrelated nodes which still share a common join point, upstream or downstream):
 
 ```
-MATCH (source:CFG_NODE {internal_id: 'source-internal-id'}), (target:CFG_NODE {internal_id: 'target-internal-id'})
+MATCH (source:CFG_NODE {internal_id: 'CODE_NODE_1_ID'}), (target:CFG_NODE {internal_id: 'CODE_NODE_2_ID'})
 CALL gds.shortestPath.dijkstra.stream('myGraph', {
     sourceNode: source,
     targetNodes: target
 })
 YIELD index, sourceNode, targetNode, totalCost, nodeIds, costs, path
 RETURN
-    index,
-    gds.util.asNode(sourceNode).name AS sourceNodeName,
-    gds.util.asNode(targetNode).name AS targetNodeName,
-    totalCost,
-    [nodeId IN nodeIds | gds.util.asNode(nodeId).name] AS nodeNames,
-    costs,
-    nodes(path) as path
-ORDER BY index
-```
-
-```
-// match (source:CFG_NODE)-[r0:MODIFIES]-(d0) match (target:CFG_NODE)-[r1:ACCESSES]-(d0)
-MATCH (source:CFG_NODE {internal_id: 'cc9cab97-84f6-46cc-8f2a-cbf4d9d956f9'}), (target:CFG_NODE {internal_id: '69ee5841-ae10-406a-85b8-bf8fd875fb65'})
-CALL gds.shortestPath.dijkstra.stream('myGraph', {
-    sourceNode: source,
-    targetNodes: target
-})
-YIELD index, sourceNode, targetNode, totalCost, nodeIds, costs, path
-RETURN
-    // d0,
     index,
     gds.util.asNode(sourceNode).name AS sourceNodeName,
     gds.util.asNode(targetNode).name AS targetNodeName,
@@ -111,4 +91,19 @@ LIMIT 1
 
 ```
 MATCH (n) OPTIONAL MATCH (n)-[r]-() DELETE n,r
+```
+
+This gets all data influencers as well as the entire data layout (can take a while to run).
+
+```
+match (a:CFG_NODE)-[b:MODIFIES|ACCESSES]-(c) match (n:DATA_STRUCTURE)-[r]-(d:DATA_STRUCTURE) RETURN a,b,c,n,r,d
+```
+
+All unused variable trees
+
+```
+MATCH (parent)-[:CONTAINS*]->(descendant)
+WITH parent, COLLECT(descendant) AS descendants
+WHERE ALL(d IN descendants WHERE NOT (d)<-[:MODIFIES|ACCESSES]-())
+RETURN parent,descendants
 ```

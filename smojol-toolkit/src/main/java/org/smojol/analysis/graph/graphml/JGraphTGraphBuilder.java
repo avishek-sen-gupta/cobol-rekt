@@ -72,8 +72,20 @@ public class JGraphTGraphBuilder {
     public Boolean buildDataDependency(FlowNode node, Boolean parent) {
         Map.Entry<List<CobolDataStructure>, List<CobolDataStructure>> pairs = DataDependencyPairComputer.dependencyPairs(node, dataRoot);
         if (ImmutablePair.nullPair().equals(pairs)) return false;
+        if (pairs.getValue().isEmpty()) {
+            accesses(node, pairs.getKey());
+            return true;
+        }
         connect(pairs.getKey(), pairs.getValue(), node);
         return true;
+    }
+
+    private void accesses(FlowNode node, List<CobolDataStructure> accessedStructures) {
+        accessedStructures.forEach(s -> {
+            if (!dataGraphOperations.containsVertex(s)) dataGraphOperations.addNode(s);
+            dataGraphOperations.connect(node, s, ACCESSES);
+        });
+
     }
 
     private void connect(List<CobolDataStructure> froms, List<CobolDataStructure> tos, FlowNode node) {
