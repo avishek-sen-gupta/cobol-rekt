@@ -13,7 +13,7 @@ YIELD
   inputRelationships, relationshipsWritten
 ```
 
-To find a path between any two code nodes (this will show actual execution, as well as unrelated nodes which still share a common join point, upstream or downstream):
+To find a path between any two code nodes (this will show actual execution paths, as well as unrelated nodes which still share a common join point, upstream or downstream):
 
 ```
 MATCH (source:CFG_NODE {internal_id: 'source-internal-id'}), (target:CFG_NODE {internal_id: 'target-internal-id'})
