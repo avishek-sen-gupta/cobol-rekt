@@ -11,6 +11,7 @@ import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.navigation.EntityNavigatorBuilder;
 import org.smojol.interpreter.FlowchartGenerationStrategy;
 import org.smojol.common.vm.strategy.UnresolvedReferenceThrowStrategy;
+import org.smojol.interpreter.SourceConfig;
 import org.smojol.interpreter.structure.DefaultFormat1DataStructureBuilder;
 
 import java.io.File;
@@ -38,16 +39,17 @@ public class FlowchartTasks {
 
     public void generateForPrograms(List<String> programNames, FlowchartGenerationStrategy flowchartGenerationStrategy, LanguageDialect dialect) throws IOException, InterruptedException {
         for (String programName : programNames) {
-            generateForProgram(programName, sourceDir, reportRootDir, copyBookPaths, dialectJarPath, dialect, flowchartGenerationStrategy);
+            generateForProgram(programName, sourceDir, reportRootDir, dialect, flowchartGenerationStrategy);
         }
     }
 
-    private void generateForProgram(String programName, String sourceDir, String reportRootDir, File[] copyBookPaths, String dialectJarPath, LanguageDialect dialect, FlowchartGenerationStrategy flowchartGenerationStrategy) throws IOException, InterruptedException {
+    private void generateForProgram(String programName, String sourceDir, String reportRootDir, LanguageDialect dialect, FlowchartGenerationStrategy flowchartGenerationStrategy) throws IOException, InterruptedException {
         File source = Paths.get(sourceDir, programName).toFile();
         Path astOutputDir = Paths.get(reportRootDir, programName, AST_DIR);
         Path imageOutputDir = Paths.get(reportRootDir, programName, IMAGES_DIR);
         Path dotFileOutputDir = Paths.get(reportRootDir, programName, DOTFILES_DIR);
         String cobolParseTreeOutputPath = astOutputDir.resolve(String.format("cobol-%s.json", programName)).toString();
+        SourceConfig sourceConfig = new SourceConfig(source, copyBookPaths, cobolParseTreeOutputPath, dialectJarPath);
 
         Files.createDirectories(astOutputDir);
         Files.createDirectories(dotFileOutputDir);
@@ -56,11 +58,8 @@ public class FlowchartTasks {
         ComponentsBuilder ops = new ComponentsBuilder(new CobolTreeVisualiser(),
                 FlowchartBuilderImpl::build, new EntityNavigatorBuilder(), new UnresolvedReferenceThrowStrategy(),
                 new DefaultFormat1DataStructureBuilder());
-        ParsePipeline pipeline = new ParsePipeline(source,
-                copyBookPaths,
-                dialectJarPath,
-                cobolParseTreeOutputPath,
-                ops, dialect);
+        ParsePipeline pipeline = new ParsePipeline(
+                sourceConfig, ops, dialect);
 
         CobolEntityNavigator navigator = pipeline.parse();
         ParseTree root = navigator.procedureBodyRoot();

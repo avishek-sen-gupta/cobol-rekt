@@ -36,6 +36,7 @@ import org.smojol.common.idms.DialectIntegratorListener;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.navigation.EntityNavigatorBuilder;
 import org.smojol.common.vm.structure.CobolDataStructure;
+import org.smojol.interpreter.SourceConfig;
 
 import java.io.File;
 import java.io.IOException;
@@ -60,14 +61,14 @@ public class ParsePipeline {
     @Getter private CobolEntityNavigator navigator;
     @Getter private CobolDataStructure dataStructures;
 
-    public ParsePipeline(File src, File[] cpyPaths, String dialectJarPath, String cobolParseTreeOutputPath, ComponentsBuilder ops, LanguageDialect dialect) {
-        this.src = src;
-        this.cpyPaths = cpyPaths;
-        this.cobolParseTreeOutputPath = cobolParseTreeOutputPath;
+    public ParsePipeline(SourceConfig sourceConfig, ComponentsBuilder ops, LanguageDialect dialect) {
+        this.src = sourceConfig.source();
+        this.cpyPaths = sourceConfig.copyBookPaths();
+        this.cobolParseTreeOutputPath = sourceConfig.cobolParseTreeOutputPath();
         this.ops = ops;
         this.dialect = dialect;
         cpyExt = new String[]{"", ".cpy"};
-        this.dialectJarPath = dialectJarPath;
+        this.dialectJarPath = sourceConfig.dialectJarPath();
     }
 
     /**
