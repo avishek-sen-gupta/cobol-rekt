@@ -31,7 +31,7 @@ import java.io.IOException;
 public class InterpreterMain {
     private final Logger logger = LoggerFactory.getLogger(InterpreterMain.class);
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws IOException {
         SourceConfig testSourceConfig = new SourceConfig(
                 new File("/Users/asgupta/code/smojol/smojol-test-code/test-exp.cbl"),
                 new File[]{new File("/Users/asgupta/code/smojol/smojol-test-code")},
@@ -50,8 +50,7 @@ public class InterpreterMain {
         ComponentsBuilder ops = new ComponentsBuilder(new CobolTreeVisualiser(),
                 FlowchartBuilderImpl::build, new EntityNavigatorBuilder(), new UnresolvedReferenceDoNothingStrategy(),
                 new DefaultFormat1DataStructureBuilder());
-        ParsePipeline pipeline = new ParsePipeline(
-                awsCardDemoConfig, ops, LanguageDialect.COBOL);
+        ParsePipeline pipeline = new ParsePipeline(testSourceConfig, ops, LanguageDialect.COBOL);
 
         CobolEntityNavigator navigator = pipeline.parse();
         FlowchartBuilder flowcharter = pipeline.flowcharter();
