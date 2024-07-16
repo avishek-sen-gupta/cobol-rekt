@@ -54,7 +54,8 @@ public class PerformInlineFlowNode extends CompositeCobolFlowNode {
     public void acceptUnvisited(FlowNodeVisitor visitor, int level) {
         super.acceptUnvisited(visitor, level);
         visitor.visitControlTransfer(this, condition, new VisitContext(level));
-        visitor.group(internalTreeRoot);
+        // TODO: Make group() work correctly. Right now, it is prone to creating double links.
+//        visitor.group(internalTreeRoot);
     }
 
     @Override

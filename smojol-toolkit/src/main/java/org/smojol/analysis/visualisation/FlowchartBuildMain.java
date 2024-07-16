@@ -21,6 +21,7 @@ public class FlowchartBuildMain {
         String reportRootDir = "/Users/asgupta/code/smojol/out/report";
 
         List<String> programNames = ImmutableList.of("CBACT01C.cbl");
+//        List<String> programNames = ImmutableList.of("test-exp.cbl");
         new FlowchartTasks(sourceDir, reportRootDir, copyBookPaths, dialectJarPath).generateForPrograms(programNames, FlowchartGenerationStrategy.FULL_PROGRAM, LanguageDialect.COBOL);
     }
 }
