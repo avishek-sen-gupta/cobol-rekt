@@ -18,6 +18,8 @@ import java.util.List;
 public class AddFlowNode extends CobolFlowNode {
     private List<CobolParser.AddFromContext> froms;
     private List<CobolParser.AddToContext> tos;
+    private List<CobolParser.AddGivingContext> givingDestinations;
+    private List<CobolParser.AddToGivingContext> tosGiving;
 
     public AddFlowNode(ParseTree parseTree, FlowNode scope, FlowNodeService nodeService, StackFrames stackFrames) {
         super(parseTree, scope, nodeService, stackFrames);
@@ -26,8 +28,16 @@ public class AddFlowNode extends CobolFlowNode {
     @Override
     public void buildInternalFlow() {
         CobolParser.AddStatementContext addStatement = new SyntaxIdentity<CobolParser.AddStatementContext>(executionContext).get();
-        froms = addStatement.addToStatement().addFrom();
-        tos = addStatement.addToStatement().addTo();
+
+        if (addStatement.addToStatement() != null) {
+            froms = addStatement.addToStatement().addFrom();
+            tos = addStatement.addToStatement().addTo();
+        }
+        else if (addStatement.addToGivingStatement() != null) {
+            froms = addStatement.addToGivingStatement().addFrom();
+            tosGiving = addStatement.addToGivingStatement().addToGiving();
+            givingDestinations = addStatement.addToGivingStatement().addGiving();
+        }
         super.buildInternalFlow();
     }
 
