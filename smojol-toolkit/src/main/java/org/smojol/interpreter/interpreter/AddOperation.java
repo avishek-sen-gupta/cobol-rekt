@@ -22,6 +22,5 @@ public class AddOperation implements CobolOperation {
         List<CobolParser.AddToContext> tos = add.getTos();
         DeepReferenceBuilder builder = new DeepReferenceBuilder();
         tos.forEach(to -> froms.forEach(from -> builder.getReference(to, cobolDataStructure).resolve().add(builder.getReference(from, cobolDataStructure))));
-//        tos.forEach(to -> froms.forEach(from -> cobolDataStructure.add(to.generalIdentifier().getText(), builder.getReference(from, cobolDataStructure))));
     }
 }

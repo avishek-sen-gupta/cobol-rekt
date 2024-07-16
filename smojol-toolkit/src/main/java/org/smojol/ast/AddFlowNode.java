@@ -1,5 +1,6 @@
 package org.smojol.ast;
 
+import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolParser;
@@ -32,9 +33,12 @@ public class AddFlowNode extends CobolFlowNode {
         if (addStatement.addToStatement() != null) {
             froms = addStatement.addToStatement().addFrom();
             tos = addStatement.addToStatement().addTo();
+            tosGiving = ImmutableList.of();
+            givingDestinations = ImmutableList.of();
         }
         else if (addStatement.addToGivingStatement() != null) {
             froms = addStatement.addToGivingStatement().addFrom();
+            tos = ImmutableList.of();
             tosGiving = addStatement.addToGivingStatement().addToGiving();
             givingDestinations = addStatement.addToGivingStatement().addGiving();
         }
