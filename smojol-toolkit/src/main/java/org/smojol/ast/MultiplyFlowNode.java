@@ -1,5 +1,6 @@
 package org.smojol.ast;
 
+import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolParser;
@@ -18,6 +19,8 @@ import java.util.List;
 public class MultiplyFlowNode extends CobolFlowNode {
     private CobolParser.MultiplyLhsContext lhs;
     private List<CobolParser.MultiplyRegularOperandContext> rhs;
+    private CobolParser.MultiplyGivingOperandContext givingRhs;
+    private List<CobolParser.MultiplyGivingResultContext> givingDestinations;
 
     public MultiplyFlowNode(ParseTree parseTree, FlowNode scope, FlowNodeService nodeService, StackFrames stackFrames) {
         super(parseTree, scope, nodeService, stackFrames);
@@ -27,7 +30,15 @@ public class MultiplyFlowNode extends CobolFlowNode {
     public void buildInternalFlow() {
         CobolParser.MultiplyStatementContext multiplyStatement = new SyntaxIdentity<CobolParser.MultiplyStatementContext>(executionContext).get();
         lhs = multiplyStatement.multiplyLhs();
-        rhs = multiplyStatement.multiplyRegular().multiplyRegularOperand();
+        if (multiplyStatement.multiplyRegular() != null) {
+            rhs = multiplyStatement.multiplyRegular().multiplyRegularOperand();
+            givingRhs = null;
+            givingDestinations = ImmutableList.of();
+        } else if (multiplyStatement.multiplyGiving() != null) {
+            rhs = ImmutableList.of();
+            givingRhs = multiplyStatement.multiplyGiving().multiplyGivingOperand();
+            givingDestinations = multiplyStatement.multiplyGiving().multiplyGivingResult();
+        }
         super.buildInternalFlow();
     }
 
