@@ -120,6 +120,7 @@ The interpreter can run in two modes:
 
 ## Planned Capabilities
 
+- Handle GIVING phrases in ADD/SUBTRACT/MULTIPLY/DIVIDE
 - PERFORM VARYING
 - PERFORM INLINE...VARYING
 - Initialise values of variables from DATA DIVISION
