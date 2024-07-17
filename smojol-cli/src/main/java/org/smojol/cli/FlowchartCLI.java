@@ -20,7 +20,7 @@ public class FlowchartCLI {
         if (!optionsReader.isValid()) {
             optionsReader.printUsage();
             return;
-        };
+        }
         String source = optionsReader.getSource();
         String sourceDir = optionsReader.getSourceDir();
         File[] copyBookPaths = new File[]{new File(optionsReader.getDialectJarPath())};
