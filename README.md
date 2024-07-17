@@ -199,6 +199,18 @@ You can run the flowchart and parse tree using the following command:
 java -jar smojol-cli/target/smojol-cli.jar --src [SOURCE_FILE] --srcDir [SOURCE_DIR] --copyBooksDir [COPYBOOKS_DIR] --dialectJarPath [PATH_TO_IDMS_DIALECT_JAR] --reportDir [OUTPUT_REPORT_DIR]
 ```
 
+The options are explained below:
+
+```
+usage: java -jar <path_to_smojol_cli_jar>/smojol-cli.jar
+ -c,--copyBooksDir <arg>     The directory containing copybooks
+ -d,--dialectJarPath <arg>   The path to the dialect JAR
+ -h,--help                   Prints this help message
+ -p,--src <arg>              The name of the source file
+ -r,--reportDir <arg>        The directory containing the final artifacts
+ -s,--srcDir <arg>           The directory containing source file
+ ```
+
 ### Programmatic Usage
 ...TODO
 
