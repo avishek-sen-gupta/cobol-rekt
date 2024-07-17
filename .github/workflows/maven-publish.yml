@@ -36,7 +36,7 @@ jobs:
       with:
         files: |
           smojol-cli/target/smojol-cli.jar
-          che-che4z-lsp-for-cobol-integration/server/targets/server.jar
+          che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar
     # - name: Publish to GitHub Packages Apache Maven
       # run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml
       # env:
