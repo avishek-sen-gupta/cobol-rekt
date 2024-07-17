@@ -21,3 +21,5 @@ jobs:
         files: |
           smojol-cli/target/smojol-cli.jar
           che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar
+permissions:
+  contents: write
