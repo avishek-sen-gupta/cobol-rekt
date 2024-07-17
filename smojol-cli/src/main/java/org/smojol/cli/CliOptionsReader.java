@@ -39,27 +39,27 @@ public class CliOptionsReader {
         CommandLine cmd = parser.parse(options, args);
 
         if (cmd.hasOption(HELP_LONG_OPTION) || cmd.hasOption("h")) {
-            return this.invalid(formatter, options);
+            return this.invalid();
         }
         if (!cmd.hasOption(SRC_LONG_OPTION) && !cmd.hasOption("p")) {
             System.out.printf((EXCEPTION_TEMPLATE) + "%n", SRC_LONG_OPTION);
-            return this.invalid(formatter, options);
+            return this.invalid();
         }
         if (!cmd.hasOption(SRC_DIR_LONG_OPTION) && !cmd.hasOption("s")) {
             System.out.printf((EXCEPTION_TEMPLATE) + "%n", SRC_DIR_LONG_OPTION);
-            return this.invalid(formatter, options);
+            return this.invalid();
         }
         if (!cmd.hasOption(COPYBOOKS_DIR_LONG_OPTION) && !cmd.hasOption("c")) {
             System.out.printf((EXCEPTION_TEMPLATE) + "%n", COPYBOOKS_DIR_LONG_OPTION);
-            return this.invalid(formatter, options);
+            return this.invalid();
         }
         if (!cmd.hasOption(DIALECT_JAR_PATH_LONG_OPTION) && !cmd.hasOption("d")) {
             System.out.printf((EXCEPTION_TEMPLATE) + "%n", DIALECT_JAR_PATH_LONG_OPTION);
-            return this.invalid(formatter, options);
+            return this.invalid();
         }
         if (!cmd.hasOption(REPORT_DIR_LONG_OPTION) && !cmd.hasOption("r")) {
             System.out.printf((EXCEPTION_TEMPLATE) + "%n", REPORT_DIR_LONG_OPTION);
-            return this.invalid(formatter, options);
+            return this.invalid();
         }
 
         source = cmd.getOptionValue(SRC_LONG_OPTION) != null ? cmd.getOptionValue(SRC_LONG_OPTION) : cmd.getOptionValue("p");
@@ -75,7 +75,7 @@ public class CliOptionsReader {
         formatter.printHelp("java -jar smojol-cli/target/smojol-cli.jar", options);
     }
 
-    private CliOptionsReader invalid(HelpFormatter formatter, Options options) {
+    private CliOptionsReader invalid() {
         isValid = false;
         return this;
     }
