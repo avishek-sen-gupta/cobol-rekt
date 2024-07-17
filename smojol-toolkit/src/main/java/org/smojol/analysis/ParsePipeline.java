@@ -132,6 +132,7 @@ public class ParsePipeline {
         errorFinalizerService.processLateErrors(ctx, ctx.getCopybooksRepository());
 
         if (!ctx.getAccumulatedErrors().isEmpty()) {
+            ctx.getAccumulatedErrors().forEach(System.out::println);
             throw new RuntimeException("There were parsing errors. Debug and see why.");
         }
 

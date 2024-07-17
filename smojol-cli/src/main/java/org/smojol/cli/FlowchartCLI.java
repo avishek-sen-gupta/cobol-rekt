@@ -23,11 +23,11 @@ public class FlowchartCLI {
         }
         String source = optionsReader.getSource();
         String sourceDir = optionsReader.getSourceDir();
-        File[] copyBookPaths = new File[]{new File(optionsReader.getDialectJarPath())};
+        File[] copyBookPaths = optionsReader.getCopyBookPaths();
         String dialectJarPath = optionsReader.getDialectJarPath();
         String reportRootDir = optionsReader.getReportRootDir();
 
         List<String> programNames = ImmutableList.of(source);
-        new FlowchartTasks(sourceDir, reportRootDir, copyBookPaths, dialectJarPath).generateForPrograms(programNames, FlowchartGenerationStrategy.FULL_PROGRAM, LanguageDialect.COBOL);
+        new FlowchartTasks(sourceDir, reportRootDir, copyBookPaths, dialectJarPath).generateForPrograms(programNames, FlowchartGenerationStrategy.PER_SECTION, LanguageDialect.IDMS);
     }
 }
