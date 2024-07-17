@@ -20,42 +20,46 @@ public class CliOptionsReader {
     private static final String COPYBOOKS_DIR_SMALL_OPTION = "c";
     private static final String DIALECT_JAR_PATH_SMALL_OPTION = "d";
     private static final String REPORT_DIR_SMALL_OPTION = "r";
+    private final Options options;
+    private final HelpFormatter formatter;
     private String source;
     private String sourceDir;
     private File[] copyBookPaths;
     private String dialectJarPath;
     private String reportRootDir;
+    private boolean isValid;
 
-    public CliOptionsReader(String[] args) throws ParseException {
-        Options options = getOptions();
+    public CliOptionsReader() {
+        options = getOptions();
+        formatter = new HelpFormatter();
+    }
 
-        HelpFormatter formatter = new HelpFormatter();
+    public CliOptionsReader read(String[] args) throws ParseException {
         CommandLineParser parser = new DefaultParser();
         CommandLine cmd = parser.parse(options, args);
 
         if (cmd.hasOption(HELP_LONG_OPTION) || cmd.hasOption("h")) {
-            formatter.printHelp("smojol", options);
-            return;
+            return this.invalid(formatter, options);
         }
         if (!cmd.hasOption(SRC_LONG_OPTION) && !cmd.hasOption("p")) {
             System.out.printf((EXCEPTION_TEMPLATE) + "%n", SRC_LONG_OPTION);
-            return;
+            return this.invalid(formatter, options);
         }
         if (!cmd.hasOption(SRC_DIR_LONG_OPTION) && !cmd.hasOption("s")) {
             System.out.printf((EXCEPTION_TEMPLATE) + "%n", SRC_DIR_LONG_OPTION);
-            return;
+            return this.invalid(formatter, options);
         }
         if (!cmd.hasOption(COPYBOOKS_DIR_LONG_OPTION) && !cmd.hasOption("c")) {
             System.out.printf((EXCEPTION_TEMPLATE) + "%n", COPYBOOKS_DIR_LONG_OPTION);
-            return;
+            return this.invalid(formatter, options);
         }
         if (!cmd.hasOption(DIALECT_JAR_PATH_LONG_OPTION) && !cmd.hasOption("d")) {
             System.out.printf((EXCEPTION_TEMPLATE) + "%n", DIALECT_JAR_PATH_LONG_OPTION);
-            return;
+            return this.invalid(formatter, options);
         }
         if (!cmd.hasOption(REPORT_DIR_LONG_OPTION) && !cmd.hasOption("r")) {
             System.out.printf((EXCEPTION_TEMPLATE) + "%n", REPORT_DIR_LONG_OPTION);
-            return;
+            return this.invalid(formatter, options);
         }
 
         source = cmd.getOptionValue(SRC_LONG_OPTION) != null ? cmd.getOptionValue(SRC_LONG_OPTION) : cmd.getOptionValue("p");
@@ -63,11 +67,22 @@ public class CliOptionsReader {
         copyBookPaths = new File[]{new File(cmd.getOptionValue(COPYBOOKS_DIR_LONG_OPTION) != null ? cmd.getOptionValue(COPYBOOKS_DIR_LONG_OPTION) : cmd.getOptionValue("c"))};
         dialectJarPath = cmd.getOptionValue(DIALECT_JAR_PATH_LONG_OPTION) != null ? cmd.getOptionValue(DIALECT_JAR_PATH_LONG_OPTION) : cmd.getOptionValue("d");
         reportRootDir = cmd.getOptionValue(REPORT_DIR_LONG_OPTION) != null ? cmd.getOptionValue(REPORT_DIR_LONG_OPTION) : cmd.getOptionValue("r");
+        isValid = true;
+        return this;
+    }
+
+    public void printUsage() {
+        formatter.printHelp("java -jar smojol-cli/target/smojol-cli.jar", options);
+    }
+
+    private CliOptionsReader invalid(HelpFormatter formatter, Options options) {
+        isValid = false;
+        return this;
     }
 
     private static Options getOptions() {
         Options options = new Options();
-        options.addOption(HELP_SMALL_OPTION, HELP_LONG_OPTION, false, "Help");
+        options.addOption(HELP_SMALL_OPTION, HELP_LONG_OPTION, false, "Prints this help message");
         options.addOption(SRC_SMALL_OPTION, SRC_LONG_OPTION, true, "The name of the source file");
         options.addOption(SRC_DIR_SMALL_OPTION, SRC_DIR_LONG_OPTION, true, "The directory containing source file");
         options.addOption(COPYBOOKS_DIR_SMALL_OPTION, COPYBOOKS_DIR_LONG_OPTION, true, "The directory containing copybooks");

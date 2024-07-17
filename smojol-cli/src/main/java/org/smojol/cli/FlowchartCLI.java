@@ -16,7 +16,11 @@ java -jar smojol-cli/target/smojol-cli.jar --src test-exp.cbl --srcDir /Users/as
  */
 public class FlowchartCLI {
     public static void main(String[] args) throws ParseException, IOException, InterruptedException {
-        CliOptionsReader optionsReader = new CliOptionsReader(args);
+        CliOptionsReader optionsReader = new CliOptionsReader().read(args);
+        if (!optionsReader.isValid()) {
+            optionsReader.printUsage();
+            return;
+        };
         String source = optionsReader.getSource();
         String sourceDir = optionsReader.getSourceDir();
         File[] copyBookPaths = new File[]{new File(optionsReader.getDialectJarPath())};
