@@ -192,7 +192,15 @@ You can skip the tests as well, using:
 
 ## Developer Guide
 
-TODO...
+### CLI Usage
+You can run the flowchart and parse tree using the following command:
+
+```
+java -jar smojol-cli/target/smojol-cli.jar --src [SOURCE_FILE] --srcDir [SOURCE_DIR] --copyBooksDir [COPYBOOKS_DIR] --dialectJarPath [PATH_TO_IDMS_DIALECT_JAR] --reportDir [OUTPUT_REPORT_DIR]
+```
+
+### Programmatic Usage
+...TODO
 
 ## A Note on Copyright
 
