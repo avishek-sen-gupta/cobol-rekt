@@ -35,7 +35,6 @@ public class FlowchartTasks {
         this.copyBookPaths = copyBookPaths;
         this.dialectJarPath = dialectJarPath;
         this.reportRootDir = reportRootDir;
-
         report();
     }
 
@@ -55,11 +54,12 @@ public class FlowchartTasks {
 
     private void generateForProgram(String programName, String sourceDir, String reportRootDir, LanguageDialect dialect, FlowchartGenerationStrategy flowchartGenerationStrategy) throws IOException, InterruptedException {
         File source = Paths.get(sourceDir, programName).toFile().getAbsoluteFile();
-        Path astOutputDir = Paths.get(reportRootDir, programName, AST_DIR).toAbsolutePath();
-        Path imageOutputDir = Paths.get(reportRootDir, programName, IMAGES_DIR).toAbsolutePath();
-        Path dotFileOutputDir = Paths.get(reportRootDir, programName, DOTFILES_DIR).toAbsolutePath();
-        String cobolParseTreeOutputPath = astOutputDir.resolve(String.format("cobol-%s.json", programName)).toAbsolutePath().toString();
-        String absoluteDialectJarPath = Paths.get(dialectJarPath).toAbsolutePath().toString();
+        String programReportDir = String.format("%s.report", programName);
+        Path astOutputDir = Paths.get(reportRootDir, programReportDir, AST_DIR).toAbsolutePath().normalize();
+        Path imageOutputDir = Paths.get(reportRootDir, programReportDir, IMAGES_DIR).toAbsolutePath().normalize();
+        Path dotFileOutputDir = Paths.get(reportRootDir, programReportDir, DOTFILES_DIR).toAbsolutePath().normalize();
+        String cobolParseTreeOutputPath = astOutputDir.resolve(String.format("cobol-%s.json", programName)).toAbsolutePath().normalize().toString();
+        String absoluteDialectJarPath = Paths.get(dialectJarPath).toAbsolutePath().normalize().toString();
         SourceConfig sourceConfig = new SourceConfig(source, copyBookPaths, cobolParseTreeOutputPath, absoluteDialectJarPath);
 
         Files.createDirectories(astOutputDir);
@@ -69,8 +69,7 @@ public class FlowchartTasks {
         ComponentsBuilder ops = new ComponentsBuilder(new CobolTreeVisualiser(),
                 FlowchartBuilderImpl::build, new EntityNavigatorBuilder(), new UnresolvedReferenceThrowStrategy(),
                 new DefaultFormat1DataStructureBuilder());
-        ParsePipeline pipeline = new ParsePipeline(
-                sourceConfig, ops, dialect);
+        ParsePipeline pipeline = new ParsePipeline(sourceConfig, ops, dialect);
 
         CobolEntityNavigator navigator = pipeline.parse();
         ParseTree root = navigator.procedureBodyRoot();

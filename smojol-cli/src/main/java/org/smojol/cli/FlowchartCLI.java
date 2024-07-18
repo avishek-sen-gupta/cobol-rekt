@@ -26,8 +26,9 @@ public class FlowchartCLI {
         File[] copyBookPaths = optionsReader.getCopyBookPaths();
         String dialectJarPath = optionsReader.getDialectJarPath();
         String reportRootDir = optionsReader.getReportRootDir();
+        LanguageDialect dialect = optionsReader.getDialect();
 
         List<String> programNames = ImmutableList.of(source);
-        new FlowchartTasks(sourceDir, reportRootDir, copyBookPaths, dialectJarPath).generateForPrograms(programNames, FlowchartGenerationStrategy.PER_SECTION, LanguageDialect.IDMS);
+        new FlowchartTasks(sourceDir, reportRootDir, copyBookPaths, dialectJarPath).generateForPrograms(programNames, FlowchartGenerationStrategy.PER_SECTION, dialect);
     }
 }
