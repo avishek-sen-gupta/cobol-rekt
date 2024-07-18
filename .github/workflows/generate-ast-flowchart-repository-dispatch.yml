@@ -1,4 +1,4 @@
-name: Generate AST and Flowchart through Github API
+name: Generate AST and Flowchart (Github API)
 
 on:
   repository_dispatch:
