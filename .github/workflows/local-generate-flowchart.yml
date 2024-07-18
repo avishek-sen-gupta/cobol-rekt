@@ -1,0 +1,41 @@
+# This workflow will build a package using Maven and then publish it to GitHub packages when a release is created
+# For more information see: https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md#apache-maven-with-a-settings-path
+
+name: Maven Package
+
+on:
+  push
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4.2.1
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+        server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
+        settings-path: ${{ github.workspace }} # location for the settings.xml file
+    - name: Install Graphviz Step 1
+      run: |
+        DEBIAN_FRONTEND=noninteractive sudo apt-get update && sudo apt-get -y upgrade
+        sed -i 's/htt[p|ps]:\/\/archive.ubuntu.com\/ubuntu\//mirror:\/\/mirrors.ubuntu.com\/mirrors.txt/g' /etc/apt/sources.list
+        DEBIAN_FRONTEND=noninteractive add-apt-repository universe -y
+        DEBIAN_FRONTEND=noninteractive apt-get update && sudo apt-get -y upgrade
+    - name: Install Graphviz Step 3
+      run: |
+        DEBIAN_FRONTEND=noninteractive sudo apt install -y python3-pydot graphviz
+    - name: Download Cobol-REKT
+      run: |
+        curl -sL https://github.com/avishek-sen-gupta/cobol-rekt/releases/download/v0.1.0-RC1/dialect-idms.jar -o dialect-idms.jar
+        curl -sL https://github.com/avishek-sen-gupta/cobol-rekt/releases/download/v0.1.0-RC1/smojol-cli.jar -o smojol-cli.jar
+        curl -sL https://github.com/avishek-sen-gupta/cobol-rekt/blob/main/smojol-test-code/test-exp.cbl -o test-exp.cbl
+    - name: Run Cobol-REKT
+      run: |
+        java -jar smojol-cli.jar --src test-exp.cbl --srcDir . --copyBooksDir . --dialectJarPath dialect-idms.jar --reportDir .

@@ -23,6 +23,7 @@ Cobol-REKT is more of a library of useful things intended to be embedded in more
 
 - The toolkit uses the grammar available in the [Eclipse Che4z Cobol Support project](https://github.com/eclipse-che4z/che-che4z-lsp-for-cobol) to create the parse tree.
 - The toolkit uses the API from [Woof](https://github.com/asengupta/woof) to interact with Neo4J.
+- The toolkit uses [Graphviz](https://graphviz.org/) for flowchart generation. See its documentation for OS-specific installation instructions.
 
 ## Reverse Engineering Use Cases
 
