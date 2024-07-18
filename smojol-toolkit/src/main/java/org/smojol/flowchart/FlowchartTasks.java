@@ -35,6 +35,16 @@ public class FlowchartTasks {
         this.copyBookPaths = copyBookPaths;
         this.dialectJarPath = dialectJarPath;
         this.reportRootDir = reportRootDir;
+
+        report();
+    }
+
+    private void report() {
+        System.out.println("Parameters passed in \n--------------------");
+        System.out.println("srcDir = " + sourceDir);
+        System.out.println("reportRootDir = " + reportRootDir);
+        System.out.println("dialectJarPath = " + dialectJarPath);
+        System.out.println("copyBookPaths = " + copyBookPaths);
     }
 
     public void generateForPrograms(List<String> programNames, FlowchartGenerationStrategy flowchartGenerationStrategy, LanguageDialect dialect) throws IOException, InterruptedException {
@@ -44,12 +54,13 @@ public class FlowchartTasks {
     }
 
     private void generateForProgram(String programName, String sourceDir, String reportRootDir, LanguageDialect dialect, FlowchartGenerationStrategy flowchartGenerationStrategy) throws IOException, InterruptedException {
-        File source = Paths.get(sourceDir, programName).toFile();
-        Path astOutputDir = Paths.get(reportRootDir, programName, AST_DIR);
-        Path imageOutputDir = Paths.get(reportRootDir, programName, IMAGES_DIR);
-        Path dotFileOutputDir = Paths.get(reportRootDir, programName, DOTFILES_DIR);
-        String cobolParseTreeOutputPath = astOutputDir.resolve(String.format("cobol-%s.json", programName)).toString();
-        SourceConfig sourceConfig = new SourceConfig(source, copyBookPaths, cobolParseTreeOutputPath, dialectJarPath);
+        File source = Paths.get(sourceDir, programName).toFile().getAbsoluteFile();
+        Path astOutputDir = Paths.get(reportRootDir, programName, AST_DIR).toAbsolutePath();
+        Path imageOutputDir = Paths.get(reportRootDir, programName, IMAGES_DIR).toAbsolutePath();
+        Path dotFileOutputDir = Paths.get(reportRootDir, programName, DOTFILES_DIR).toAbsolutePath();
+        String cobolParseTreeOutputPath = astOutputDir.resolve(String.format("cobol-%s.json", programName)).toAbsolutePath().toString();
+        String absoluteDialectJarPath = Paths.get(dialectJarPath).toAbsolutePath().toString();
+        SourceConfig sourceConfig = new SourceConfig(source, copyBookPaths, cobolParseTreeOutputPath, absoluteDialectJarPath);
 
         Files.createDirectories(astOutputDir);
         Files.createDirectories(dotFileOutputDir);
