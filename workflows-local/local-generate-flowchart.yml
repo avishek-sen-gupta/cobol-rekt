@@ -1,7 +1,4 @@
-# This workflow will build a package using Maven and then publish it to GitHub packages when a release is created
-# For more information see: https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md#apache-maven-with-a-settings-path
-
-name: Maven Package
+name: Generate AST and Flowchart
 
 on:
   push
@@ -20,8 +17,8 @@ jobs:
       with:
         java-version: '21'
         distribution: 'temurin'
-        server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
-        settings-path: ${{ github.workspace }} # location for the settings.xml file
+        server-id: github
+        settings-path: ${{ github.workspace }}
     - name: Install Graphviz
       run: |
         DEBIAN_FRONTEND=noninteractive sudo apt-get update && sudo apt-get -y upgrade
@@ -36,4 +33,4 @@ jobs:
         curl -sL https://raw.githubusercontent.com/avishek-sen-gupta/cobol-rekt/main/smojol-test-code/test-exp.cbl -o test-exp.cbl
     - name: Run Cobol-REKT
       run: |
-        java -jar smojol-cli.jar --src test-exp.cbl --srcDir . --copyBooksDir . --dialectJarPath dialect-idms.jar --dialect IDMS --reportDir .
+        java -jar smojol-cli.jar --src test-exp.cbl --srcDir . --copyBooksDir . --dialectJarPath dialect-idms.jar --dialect COBOL --reportDir .
