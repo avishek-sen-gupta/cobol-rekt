@@ -1,4 +1,4 @@
-name: Generate AST and Flowchart
+name: Generate AST and Flowchart through Github UI
 
 on:
   workflow_dispatch:
