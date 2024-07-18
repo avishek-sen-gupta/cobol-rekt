@@ -1,12 +1,8 @@
 name: Generate AST and Flowchart
 
 on:
-  workflow_dispatch:
-    inputs:
-      programName:
-        description: "Cobol program name"
-        required: true
-        default: test-exp.cbl
+  repository_dispatch:
+    types: [generate-ast-flowchart]
 
 jobs:
   generate:
@@ -18,7 +14,7 @@ jobs:
     steps:
       - name: Print parameters
         run: |
-          echo "Program Name: ${{ github.event.inputs.programName }}"
+              echo "Program Name: ${{ github.event.inputs.programName }}"
       - name: Set up JDK 21
         uses: actions/setup-java@v4.2.1
         with:
@@ -36,4 +32,4 @@ jobs:
           curl -sL https://raw.githubusercontent.com/avishek-sen-gupta/cobol-rekt/main/smojol-test-code/test-exp.cbl -o test-exp.cbl
       - name: Run Cobol-REKT
         run: |
-          java -jar smojol-cli.jar --src ${{ github.event.inputs.programName }} --srcDir . --copyBooksDir . --dialectJarPath dialect-idms.jar --dialect COBOL --reportDir .
+          java -jar smojol-cli.jar --src ${{ github.event.client_payload.example-key }} --srcDir . --copyBooksDir . --dialectJarPath dialect-idms.jar --dialect COBOL --reportDir .
