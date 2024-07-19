@@ -29,11 +29,10 @@ jobs:
       - name: Install Graphviz
         run: |
           DEBIAN_FRONTEND=noninteractive sudo apt install -y python3-pydot graphviz
-      - name: Download Cobol-REKT
+      - name: Checkout Cobol sources
         run: |
-          curl -sL https://github.com/avishek-sen-gupta/cobol-rekt/releases/download/v0.1.0-RC1/dialect-idms.jar -o dialect-idms.jar
-          curl -sL https://github.com/avishek-sen-gupta/cobol-rekt/releases/download/v0.1.0-RC1/smojol-cli.jar -o smojol-cli.jar
-          curl -sL https://raw.githubusercontent.com/avishek-sen-gupta/cobol-rekt/main/smojol-test-code/test-exp.cbl -o test-exp.cbl
-      - name: Run Cobol-REKT
-        run: |
-          java -jar smojol-cli.jar --src ${{ github.event.inputs.programName }} --srcDir . --copyBooksDir . --dialectJarPath dialect-idms.jar --dialect COBOL --reportDir . --generation=PROGRAM
+          git clone https://github.com/neopragma/cobol-samples.git
+      - name: Run AST generation
+        uses: ./.github/actions/run-ast-generation
+        env:
+          programName: HELLO.CBL

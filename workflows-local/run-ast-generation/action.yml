@@ -1,0 +1,26 @@
+# .github/workflows/reusable-workflow.yml
+name: Run Cobol-REKT
+
+on:
+  workflow_call:
+    inputs:
+      programName:
+        required: true
+        type: string
+
+jobs:
+  shared-steps:
+    runs:
+      using: composite
+    steps:
+      - name: Print inputs
+        run: |
+          echo "Program Name: ${{ inputs.programName }}"
+      - name: Download Cobol-REKT
+        run: |
+          curl -sL https://github.com/avishek-sen-gupta/cobol-rekt/releases/download/v0.1.0-RC1/dialect-idms.jar -o dialect-idms.jar
+          curl -sL https://github.com/avishek-sen-gupta/cobol-rekt/releases/download/v0.1.0-RC1/smojol-cli.jar -o smojol-cli.jar
+          curl -sL https://raw.githubusercontent.com/avishek-sen-gupta/cobol-rekt/main/smojol-test-code/test-exp.cbl -o test-exp.cbl
+      - name: Run Cobol-REKT
+        run: |
+          java -jar smojol-cli.jar --src test-exp.cbl --srcDir . --copyBooksDir . --dialectJarPath dialect-idms.jar --dialect COBOL --reportDir . --generation=PROGRAM

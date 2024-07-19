@@ -1,0 +1,22 @@
+name: Run Cobol-REKT
+description: "Runs AST generation"
+
+inputs:
+  programName:
+    description: "Program Name"
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Print inputs
+      run: |
+        echo "Program Name: ${{ inputs.programName }}"
+    - name: Download Cobol-REKT
+      run: |
+        curl -sL https://github.com/avishek-sen-gupta/cobol-rekt/releases/download/v0.1.0-RC1/dialect-idms.jar -o dialect-idms.jar
+        curl -sL https://github.com/avishek-sen-gupta/cobol-rekt/releases/download/v0.1.0-RC1/smojol-cli.jar -o smojol-cli.jar
+        curl -sL https://raw.githubusercontent.com/avishek-sen-gupta/cobol-rekt/main/smojol-test-code/test-exp.cbl -o test-exp.cbl
+    - name: Run Cobol-REKT
+      run: |
+        java -jar smojol-cli.jar --src ${{ inputs.programName }} --srcDir cobol-samples/src/main/cobol --copyBooksDir cobol-samples/src/main/cobol --dialectJarPath dialect-idms.jar --dialect COBOL --reportDir . --generation=PROGRAM

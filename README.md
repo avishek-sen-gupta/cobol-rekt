@@ -258,3 +258,10 @@ These are some other commands tried on larger graphs:
 
 ```dot -Kdot -v5 -Gsize=200,200\! -Goverlap=scale -Tpng -Gnslimit=4 -Gnslimit1=4 -Gmaxiter=2000 -Gsplines=line dotfile.dot -oflowchart-level5.png```
 
+## Testing workflows locally
+
+Run:
+
+```
+act -W workflows-local/local-generate-flowchart.yml --container-architecture linux/amd64
+```

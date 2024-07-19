@@ -1,0 +1,37 @@
+name: Generate AST and Flowchart
+
+on:
+  push
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4.2.1
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+        server-id: github
+        settings-path: ${{ github.workspace }}
+    - name: Install Graphviz
+      run: |
+        DEBIAN_FRONTEND=noninteractive add-apt-repository universe -y
+        DEBIAN_FRONTEND=noninteractive apt-get update && sudo apt-get -y upgrade
+        DEBIAN_FRONTEND=noninteractive sudo apt install -y python3-pydot graphviz
+    - name: Download Cobol-REKT
+      run: |
+        curl -sL https://github.com/avishek-sen-gupta/cobol-rekt/releases/download/v0.1.0-RC1/dialect-idms.jar -o dialect-idms.jar
+        curl -sL https://github.com/avishek-sen-gupta/cobol-rekt/releases/download/v0.1.0-RC1/smojol-cli.jar -o smojol-cli.jar
+        curl -sL https://raw.githubusercontent.com/avishek-sen-gupta/cobol-rekt/main/smojol-test-code/test-exp.cbl -o test-exp.cbl
+    - name: Checkout Cobol sources
+      run: |
+        git clone https://github.com/neopragma/cobol-samples.git
+    - name: Run Cobol-REKT
+      run: |
+        java -jar smojol-cli.jar --src HELLO.CBL --srcDir cobol-samples/src/main/cobol --copyBooksDir cobol-samples/src/main/cobol --dialectJarPath dialect-idms.jar --dialect COBOL --reportDir . --generation=PROGRAM
