@@ -5,6 +5,21 @@ inputs:
   programName:
     description: "Program Name"
     required: true
+  srcDir:
+    description: ""
+    required: true
+  copyBooksDir:
+    description: ""
+    required: true
+  reportDir:
+    description: ""
+    required: true
+  generation:
+    description: ""
+    required: true
+  dialect:
+    description: ""
+    required: true
 
 runs:
   using: composite
@@ -22,4 +37,4 @@ runs:
     - name: Run Cobol-REKT
       shell: bash
       run: |
-        java -jar smojol-cli.jar --src ${{ inputs.programName }} --srcDir cobol-samples/src/main/cobol --copyBooksDir cobol-samples/src/main/cobol --dialectJarPath dialect-idms.jar --dialect COBOL --reportDir . --generation=PROGRAM
+        java -jar smojol-cli.jar --src ${{ inputs.programName }} --srcDir ${{ inputs.srcDir }} --copyBooksDir ${{ inputs.copyBooksDir }} --dialectJarPath dialect-idms.jar --dialect ${{ inputs.dialect }} --reportDir ${{ inputs.reportDir }} --generation ${{ inputs.programName }}

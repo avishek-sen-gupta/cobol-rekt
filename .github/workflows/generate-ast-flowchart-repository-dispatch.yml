@@ -32,4 +32,4 @@ jobs:
           curl -sL https://raw.githubusercontent.com/avishek-sen-gupta/cobol-rekt/main/smojol-test-code/test-exp.cbl -o test-exp.cbl
       - name: Run Cobol-REKT
         run: |
-          java -jar smojol-cli.jar --src ${{ github.event.client_payload.programName }} --srcDir . --copyBooksDir . --dialectJarPath dialect-idms.jar --dialect COBOL --reportDir . --generation=PROGRAM
+          java -jar smojol-cli.jar --src ${{ github.event.client_payload.programName }} --srcDir . --copyBooksDir . --dialectJarPath dialect-idms.jar --dialect COBOL --reportDir . --generation PROGRAM

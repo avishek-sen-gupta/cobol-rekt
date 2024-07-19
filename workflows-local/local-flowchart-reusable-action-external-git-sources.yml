@@ -33,3 +33,10 @@ jobs:
       uses: ./workflows-local/actions/run-ast-generation
       with:
         programName: HELLO.CBL
+        srcDir: cobol-samples/src/main/cobol
+        copyBooksDir: cobol-samples/src/main/cobol
+        reportDir: .
+        generation: PROGRAM
+        dialect: COBOL
+
+
