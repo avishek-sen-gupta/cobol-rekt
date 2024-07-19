@@ -16,6 +16,8 @@ jobs:
       packages: write
 
     steps:
+      - name: Checkout workflow repository
+        uses: actions/checkout@v2
       - name: Print parameters
         run: |
           echo "Program Name: ${{ github.event.inputs.programName }}"
