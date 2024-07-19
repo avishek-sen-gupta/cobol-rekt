@@ -18,12 +18,12 @@ jobs:
         run: |
       - name: Print parameters
         run: |
-          echo "Program Name: ${{ github.event.inputs.programName }}"
-          echo "Source Directory: ${{ github.event.inputs.srcDir }}"
-          echo "Copybooks Directory: ${{ github.event.inputs.copyBooksDir }}"
-          echo "Report Directory: ${{ github.event.inputs.reportDir }}"
-          echo "Flowchart Generation Strategy: ${{ github.event.inputs.generation }}"
-          echo "Dialect: ${{ github.event.inputs.dialect }}"
+          echo "Program Name: ${{ github.event.client_payload.programName }}"
+          echo "Source Directory: ${{ github.event.client_payload.srcDir }}"
+          echo "Copybooks Directory: ${{ github.event.client_payload.copyBooksDir }}"
+          echo "Report Directory: ${{ github.event.client_payload.reportDir }}"
+          echo "Flowchart Generation Strategy: ${{ github.event.client_payload.generation }}"
+          echo "Dialect: ${{ github.event.client_payload.dialect }}"
       - name: Set up JDK 21
         uses: actions/setup-java@v4.2.1
         with:
@@ -40,9 +40,9 @@ jobs:
       - name: Run AST generation
         uses: ./.github/workflows/actions/run-ast-generation
         with:
-          programName: ${{ github.event.inputs.programName }}
-          srcDir: ${{ github.event.inputs.srcDir }}
-          copyBooksDir: ${{ github.event.inputs.copyBooksDir }}
-          reportDir: ${{ github.event.inputs.reportDir }}
+          programName: ${{ github.event.client_payload.programName }}
+          srcDir: ${{ github.event.client_payload.srcDir }}
+          copyBooksDir: ${{ github.event.client_payload.copyBooksDir }}
+          reportDir: ${{ github.event.client_payload.reportDir }}
           generation: PROGRAM
           dialect: COBOL
