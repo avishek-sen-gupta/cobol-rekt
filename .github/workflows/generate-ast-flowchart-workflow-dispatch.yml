@@ -4,27 +4,27 @@ on:
   workflow_dispatch:
     inputs:
       programName:
-        description: "Cobol program name"
+        description: Cobol program name
         required: true
         default: test-exp.cbl
       srcDir:
-        description: ""
+        description: Source Directory
         required: true
         default: cobol-samples/src/main/cobol
       copyBooksDir:
-        description: ""
+        description: Copybooks Directory
         required: true
         default: cobol-samples/src/main/cobol
       reportDir:
-        description: ""
+        description: Report Directory
         default: "."
         required: true
       generation:
-        description: ""
+        description: Flowchart Generation Strategy
         required: true
         default: PROGRAM
       dialect:
-        description: ""
+        description: Dialect
         required: true
         default: COBOL
 
@@ -41,6 +41,11 @@ jobs:
       - name: Print parameters
         run: |
           echo "Program Name: ${{ github.event.inputs.programName }}"
+          echo "Source Directory: ${{ github.event.inputs.srcDir }}"
+          echo "Copybooks Directory: ${{ github.event.inputs.copyBooksDir }}"
+          echo "Report Directory: ${{ github.event.inputs.reportDir }}"
+          echo "Flowchart Generation Strategy: ${{ github.event.inputs.generation }}"
+          echo "Dialect: ${{ github.event.inputs.dialect }}"
       - name: Set up JDK 21
         uses: actions/setup-java@v4.2.1
         with:
