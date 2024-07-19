@@ -7,6 +7,26 @@ on:
         description: "Cobol program name"
         required: true
         default: test-exp.cbl
+      srcDir:
+        description: ""
+        required: true
+        default: cobol-samples/src/main/cobol
+      copyBooksDir:
+        description: ""
+        required: true
+        default: cobol-samples/src/main/cobol
+      reportDir:
+        description: ""
+        default: "."
+        required: true
+      generation:
+        description: ""
+        required: true
+        default: PROGRAM
+      dialect:
+        description: ""
+        required: true
+        default: COBOL
 
 jobs:
   generate:
@@ -37,4 +57,9 @@ jobs:
       - name: Run AST generation
         uses: ./.github/workflows/actions/run-ast-generation
         with:
-          programName: ${{ github.event.inputs.programName }}"
+          programName: ${{ github.event.inputs.programName }}
+          srcDir: ${{ github.event.inputs.srcDir }}
+          copyBooksDir: ${{ github.event.inputs.copyBooksDir }}
+          reportDir: ${{ github.event.inputs.reportDir }}
+          generation: PROGRAM
+          dialect: COBOL
