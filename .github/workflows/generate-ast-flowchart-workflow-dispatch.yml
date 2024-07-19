@@ -36,5 +36,5 @@ jobs:
           git clone https://github.com/neopragma/cobol-samples.git
       - name: Run AST generation
         uses: ./.github/workflows/actions/run-ast-generation
-        env:
+        with:
           programName: HELLO.CBL
