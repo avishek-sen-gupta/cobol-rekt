@@ -22,7 +22,7 @@ inputs:
     required: true
 
 runs:
-  using: composite
+  using: "composite"
   steps:
     - name: Print inputs
       shell: bash
