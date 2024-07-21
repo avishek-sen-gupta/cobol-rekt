@@ -37,4 +37,4 @@ runs:
     - name: Run Cobol-REKT
       shell: bash
       run: |
-        java -jar smojol-cli.jar --src ${{ inputs.programName }} --srcDir ${{ inputs.srcDir }} --copyBooksDir ${{ inputs.copyBooksDir }} --dialectJarPath dialect-idms.jar --dialect ${{ inputs.dialect }} --reportDir ${{ inputs.reportDir }} --generation ${{ inputs.programName }}
+        java -jar smojol-cli.jar ${{ inputs.programName }} --srcDir ${{ inputs.srcDir }} --copyBooksDir ${{ inputs.copyBooksDir }} --dialectJarPath dialect-idms.jar --dialect ${{ inputs.dialect }} --reportDir ${{ inputs.reportDir }} --generation ${{ inputs.programName }}
