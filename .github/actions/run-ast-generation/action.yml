@@ -1,0 +1,47 @@
+name: Run Cobol-REKT
+description: "Runs AST generation"
+
+inputs:
+  programName:
+    description: "Program Name"
+    required: true
+  srcDir:
+    description: ""
+    required: true
+  copyBooksDir:
+    description: ""
+    required: true
+  reportDir:
+    description: ""
+    required: true
+  generation:
+    description: ""
+    required: true
+  dialect:
+    description: ""
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Print inputs
+      shell: bash
+      run: |
+        echo "Cobol-REKT inputs"
+        echo "-------------------"
+        echo "Program Name: ${{ inputs.programName }}"
+        echo "Source Directory: ${{ inputs.srcDir }}"
+        echo "Copybooks Directory: ${{ inputs.copyBooksDir }}"
+        echo "Report Directory: ${{ inputs.reportDir }}"
+        echo "Flowchart Generation Strategy: ${{ inputs.generation }}"
+        echo "Dialect: ${{ inputs.dialect }}"
+    - name: Download Cobol-REKT
+      shell: bash
+      run: |
+        curl -sL https://github.com/avishek-sen-gupta/cobol-rekt/releases/download/v0.1.0-RC1/dialect-idms.jar -o dialect-idms.jar
+        curl -sL https://github.com/avishek-sen-gupta/cobol-rekt/releases/download/v0.1.0-RC1/smojol-cli.jar -o smojol-cli.jar
+        curl -sL https://raw.githubusercontent.com/avishek-sen-gupta/cobol-rekt/main/smojol-test-code/test-exp.cbl -o test-exp.cbl
+    - name: Run Cobol-REKT
+      shell: bash
+      run: |
+        java -jar smojol-cli.jar --src ${{ inputs.programName }} --srcDir ${{ inputs.srcDir }} --copyBooksDir ${{ inputs.copyBooksDir }} --dialectJarPath dialect-idms.jar --dialect ${{ inputs.dialect }} --reportDir ${{ inputs.reportDir }} --generation ${{ inputs.programName }}

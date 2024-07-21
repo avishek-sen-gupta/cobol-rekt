@@ -23,6 +23,7 @@ Cobol-REKT is more of a library of useful things intended to be embedded in more
 
 - The toolkit uses the grammar available in the [Eclipse Che4z Cobol Support project](https://github.com/eclipse-che4z/che-che4z-lsp-for-cobol) to create the parse tree.
 - The toolkit uses the API from [Woof](https://github.com/asengupta/woof) to interact with Neo4J.
+- The toolkit uses [Graphviz](https://graphviz.org/) for flowchart generation. See its documentation for OS-specific installation instructions.
 
 ## Reverse Engineering Use Cases
 
@@ -196,20 +197,21 @@ You can skip the tests as well, using:
 You can run the flowchart and parse tree using the following command:
 
 ```
-java -jar smojol-cli/target/smojol-cli.jar --src [SOURCE_FILE] --srcDir [SOURCE_DIR] --copyBooksDir [COPYBOOKS_DIR] --dialectJarPath [PATH_TO_IDMS_DIALECT_JAR] --reportDir [OUTPUT_REPORT_DIR]
+java -jar smojol-cli/target/smojol-cli.jar --src [SOURCE_FILE] --srcDir [SOURCE_DIR] --copyBooksDir [COPYBOOKS_DIR] --dialectJarPath [PATH_TO_IDMS_DIALECT_JAR] --reportDir [OUTPUT_REPORT_DIR --generation PROGRAM
 ```
 
 The options are explained below:
 
 ```
-usage: java -jar <path_to_smojol_cli_jar>/smojol-cli.jar
+usage: java -jar smojol-cli/target/smojol-cli.jar
  -c,--copyBooksDir <arg>     The directory containing copybooks
  -d,--dialectJarPath <arg>   The path to the dialect JAR
+ -g,--generation <arg>       The flowchart generation strategy (SECTION / PROGRAM)
  -h,--help                   Prints this help message
  -p,--src <arg>              The name of the source file
  -r,--reportDir <arg>        The directory containing the final artifacts
  -s,--srcDir <arg>           The directory containing source file
- ```
+ -x,--dialect <arg>          The directory containing the final artifacts ```
 
 ### Programmatic Usage
 ...TODO
@@ -256,3 +258,10 @@ These are some other commands tried on larger graphs:
 
 ```dot -Kdot -v5 -Gsize=200,200\! -Goverlap=scale -Tpng -Gnslimit=4 -Gnslimit1=4 -Gmaxiter=2000 -Gsplines=line dotfile.dot -oflowchart-level5.png```
 
+## Testing workflows locally
+
+Run:
+
+```
+act -W workflows-local/local-generate-flowchart.yml --container-architecture linux/amd64
+```

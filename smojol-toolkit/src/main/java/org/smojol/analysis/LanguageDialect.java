@@ -16,5 +16,12 @@ public enum LanguageDialect {
         }
     };
 
+    public static LanguageDialect dialect(String dialectAsString) {
+        if (dialectAsString == null) return COBOL;
+        else if (dialectAsString.equals(IDMS.name())) return IDMS;
+        else if (dialectAsString.equals(COBOL.name())) return COBOL;
+        else return COBOL;
+    }
+
     abstract AnalysisConfig analysisConfig(String dialectConfigJarPath);
 }

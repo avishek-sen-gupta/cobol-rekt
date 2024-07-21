@@ -1,0 +1,42 @@
+name: Generate AST and Flowchart
+
+on:
+  push
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+    - name: Checkout workflow repository
+      uses: actions/checkout@v2
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4.2.1
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+        server-id: github
+        settings-path: ${{ github.workspace }}
+    - name: Install Graphviz
+      run: |
+        DEBIAN_FRONTEND=noninteractive add-apt-repository universe -y
+        DEBIAN_FRONTEND=noninteractive apt-get update && sudo apt-get -y upgrade
+        DEBIAN_FRONTEND=noninteractive sudo apt install -y python3-pydot graphviz git
+    - name: Checkout Cobol sources
+      run: |
+        git clone https://github.com/neopragma/cobol-samples.git
+    - name: Run AST generation
+      uses: ./workflows-local/actions/run-ast-generation
+      with:
+        programName: HELLO.CBL
+        srcDir: cobol-samples/src/main/cobol
+        copyBooksDir: cobol-samples/src/main/cobol
+        reportDir: .
+        generation: PROGRAM
+        dialect: COBOL
+
+

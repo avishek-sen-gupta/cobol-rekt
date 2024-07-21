@@ -1,8 +1,6 @@
 package org.smojol.analysis.visualisation;
 
 import com.google.common.collect.ImmutableList;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.smojol.analysis.LanguageDialect;
 import org.smojol.flowchart.FlowchartTasks;
 import org.smojol.interpreter.FlowchartGenerationStrategy;
