@@ -32,6 +32,7 @@ public interface FlowchartGenerationStrategy {
 class DontDraw implements FlowchartGenerationStrategy {
     @Override
     public void draw(CobolEntityNavigator navigator, ParseTree root, ParsePipeline pipeline, Path dotFileOutputDir, Path imageOutputDir, String programName) throws IOException, InterruptedException {
+        System.out.println("Not Drawing Flowchart...");
     }
 }
 
