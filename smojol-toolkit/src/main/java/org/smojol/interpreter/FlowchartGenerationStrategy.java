@@ -14,17 +14,25 @@ import static org.smojol.flowchart.FlowchartTasks.outputPath;
 public interface FlowchartGenerationStrategy {
     FlowchartGenerationStrategy PER_SECTION = new PerSection();
     FlowchartGenerationStrategy FULL_PROGRAM = new FullProgram();
+    FlowchartGenerationStrategy DONT_DRAW = new DontDraw();
 
     static FlowchartGenerationStrategy strategy(String generationStrategyAsString) {
         if (generationStrategyAsString == null) return FULL_PROGRAM;
         return switch (generationStrategyAsString) {
             case "SECTION" -> PER_SECTION;
             case "PROGRAM" -> FULL_PROGRAM;
-            default -> FULL_PROGRAM;
+            case "NODRAW" -> DONT_DRAW;
+            default -> DONT_DRAW;
         };
     }
 
     void draw(CobolEntityNavigator navigator, ParseTree root, ParsePipeline pipeline, Path dotFileOutputDir, Path imageOutputDir, String programName) throws IOException, InterruptedException;
+}
+
+class DontDraw implements FlowchartGenerationStrategy {
+    @Override
+    public void draw(CobolEntityNavigator navigator, ParseTree root, ParsePipeline pipeline, Path dotFileOutputDir, Path imageOutputDir, String programName) throws IOException, InterruptedException {
+    }
 }
 
 class PerSection implements FlowchartGenerationStrategy {
