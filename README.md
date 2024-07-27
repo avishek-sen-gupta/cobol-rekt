@@ -209,18 +209,19 @@ Usage: flowchart [-hV] [d=<dialectJarPath>] [-g=<generationStrategyAsString>]
 Builds the flowcharts
       [<programNames>...]    Program names
   -c, --copyBooksDir=<copyBookDirs>
-                             .cpy source directory (repeatable)
+                             Copybook directories (repeatable)
       d, --dialectJarPath=<dialectJarPath>
                              Path to dialect .JAR
-  -g, --generation=<generationStrategyAsString>
-                             The flowchart generation strategy
+  -g, --generation=<flowchartGenerationStrategy>
+                             The flowchart generation strategy. Valid values
+                               are SECTION, PROGRAM, and NODRAW
   -h, --help                 Show this help message and exit.
   -r, --reportDir=<reportRootDir>
                              Output report directory
   -s, --srcDir=<sourceDir>   .cbl source directory
   -V, --version              Print version information and exit.
-  -x, --dialect=<dialectAsString>
-                             The COBOL dialect ```
+  -x, --dialect=<dialect>    The COBOL dialect
+```
 
 ### Programmatic Usage
 ...TODO

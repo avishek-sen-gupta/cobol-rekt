@@ -34,7 +34,7 @@ public class FlowchartCommand implements Callable<Integer> {
     // Can be replaced with a File[] (and the later conversion removed) if we skip default arguments.
     @Option(names = {"-c", "--copyBooksDir"},
             required = true,
-            description = ".cpy source directory (repeatable)")
+            description = "Copybook directories (repeatable)")
     private String[] copyBookDirs;
 
     @Option(names = {"-r", "--reportDir"},
@@ -51,7 +51,7 @@ public class FlowchartCommand implements Callable<Integer> {
     @Option(names = {"-g", "--generation"},
             required = false,
             defaultValue = "PROGRAM",
-            description = "The flowchart generation strategy")
+            description = "The flowchart generation strategy. Valid values are SECTION, PROGRAM, and NODRAW")
     private String flowchartGenerationStrategy;
 
     @Override
