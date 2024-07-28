@@ -6,29 +6,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-public class SerialisableASTFlowNode {
+public class SerialisableASTFlowNode extends SerialisableCFGFlowNode {
     List<SerialisableASTFlowNode> children = new ArrayList<>();
 
-    String id;
-    String label;
-    String name;
-    String originalText;
-    FlowNodeType type;
-
     public SerialisableASTFlowNode() {
-        this.id = "ROOT";
-        this.label = "ROOT";
-        this.name = "ROOT";
-        this.originalText = "[ROOT]";
-        this.type = FlowNodeType.DUMMY;
+        super("ROOT", "ROOT", "ROOT", "ROOT", FlowNodeType.DUMMY);
     }
 
     public SerialisableASTFlowNode(FlowNode current) {
-        id = current.id();
-        label = current.label();
-        name = current.name();
-        originalText = current.originalText();
-        type = current.type();
+        super(current);
     }
 
     public void addChild(SerialisableASTFlowNode child) {

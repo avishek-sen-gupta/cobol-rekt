@@ -5,5 +5,6 @@ public enum AnalysisTask {
     EXPORT_TO_GRAPHML,
     WRITE_RAW_AST,
     WRITE_FLOW_AST,
-    DRAW_FLOWCHART
+    DRAW_FLOWCHART,
+    WRITE_CFG
 }

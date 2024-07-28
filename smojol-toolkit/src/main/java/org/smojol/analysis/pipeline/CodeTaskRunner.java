@@ -25,6 +25,7 @@ public class CodeTaskRunner {
     private static final String IMAGES_DIR = "flowcharts";
     private static final String DOTFILES_DIR = "dotfiles";
     private static final String GRAPHML_DIR = "graphml";
+    private static final String CFG_DIR = "cfg";
     private final String sourceDir;
     private final List<File> copyBookPaths;
     private final String dialectJarPath;
@@ -66,6 +67,8 @@ public class CodeTaskRunner {
         Path dotFileOutputDir = Paths.get(reportRootDir, programReportDir, DOTFILES_DIR).toAbsolutePath().normalize();
         Path graphMLExportOutputDir = Paths.get(reportRootDir, programReportDir, GRAPHML_DIR).toAbsolutePath().normalize();
         String graphMLExportOutputPath = graphMLExportOutputDir.resolve(String.format("%s.graphml", programFilename)).toAbsolutePath().normalize().toString();
+        Path cfgOutputDir = Paths.get(reportRootDir, programReportDir, CFG_DIR).toAbsolutePath().normalize();
+        String cfgOutputPath = cfgOutputDir.resolve(String.format("cfg-%s.json", programFilename)).toAbsolutePath().normalize().toString();
         String cobolParseTreeOutputPath = astOutputDir.resolve(String.format("cobol-%s.json", programFilename)).toAbsolutePath().normalize().toString();
         String flowASTOutputPath = flowASTOutputDir.resolve(String.format("flow-ast-%s.json", programFilename)).toAbsolutePath().normalize().toString();
         String absoluteDialectJarPath = Paths.get(dialectJarPath).toAbsolutePath().normalize().toString();
@@ -75,6 +78,7 @@ public class CodeTaskRunner {
         RawASTOutputConfig rawAstOutputConfig = new RawASTOutputConfig(astOutputDir, new CobolTreeVisualiser());
         FlowASTOutputConfig flowASTOutputConfig = new FlowASTOutputConfig(flowASTOutputDir, flowASTOutputPath);
         GraphMLExportConfig graphMLOutputConfig = new GraphMLExportConfig(graphMLExportOutputDir, graphMLExportOutputPath);
+        CFGOutputConfig cfgOutputConfig = new CFGOutputConfig(cfgOutputDir, cfgOutputPath);
         GraphSDK sdk = new GraphSDK(new Neo4JDriverBuilder().fromEnv());
         ComponentsBuilder ops = new ComponentsBuilder(new CobolTreeVisualiser(),
                 FlowchartBuilderImpl::build, new EntityNavigatorBuilder(), new UnresolvedReferenceThrowStrategy(),
@@ -84,7 +88,8 @@ public class CodeTaskRunner {
         SmojolTasks pipelineTasks = new SmojolTasks(pipeline,
                 NodeReferenceStrategy.EXISTING_CFG_NODE,
                 NodeReferenceStrategy.EXISTING_CFG_NODE,
-                sourceConfig, flowchartOutputConfig, rawAstOutputConfig, sdk, graphMLOutputConfig, flowASTOutputConfig).build();
+                sourceConfig, flowchartOutputConfig, rawAstOutputConfig, sdk, graphMLOutputConfig,
+                flowASTOutputConfig, cfgOutputConfig).build();
         pipelineTasks.run(tasks);
     }
 }

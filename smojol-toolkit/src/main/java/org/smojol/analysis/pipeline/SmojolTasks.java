@@ -14,9 +14,7 @@ import org.smojol.analysis.graph.NodeSpecBuilder;
 import org.smojol.analysis.graph.SummariseAction;
 import org.smojol.analysis.graph.graphml.JGraphTGraphBuilder;
 import org.smojol.analysis.graph.neo4j.*;
-import org.smojol.common.ast.FlowNode;
-import org.smojol.common.ast.FlowNodeType;
-import org.smojol.common.ast.SerialisableASTFlowNode;
+import org.smojol.common.ast.*;
 import org.smojol.common.flowchart.*;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.vm.structure.CobolDataStructure;
@@ -42,6 +40,7 @@ public class SmojolTasks {
     private final GraphSDK graphSDK;
     private final GraphMLExportConfig graphMLOutputConfig;
     private final FlowASTOutputConfig flowASTOutputConfig;
+    private final CFGOutputConfig cfgOutputConfig;
     private ParsePipeline pipeline;
     private CobolEntityNavigator navigator;
     private CobolDataStructure dataStructures;
@@ -60,8 +59,8 @@ public class SmojolTasks {
         @Override
         public void run() {
             try {
-                Files.createDirectories(graphMLOutputConfig.graphMLExportOutputDir());
-                String graphMLOutputPath = graphMLOutputConfig.graphMLExportOutputDir().resolve(graphMLOutputConfig.graphMLExportOutputPath()).toAbsolutePath().normalize().toString();
+                Files.createDirectories(graphMLOutputConfig.outputDir());
+                String graphMLOutputPath = graphMLOutputConfig.outputDir().resolve(graphMLOutputConfig.outputPath()).toAbsolutePath().normalize().toString();
                 exportToGraphML(astRoot, dataStructures, qualifier, graphMLOutputPath);
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -89,8 +88,8 @@ public class SmojolTasks {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String json = gson.toJson(serialisableASTFlowRoot);
         try {
-            Files.createDirectories(flowASTOutputConfig.flowASTOutputDir());
-            PrintWriter out = new PrintWriter(flowASTOutputConfig.flowASTOutputPath());
+            Files.createDirectories(flowASTOutputConfig.outputDir());
+            PrintWriter out = new PrintWriter(flowASTOutputConfig.outputPath());
             out.println(json);
             out.close();
         } catch (IOException e) {
@@ -112,6 +111,25 @@ public class SmojolTasks {
         }
     };
 
+    public Runnable WRITE_CFG = new Runnable() {
+        @Override
+        public void run() {
+            SerialisableCFGGraphCollector cfgGraphCollector = new SerialisableCFGGraphCollector();
+            astRoot.accept(cfgGraphCollector, -1);
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            String json = gson.toJson(cfgGraphCollector);
+            try {
+                Files.createDirectories(cfgOutputConfig.outputDir());
+                PrintWriter out = new PrintWriter(cfgOutputConfig.outputPath());
+                out.println(json);
+                out.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+    };
+
     public Runnable SUMMARISE_THROUGH_LLM = new Runnable() {
         @Override
         public void run() {
@@ -119,7 +137,7 @@ public class SmojolTasks {
         }
     };
 
-    public SmojolTasks(ParsePipeline pipeline, NodeReferenceStrategy astNodeReferenceStrategy, NodeReferenceStrategy dataDependencyAttachmentStrategy, SourceConfig sourceConfig, FlowchartOutputConfig flowchartOutputConfig, RawASTOutputConfig rawAstOutputConfig, GraphSDK graphSDK, GraphMLExportConfig graphMLOutputConfig, FlowASTOutputConfig flowASTOutputConfig) {
+    public SmojolTasks(ParsePipeline pipeline, NodeReferenceStrategy astNodeReferenceStrategy, NodeReferenceStrategy dataDependencyAttachmentStrategy, SourceConfig sourceConfig, FlowchartOutputConfig flowchartOutputConfig, RawASTOutputConfig rawAstOutputConfig, GraphSDK graphSDK, GraphMLExportConfig graphMLOutputConfig, FlowASTOutputConfig flowASTOutputConfig, CFGOutputConfig cfgOutputConfig) {
         this.pipeline = pipeline;
         this.astNodeReferenceStrategy = astNodeReferenceStrategy;
         this.dataDependencyAttachmentStrategy = dataDependencyAttachmentStrategy;
@@ -129,6 +147,7 @@ public class SmojolTasks {
         this.graphSDK = graphSDK;
         this.graphMLOutputConfig = graphMLOutputConfig;
         this.flowASTOutputConfig = flowASTOutputConfig;
+        this.cfgOutputConfig = cfgOutputConfig;
         qualifier = new NodeSpecBuilder(new NamespaceQualifier("NEW-CODE"));
     }
 
@@ -155,6 +174,7 @@ public class SmojolTasks {
             case WRITE_RAW_AST -> WRITE_RAW_AST;
             case DRAW_FLOWCHART -> DRAW_FLOWCHART;
             case WRITE_FLOW_AST -> WRITE_FLOW_AST;
+            case WRITE_CFG -> WRITE_CFG;
         });
     }
 

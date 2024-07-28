@@ -1,4 +1,4 @@
 package org.smojol.interpreter;
 
-public record FlowASTOutputConfig(java.nio.file.Path flowASTOutputDir, String flowASTOutputPath) {
+public record FlowASTOutputConfig(java.nio.file.Path outputDir, String outputPath) {
 }
