@@ -1,7 +1,5 @@
 package org.smojol.cli;
 
-import com.google.common.collect.ImmutableList;
-import org.apache.commons.lang3.StringUtils;
 import org.smojol.analysis.LanguageDialect;
 import org.smojol.flowchart.GraphDBTasks;
 import org.smojol.flowchart.GraphCLITask;
