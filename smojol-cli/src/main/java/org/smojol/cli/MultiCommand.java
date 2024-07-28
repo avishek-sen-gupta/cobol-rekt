@@ -1,8 +1,8 @@
 package org.smojol.cli;
 
 import org.smojol.analysis.LanguageDialect;
-import org.smojol.flowchart.GraphDBTasks;
-import org.smojol.flowchart.GraphCLITask;
+import org.smojol.analysis.pipeline.GraphDBTasks;
+import org.smojol.analysis.pipeline.AnalysisTask;
 import org.smojol.interpreter.FlowchartGenerationStrategy;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
@@ -13,8 +13,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
-
-import static org.smojol.flowchart.GraphCLITask.*;
 
 @Command(name = "graph", mixinStandardHelpOptions = true, version = "graph 0.1",
         description = "Implements various operations useful for reverse engineering Cobol code")
@@ -72,7 +70,7 @@ public class MultiCommand implements Callable<Integer> {
         return 0;
     }
 
-    private List<GraphCLITask> toGraphTasks(List<String> commands) {
-        return commands.stream().map(GraphCLITask::valueOf).toList();
+    private List<AnalysisTask> toGraphTasks(List<String> commands) {
+        return commands.stream().map(AnalysisTask::valueOf).toList();
     }
 }

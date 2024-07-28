@@ -20,4 +20,13 @@ public class FlowNodeASTTraversal<T> {
         tree.astChildren().forEach(c -> internalBuild(c, node, nodeAction, stopRecurseCondition));
         return node;
     }
+
+    public void build(FlowNode root, FlowNodeASTVisitor<T> visitor) {
+        internalBuild(root, visitor.root(), visitor);
+    }
+
+    public void internalBuild(FlowNode node, T parent, FlowNodeASTVisitor<T> visitor) {
+        T mappedNode = visitor.visit(node, parent);
+        node.astChildren().forEach(c -> internalBuild(c, mappedNode, visitor));
+    }
 }

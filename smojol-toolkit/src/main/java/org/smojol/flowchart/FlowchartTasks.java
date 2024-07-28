@@ -23,7 +23,7 @@ import java.util.List;
 
 public class FlowchartTasks {
     private static final String AST_DIR = "ast";
-    private static final String IMAGES_DIR = "images";
+    private static final String IMAGES_DIR = "flowcharts";
     private static final String DOTFILES_DIR = "dotfiles";
     private final String sourceDir;
     private final File[] copyBookPaths;

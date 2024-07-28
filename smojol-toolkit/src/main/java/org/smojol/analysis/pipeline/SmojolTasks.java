@@ -1,5 +1,7 @@
 package org.smojol.analysis.pipeline;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.mojo.woof.Advisor;
 import com.mojo.woof.GraphSDK;
 import com.mojo.woof.OpenAICredentials;
@@ -12,18 +14,14 @@ import org.smojol.analysis.graph.NodeSpecBuilder;
 import org.smojol.analysis.graph.SummariseAction;
 import org.smojol.analysis.graph.graphml.JGraphTGraphBuilder;
 import org.smojol.analysis.graph.neo4j.*;
-import org.smojol.common.flowchart.FlowNode;
-import org.smojol.common.flowchart.FlowNodeType;
-import org.smojol.common.flowchart.FlowchartBuilder;
+import org.smojol.common.flowchart.*;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.vm.structure.CobolDataStructure;
-import org.smojol.interpreter.ASTOutputConfig;
-import org.smojol.interpreter.FlowchartOutputConfig;
-import org.smojol.interpreter.GraphMLExportConfig;
-import org.smojol.interpreter.SourceConfig;
+import org.smojol.interpreter.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
@@ -31,14 +29,21 @@ import java.util.Map;
 import static com.mojo.woof.NodeProperties.TYPE;
 import static com.mojo.woof.NodeRelations.CONTAINS;
 
-public class SmojolPipelineTasks {
+public class SmojolTasks {
     private final NodeReferenceStrategy astNodeReferenceStrategy;
     private final NodeReferenceStrategy dataDependencyAttachmentStrategy;
     private final SourceConfig sourceConfig;
     private final FlowchartOutputConfig flowchartOutputConfig;
-    private final ASTOutputConfig astOutputConfig;
+    private final RawASTOutputConfig rawAstOutputConfig;
     private final GraphSDK graphSDK;
     private final GraphMLExportConfig graphMLOutputConfig;
+    private final FlowASTOutputConfig flowASTOutputConfig;
+    private ParsePipeline pipeline;
+    private CobolEntityNavigator navigator;
+    private CobolDataStructure dataStructures;
+    private NodeSpecBuilder qualifier;
+    private FlowNode astRoot;
+
 
     public Runnable INJECT_INTO_NEO4J = new Runnable() {
         @Override
@@ -64,14 +69,30 @@ public class SmojolPipelineTasks {
         @Override
         public void run() {
             try {
-                System.out.printf("AST Output Dir is: %s%n", astOutputConfig.astOutputDir());
-                Files.createDirectories(astOutputConfig.astOutputDir());
-                astOutputConfig.visualiser().writeCobolAST(pipeline.getTree(), sourceConfig.cobolParseTreeOutputPath(), false, navigator);
+                System.out.printf("AST Output Dir is: %s%n", rawAstOutputConfig.astOutputDir());
+                Files.createDirectories(rawAstOutputConfig.astOutputDir());
+                rawAstOutputConfig.visualiser().writeCobolAST(pipeline.getTree(), sourceConfig.cobolParseTreeOutputPath(), false, navigator);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
     };
+
+    public Runnable WRITE_FLOW_AST = this::writeFlowAST;
+
+    private void writeFlowAST() {
+        SerialisableASTFlowNode serialisableASTFlowRoot = new SerialiseFlowASTTask().serialisedFlowAST(astRoot);
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        String json = gson.toJson(serialisableASTFlowRoot);
+        try {
+            Files.createDirectories(flowASTOutputConfig.flowASTOutputDir());
+            PrintWriter out = new PrintWriter(flowASTOutputConfig.flowASTOutputPath());
+            out.println(json);
+            out.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public Runnable DRAW_FLOWCHART = new Runnable() {
         @Override
@@ -94,25 +115,20 @@ public class SmojolPipelineTasks {
         }
     };
 
-    private ParsePipeline pipeline;
-    private CobolEntityNavigator navigator;
-    private CobolDataStructure dataStructures;
-    private NodeSpecBuilder qualifier;
-    private FlowNode astRoot;
-
-    public SmojolPipelineTasks(ParsePipeline pipeline, NodeReferenceStrategy astNodeReferenceStrategy, NodeReferenceStrategy dataDependencyAttachmentStrategy, SourceConfig sourceConfig, FlowchartOutputConfig flowchartOutputConfig, ASTOutputConfig astOutputConfig, GraphSDK graphSDK, GraphMLExportConfig graphMLOutputConfig) {
+    public SmojolTasks(ParsePipeline pipeline, NodeReferenceStrategy astNodeReferenceStrategy, NodeReferenceStrategy dataDependencyAttachmentStrategy, SourceConfig sourceConfig, FlowchartOutputConfig flowchartOutputConfig, RawASTOutputConfig rawAstOutputConfig, GraphSDK graphSDK, GraphMLExportConfig graphMLOutputConfig, FlowASTOutputConfig flowASTOutputConfig) {
         this.pipeline = pipeline;
         this.astNodeReferenceStrategy = astNodeReferenceStrategy;
         this.dataDependencyAttachmentStrategy = dataDependencyAttachmentStrategy;
         this.sourceConfig = sourceConfig;
         this.flowchartOutputConfig = flowchartOutputConfig;
-        this.astOutputConfig = astOutputConfig;
+        this.rawAstOutputConfig = rawAstOutputConfig;
         this.graphSDK = graphSDK;
         this.graphMLOutputConfig = graphMLOutputConfig;
+        this.flowASTOutputConfig = flowASTOutputConfig;
         qualifier = new NodeSpecBuilder(new NamespaceQualifier("NEW-CODE"));
     }
 
-    public SmojolPipelineTasks build() throws IOException {
+    public SmojolTasks build() throws IOException {
         navigator = pipeline.parse();
         dataStructures = pipeline.getDataStructures();
 

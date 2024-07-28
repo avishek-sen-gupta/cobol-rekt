@@ -2,7 +2,7 @@ package org.smojol.cli;
 
 import com.google.common.collect.ImmutableList;
 import org.smojol.analysis.LanguageDialect;
-import org.smojol.flowchart.GraphDBTasks;
+import org.smojol.analysis.pipeline.GraphDBTasks;
 import org.smojol.interpreter.FlowchartGenerationStrategy;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
@@ -14,8 +14,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import static org.smojol.flowchart.GraphCLITask.*;
-import static org.smojol.flowchart.GraphCLITask.DRAW_FLOWCHART;
+import static org.smojol.analysis.pipeline.AnalysisTask.*;
+import static org.smojol.analysis.pipeline.AnalysisTask.DRAW_FLOWCHART;
 
 @Command(name = "flowchart", mixinStandardHelpOptions = true, version = "flowchart 0.1",
         description = "Builds the flowcharts")
