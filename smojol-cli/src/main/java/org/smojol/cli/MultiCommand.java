@@ -50,7 +50,7 @@ public class MultiCommand implements Callable<Integer> {
 
     @Option(names = {"-x", "--dialect"},
             defaultValue = "COBOL",
-            description = "The COBOL dialect")
+            description = "The COBOL dialect (COBOL, IDMS)")
     private String dialect;
 
     @Option(names = {"-g", "--generation"},
