@@ -33,8 +33,6 @@ import static com.mojo.woof.NodeProperties.TYPE;
 import static com.mojo.woof.NodeRelations.CONTAINS;
 
 public class SmojolTasks {
-    private final NodeReferenceStrategy astNodeReferenceStrategy;
-    private final NodeReferenceStrategy dataDependencyAttachmentStrategy;
     private final SourceConfig sourceConfig;
     private final FlowchartOutputConfig flowchartOutputConfig;
     private final RawASTOutputConfig rawAstOutputConfig;
@@ -43,6 +41,7 @@ public class SmojolTasks {
     private final FlowASTOutputConfig flowASTOutputConfig;
     private final CFGOutputConfig cfgOutputConfig;
     private final IdProvider idProvider;
+    private final GraphBuildConfig graphBuildConfig;
     private final ParsePipeline pipeline;
     private CobolEntityNavigator navigator;
     private CobolDataStructure dataStructures;
@@ -139,10 +138,8 @@ public class SmojolTasks {
         }
     };
 
-    public SmojolTasks(ParsePipeline pipeline, NodeReferenceStrategy astNodeReferenceStrategy, NodeReferenceStrategy dataDependencyAttachmentStrategy, SourceConfig sourceConfig, FlowchartOutputConfig flowchartOutputConfig, RawASTOutputConfig rawAstOutputConfig, GraphSDK graphSDK, GraphMLExportConfig graphMLOutputConfig, FlowASTOutputConfig flowASTOutputConfig, CFGOutputConfig cfgOutputConfig, IdProvider idProvider) {
+    public SmojolTasks(ParsePipeline pipeline, SourceConfig sourceConfig, FlowchartOutputConfig flowchartOutputConfig, RawASTOutputConfig rawAstOutputConfig, GraphMLExportConfig graphMLOutputConfig, FlowASTOutputConfig flowASTOutputConfig, CFGOutputConfig cfgOutputConfig, GraphBuildConfig graphBuildConfig, GraphSDK graphSDK, IdProvider idProvider) {
         this.pipeline = pipeline;
-        this.astNodeReferenceStrategy = astNodeReferenceStrategy;
-        this.dataDependencyAttachmentStrategy = dataDependencyAttachmentStrategy;
         this.sourceConfig = sourceConfig;
         this.flowchartOutputConfig = flowchartOutputConfig;
         this.rawAstOutputConfig = rawAstOutputConfig;
@@ -151,6 +148,7 @@ public class SmojolTasks {
         this.flowASTOutputConfig = flowASTOutputConfig;
         this.cfgOutputConfig = cfgOutputConfig;
         this.idProvider = idProvider;
+        this.graphBuildConfig = graphBuildConfig;
         qualifier = new NodeSpecBuilder(new NamespaceQualifier("NEW-CODE"));
     }
 
@@ -194,7 +192,7 @@ public class SmojolTasks {
         root.accept(new Neo4JFlowCFGVisitor(sdk, qualifier), -1);
 
         // Builds AST
-        Neo4JGraphBuilder neo4JExporter = new Neo4JGraphBuilder(sdk, dataStructures, qualifier, this.astNodeReferenceStrategy, this.dataDependencyAttachmentStrategy);
+        Neo4JGraphBuilder neo4JExporter = new Neo4JGraphBuilder(sdk, dataStructures, qualifier, graphBuildConfig);
         neo4JExporter.buildAST(root);
 
         // Builds data structures

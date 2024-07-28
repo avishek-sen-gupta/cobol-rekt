@@ -200,11 +200,12 @@ The individual functionalities can be invoked using different commands. The comm
 - ```EXPORT_TO_GRAPHML```: This exports the unified model to GraphML. Exposing more fine-grained options is in progress.
 - ```WRITE_RAW_AST```: This writes the original parse tree to JSON. Useful for downstream code to build their own AST representations.
 - ```DRAW_FLOWCHART```: This outputs flowcharts for the whole program or section-by-section of the program in PNG format.
+- ```WRITE_CFG```: This outputs the control flow graph of the program as JSON.
 
 For example, if you wanted to run all of the above, you could run the following command:
 
 ```
-java -jar smojol-cli/target/smojol-cli.jar test-exp.cbl hello.cbl --commands="WRITE_FLOW_AST INJECT_INTO_NEO4J EXPORT_TO_GRAPHML WRITE_RAW_AST DRAW_FLOWCHART" --srcDir /Users/asgupta/code/smojol/smojol-test-code --copyBooksDir /Users/asgupta/code/smojol/smojol-test-code --dialectJarPath ./che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar --reportDir out/report --generation=PROGRAM
+java -jar smojol-cli/target/smojol-cli.jar test-exp.cbl hello.cbl --commands="WRITE_FLOW_AST INJECT_INTO_NEO4J EXPORT_TO_GRAPHML WRITE_RAW_AST DRAW_FLOWCHART WRITE_CFG" --srcDir /Users/asgupta/code/smojol/smojol-test-code --copyBooksDir /Users/asgupta/code/smojol/smojol-test-code --dialectJarPath ./che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar --reportDir out/report --generation=PROGRAM
 ```
 
 The help text is reproduced below (obtained by adding ```--help```):
@@ -234,7 +235,29 @@ Implements various operations useful for reverse engineering Cobol code
 ```
 
 ### Programmatic Usage
-...TODO
+
+**NOTE: The API is under active development, and may be subject to change.**
+
+The simplest way to invoke tasks through the API is using ```CodeTaskRunner```, like so:
+
+```
+        new CodeTaskRunner(
+                "/path/to/src",
+                "path/to/report-dir",
+                ImmutableList.of(new File("/path/to/copybooks")),
+                "/path/to/dialect-idms.jar",
+                LanguageDialect.COBOL, 
+                FlowchartGenerationStrategy.FULL_PROGRAM, 
+                new UUIDProvider())
+                .generateForPrograms(ImmutableList.of(
+                        WRITE_RAW_AST,
+                        WRITE_FLOW_AST
+                ), ImmutableList.of("program.cbl"));
+
+```
+
+This invocation uses some specific conventions when deciding where to output file artifacts under the ```report-dir``` directory.
+If you want more fine-grained control of the location of output artifacts, you can use the ```SmojolTasks``` class, which gives you more configurability in exchange for having to provide more detailed specifications.
 
 ## A Note on Copyright
 

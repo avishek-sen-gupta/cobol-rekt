@@ -18,10 +18,10 @@ public class GraphExplorerMain {
                 "/Users/asgupta/code/smojol/out/report",
                 ImmutableList.of(new File("/Users/asgupta/code/smojol/smojol-test-code")),
                 dialectJarPath, LanguageDialect.COBOL   , FlowchartGenerationStrategy.FULL_PROGRAM, new UUIDProvider())
-                .generateForPrograms(ImmutableList.of("test-exp.cbl"), ImmutableList.of(
+                .generateForPrograms(ImmutableList.of(
                         INJECT_INTO_NEO4J,
                         EXPORT_TO_GRAPHML,
                         WRITE_FLOW_AST
-                ));
+                ), ImmutableList.of("test-exp.cbl"));
     }
 }

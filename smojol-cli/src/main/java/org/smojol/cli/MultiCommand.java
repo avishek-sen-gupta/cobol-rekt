@@ -62,7 +62,7 @@ public class MultiCommand implements Callable<Integer> {
     public Integer call() throws IOException {
         List<File> copyBookPaths = copyBookDirs.stream().map(File::new).toList();
 
-        new CodeTaskRunner(sourceDir, reportRootDir, copyBookPaths, dialectJarPath, LanguageDialect.dialect(dialect), FlowchartGenerationStrategy.strategy(flowchartGenerationStrategy), new UUIDProvider()).generateForPrograms(programNames, toGraphTasks(commands));
+        new CodeTaskRunner(sourceDir, reportRootDir, copyBookPaths, dialectJarPath, LanguageDialect.dialect(dialect), FlowchartGenerationStrategy.strategy(flowchartGenerationStrategy), new UUIDProvider()).generateForPrograms(toGraphTasks(commands), programNames);
         return 0;
     }
 

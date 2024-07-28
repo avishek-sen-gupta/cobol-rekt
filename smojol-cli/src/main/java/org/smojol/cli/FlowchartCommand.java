@@ -60,7 +60,7 @@ public class FlowchartCommand implements Callable<Integer> {
     @Override
     public Integer call() throws IOException {
         List<File> copyBookPaths = copyBookDirs.stream().map(File::new).toList();
-        new CodeTaskRunner(sourceDir, reportRootDir, copyBookPaths, dialectJarPath, LanguageDialect.dialect(dialect), FlowchartGenerationStrategy.strategy(flowchartGenerationStrategy), new UUIDProvider()).generateForPrograms(programNames, ImmutableList.of(WRITE_RAW_AST, DRAW_FLOWCHART));
+        new CodeTaskRunner(sourceDir, reportRootDir, copyBookPaths, dialectJarPath, LanguageDialect.dialect(dialect), FlowchartGenerationStrategy.strategy(flowchartGenerationStrategy), new UUIDProvider()).generateForPrograms(ImmutableList.of(WRITE_RAW_AST, DRAW_FLOWCHART), programNames);
 //        new FlowchartTasks(sourceDir, reportRootDir, copyBookPaths, dialectJarPath).generateForPrograms(programNames, FlowchartGenerationStrategy.strategy(flowchartGenerationStrategy), LanguageDialect.dialect(dialect));
         return 0;
     }

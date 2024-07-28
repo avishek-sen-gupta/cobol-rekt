@@ -54,7 +54,7 @@ public class CodeTaskRunner {
         System.out.println("copyBookPaths = " + copyBookPaths.stream().map(cp -> cp.toString() + "\n"));
     }
 
-    public void generateForPrograms(List<String> programFilenames, List<AnalysisTask> tasks) throws IOException {
+    public void generateForPrograms(List<AnalysisTask> tasks, List<String> programFilenames) throws IOException {
         System.out.println("Running tasks: " + String.join(",", tasks.stream().map(Enum::name).toList()));
         for (String programFilename : programFilenames) {
             generateForProgram(programFilename, sourceDir, reportRootDir, this.dialect, tasks);
@@ -87,12 +87,16 @@ public class CodeTaskRunner {
                 FlowchartBuilderImpl::build, new EntityNavigatorBuilder(), new UnresolvedReferenceThrowStrategy(),
                 new DefaultFormat1DataStructureBuilder(), idProvider);
         ParsePipeline pipeline = new ParsePipeline(sourceConfig, ops, dialect);
+        GraphBuildConfig graphBuildConfig = new GraphBuildConfig(
+                NodeReferenceStrategy.EXISTING_CFG_NODE,
+                NodeReferenceStrategy.EXISTING_CFG_NODE);
 
         SmojolTasks pipelineTasks = new SmojolTasks(pipeline,
-                NodeReferenceStrategy.EXISTING_CFG_NODE,
-                NodeReferenceStrategy.EXISTING_CFG_NODE,
-                sourceConfig, flowchartOutputConfig, rawAstOutputConfig, sdk, graphMLOutputConfig,
-                flowASTOutputConfig, cfgOutputConfig, idProvider).build();
+                sourceConfig, flowchartOutputConfig,
+                rawAstOutputConfig, graphMLOutputConfig,
+                flowASTOutputConfig, cfgOutputConfig,
+                graphBuildConfig, sdk,
+                idProvider).build();
         pipelineTasks.run(tasks);
     }
 }

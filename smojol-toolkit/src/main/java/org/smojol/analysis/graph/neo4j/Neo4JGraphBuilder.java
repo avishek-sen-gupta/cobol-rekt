@@ -10,6 +10,7 @@ import org.smojol.analysis.graph.NodeSpecBuilder;
 import org.smojol.analysis.graph.NodeToWoof;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.vm.structure.CobolDataStructure;
+import org.smojol.interpreter.GraphBuildConfig;
 import org.smojol.interpreter.navigation.FlowNodeASTTraversal;
 
 import java.util.List;
@@ -23,12 +24,12 @@ public class Neo4JGraphBuilder {
     private final NodeReferenceStrategy dependencyAttachmentStrategy;
     private Graph<FlowNode, DefaultEdge> graph;
 
-    public Neo4JGraphBuilder(GraphSDK sdk, CobolDataStructure dataStructures, NodeSpecBuilder qualifier, NodeReferenceStrategy nodeReferenceStrategy, NodeReferenceStrategy dependencyAttachmentStrategy) {
+    public Neo4JGraphBuilder(GraphSDK sdk, CobolDataStructure dataStructures, NodeSpecBuilder qualifier, GraphBuildConfig graphBuildConfig) {
         this.sdk = sdk;
         this.data = dataStructures;
         this.qualifier = qualifier;
-        this.astNodeReferenceStrategy = nodeReferenceStrategy;
-        this.dependencyAttachmentStrategy = dependencyAttachmentStrategy;
+        this.astNodeReferenceStrategy = graphBuildConfig.astNodeReferenceStrategy();
+        this.dependencyAttachmentStrategy = graphBuildConfig.dataDependencyAttachmentStrategy();
     }
 
     public void buildAST(FlowNode node) {

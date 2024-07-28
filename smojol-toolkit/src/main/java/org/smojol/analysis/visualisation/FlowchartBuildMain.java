@@ -13,14 +13,14 @@ import static org.smojol.analysis.pipeline.AnalysisTask.*;
 
 public class FlowchartBuildMain {
     public static void main(String[] args) throws IOException, InterruptedException {
-        String dialectJarPath = "/Users/asgupta/code/smojol/che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar";
         new CodeTaskRunner("/Users/asgupta/code/smojol/smojol-test-code",
                 "/Users/asgupta/code/smojol/out/report",
                 ImmutableList.of(new File("/Users/asgupta/code/smojol/smojol-test-code")),
-                dialectJarPath, LanguageDialect.COBOL, FlowchartGenerationStrategy.FULL_PROGRAM, new UUIDProvider())
-                .generateForPrograms(ImmutableList.of("if-test.cbl"), ImmutableList.of(
+                "/Users/asgupta/code/smojol/che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar",
+                LanguageDialect.COBOL, FlowchartGenerationStrategy.FULL_PROGRAM, new UUIDProvider())
+                .generateForPrograms(ImmutableList.of(
                         WRITE_RAW_AST,
                         WRITE_FLOW_AST
-                ));
+                ), ImmutableList.of("if-test.cbl"));
     }
 }
