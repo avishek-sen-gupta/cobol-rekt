@@ -142,7 +142,7 @@
                             <finalName>smojol-cli</finalName>
                             <archive>
                                 <manifest>
-                                    <mainClass>org.smojol.cli.FlowchartCLI</mainClass>
+                                    <mainClass>org.smojol.cli.MultiCommandCLI</mainClass>
                                 </manifest>
                             </archive>
                             <descriptorRefs>
@@ -255,7 +255,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>org.smojol.cli.FlowchartCLI</mainClass>
+                            <mainClass>org.smojol.cli.MultiCommandCLI</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

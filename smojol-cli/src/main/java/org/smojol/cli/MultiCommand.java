@@ -19,7 +19,7 @@ import java.util.concurrent.Callable;
 import static org.smojol.flowchart.GraphCLITask.*;
 
 @Command(name = "graph", mixinStandardHelpOptions = true, version = "graph 0.1",
-        description = "Injects the AST into a GraphDB")
+        description = "Implements various operations useful for reverse engineering Cobol code")
 public class MultiCommand implements Callable<Integer> {
 
     @Option(names = {"d", "--dialectJarPath"},

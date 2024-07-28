@@ -197,18 +197,21 @@ You can skip the tests as well, using:
 You can run the flowchart and parse tree using the following command:
 
 ```
-java -jar smojol-cli/target/smojol-cli.jar [SOURCE_FILE] --srcDir [SOURCE_DIR] --copyBooksDir [COPYBOOKS_DIR] --dialectJarPath [PATH_TO_IDMS_DIALECT_JAR] --reportDir [OUTPUT_REPORT_DIR --generation PROGRAM
+java -jar smojol-cli/target/smojol-cli.jar --commands="INJECT_INTO_NEO4J DRAW_FLOWCHART" --srcDir /Users/asgupta/code/smojol/smojol-test-code --copyBooksDir /Users/asgupta/code/smojol/smojol-test-code --dialectJarPath ./che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar --reportDir out/report --generation=PROGRAM
 ```
 
 The options are explained below:
 
 ```
-Usage: flowchart [-hV] [d=<dialectJarPath>] [-g=<generationStrategyAsString>]
-                 -r=<reportRootDir> -s=<sourceDir> [-x=<dialectAsString>]
-                 -c=<copyBookDirs> [-c=<copyBookDirs>]... [<programNames>...]
-Builds the flowcharts
-      [<programNames>...]    Program names
-  -c, --copyBooksDir=<copyBookDirs>
+Usage: graph [-hV] [d=<dialectJarPath>] [-g=<flowchartGenerationStrategy>]
+             -r=<reportRootDir> -s=<sourceDir> [-x=<dialect>] -c=<commands>
+             [-c=<commands>]... -cp=<copyBookDirs> [-cp=<copyBookDirs>]...
+             [<programNames>...]
+Implements various operations useful for reverse engineering Cobol code
+      [<programNames>...]    The programs to analyse
+  -c, --commands=<commands>  The commands to run (INJECT_INTO_NEO4J,
+                               EXPORT_TO_GRAPHML, WRITE_RAW_AST, DRAW_FLOWCHART)
+      -cp, --copyBooksDir=<copyBookDirs>
                              Copybook directories (repeatable)
       d, --dialectJarPath=<dialectJarPath>
                              Path to dialect .JAR
@@ -218,7 +221,7 @@ Builds the flowcharts
   -h, --help                 Show this help message and exit.
   -r, --reportDir=<reportRootDir>
                              Output report directory
-  -s, --srcDir=<sourceDir>   .cbl source directory
+  -s, --srcDir=<sourceDir>   The Cobol source directory
   -V, --version              Print version information and exit.
   -x, --dialect=<dialect>    The COBOL dialect
 ```
