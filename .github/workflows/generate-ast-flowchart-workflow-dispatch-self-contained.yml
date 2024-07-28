@@ -1,4 +1,4 @@
-name: Generate AST and Flowchart (UI)
+name: Generate AST and Flowchart (UI) - Self Contained
 
 on:
   workflow_dispatch:

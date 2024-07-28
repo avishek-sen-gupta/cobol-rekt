@@ -19,7 +19,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-public class GraphDBTasks {
+public class CodeTaskRunner {
     private static final String AST_DIR = "ast";
     private static final String FLOW_AST_DIR = "flow_ast";
     private static final String IMAGES_DIR = "flowcharts";
@@ -32,7 +32,7 @@ public class GraphDBTasks {
     private final LanguageDialect dialect;
     private final FlowchartGenerationStrategy flowchartGenerationStrategy;
 
-    public GraphDBTasks(String sourceDir, String reportRootDir, List<File> copyBookPaths, String dialectJarPath, LanguageDialect dialect, FlowchartGenerationStrategy flowchartGenerationStrategy) {
+    public CodeTaskRunner(String sourceDir, String reportRootDir, List<File> copyBookPaths, String dialectJarPath, LanguageDialect dialect, FlowchartGenerationStrategy flowchartGenerationStrategy) {
         this.sourceDir = sourceDir;
         this.copyBookPaths = copyBookPaths;
         this.dialectJarPath = dialectJarPath;
@@ -51,6 +51,7 @@ public class GraphDBTasks {
     }
 
     public void generateForPrograms(List<String> programFilenames, List<AnalysisTask> tasks) throws IOException {
+        System.out.println("Running tasks: " + String.join(",", tasks.stream().map(Enum::name).toList()));
         for (String programFilename : programFilenames) {
             generateForProgram(programFilename, sourceDir, reportRootDir, this.dialect, tasks);
         }
@@ -84,12 +85,6 @@ public class GraphDBTasks {
                 NodeReferenceStrategy.EXISTING_CFG_NODE,
                 NodeReferenceStrategy.EXISTING_CFG_NODE,
                 sourceConfig, flowchartOutputConfig, rawAstOutputConfig, sdk, graphMLOutputConfig, flowASTOutputConfig).build();
-        pipelineTasks.run(tasks.stream().map(t -> switch (t) {
-            case INJECT_INTO_NEO4J -> pipelineTasks.INJECT_INTO_NEO4J;
-            case EXPORT_TO_GRAPHML -> pipelineTasks.EXPORT_TO_GRAPHML;
-            case WRITE_RAW_AST -> pipelineTasks.WRITE_RAW_AST;
-            case DRAW_FLOWCHART -> pipelineTasks.DRAW_FLOWCHART;
-            case WRITE_FLOW_AST -> pipelineTasks.WRITE_FLOW_AST;
-        }).toList());
+        pipelineTasks.run(tasks);
     }
 }

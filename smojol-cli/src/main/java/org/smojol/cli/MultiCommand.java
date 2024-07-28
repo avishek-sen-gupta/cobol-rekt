@@ -1,7 +1,7 @@
 package org.smojol.cli;
 
 import org.smojol.analysis.LanguageDialect;
-import org.smojol.analysis.pipeline.GraphDBTasks;
+import org.smojol.analysis.pipeline.CodeTaskRunner;
 import org.smojol.analysis.pipeline.AnalysisTask;
 import org.smojol.interpreter.FlowchartGenerationStrategy;
 import picocli.CommandLine;
@@ -64,8 +64,7 @@ public class MultiCommand implements Callable<Integer> {
         // Convert the String[] to File[]. See above.
         List<File> copyBookPaths = copyBookDirs.stream().map(File::new).toList();
 
-        new GraphDBTasks(sourceDir, reportRootDir, copyBookPaths, dialectJarPath, LanguageDialect.dialect(dialect), FlowchartGenerationStrategy.strategy(flowchartGenerationStrategy)).generateForPrograms(programNames, toGraphTasks(commands));
-//        new GraphDBTasks(sourceDir, reportRootDir, copyBookPaths, dialectJarPath, LanguageDialect.dialect(dialect), FlowchartGenerationStrategy.strategy(flowchartGenerationStrategy)).generateForPrograms(programNames, ImmutableList.of(INJECT_INTO_NEO4J, EXPORT_TO_GRAPHML, WRITE_RAW_AST, DRAW_FLOWCHART));
+        new CodeTaskRunner(sourceDir, reportRootDir, copyBookPaths, dialectJarPath, LanguageDialect.dialect(dialect), FlowchartGenerationStrategy.strategy(flowchartGenerationStrategy)).generateForPrograms(programNames, toGraphTasks(commands));
         return 0;
     }
 

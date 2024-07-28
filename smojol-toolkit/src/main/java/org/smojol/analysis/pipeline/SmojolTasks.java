@@ -28,6 +28,7 @@ import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static com.mojo.woof.NodeProperties.TYPE;
 import static com.mojo.woof.NodeRelations.CONTAINS;
@@ -143,8 +144,18 @@ public class SmojolTasks {
         return this;
     }
 
-    public void run(List<Runnable> tasks) throws IOException {
-        tasks.forEach(Runnable::run);
+    public void run(List<AnalysisTask> analysisTasks) throws IOException {
+        tasks(analysisTasks).forEach(Runnable::run);
+    }
+
+    private Stream<Runnable> tasks(List<AnalysisTask> analysisTasks) {
+        return analysisTasks.stream().map(t -> switch (t) {
+            case INJECT_INTO_NEO4J -> INJECT_INTO_NEO4J;
+            case EXPORT_TO_GRAPHML -> EXPORT_TO_GRAPHML;
+            case WRITE_RAW_AST -> WRITE_RAW_AST;
+            case DRAW_FLOWCHART -> DRAW_FLOWCHART;
+            case WRITE_FLOW_AST -> WRITE_FLOW_AST;
+        });
     }
 
     private static void exportToGraphML(FlowNode astRoot, CobolDataStructure dataStructures, NodeSpecBuilder qualifier, String outputPath) {
