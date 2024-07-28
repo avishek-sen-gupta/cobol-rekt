@@ -2,7 +2,6 @@ package org.smojol.cli;
 
 import picocli.CommandLine.Command;
 
-import java.io.IOException;
 import java.util.concurrent.Callable;
 
 @Command(name = "subcommands", subcommands = {FlowchartCommand.class, GraphDBCommand.class})

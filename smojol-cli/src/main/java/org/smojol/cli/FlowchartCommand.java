@@ -2,7 +2,6 @@ package org.smojol.cli;
 
 import com.google.common.collect.ImmutableList;
 import org.smojol.analysis.LanguageDialect;
-import org.smojol.flowchart.FlowchartTasks;
 import org.smojol.flowchart.GraphDBTasks;
 import org.smojol.interpreter.FlowchartGenerationStrategy;
 import picocli.CommandLine;
@@ -60,7 +59,7 @@ public class FlowchartCommand implements Callable<Integer> {
     private String flowchartGenerationStrategy;
 
     @Override
-    public Integer call() throws IOException, InterruptedException {
+    public Integer call() throws IOException {
         // Convert the String[] to File[]. See above.
         File[] copyBookPaths = Arrays.stream(copyBookDirs).map(File::new).toArray(File[]::new);
         new GraphDBTasks(sourceDir, reportRootDir, copyBookPaths, dialectJarPath, LanguageDialect.dialect(dialect), FlowchartGenerationStrategy.strategy(flowchartGenerationStrategy)).generateForPrograms(programNames, ImmutableList.of(WRITE_RAW_AST, DRAW_FLOWCHART));
