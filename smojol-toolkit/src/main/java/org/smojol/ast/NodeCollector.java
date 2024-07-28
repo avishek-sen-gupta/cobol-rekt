@@ -4,8 +4,8 @@ import lombok.Getter;
 import org.antlr.v4.runtime.tree.*;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.eclipse.lsp.cobol.dialects.idms.IdmsParser;
-import org.smojol.common.flowchart.FlowNode;
-import org.smojol.common.flowchart.FlowNodeService;
+import org.smojol.common.ast.FlowNode;
+import org.smojol.common.ast.FlowNodeService;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -6,7 +6,7 @@ import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolLexer;
 import org.eclipse.lsp.cobol.core.CobolParser;
-import org.smojol.common.flowchart.NodeText;
+import org.smojol.common.ast.NodeText;
 
 /**
  * This serves as a container for all IDMS-related code fragments which are then re-inserted

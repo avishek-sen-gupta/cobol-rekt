@@ -4,9 +4,9 @@ import com.mojo.woof.GraphSDK;
 import com.mojo.woof.WoofNode;
 import org.neo4j.driver.Record;
 import org.smojol.analysis.graph.NodeSpecBuilder;
-import org.smojol.common.flowchart.FlowNode;
-import org.smojol.common.flowchart.FlowNodeService;
-import org.smojol.common.flowchart.FlowNodeType;
+import org.smojol.common.ast.FlowNode;
+import org.smojol.common.ast.FlowNodeService;
+import org.smojol.common.ast.FlowNodeType;
 import org.smojol.common.vm.interpreter.ExecutionListener;
 
 import java.util.ArrayList;

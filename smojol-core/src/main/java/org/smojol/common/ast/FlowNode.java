@@ -1,4 +1,4 @@
-package org.smojol.common.flowchart;
+package org.smojol.common.ast;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.smojol.common.vm.interpreter.CobolInterpreter;

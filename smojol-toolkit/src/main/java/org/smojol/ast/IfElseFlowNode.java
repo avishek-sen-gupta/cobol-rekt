@@ -1,7 +1,7 @@
 package org.smojol.ast;
 
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.smojol.common.flowchart.*;
+import org.smojol.common.ast.*;
 import org.smojol.common.vm.stack.StackFrames;
 
 public class IfElseFlowNode extends CompositeCobolFlowNode {

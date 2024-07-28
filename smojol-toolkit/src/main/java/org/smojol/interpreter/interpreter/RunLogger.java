@@ -1,7 +1,7 @@
 package org.smojol.interpreter.interpreter;
 
-import org.smojol.common.flowchart.FlowNode;
-import org.smojol.common.flowchart.FlowNodeService;
+import org.smojol.common.ast.FlowNode;
+import org.smojol.common.ast.FlowNodeService;
 import org.smojol.ast.AddFlowNode;
 import org.smojol.ast.IfFlowNode;
 import org.smojol.ast.MoveFlowNode;

@@ -1,8 +1,8 @@
 package org.smojol.ast;
 
-import org.smojol.common.flowchart.FlowNodeService;
-import org.smojol.common.flowchart.FlowNodeType;
-import org.smojol.common.flowchart.FlowNodeVisitor;
+import org.smojol.common.ast.FlowNodeService;
+import org.smojol.common.ast.FlowNodeType;
+import org.smojol.common.ast.FlowNodeVisitor;
 import org.smojol.common.vm.stack.StackFrames;
 
 public class DummyFlowNode extends CobolFlowNode {

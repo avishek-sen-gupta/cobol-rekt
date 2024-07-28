@@ -6,7 +6,7 @@ import org.smojol.common.navigation.EntityNavigatorBuilder;
 import org.smojol.common.vm.structure.Format1DataStructureBuilder;
 import org.smojol.interpreter.structure.CobolDataStructureBuilder;
 import org.smojol.common.vm.strategy.UnresolvedReferenceStrategy;
-import org.smojol.common.flowchart.CobolTreeVisualiser;
+import org.smojol.common.ast.CobolTreeVisualiser;
 import org.smojol.common.flowchart.FlowchartBuilderFactoryMethod;
 import org.smojol.common.vm.structure.DataStructureBuilder;
 

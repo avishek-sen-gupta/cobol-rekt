@@ -8,7 +8,7 @@ import org.neo4j.driver.Record;
 import org.smojol.analysis.graph.DataDependencyPairComputer;
 import org.smojol.analysis.graph.NodeSpecBuilder;
 import org.smojol.analysis.graph.NodeToWoof;
-import org.smojol.common.flowchart.*;
+import org.smojol.common.ast.FlowNode;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.interpreter.navigation.FlowNodeASTTraversal;
 

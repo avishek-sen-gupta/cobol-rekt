@@ -3,7 +3,7 @@ package org.smojol.analysis.graph.graphml;
 import org.jgrapht.Graph;
 import org.smojol.analysis.graph.NodeSpecBuilder;
 import org.smojol.analysis.graph.jgrapht.JGraphTCodeOperations;
-import org.smojol.common.flowchart.*;
+import org.smojol.common.ast.*;
 
 import java.util.List;
 

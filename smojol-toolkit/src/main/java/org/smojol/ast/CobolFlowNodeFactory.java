@@ -2,9 +2,9 @@ package org.smojol.ast;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNodeImpl;
-import org.smojol.common.flowchart.FlowNode;
-import org.smojol.common.flowchart.FlowNodeService;
-import org.smojol.common.flowchart.SyntaxIdentity;
+import org.smojol.common.ast.FlowNode;
+import org.smojol.common.ast.FlowNodeService;
+import org.smojol.common.ast.SyntaxIdentity;
 import org.smojol.common.idms.IdmsContainerNode;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.eclipse.lsp.cobol.dialects.idms.IdmsParser;

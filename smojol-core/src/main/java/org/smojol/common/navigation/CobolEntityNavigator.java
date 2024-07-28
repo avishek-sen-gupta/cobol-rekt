@@ -3,8 +3,8 @@ package org.smojol.common.navigation;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolParser;
-import org.smojol.common.flowchart.NodeText;
-import org.smojol.common.flowchart.SyntaxIdentity;
+import org.smojol.common.ast.NodeText;
+import org.smojol.common.ast.SyntaxIdentity;
 import org.smojol.common.idms.IdmsContainerNode;
 
 import java.util.ArrayList;

@@ -7,7 +7,7 @@ import org.smojol.analysis.ParsePipeline;
 import org.smojol.analysis.graph.neo4j.NodeReferenceStrategy;
 import org.smojol.analysis.visualisation.ComponentsBuilder;
 import org.smojol.ast.FlowchartBuilderImpl;
-import org.smojol.common.flowchart.CobolTreeVisualiser;
+import org.smojol.common.ast.CobolTreeVisualiser;
 import org.smojol.common.navigation.EntityNavigatorBuilder;
 import org.smojol.common.vm.strategy.UnresolvedReferenceThrowStrategy;
 import org.smojol.interpreter.*;

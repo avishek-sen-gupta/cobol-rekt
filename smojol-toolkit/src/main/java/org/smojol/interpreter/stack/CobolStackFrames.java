@@ -2,8 +2,8 @@ package org.smojol.interpreter.stack;
 
 import org.smojol.ast.GoToFlowNode;
 import org.smojol.ast.PerformProcedureFlowNode;
-import org.smojol.common.flowchart.FlowNode;
-import org.smojol.common.flowchart.FlowNodeCondition;
+import org.smojol.common.ast.FlowNode;
+import org.smojol.common.ast.FlowNodeCondition;
 import org.smojol.common.vm.interpreter.CobolStackFrame;
 import org.smojol.common.vm.interpreter.CobolVmSignal;
 import org.smojol.common.vm.stack.IStackFrame;

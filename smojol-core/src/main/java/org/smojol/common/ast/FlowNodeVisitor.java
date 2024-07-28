@@ -1,4 +1,4 @@
-package org.smojol.common.flowchart;
+package org.smojol.common.ast;
 
 
 import java.util.List;

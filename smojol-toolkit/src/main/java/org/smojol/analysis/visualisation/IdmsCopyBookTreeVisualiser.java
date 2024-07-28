@@ -5,7 +5,7 @@ import com.google.gson.GsonBuilder;
 import hu.webarticum.treeprinter.printer.listing.ListingTreePrinter;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.dialects.idms.IdmsCopyParser;
-import org.smojol.common.flowchart.CobolContextAugmentedTreeNode;
+import org.smojol.common.ast.CobolContextAugmentedTreeNode;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;

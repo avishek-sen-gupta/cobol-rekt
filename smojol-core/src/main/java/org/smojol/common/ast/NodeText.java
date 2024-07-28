@@ -1,4 +1,4 @@
-package org.smojol.common.flowchart;
+package org.smojol.common.ast;
 
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.ParserRuleContext;

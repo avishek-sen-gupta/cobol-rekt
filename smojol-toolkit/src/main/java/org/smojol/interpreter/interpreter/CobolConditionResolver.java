@@ -5,11 +5,11 @@ import org.smojol.common.vm.interpreter.*;
 import org.smojol.ast.GenericOnClauseFlowNode;
 import org.smojol.ast.IfFlowNode;
 import org.smojol.ast.SearchWhenFlowNode;
-import org.smojol.common.flowchart.FlowNode;
-import org.smojol.common.flowchart.FlowNodeService;
+import org.smojol.common.ast.FlowNode;
+import org.smojol.common.ast.FlowNodeService;
 import org.smojol.common.flowchart.ConsoleColors;
 
-import static org.smojol.common.flowchart.NodeText.formatted;
+import static org.smojol.common.ast.NodeText.formatted;
 
 public class CobolConditionResolver implements ConditionResolver {
     public static ConditionResolver ALWAYS_YES = new CobolConditionResolver(AlwaysBooleanResolver.ALWAYS_TRUE, AlwaysBooleanResolver.ALWAYS_TRUE, AlwaysBooleanResolver.ALWAYS_TRUE);

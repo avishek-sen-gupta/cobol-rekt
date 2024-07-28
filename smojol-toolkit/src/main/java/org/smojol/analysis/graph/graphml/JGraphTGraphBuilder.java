@@ -12,7 +12,7 @@ import org.smojol.analysis.graph.DataDependencyPairComputer;
 import org.smojol.analysis.graph.NodeSpecBuilder;
 import org.smojol.analysis.graph.jgrapht.JGraphTDataOperations;
 import org.smojol.analysis.graph.jgrapht.JGraphTCodeOperations;
-import org.smojol.common.flowchart.FlowNode;
+import org.smojol.common.ast.FlowNode;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.interpreter.navigation.FlowNodeASTTraversal;
 

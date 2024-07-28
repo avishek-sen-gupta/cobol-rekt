@@ -4,7 +4,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.smojol.analysis.LanguageDialect;
 import org.smojol.analysis.ParsePipeline;
 import org.smojol.analysis.visualisation.ComponentsBuilder;
-import org.smojol.common.flowchart.CobolTreeVisualiser;
+import org.smojol.common.ast.CobolTreeVisualiser;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.ast.FlowchartBuilderImpl;
 import org.eclipse.lsp.cobol.core.CobolParser;

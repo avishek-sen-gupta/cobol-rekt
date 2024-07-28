@@ -1,6 +1,8 @@
 package org.smojol.analysis.pipeline;
 
-import org.smojol.common.flowchart.*;
+import org.smojol.common.ast.FlowNode;
+import org.smojol.common.ast.SerialisableASTFlowNode;
+import org.smojol.common.ast.SerialisableFlowNodeASTVisitor;
 import org.smojol.interpreter.navigation.FlowNodeASTTraversal;
 
 public class SerialiseFlowASTTask {

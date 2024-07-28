@@ -1,6 +1,7 @@
 package org.smojol.interpreter.navigation;
 
-import org.smojol.common.flowchart.*;
+import org.smojol.common.ast.FlowNode;
+import org.smojol.common.ast.FlowNodeASTVisitor;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;

@@ -2,8 +2,8 @@ package org.smojol.flowchart;
 
 import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.Shape;
-import org.smojol.common.flowchart.FlowNode;
-import org.smojol.common.flowchart.FlowNodeType;
+import org.smojol.common.ast.FlowNode;
+import org.smojol.common.ast.FlowNodeType;
 
 import java.util.HashMap;
 

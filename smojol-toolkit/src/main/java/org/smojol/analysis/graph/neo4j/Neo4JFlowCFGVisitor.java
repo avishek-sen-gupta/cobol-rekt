@@ -4,7 +4,7 @@ import com.mojo.woof.GraphSDK;
 import org.neo4j.driver.Record;
 import org.smojol.analysis.graph.NodeSpecBuilder;
 import org.smojol.analysis.graph.NodeToWoof;
-import org.smojol.common.flowchart.*;
+import org.smojol.common.ast.*;
 
 import java.util.List;
 

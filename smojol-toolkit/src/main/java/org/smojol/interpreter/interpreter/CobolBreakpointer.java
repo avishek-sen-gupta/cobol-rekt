@@ -1,7 +1,7 @@
 package org.smojol.interpreter.interpreter;
 
-import org.smojol.common.flowchart.FlowNode;
-import org.smojol.common.flowchart.FlowNodeCondition;
+import org.smojol.common.ast.FlowNode;
+import org.smojol.common.ast.FlowNodeCondition;
 import org.smojol.interpreter.debugger.DebuggerShell;
 import org.smojol.common.vm.interpreter.Breakpointer;
 import org.smojol.common.vm.interpreter.CobolVmSignal;

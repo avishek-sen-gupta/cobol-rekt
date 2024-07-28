@@ -3,6 +3,7 @@ package org.smojol.ast;
 import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.model.MutableGraph;
 import guru.nidi.graphviz.model.MutableNode;
+import org.smojol.common.ast.*;
 import org.smojol.common.flowchart.*;
 import org.smojol.flowchart.FlowchartStylePreferences;
 

@@ -2,8 +2,7 @@ package org.smojol.analysis.graph;
 
 import com.mojo.woof.GraphSDK;
 import lombok.Getter;
-import org.eclipse.lsp.cobol.core.CobolParser;
-import org.smojol.common.flowchart.*;
+import org.smojol.common.ast.*;
 
 import java.util.ArrayList;
 import java.util.List;

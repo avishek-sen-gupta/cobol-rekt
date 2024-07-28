@@ -3,7 +3,7 @@ package org.smojol.ast;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolParser;
-import org.smojol.common.flowchart.*;
+import org.smojol.common.ast.*;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.vm.interpreter.CobolInterpreter;
 import org.smojol.common.vm.interpreter.CobolVmSignal;

@@ -1,6 +1,9 @@
 package org.smojol.common.flowchart;
 
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.smojol.common.ast.FlowNode;
+import org.smojol.common.ast.FlowNodeService;
+import org.smojol.common.ast.VisitContext;
 
 import java.io.IOException;
 import java.util.function.Function;

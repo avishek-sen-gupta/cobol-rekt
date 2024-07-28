@@ -2,6 +2,7 @@ package org.smojol.ast;
 
 import guru.nidi.graphviz.model.MutableNode;
 import lombok.Getter;
+import org.smojol.common.ast.*;
 import org.smojol.common.flowchart.*;
 import org.smojol.flowchart.FlowchartStylePreferences;
 

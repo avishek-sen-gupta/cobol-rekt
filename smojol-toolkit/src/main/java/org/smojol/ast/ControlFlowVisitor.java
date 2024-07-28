@@ -1,6 +1,6 @@
 package org.smojol.ast;
 
-import org.smojol.common.flowchart.*;
+import org.smojol.common.ast.*;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package org.smojol.common.flowchart;
+package org.smojol.common.ast;
 
 public interface FlowNodeCondition {
     FlowNodeCondition ALWAYS_SHOW = new FlowNodeCondition() {

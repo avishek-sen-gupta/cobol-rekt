@@ -1,7 +1,7 @@
 package org.smojol.analysis.graph.graphml;
 
 import lombok.Getter;
-import org.smojol.common.flowchart.FlowNode;
+import org.smojol.common.ast.FlowNode;
 
 import java.util.Objects;
 

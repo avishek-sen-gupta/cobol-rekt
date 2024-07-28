@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolParser;
-import org.smojol.common.flowchart.*;
+import org.smojol.common.ast.*;
 import org.smojol.common.vm.stack.StackFrames;
 
 import java.util.List;

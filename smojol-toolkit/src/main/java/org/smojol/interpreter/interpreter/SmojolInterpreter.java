@@ -4,8 +4,8 @@ import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 import org.antlr.v4.runtime.RuleContext;
 import org.eclipse.lsp.cobol.core.CobolParser;
-import org.smojol.common.flowchart.FlowNode;
-import org.smojol.common.flowchart.FlowNodeService;
+import org.smojol.common.ast.FlowNode;
+import org.smojol.common.ast.FlowNodeService;
 import org.smojol.common.vm.interpreter.*;
 import org.smojol.ast.*;
 import org.smojol.common.vm.stack.ExecutionContext;
@@ -16,7 +16,7 @@ import org.smojol.common.vm.structure.CobolOperations;
 import java.util.List;
 
 import static org.smojol.common.flowchart.ConsoleColors.*;
-import static org.smojol.common.flowchart.NodeText.formatted;
+import static org.smojol.common.ast.NodeText.formatted;
 
 // TODO: Notify listeners of visit() in a more consistent manner
 public class SmojolInterpreter implements CobolInterpreter {

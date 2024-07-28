@@ -1,6 +1,6 @@
 package org.smojol.common.vm.structure;
 
-import org.smojol.common.flowchart.FlowNode;
+import org.smojol.common.ast.FlowNode;
 
 public class NoOpCobolOperation implements CobolOperation {
     @Override

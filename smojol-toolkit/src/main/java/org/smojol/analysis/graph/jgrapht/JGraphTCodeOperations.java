@@ -2,10 +2,9 @@ package org.smojol.analysis.graph.jgrapht;
 
 import org.jgrapht.Graph;
 import org.smojol.analysis.graph.NodeSpecBuilder;
-import org.smojol.analysis.graph.graphml.TypedCodeVertex;
 import org.smojol.analysis.graph.graphml.TypedGraphEdge;
 import org.smojol.analysis.graph.graphml.TypedGraphVertex;
-import org.smojol.common.flowchart.FlowNode;
+import org.smojol.common.ast.FlowNode;
 
 public class JGraphTCodeOperations {
     private final Graph<TypedGraphVertex, TypedGraphEdge> graph;

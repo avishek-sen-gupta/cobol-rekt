@@ -1,4 +1,4 @@
-package org.smojol.common.flowchart;
+package org.smojol.common.ast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

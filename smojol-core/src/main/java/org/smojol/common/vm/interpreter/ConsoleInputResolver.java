@@ -1,10 +1,10 @@
 package org.smojol.common.vm.interpreter;
 
 import org.eclipse.lsp.cobol.core.CobolParser;
-import org.smojol.common.flowchart.FlowNode;
-import org.smojol.common.flowchart.FlowNodeService;
+import org.smojol.common.ast.FlowNode;
+import org.smojol.common.ast.FlowNodeService;
 import org.smojol.common.flowchart.ConsoleColors;
-import org.smojol.common.flowchart.NodeText;
+import org.smojol.common.ast.NodeText;
 
 import java.util.Scanner;
 
