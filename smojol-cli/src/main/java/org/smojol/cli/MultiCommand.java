@@ -3,6 +3,7 @@ package org.smojol.cli;
 import org.smojol.analysis.LanguageDialect;
 import org.smojol.analysis.pipeline.CodeTaskRunner;
 import org.smojol.analysis.pipeline.AnalysisTask;
+import org.smojol.common.id.UUIDProvider;
 import org.smojol.interpreter.FlowchartGenerationStrategy;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
@@ -48,23 +49,20 @@ public class MultiCommand implements Callable<Integer> {
     private String reportRootDir;
 
     @Option(names = {"-x", "--dialect"},
-            required = false,
             defaultValue = "COBOL",
             description = "The COBOL dialect")
     private String dialect;
 
     @Option(names = {"-g", "--generation"},
-            required = false,
             defaultValue = "PROGRAM",
             description = "The flowchart generation strategy. Valid values are SECTION, PROGRAM, and NODRAW")
     private String flowchartGenerationStrategy;
 
     @Override
     public Integer call() throws IOException {
-        // Convert the String[] to File[]. See above.
         List<File> copyBookPaths = copyBookDirs.stream().map(File::new).toList();
 
-        new CodeTaskRunner(sourceDir, reportRootDir, copyBookPaths, dialectJarPath, LanguageDialect.dialect(dialect), FlowchartGenerationStrategy.strategy(flowchartGenerationStrategy)).generateForPrograms(programNames, toGraphTasks(commands));
+        new CodeTaskRunner(sourceDir, reportRootDir, copyBookPaths, dialectJarPath, LanguageDialect.dialect(dialect), FlowchartGenerationStrategy.strategy(flowchartGenerationStrategy), new UUIDProvider()).generateForPrograms(programNames, toGraphTasks(commands));
         return 0;
     }
 

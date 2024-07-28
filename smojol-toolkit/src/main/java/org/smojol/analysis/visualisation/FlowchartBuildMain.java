@@ -3,6 +3,7 @@ package org.smojol.analysis.visualisation;
 import com.google.common.collect.ImmutableList;
 import org.smojol.analysis.LanguageDialect;
 import org.smojol.analysis.pipeline.CodeTaskRunner;
+import org.smojol.common.id.UUIDProvider;
 import org.smojol.interpreter.FlowchartGenerationStrategy;
 
 import java.io.File;
@@ -16,7 +17,7 @@ public class FlowchartBuildMain {
         new CodeTaskRunner("/Users/asgupta/code/smojol/smojol-test-code",
                 "/Users/asgupta/code/smojol/out/report",
                 ImmutableList.of(new File("/Users/asgupta/code/smojol/smojol-test-code")),
-                dialectJarPath, LanguageDialect.COBOL, FlowchartGenerationStrategy.FULL_PROGRAM)
+                dialectJarPath, LanguageDialect.COBOL, FlowchartGenerationStrategy.FULL_PROGRAM, new UUIDProvider())
                 .generateForPrograms(ImmutableList.of("if-test.cbl"), ImmutableList.of(
                         WRITE_RAW_AST,
                         WRITE_FLOW_AST

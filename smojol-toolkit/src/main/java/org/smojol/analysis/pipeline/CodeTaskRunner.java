@@ -8,6 +8,7 @@ import org.smojol.analysis.graph.neo4j.NodeReferenceStrategy;
 import org.smojol.analysis.visualisation.ComponentsBuilder;
 import org.smojol.ast.FlowchartBuilderImpl;
 import org.smojol.common.ast.CobolTreeVisualiser;
+import org.smojol.common.id.IdProvider;
 import org.smojol.common.navigation.EntityNavigatorBuilder;
 import org.smojol.common.vm.strategy.UnresolvedReferenceThrowStrategy;
 import org.smojol.interpreter.*;
@@ -32,14 +33,16 @@ public class CodeTaskRunner {
     private final String reportRootDir;
     private final LanguageDialect dialect;
     private final FlowchartGenerationStrategy flowchartGenerationStrategy;
+    private final IdProvider idProvider;
 
-    public CodeTaskRunner(String sourceDir, String reportRootDir, List<File> copyBookPaths, String dialectJarPath, LanguageDialect dialect, FlowchartGenerationStrategy flowchartGenerationStrategy) {
+    public CodeTaskRunner(String sourceDir, String reportRootDir, List<File> copyBookPaths, String dialectJarPath, LanguageDialect dialect, FlowchartGenerationStrategy flowchartGenerationStrategy, IdProvider idProvider) {
         this.sourceDir = sourceDir;
         this.copyBookPaths = copyBookPaths;
         this.dialectJarPath = dialectJarPath;
         this.reportRootDir = reportRootDir;
         this.dialect = dialect;
         this.flowchartGenerationStrategy = flowchartGenerationStrategy;
+        this.idProvider = idProvider;
         report();
     }
 
@@ -82,14 +85,14 @@ public class CodeTaskRunner {
         GraphSDK sdk = new GraphSDK(new Neo4JDriverBuilder().fromEnv());
         ComponentsBuilder ops = new ComponentsBuilder(new CobolTreeVisualiser(),
                 FlowchartBuilderImpl::build, new EntityNavigatorBuilder(), new UnresolvedReferenceThrowStrategy(),
-                new DefaultFormat1DataStructureBuilder());
+                new DefaultFormat1DataStructureBuilder(), idProvider);
         ParsePipeline pipeline = new ParsePipeline(sourceConfig, ops, dialect);
 
         SmojolTasks pipelineTasks = new SmojolTasks(pipeline,
                 NodeReferenceStrategy.EXISTING_CFG_NODE,
                 NodeReferenceStrategy.EXISTING_CFG_NODE,
                 sourceConfig, flowchartOutputConfig, rawAstOutputConfig, sdk, graphMLOutputConfig,
-                flowASTOutputConfig, cfgOutputConfig).build();
+                flowASTOutputConfig, cfgOutputConfig, idProvider).build();
         pipelineTasks.run(tasks);
     }
 }

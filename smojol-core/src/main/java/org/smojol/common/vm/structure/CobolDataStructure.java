@@ -79,6 +79,7 @@ public abstract class CobolDataStructure extends SimpleTreeNode {
     // Copy constructor
     protected CobolDataStructure(String name, List<CobolDataStructure> childStructures, int level, CobolDataStructure parent, boolean isComposite, CobolDataType dataType) {
         super(name);
+        // TODO: Inject ID Provider. ID Provider is already present in DataStructureBuilder, inject it into all the constructors
         this.id = UUID.randomUUID().toString();
         this.name = name;
         this.dataType = dataType;

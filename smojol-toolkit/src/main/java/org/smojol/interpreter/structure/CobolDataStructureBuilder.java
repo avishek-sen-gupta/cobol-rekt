@@ -2,6 +2,7 @@ package org.smojol.interpreter.structure;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolParser;
+import org.smojol.common.id.IdProvider;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.vm.strategy.UnresolvedReferenceStrategy;
 import org.smojol.common.vm.structure.*;
@@ -15,11 +16,13 @@ public class CobolDataStructureBuilder implements DataStructureBuilder {
     private final UnresolvedReferenceStrategy unresolvedReferenceStrategy;
     private CobolDataStructure zerothStructure;
     private final Format1DataStructureBuilder format1DataStructureBuilder;
+    private final IdProvider idProvider;
 
-    public CobolDataStructureBuilder(CobolEntityNavigator navigator, UnresolvedReferenceStrategy unresolvedReferenceStrategy, Format1DataStructureBuilder format1DataStructureBuilder) {
+    public CobolDataStructureBuilder(CobolEntityNavigator navigator, UnresolvedReferenceStrategy unresolvedReferenceStrategy, Format1DataStructureBuilder format1DataStructureBuilder, IdProvider idProvider) {
         this.navigator = navigator;
         this.unresolvedReferenceStrategy = unresolvedReferenceStrategy;
         this.format1DataStructureBuilder = format1DataStructureBuilder;
+        this.idProvider = idProvider;
     }
 
     @Override

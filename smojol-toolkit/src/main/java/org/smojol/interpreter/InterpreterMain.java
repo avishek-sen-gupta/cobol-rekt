@@ -15,6 +15,7 @@ import org.smojol.ast.DisplayFlowNode;
 import org.smojol.ast.FlowchartBuilderImpl;
 import org.smojol.analysis.ParsePipeline;
 import org.smojol.analysis.visualisation.ComponentsBuilder;
+import org.smojol.common.id.UUIDProvider;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.navigation.EntityNavigatorBuilder;
 import org.smojol.common.vm.interpreter.*;
@@ -48,8 +49,8 @@ public class InterpreterMain {
                 "/Users/asgupta/code/smojol/che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar");
 
         ComponentsBuilder ops = new ComponentsBuilder(new CobolTreeVisualiser(),
-                FlowchartBuilderImpl::build, new EntityNavigatorBuilder(), new UnresolvedReferenceDoNothingStrategy(),
-                new DefaultFormat1DataStructureBuilder());
+                (navigator1, dataStructures1, idProvider) -> FlowchartBuilderImpl.build(navigator1, dataStructures1, idProvider), new EntityNavigatorBuilder(), new UnresolvedReferenceDoNothingStrategy(),
+                new DefaultFormat1DataStructureBuilder(), new UUIDProvider());
         ParsePipeline pipeline = new ParsePipeline(testSourceConfig, ops, LanguageDialect.COBOL);
 
         CobolEntityNavigator navigator = pipeline.parse();

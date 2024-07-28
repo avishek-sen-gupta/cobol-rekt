@@ -16,6 +16,7 @@ import org.smojol.analysis.graph.graphml.JGraphTGraphBuilder;
 import org.smojol.analysis.graph.neo4j.*;
 import org.smojol.common.ast.*;
 import org.smojol.common.flowchart.*;
+import org.smojol.common.id.IdProvider;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.interpreter.*;
@@ -41,10 +42,11 @@ public class SmojolTasks {
     private final GraphMLExportConfig graphMLOutputConfig;
     private final FlowASTOutputConfig flowASTOutputConfig;
     private final CFGOutputConfig cfgOutputConfig;
-    private ParsePipeline pipeline;
+    private final IdProvider idProvider;
+    private final ParsePipeline pipeline;
     private CobolEntityNavigator navigator;
     private CobolDataStructure dataStructures;
-    private NodeSpecBuilder qualifier;
+    private final NodeSpecBuilder qualifier;
     private FlowNode astRoot;
 
 
@@ -114,7 +116,7 @@ public class SmojolTasks {
     public Runnable WRITE_CFG = new Runnable() {
         @Override
         public void run() {
-            SerialisableCFGGraphCollector cfgGraphCollector = new SerialisableCFGGraphCollector();
+            SerialisableCFGGraphCollector cfgGraphCollector = new SerialisableCFGGraphCollector(idProvider);
             astRoot.accept(cfgGraphCollector, -1);
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             String json = gson.toJson(cfgGraphCollector);
@@ -137,7 +139,7 @@ public class SmojolTasks {
         }
     };
 
-    public SmojolTasks(ParsePipeline pipeline, NodeReferenceStrategy astNodeReferenceStrategy, NodeReferenceStrategy dataDependencyAttachmentStrategy, SourceConfig sourceConfig, FlowchartOutputConfig flowchartOutputConfig, RawASTOutputConfig rawAstOutputConfig, GraphSDK graphSDK, GraphMLExportConfig graphMLOutputConfig, FlowASTOutputConfig flowASTOutputConfig, CFGOutputConfig cfgOutputConfig) {
+    public SmojolTasks(ParsePipeline pipeline, NodeReferenceStrategy astNodeReferenceStrategy, NodeReferenceStrategy dataDependencyAttachmentStrategy, SourceConfig sourceConfig, FlowchartOutputConfig flowchartOutputConfig, RawASTOutputConfig rawAstOutputConfig, GraphSDK graphSDK, GraphMLExportConfig graphMLOutputConfig, FlowASTOutputConfig flowASTOutputConfig, CFGOutputConfig cfgOutputConfig, IdProvider idProvider) {
         this.pipeline = pipeline;
         this.astNodeReferenceStrategy = astNodeReferenceStrategy;
         this.dataDependencyAttachmentStrategy = dataDependencyAttachmentStrategy;
@@ -148,6 +150,7 @@ public class SmojolTasks {
         this.graphMLOutputConfig = graphMLOutputConfig;
         this.flowASTOutputConfig = flowASTOutputConfig;
         this.cfgOutputConfig = cfgOutputConfig;
+        this.idProvider = idProvider;
         qualifier = new NodeSpecBuilder(new NamespaceQualifier("NEW-CODE"));
     }
 

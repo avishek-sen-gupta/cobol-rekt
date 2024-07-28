@@ -12,6 +12,7 @@ import org.smojol.common.ast.FlowNodeService;
 import org.smojol.common.ast.FlowNodeVisitor;
 import org.smojol.common.ast.VisitContext;
 import org.smojol.common.flowchart.*;
+import org.smojol.common.id.IdProvider;
 import org.smojol.common.id.UUIDProvider;
 import org.smojol.interpreter.stack.CobolStackFrames;
 import org.smojol.common.navigation.CobolEntityNavigator;
@@ -32,9 +33,9 @@ public class FlowchartBuilderImpl implements FlowchartBuilder {
     private MutableGraph graph;
     private ChartOverlay overlay;
 
-    public FlowchartBuilderImpl(CobolEntityNavigator cobolEntityNavigator, CobolDataStructure dataStructures) {
+    public FlowchartBuilderImpl(CobolEntityNavigator cobolEntityNavigator, CobolDataStructure dataStructures, IdProvider idProvider) {
         this.cobolEntityNavigator = cobolEntityNavigator;
-        flowNodeService = new FlowNodeServiceImpl(cobolEntityNavigator, dataStructures, new UUIDProvider());
+        flowNodeService = new FlowNodeServiceImpl(cobolEntityNavigator, dataStructures, idProvider);
         this.dataStructures = dataStructures;
         graph = Factory.mutGraph("example1").setDirected(true).setCluster(true);
         Graphviz.useEngine(new GraphvizCmdLineEngine().timeout(5, java.util.concurrent.TimeUnit.HOURS));
@@ -164,7 +165,7 @@ public class FlowchartBuilderImpl implements FlowchartBuilder {
                 .add("fillcolor", Color.YELLOW.value);
     }
 
-    public static FlowchartBuilder build(CobolEntityNavigator navigator, CobolDataStructure dataStructures) {
-        return new FlowchartBuilderImpl(navigator, dataStructures);
+    public static FlowchartBuilder build(CobolEntityNavigator navigator, CobolDataStructure dataStructures, IdProvider idProvider) {
+        return new FlowchartBuilderImpl(navigator, dataStructures, idProvider);
     }
 }
