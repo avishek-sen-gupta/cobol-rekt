@@ -1,8 +1,10 @@
 package org.smojol.cli;
 
 import com.google.common.collect.ImmutableList;
+import org.apache.commons.lang3.StringUtils;
 import org.smojol.analysis.LanguageDialect;
 import org.smojol.flowchart.GraphDBTasks;
+import org.smojol.flowchart.GraphCLITask;
 import org.smojol.interpreter.FlowchartGenerationStrategy;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
@@ -14,11 +16,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import static org.smojol.flowchart.GraphTask.*;
+import static org.smojol.flowchart.GraphCLITask.*;
 
 @Command(name = "graph", mixinStandardHelpOptions = true, version = "graph 0.1",
         description = "Injects the AST into a GraphDB")
-public class GraphDBCommand implements Callable<Integer> {
+public class MultiCommand implements Callable<Integer> {
 
     @Option(names = {"d", "--dialectJarPath"},
             defaultValue = "che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar",
@@ -27,15 +29,20 @@ public class GraphDBCommand implements Callable<Integer> {
 
     @Option(names = {"-s", "--srcDir"},
             required = true,
-            description = ".cbl source directory")
+            description = "The Cobol source directory")
     private String sourceDir;
 
+    @Option(names = {"-c", "--commands"},
+            required = true,
+            description = "The commands to run (INJECT_INTO_NEO4J, EXPORT_TO_GRAPHML, WRITE_RAW_AST, DRAW_FLOWCHART)", split = " ")
+    private List<String> commands;
+
     @CommandLine.Parameters(index = "0..*",
-            description = "Program names")
+            description = "The programs to analyse", split = " ")
     private List<String> programNames;
 
     // Can be replaced with a File[] (and the later conversion removed) if we skip default arguments.
-    @Option(names = {"-c", "--copyBooksDir"},
+    @Option(names = {"-cp", "--copyBooksDir"},
             required = true,
             description = "Copybook directories (repeatable)")
     private String[] copyBookDirs;
@@ -61,7 +68,13 @@ public class GraphDBCommand implements Callable<Integer> {
     public Integer call() throws IOException {
         // Convert the String[] to File[]. See above.
         File[] copyBookPaths = Arrays.stream(copyBookDirs).map(File::new).toArray(File[]::new);
-        new GraphDBTasks(sourceDir, reportRootDir, copyBookPaths, dialectJarPath, LanguageDialect.dialect(dialect), FlowchartGenerationStrategy.strategy(flowchartGenerationStrategy)).generateForPrograms(programNames, ImmutableList.of(INJECT_INTO_NEO4J, EXPORT_TO_GRAPHML, WRITE_RAW_AST, DRAW_FLOWCHART));
+
+        new GraphDBTasks(sourceDir, reportRootDir, copyBookPaths, dialectJarPath, LanguageDialect.dialect(dialect), FlowchartGenerationStrategy.strategy(flowchartGenerationStrategy)).generateForPrograms(programNames, toGraphTasks(commands));
+//        new GraphDBTasks(sourceDir, reportRootDir, copyBookPaths, dialectJarPath, LanguageDialect.dialect(dialect), FlowchartGenerationStrategy.strategy(flowchartGenerationStrategy)).generateForPrograms(programNames, ImmutableList.of(INJECT_INTO_NEO4J, EXPORT_TO_GRAPHML, WRITE_RAW_AST, DRAW_FLOWCHART));
         return 0;
+    }
+
+    private List<GraphCLITask> toGraphTasks(List<String> commands) {
+        return commands.stream().map(GraphCLITask::valueOf).toList();
     }
 }

@@ -4,7 +4,7 @@ import picocli.CommandLine.Command;
 
 import java.util.concurrent.Callable;
 
-@Command(name = "subcommands", subcommands = {FlowchartCommand.class, GraphDBCommand.class})
+@Command(name = "subcommands", subcommands = {FlowchartCommand.class, MultiCommand.class})
 public class MainCommand implements Callable<Integer> {
 
     @Override

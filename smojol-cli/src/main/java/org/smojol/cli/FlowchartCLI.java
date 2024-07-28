@@ -8,7 +8,7 @@ java -jar smojol-cli/target/smojol-cli.jar test-exp.cbl --srcDir /Users/asgupta/
  */
 public class FlowchartCLI {
     public static void main(String[] args) {
-        int exitCode = new CommandLine(new MainCommand()).execute(args);
+        int exitCode = new CommandLine(new MultiCommand()).execute(args);
         System.exit(exitCode);
     }
 }

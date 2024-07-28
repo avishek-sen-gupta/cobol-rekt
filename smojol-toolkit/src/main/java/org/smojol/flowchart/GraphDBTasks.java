@@ -50,13 +50,13 @@ public class GraphDBTasks {
         System.out.println("copyBookPaths = " + copyBookPaths);
     }
 
-    public void generateForPrograms(List<String> programFilenames, List<GraphTask> tasks) throws IOException {
+    public void generateForPrograms(List<String> programFilenames, List<GraphCLITask> tasks) throws IOException {
         for (String programFilename : programFilenames) {
             generateForProgram(programFilename, sourceDir, reportRootDir, this.dialect, tasks);
         }
     }
 
-    private void generateForProgram(String programFilename, String sourceDir, String reportRootDir, LanguageDialect dialect, List<GraphTask> tasks) throws IOException {
+    private void generateForProgram(String programFilename, String sourceDir, String reportRootDir, LanguageDialect dialect, List<GraphCLITask> tasks) throws IOException {
         File source = Paths.get(sourceDir, programFilename).toFile().getAbsoluteFile();
         String programReportDir = String.format("%s.report", programFilename);
         Path astOutputDir = Paths.get(reportRootDir, programReportDir, AST_DIR).toAbsolutePath().normalize();

@@ -14,8 +14,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import static org.smojol.flowchart.GraphTask.*;
-import static org.smojol.flowchart.GraphTask.DRAW_FLOWCHART;
+import static org.smojol.flowchart.GraphCLITask.*;
+import static org.smojol.flowchart.GraphCLITask.DRAW_FLOWCHART;
 
 @Command(name = "flowchart", mixinStandardHelpOptions = true, version = "flowchart 0.1",
         description = "Builds the flowcharts")
