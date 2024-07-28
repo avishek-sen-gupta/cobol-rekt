@@ -18,7 +18,7 @@ import java.util.concurrent.Callable;
         description = "Implements various operations useful for reverse engineering Cobol code")
 public class MultiCommand implements Callable<Integer> {
 
-    @Option(names = {"d", "--dialectJarPath"},
+    @Option(names = {"-dp", "--dialectJarPath"},
             defaultValue = "che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar",
             description = "Path to dialect .JAR")
     private String dialectJarPath;
@@ -48,7 +48,7 @@ public class MultiCommand implements Callable<Integer> {
             description = "Output report directory")
     private String reportRootDir;
 
-    @Option(names = {"-x", "--dialect"},
+    @Option(names = {"-d", "--dialect"},
             defaultValue = "COBOL",
             description = "The COBOL dialect (COBOL, IDMS)")
     private String dialect;

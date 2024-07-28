@@ -211,10 +211,10 @@ java -jar smojol-cli/target/smojol-cli.jar test-exp.cbl hello.cbl --commands="WR
 The help text is reproduced below (obtained by adding ```--help```):
 
 ```
-Usage: graph [-hV] [d=<dialectJarPath>] [-g=<flowchartGenerationStrategy>]
-             -r=<reportRootDir> -s=<sourceDir> [-x=<dialect>] -c=<commands>
-             [-c=<commands>]... -cp=<copyBookDirs> [-cp=<copyBookDirs>]...
-             [<programNames>...]
+Usage: graph [-hV] [-d=<dialect>] [-dp=<dialectJarPath>]
+             [-g=<flowchartGenerationStrategy>] -r=<reportRootDir>
+             -s=<sourceDir> -c=<commands> [-c=<commands>]... -cp=<copyBookDirs>
+             [-cp=<copyBookDirs>]... [<programNames>...]
 Implements various operations useful for reverse engineering Cobol code
       [<programNames>...]    The programs to analyse
   -c, --commands=<commands>  The commands to run (INJECT_INTO_NEO4J,
@@ -222,7 +222,8 @@ Implements various operations useful for reverse engineering Cobol code
                                DRAW_FLOWCHART, WRITE_FLOW_AST, WRITE_CFG)
       -cp, --copyBooksDir=<copyBookDirs>
                              Copybook directories (repeatable)
-      d, --dialectJarPath=<dialectJarPath>
+  -d, --dialect=<dialect>    The COBOL dialect (COBOL, IDMS)
+      -dp, --dialectJarPath=<dialectJarPath>
                              Path to dialect .JAR
   -g, --generation=<flowchartGenerationStrategy>
                              The flowchart generation strategy. Valid values
@@ -232,7 +233,6 @@ Implements various operations useful for reverse engineering Cobol code
                              Output report directory
   -s, --srcDir=<sourceDir>   The Cobol source directory
   -V, --version              Print version information and exit.
-  -x, --dialect=<dialect>    The COBOL dialect (COBOL, IDMS)
 ```
 
 ### Programmatic Usage
