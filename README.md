@@ -218,7 +218,8 @@ Usage: graph [-hV] [d=<dialectJarPath>] [-g=<flowchartGenerationStrategy>]
 Implements various operations useful for reverse engineering Cobol code
       [<programNames>...]    The programs to analyse
   -c, --commands=<commands>  The commands to run (INJECT_INTO_NEO4J,
-                               EXPORT_TO_GRAPHML, WRITE_RAW_AST, DRAW_FLOWCHART, WRITE_FLOW_AST)
+                               EXPORT_TO_GRAPHML, WRITE_RAW_AST,
+                               DRAW_FLOWCHART, WRITE_FLOW_AST, WRITE_CFG)
       -cp, --copyBooksDir=<copyBookDirs>
                              Copybook directories (repeatable)
       d, --dialectJarPath=<dialectJarPath>
@@ -231,7 +232,7 @@ Implements various operations useful for reverse engineering Cobol code
                              Output report directory
   -s, --srcDir=<sourceDir>   The Cobol source directory
   -V, --version              Print version information and exit.
-  -x, --dialect=<dialect>    The COBOL dialect
+  -x, --dialect=<dialect>    The COBOL dialect (COBOL, IDMS)
 ```
 
 ### Programmatic Usage
