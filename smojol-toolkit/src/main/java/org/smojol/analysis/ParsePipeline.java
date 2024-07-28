@@ -52,7 +52,7 @@ import java.util.Optional;
 @Slf4j
 public class ParsePipeline {
     private final File src;
-    private final File[] cpyPaths;
+    private final List<File> cpyPaths;
     private final String[] cpyExt;
     private final String cobolParseTreeOutputPath;
     private final String dialectJarPath;
@@ -83,7 +83,7 @@ public class ParsePipeline {
 
         CliClientProvider cliClientProvider = diCtx.getInstance(CliClientProvider.class);
         if (cpyPaths != null) {
-            cliClientProvider.setCpyPaths(Arrays.asList(cpyPaths));
+            cliClientProvider.setCpyPaths(cpyPaths);
         }
         cliClientProvider.setCpyExt(Arrays.asList(cpyExt));
 

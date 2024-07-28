@@ -10,7 +10,6 @@ import picocli.CommandLine.Option;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -35,11 +34,10 @@ public class FlowchartCommand implements Callable<Integer> {
             description = "Program names")
     private List<String> programNames;
 
-    // Can be replaced with a File[] (and the later conversion removed) if we skip default arguments.
     @Option(names = {"-c", "--copyBooksDir"},
             required = true,
             description = "Copybook directories (repeatable)")
-    private String[] copyBookDirs;
+    private List<String> copyBookDirs;
 
     @Option(names = {"-r", "--reportDir"},
             required = true,
@@ -60,8 +58,7 @@ public class FlowchartCommand implements Callable<Integer> {
 
     @Override
     public Integer call() throws IOException {
-        // Convert the String[] to File[]. See above.
-        File[] copyBookPaths = Arrays.stream(copyBookDirs).map(File::new).toArray(File[]::new);
+        List<File> copyBookPaths = copyBookDirs.stream().map(File::new).toList();
         new GraphDBTasks(sourceDir, reportRootDir, copyBookPaths, dialectJarPath, LanguageDialect.dialect(dialect), FlowchartGenerationStrategy.strategy(flowchartGenerationStrategy)).generateForPrograms(programNames, ImmutableList.of(WRITE_RAW_AST, DRAW_FLOWCHART));
 //        new FlowchartTasks(sourceDir, reportRootDir, copyBookPaths, dialectJarPath).generateForPrograms(programNames, FlowchartGenerationStrategy.strategy(flowchartGenerationStrategy), LanguageDialect.dialect(dialect));
         return 0;

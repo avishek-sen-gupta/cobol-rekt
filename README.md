@@ -187,20 +187,27 @@ You can skip the tests as well, using:
 - See ```FlowChartBuildMain.java``` for examples of how flowcharts are created.
 - See ```InterpreterMain.java``` for an example of how to run the interpreter on your code, as well as inject execution traces into Neo4J.
 - See ```GraphExplorerMain.java``` for an example of how to inject ASTs, data structures, and CFGs into Neo4J.
-- All the above examples also output the raw parse tree as a JSON file.
-- CLI support is on the way.
+- CLI support is ongoing.
 - More detailed guides on programmatic use are on the way.
 
 ## Developer Guide
 
 ### CLI Usage
-You can run the flowchart and parse tree using the following command:
+The individual functionalities can be invoked using different commands. The commands and their effects are listed below:
+
+- ```WRITE_FLOW_AST```: Writes a more useful form of the AST to JSON. This form is used by the interpreter and other analyses.
+- ```INJECT_INTO_NEO4J```: This injects the unified model to Neo4J. Exposing more fine-grained options is in progress.
+- ```EXPORT_TO_GRAPHML```: This exports the unified model to GraphML. Exposing more fine-grained options is in progress.
+- ```WRITE_RAW_AST```: This writes the original parse tree to JSON. Useful for downstream code to build their own AST representations.
+- ```DRAW_FLOWCHART```: This outputs flowcharts for the whole program or section-by-section of the program in PNG format.
+
+For example, if you wanted to run all of the above, you could run the following command:
 
 ```
-java -jar smojol-cli/target/smojol-cli.jar --commands="INJECT_INTO_NEO4J DRAW_FLOWCHART" --srcDir /Users/asgupta/code/smojol/smojol-test-code --copyBooksDir /Users/asgupta/code/smojol/smojol-test-code --dialectJarPath ./che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar --reportDir out/report --generation=PROGRAM
+java -jar smojol-cli/target/smojol-cli.jar test-exp.cbl hello.cbl --commands="WRITE_FLOW_AST INJECT_INTO_NEO4J EXPORT_TO_GRAPHML WRITE_RAW_AST DRAW_FLOWCHART" --srcDir /Users/asgupta/code/smojol/smojol-test-code --copyBooksDir /Users/asgupta/code/smojol/smojol-test-code --dialectJarPath ./che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar --reportDir out/report --generation=PROGRAM
 ```
 
-The options are explained below:
+The help text is reproduced below (obtained by adding ```--help```):
 
 ```
 Usage: graph [-hV] [d=<dialectJarPath>] [-g=<flowchartGenerationStrategy>]
@@ -210,7 +217,7 @@ Usage: graph [-hV] [d=<dialectJarPath>] [-g=<flowchartGenerationStrategy>]
 Implements various operations useful for reverse engineering Cobol code
       [<programNames>...]    The programs to analyse
   -c, --commands=<commands>  The commands to run (INJECT_INTO_NEO4J,
-                               EXPORT_TO_GRAPHML, WRITE_RAW_AST, DRAW_FLOWCHART)
+                               EXPORT_TO_GRAPHML, WRITE_RAW_AST, DRAW_FLOWCHART, WRITE_FLOW_AST)
       -cp, --copyBooksDir=<copyBookDirs>
                              Copybook directories (repeatable)
       d, --dialectJarPath=<dialectJarPath>

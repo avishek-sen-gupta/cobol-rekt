@@ -26,11 +26,11 @@ public class FlowchartTasks {
     private static final String IMAGES_DIR = "flowcharts";
     private static final String DOTFILES_DIR = "dotfiles";
     private final String sourceDir;
-    private final File[] copyBookPaths;
+    private final List<File> copyBookPaths;
     private final String dialectJarPath;
     private final String reportRootDir;
 
-    public FlowchartTasks(String sourceDir, String reportRootDir, File[] copyBookPaths, String dialectJarPath) {
+    public FlowchartTasks(String sourceDir, String reportRootDir, List<File> copyBookPaths, String dialectJarPath) {
         this.sourceDir = sourceDir;
         this.copyBookPaths = copyBookPaths;
         this.dialectJarPath = dialectJarPath;

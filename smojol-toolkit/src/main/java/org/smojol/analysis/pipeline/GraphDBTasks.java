@@ -26,13 +26,13 @@ public class GraphDBTasks {
     private static final String DOTFILES_DIR = "dotfiles";
     private static final String GRAPHML_DIR = "graphml";
     private final String sourceDir;
-    private final File[] copyBookPaths;
+    private final List<File> copyBookPaths;
     private final String dialectJarPath;
     private final String reportRootDir;
     private final LanguageDialect dialect;
     private final FlowchartGenerationStrategy flowchartGenerationStrategy;
 
-    public GraphDBTasks(String sourceDir, String reportRootDir, File[] copyBookPaths, String dialectJarPath, LanguageDialect dialect, FlowchartGenerationStrategy flowchartGenerationStrategy) {
+    public GraphDBTasks(String sourceDir, String reportRootDir, List<File> copyBookPaths, String dialectJarPath, LanguageDialect dialect, FlowchartGenerationStrategy flowchartGenerationStrategy) {
         this.sourceDir = sourceDir;
         this.copyBookPaths = copyBookPaths;
         this.dialectJarPath = dialectJarPath;
@@ -47,7 +47,7 @@ public class GraphDBTasks {
         System.out.println("srcDir = " + sourceDir);
         System.out.println("reportRootDir = " + reportRootDir);
         System.out.println("dialectJarPath = " + dialectJarPath);
-        System.out.println("copyBookPaths = " + copyBookPaths);
+        System.out.println("copyBookPaths = " + copyBookPaths.stream().map(cp -> cp.toString() + "\n"));
     }
 
     public void generateForPrograms(List<String> programFilenames, List<AnalysisTask> tasks) throws IOException {
