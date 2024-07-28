@@ -60,7 +60,7 @@ public class FlowchartTasks {
         Path dotFileOutputDir = Paths.get(reportRootDir, programReportDir, DOTFILES_DIR).toAbsolutePath().normalize();
         String cobolParseTreeOutputPath = astOutputDir.resolve(String.format("cobol-%s.json", programName)).toAbsolutePath().normalize().toString();
         String absoluteDialectJarPath = Paths.get(dialectJarPath).toAbsolutePath().normalize().toString();
-        SourceConfig sourceConfig = new SourceConfig(source, copyBookPaths, cobolParseTreeOutputPath, absoluteDialectJarPath);
+        SourceConfig sourceConfig = new SourceConfig(programName, source, copyBookPaths, cobolParseTreeOutputPath, absoluteDialectJarPath);
 
         Files.createDirectories(astOutputDir);
         Files.createDirectories(dotFileOutputDir);

@@ -22,7 +22,7 @@ public class GraphExplorerMain {
                 FlowchartBuilderImpl::build, new EntityNavigatorBuilder(), new UnresolvedReferenceDoNothingStrategy(),
                 new OccursIgnoringFormat1DataStructureBuilder());
         SourceConfig sourceConfig = new SourceConfig(
-                new File("/Users/asgupta/code/smojol/smojol-test-code/test-exp.cbl"),
+                "test-exp", new File("/Users/asgupta/code/smojol/smojol-test-code/test-exp.cbl"),
                 new File[]{new File("/Users/asgupta/code/smojol/smojol-test-code")},
                 "/Users/asgupta/code/smojol/out/test-cobol.json",
                 dialectJarPath);

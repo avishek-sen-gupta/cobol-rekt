@@ -1,6 +1,5 @@
 package org.smojol.cli;
 
-import org.smojol.analysis.visualisation.FlowchartCommand;
 import picocli.CommandLine;
 
 /*
@@ -9,7 +8,7 @@ java -jar smojol-cli/target/smojol-cli.jar test-exp.cbl --srcDir /Users/asgupta/
  */
 public class FlowchartCLI {
     public static void main(String[] args) {
-        int exitCode = new CommandLine(new FlowchartCommand()).execute(args);
+        int exitCode = new CommandLine(new MainCommand()).execute(args);
         System.exit(exitCode);
     }
 }

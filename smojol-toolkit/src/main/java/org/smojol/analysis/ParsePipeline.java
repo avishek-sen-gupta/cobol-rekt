@@ -60,6 +60,7 @@ public class ParsePipeline {
     private final LanguageDialect dialect;
     @Getter private CobolEntityNavigator navigator;
     @Getter private CobolDataStructure dataStructures;
+    @Getter private ParserRuleContext tree;
 
     public ParsePipeline(SourceConfig sourceConfig, ComponentsBuilder ops, LanguageDialect dialect) {
         this.src = sourceConfig.source();
@@ -136,7 +137,7 @@ public class ParsePipeline {
             throw new RuntimeException("There were parsing errors. Debug and see why.");
         }
 
-        ParserRuleContext tree = lastStageResult.getData().getTree();
+        tree = lastStageResult.getData().getTree();
         ParseTreeWalker walker = new ParseTreeWalker();
         EntityNavigatorBuilder navigatorBuilder = ops.getCobolEntityNavigatorBuilder();
         verifyNoNullDialectStatements(tree, navigatorBuilder);
@@ -150,7 +151,7 @@ public class ParsePipeline {
         navigator = navigatorBuilder.navigator(tree);
         dataStructures = ops.getDataStructureBuilder(navigator).build();
 
-        ops.getVisualiser().writeCobolAST(tree, cobolParseTreeOutputPath, false, navigator);
+//        ops.getVisualiser().writeCobolAST(tree, cobolParseTreeOutputPath, false, navigator);
 
         JsonArray diagnostics = new JsonArray();
         ctx.getAccumulatedErrors()

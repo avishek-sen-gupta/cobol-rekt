@@ -1,7 +1,8 @@
-package org.smojol.analysis.visualisation;
+package org.smojol.cli;
 
+import com.google.common.collect.ImmutableList;
 import org.smojol.analysis.LanguageDialect;
-import org.smojol.flowchart.FlowchartTasks;
+import org.smojol.flowchart.GraphDBTasks;
 import org.smojol.interpreter.FlowchartGenerationStrategy;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
@@ -13,9 +14,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-@Command(name = "flowchart", mixinStandardHelpOptions = true, version = "flowchart 0.1",
-        description = "Builds the flowcharts")
-public class FlowchartCommand implements Callable<Integer> {
+import static org.smojol.flowchart.GraphTask.*;
+
+@Command(name = "graph", mixinStandardHelpOptions = true, version = "graph 0.1",
+        description = "Injects the AST into a GraphDB")
+public class GraphDBCommand implements Callable<Integer> {
 
     @Option(names = {"d", "--dialectJarPath"},
             defaultValue = "che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar",
@@ -55,10 +58,10 @@ public class FlowchartCommand implements Callable<Integer> {
     private String flowchartGenerationStrategy;
 
     @Override
-    public Integer call() throws IOException, InterruptedException {
+    public Integer call() throws IOException {
         // Convert the String[] to File[]. See above.
         File[] copyBookPaths = Arrays.stream(copyBookDirs).map(File::new).toArray(File[]::new);
-        new FlowchartTasks(sourceDir, reportRootDir, copyBookPaths, dialectJarPath).generateForPrograms(programNames, FlowchartGenerationStrategy.strategy(flowchartGenerationStrategy), LanguageDialect.dialect(dialect));
+        new GraphDBTasks(sourceDir, reportRootDir, copyBookPaths, dialectJarPath, LanguageDialect.dialect(dialect), FlowchartGenerationStrategy.strategy(flowchartGenerationStrategy)).generateForPrograms(programNames, ImmutableList.of(INJECT_INTO_NEO4J, EXPORT_TO_GRAPHML, WRITE_RAW_AST, DRAW_FLOWCHART));
         return 0;
     }
 }
