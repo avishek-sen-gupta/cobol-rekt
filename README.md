@@ -202,6 +202,8 @@ The individual functionalities can be invoked using different commands. The comm
 - ```DRAW_FLOWCHART```: This outputs flowcharts for the whole program or section-by-section of the program in PNG format.
 - ```WRITE_CFG```: This outputs the control flow graph of the program as JSON.
 
+Passing the validation flag (```--validate``` or ```-v```) skips running all tasks, and simply validates whether the source is syntactically correct.
+
 For example, if you wanted to run all of the above, you could run the following command:
 
 ```
@@ -211,7 +213,7 @@ java -jar smojol-cli/target/smojol-cli.jar test-exp.cbl hello.cbl --commands="WR
 The help text is reproduced below (obtained by adding ```--help```):
 
 ```
-Usage: graph [-hV] [-d=<dialect>] [-dp=<dialectJarPath>]
+Usage: graph [-hvV] [-d=<dialect>] [-dp=<dialectJarPath>]
              [-g=<flowchartGenerationStrategy>] -r=<reportRootDir>
              -s=<sourceDir> -c=<commands> [-c=<commands>]... -cp=<copyBookDirs>
              [-cp=<copyBookDirs>]... [<programNames>...]
@@ -232,6 +234,7 @@ Implements various operations useful for reverse engineering Cobol code
   -r, --reportDir=<reportRootDir>
                              Output report directory
   -s, --srcDir=<sourceDir>   The Cobol source directory
+  -v, --validate             Only run syntax validation on the input
   -V, --version              Print version information and exit.
 ```
 

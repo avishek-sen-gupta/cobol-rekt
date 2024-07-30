@@ -134,7 +134,7 @@ public class ParsePipeline {
 
         if (!ctx.getAccumulatedErrors().isEmpty()) {
             ctx.getAccumulatedErrors().forEach(System.out::println);
-            throw new RuntimeException("There were parsing errors. Debug and see why.");
+            throw new DiagnosticRuntimeError("There were parsing errors!", ctx.getAccumulatedErrors());
         }
 
         tree = lastStageResult.getData().getTree();

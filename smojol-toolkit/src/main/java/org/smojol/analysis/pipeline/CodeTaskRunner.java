@@ -2,6 +2,9 @@ package org.smojol.analysis.pipeline;
 
 import com.mojo.woof.GraphSDK;
 import com.mojo.woof.Neo4JDriverBuilder;
+import lombok.Getter;
+import org.eclipse.lsp.cobol.common.error.SyntaxError;
+import org.smojol.analysis.DiagnosticRuntimeError;
 import org.smojol.analysis.LanguageDialect;
 import org.smojol.analysis.ParsePipeline;
 import org.smojol.analysis.graph.neo4j.NodeReferenceStrategy;
@@ -18,7 +21,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CodeTaskRunner {
     private static final String AST_DIR = "ast";
@@ -34,6 +39,7 @@ public class CodeTaskRunner {
     private final LanguageDialect dialect;
     private final FlowchartGenerationStrategy flowchartGenerationStrategy;
     private final IdProvider idProvider;
+    @Getter private final Map<String, List<SyntaxError>> errorMap = new HashMap<>();
 
     public CodeTaskRunner(String sourceDir, String reportRootDir, List<File> copyBookPaths, String dialectJarPath, LanguageDialect dialect, FlowchartGenerationStrategy flowchartGenerationStrategy, IdProvider idProvider) {
         this.sourceDir = sourceDir;
@@ -54,11 +60,16 @@ public class CodeTaskRunner {
         System.out.println("copyBookPaths = " + String.join(",", copyBookPaths.stream().map(cp -> cp.toString() + "\n").toList()));
     }
 
-    public void generateForPrograms(List<AnalysisTask> tasks, List<String> programFilenames) throws IOException {
+    public CodeTaskRunner generateForPrograms(List<AnalysisTask> tasks, List<String> programFilenames) throws IOException {
         System.out.println("Running tasks: " + String.join(",", tasks.stream().map(Enum::name).toList()));
         for (String programFilename : programFilenames) {
-            generateForProgram(programFilename, sourceDir, reportRootDir, this.dialect, tasks);
+            try {
+                generateForProgram(programFilename, sourceDir, reportRootDir, this.dialect, tasks);
+            } catch (DiagnosticRuntimeError e) {
+                errorMap.put(programFilename, e.getErrors());
+            }
         }
+        return this;
     }
 
     private void generateForProgram(String programFilename, String sourceDir, String reportRootDir, LanguageDialect dialect, List<AnalysisTask> tasks) throws IOException {

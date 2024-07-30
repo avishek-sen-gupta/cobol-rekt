@@ -6,5 +6,5 @@ public enum AnalysisTask {
     WRITE_RAW_AST,
     WRITE_FLOW_AST,
     DRAW_FLOWCHART,
-    WRITE_CFG
+    WRITE_CFG,
 }

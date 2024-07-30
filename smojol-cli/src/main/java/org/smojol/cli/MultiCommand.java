@@ -1,8 +1,11 @@
 package org.smojol.cli;
 
+import com.google.common.collect.ImmutableList;
+import org.eclipse.lsp.cobol.common.error.SyntaxError;
 import org.smojol.analysis.LanguageDialect;
 import org.smojol.analysis.pipeline.CodeTaskRunner;
 import org.smojol.analysis.pipeline.AnalysisTask;
+import org.smojol.common.flowchart.ConsoleColors;
 import org.smojol.common.id.UUIDProvider;
 import org.smojol.interpreter.FlowchartGenerationStrategy;
 import picocli.CommandLine;
@@ -13,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 @Command(name = "graph", mixinStandardHelpOptions = true, version = "graph 0.1",
@@ -59,11 +63,28 @@ public class MultiCommand implements Callable<Integer> {
             description = "The flowchart generation strategy. Valid values are SECTION, PROGRAM, and NODRAW")
     private String flowchartGenerationStrategy;
 
+    @Option(names = {"-v", "--validate"},
+            defaultValue = "false",
+            description = "Only run syntax validation on the input")
+    private boolean isValidate;
+
     @Override
     public Integer call() throws IOException {
         List<File> copyBookPaths = copyBookDirs.stream().map(c -> Paths.get(c).toAbsolutePath().toFile()).toList();
-        new CodeTaskRunner(sourceDir, reportRootDir, copyBookPaths, dialectJarPath, LanguageDialect.dialect(dialect), FlowchartGenerationStrategy.strategy(flowchartGenerationStrategy), new UUIDProvider()).generateForPrograms(toGraphTasks(commands), programNames);
+        CodeTaskRunner taskRunner = new CodeTaskRunner(sourceDir, reportRootDir, copyBookPaths, dialectJarPath, LanguageDialect.dialect(dialect), FlowchartGenerationStrategy.strategy(flowchartGenerationStrategy), new UUIDProvider());
+        taskRunner.generateForPrograms(isValidate ? ImmutableList.of() : toGraphTasks(commands), programNames);
+        if (!isValidate) return 0;
+        System.out.println("Only validating, all other tasks were ignored");
+        output(taskRunner.getErrorMap());
         return 0;
+    }
+
+    private void output(Map<String, List<SyntaxError>> errorMap) {
+        if (errorMap.isEmpty()) System.out.println(ConsoleColors.green("No errors found for programs " + String.join(",", programNames)));
+        errorMap.forEach((programName, errors) -> {
+            System.out.printf("Program %s%n----------------------", programName);
+            errors.forEach(e -> System.out.printf("%s%n", e));
+        });
     }
 
     private List<AnalysisTask> toGraphTasks(List<String> commands) {

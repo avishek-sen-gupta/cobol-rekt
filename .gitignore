@@ -135,5 +135,6 @@ clients/cobol-lsp-vscode-extension/test-report.xml
 **/FlowchartBuildForTestingOnly.java
 **/InterpreterMainForTestingOnly.java
 **/GraphExplorerMainForTestingOnly.java
+**/FlowchartBuildProduction.java
 
 out/
