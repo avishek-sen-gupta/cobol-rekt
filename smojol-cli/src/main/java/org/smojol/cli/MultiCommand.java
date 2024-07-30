@@ -11,6 +11,7 @@ import picocli.CommandLine.Option;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -60,8 +61,7 @@ public class MultiCommand implements Callable<Integer> {
 
     @Override
     public Integer call() throws IOException {
-        List<File> copyBookPaths = copyBookDirs.stream().map(File::new).toList();
-
+        List<File> copyBookPaths = copyBookDirs.stream().map(c -> Paths.get(c).toAbsolutePath().toFile()).toList();
         new CodeTaskRunner(sourceDir, reportRootDir, copyBookPaths, dialectJarPath, LanguageDialect.dialect(dialect), FlowchartGenerationStrategy.strategy(flowchartGenerationStrategy), new UUIDProvider()).generateForPrograms(toGraphTasks(commands), programNames);
         return 0;
     }

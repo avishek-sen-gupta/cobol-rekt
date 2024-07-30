@@ -51,7 +51,7 @@ public class CodeTaskRunner {
         System.out.println("srcDir = " + sourceDir);
         System.out.println("reportRootDir = " + reportRootDir);
         System.out.println("dialectJarPath = " + dialectJarPath);
-        System.out.println("copyBookPaths = " + copyBookPaths.stream().map(cp -> cp.toString() + "\n"));
+        System.out.println("copyBookPaths = " + String.join(",", copyBookPaths.stream().map(cp -> cp.toString() + "\n").toList()));
     }
 
     public void generateForPrograms(List<AnalysisTask> tasks, List<String> programFilenames) throws IOException {
