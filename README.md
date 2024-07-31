@@ -4,7 +4,7 @@
 
 This is an evolving toolkit of capabilities helpful for reverse engineering legacy Cobol code. As of now, the following capabilities are available:
 
-- Program / section / customisable node level flowchart generation based on AST
+- Program / section / customisable node level flowchart generation based on AST (SVG or PNG)
 - Parse Tree generation (with export to JSON)
 - Control Flow Tree generation
 - The SMOJOL Interpreter (WIP)
