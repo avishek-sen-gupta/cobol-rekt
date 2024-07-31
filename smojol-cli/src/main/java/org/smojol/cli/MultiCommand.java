@@ -1,10 +1,10 @@
 package org.smojol.cli;
 
-import com.google.common.collect.ImmutableList;
 import org.eclipse.lsp.cobol.common.error.SyntaxError;
 import org.smojol.analysis.LanguageDialect;
 import org.smojol.analysis.pipeline.CodeTaskRunner;
 import org.smojol.analysis.pipeline.AnalysisTask;
+import org.smojol.analysis.pipeline.TaskRunnerMode;
 import org.smojol.common.flowchart.ConsoleColors;
 import org.smojol.common.id.UUIDProvider;
 import org.smojol.interpreter.FlowchartGenerationStrategy;
@@ -72,7 +72,7 @@ public class MultiCommand implements Callable<Integer> {
     public Integer call() throws IOException {
         List<File> copyBookPaths = copyBookDirs.stream().map(c -> Paths.get(c).toAbsolutePath().toFile()).toList();
         CodeTaskRunner taskRunner = new CodeTaskRunner(sourceDir, reportRootDir, copyBookPaths, dialectJarPath, LanguageDialect.dialect(dialect), FlowchartGenerationStrategy.strategy(flowchartGenerationStrategy), new UUIDProvider());
-        taskRunner.generateForPrograms(isValidate ? ImmutableList.of() : toGraphTasks(commands), programNames, isValidate);
+        taskRunner.generateForPrograms(toGraphTasks(commands), programNames, isValidate ? TaskRunnerMode.DIAGNOSTIC_MODE : TaskRunnerMode.PRODUCTION_MODE);
         if (!isValidate) return 0;
         System.out.println("Only validating, all other tasks were ignored");
         output(taskRunner.getErrorMap());
