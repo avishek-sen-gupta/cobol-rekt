@@ -134,7 +134,7 @@ public class ParsePipeline {
 
         if (!ctx.getAccumulatedErrors().isEmpty()) {
             ctx.getAccumulatedErrors().forEach(System.out::println);
-            throw new DiagnosticRuntimeError("There were parsing errors!", ctx.getAccumulatedErrors());
+            throw new ParseDiagnosticRuntimeError("There were parsing errors!", ctx.getAccumulatedErrors());
         }
 
         tree = lastStageResult.getData().getTree();
@@ -153,14 +153,13 @@ public class ParsePipeline {
 
 //        ops.getVisualiser().writeCobolAST(tree, cobolParseTreeOutputPath, false, navigator);
 
-        JsonArray diagnostics = new JsonArray();
-        ctx.getAccumulatedErrors()
-                .forEach(
-                        err -> {
-                            JsonObject diagnostic = toJson(err, gson);
-                            diagnostics.add(diagnostic);
-                        });
-        //        result.add("diagnostics", diagnostics);
+//        JsonArray diagnostics = new JsonArray();
+//        ctx.getAccumulatedErrors()
+//                .forEach(
+//                        err -> {
+//                            JsonObject diagnostic = toJson(err, gson);
+//                            diagnostics.add(diagnostic);
+//                        });
         System.out.println(gson.toJson(timingResult));
         return navigator;
     }

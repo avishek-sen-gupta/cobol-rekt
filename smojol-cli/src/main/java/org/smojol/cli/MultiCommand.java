@@ -72,7 +72,7 @@ public class MultiCommand implements Callable<Integer> {
     public Integer call() throws IOException {
         List<File> copyBookPaths = copyBookDirs.stream().map(c -> Paths.get(c).toAbsolutePath().toFile()).toList();
         CodeTaskRunner taskRunner = new CodeTaskRunner(sourceDir, reportRootDir, copyBookPaths, dialectJarPath, LanguageDialect.dialect(dialect), FlowchartGenerationStrategy.strategy(flowchartGenerationStrategy), new UUIDProvider());
-        taskRunner.generateForPrograms(isValidate ? ImmutableList.of() : toGraphTasks(commands), programNames);
+        taskRunner.generateForPrograms(isValidate ? ImmutableList.of() : toGraphTasks(commands), programNames, isValidate);
         if (!isValidate) return 0;
         System.out.println("Only validating, all other tasks were ignored");
         output(taskRunner.getErrorMap());
