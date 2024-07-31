@@ -5,11 +5,13 @@ import org.smojol.analysis.LanguageDialect;
 import org.smojol.analysis.pipeline.CodeTaskRunner;
 import org.smojol.common.id.UUIDProvider;
 import org.smojol.interpreter.FlowchartGenerationStrategy;
+import org.smojol.interpreter.FullProgram;
 
 import java.io.File;
 import java.io.IOException;
 
 import static org.smojol.analysis.pipeline.AnalysisTask.*;
+import static org.smojol.common.flowchart.FlowchartOutputFormat.PNG;
 
 public class GraphExplorerMain {
     public static void main(String[] args) throws IOException {
@@ -17,7 +19,7 @@ public class GraphExplorerMain {
         new CodeTaskRunner("/Users/asgupta/code/smojol/smojol-test-code",
                 "/Users/asgupta/code/smojol/out/report",
                 ImmutableList.of(new File("/Users/asgupta/code/smojol/smojol-test-code")),
-                dialectJarPath, LanguageDialect.COBOL   , FlowchartGenerationStrategy.FULL_PROGRAM, new UUIDProvider())
+                dialectJarPath, LanguageDialect.COBOL   , new FullProgram(PNG), new UUIDProvider())
                 .generateForPrograms(ImmutableList.of(
                         INJECT_INTO_NEO4J,
                         EXPORT_TO_GRAPHML,

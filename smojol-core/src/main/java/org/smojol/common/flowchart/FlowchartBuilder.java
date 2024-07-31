@@ -19,7 +19,7 @@ public interface FlowchartBuilder {
     FlowchartBuilder buildOverlay();
     FlowchartBuilder buildControlFlow();
     FlowchartBuilder accept(GraphWriter graphWriter);
-    void generateFlowchart(ParseTree procedure, String dotFilePath, String imageOutputPath, String splineStyle) throws IOException, InterruptedException;
+    void generateFlowchart(ParseTree procedure, String dotFilePath, String imageOutputPath, FlowchartOutputFormat outputFormat) throws IOException, InterruptedException;
     FlowNode getRoot();
     FlowNodeService getChartNodeService();
 }

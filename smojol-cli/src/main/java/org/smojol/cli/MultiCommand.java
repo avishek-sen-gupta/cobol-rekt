@@ -68,10 +68,15 @@ public class MultiCommand implements Callable<Integer> {
             description = "Only run syntax validation on the input")
     private boolean isValidate;
 
+    @Option(names = {"-f", "--flowchartOutputFormat"},
+            defaultValue = "svg",
+            description = "Format of the flowchart output (PNG, SVG)")
+    private String flowchartOutputFormat;
+
     @Override
     public Integer call() throws IOException {
         List<File> copyBookPaths = copyBookDirs.stream().map(c -> Paths.get(c).toAbsolutePath().toFile()).toList();
-        CodeTaskRunner taskRunner = new CodeTaskRunner(sourceDir, reportRootDir, copyBookPaths, dialectJarPath, LanguageDialect.dialect(dialect), FlowchartGenerationStrategy.strategy(flowchartGenerationStrategy), new UUIDProvider());
+        CodeTaskRunner taskRunner = new CodeTaskRunner(sourceDir, reportRootDir, copyBookPaths, dialectJarPath, LanguageDialect.dialect(dialect), FlowchartGenerationStrategy.strategy(flowchartGenerationStrategy, flowchartOutputFormat), new UUIDProvider());
         taskRunner.generateForPrograms(toGraphTasks(commands), programNames, isValidate ? TaskRunnerMode.DIAGNOSTIC_MODE : TaskRunnerMode.PRODUCTION_MODE);
         if (!isValidate) return 0;
         System.out.println("Only validating, all other tasks were ignored");

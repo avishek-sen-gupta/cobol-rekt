@@ -34,7 +34,7 @@ import static com.mojo.woof.NodeRelations.CONTAINS;
 
 public class SmojolTasks {
     private final SourceConfig sourceConfig;
-    private final FlowchartOutputConfig flowchartOutputConfig;
+    private final FlowchartOutputWriter flowchartOutputWriter;
     private final RawASTOutputConfig rawAstOutputConfig;
     private final GraphSDK graphSDK;
     private final GraphMLExportConfig graphMLOutputConfig;
@@ -103,9 +103,8 @@ public class SmojolTasks {
         public void run() {
             ParseTree root = navigator.procedureBodyRoot();
             try {
-                Files.createDirectories(flowchartOutputConfig.dotFileOutputDir());
-                Files.createDirectories(flowchartOutputConfig.imageOutputDir());
-                flowchartOutputConfig.flowchartGenerationStrategy().draw(navigator, root, pipeline, flowchartOutputConfig.dotFileOutputDir(), flowchartOutputConfig.imageOutputDir(), sourceConfig.programName());
+                flowchartOutputWriter.createOutputDirs();
+                flowchartOutputWriter.draw(navigator, root, pipeline, sourceConfig);
             } catch (IOException | InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -138,10 +137,10 @@ public class SmojolTasks {
         }
     };
 
-    public SmojolTasks(ParsePipeline pipeline, SourceConfig sourceConfig, FlowchartOutputConfig flowchartOutputConfig, RawASTOutputConfig rawAstOutputConfig, GraphMLExportConfig graphMLOutputConfig, FlowASTOutputConfig flowASTOutputConfig, CFGOutputConfig cfgOutputConfig, GraphBuildConfig graphBuildConfig, GraphSDK graphSDK, IdProvider idProvider) {
+    public SmojolTasks(ParsePipeline pipeline, SourceConfig sourceConfig, FlowchartOutputWriter flowchartOutputWriter, RawASTOutputConfig rawAstOutputConfig, GraphMLExportConfig graphMLOutputConfig, FlowASTOutputConfig flowASTOutputConfig, CFGOutputConfig cfgOutputConfig, GraphBuildConfig graphBuildConfig, GraphSDK graphSDK, IdProvider idProvider) {
         this.pipeline = pipeline;
         this.sourceConfig = sourceConfig;
-        this.flowchartOutputConfig = flowchartOutputConfig;
+        this.flowchartOutputWriter = flowchartOutputWriter;
         this.rawAstOutputConfig = rawAstOutputConfig;
         this.graphSDK = graphSDK;
         this.graphMLOutputConfig = graphMLOutputConfig;

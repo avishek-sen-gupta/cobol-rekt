@@ -13,7 +13,6 @@ import org.smojol.common.ast.FlowNodeVisitor;
 import org.smojol.common.ast.VisitContext;
 import org.smojol.common.flowchart.*;
 import org.smojol.common.id.IdProvider;
-import org.smojol.common.id.UUIDProvider;
 import org.smojol.interpreter.stack.CobolStackFrames;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.vm.structure.CobolDataStructure;
@@ -123,14 +122,14 @@ public class FlowchartBuilderImpl implements FlowchartBuilder {
     }
 
     @Override
-    public void generateFlowchart(ParseTree procedure, String dotFilePath, String imageOutputPath, String splineStyle) throws IOException, InterruptedException {
+    public void generateFlowchart(ParseTree procedure, String dotFilePath, String imageOutputPath, FlowchartOutputFormat outputFormat) throws IOException, InterruptedException {
         buildFlowAST(procedure)
                 .buildControlFlow()
                 .buildOverlay()
 //        .buildDotStructure(VisitContext.VISIT_UPTO_LEVEL(4)) // Level 4 for only sections and paragraphs
                 .buildDotStructure()
                 .write(dotFilePath);
-        new GraphGenerator(splineStyle).generateImage(dotFilePath, imageOutputPath);
+        new GraphGenerator(outputFormat).generateImage(dotFilePath, imageOutputPath);
     }
 
     @Override

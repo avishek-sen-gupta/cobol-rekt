@@ -214,9 +214,9 @@ The help text is reproduced below (obtained by adding ```--help```):
 
 ```
 Usage: graph [-hvV] [-d=<dialect>] [-dp=<dialectJarPath>]
-             [-g=<flowchartGenerationStrategy>] -r=<reportRootDir>
-             -s=<sourceDir> -c=<commands> [-c=<commands>]... -cp=<copyBookDirs>
-             [-cp=<copyBookDirs>]... [<programNames>...]
+             [-f=<flowchartOutputFormat>] [-g=<flowchartGenerationStrategy>]
+             -r=<reportRootDir> -s=<sourceDir> -c=<commands> [-c=<commands>]...
+             -cp=<copyBookDirs> [-cp=<copyBookDirs>]... [<programNames>...]
 Implements various operations useful for reverse engineering Cobol code
       [<programNames>...]    The programs to analyse
   -c, --commands=<commands>  The commands to run (INJECT_INTO_NEO4J,
@@ -227,6 +227,8 @@ Implements various operations useful for reverse engineering Cobol code
   -d, --dialect=<dialect>    The COBOL dialect (COBOL, IDMS)
       -dp, --dialectJarPath=<dialectJarPath>
                              Path to dialect .JAR
+  -f, --flowchartOutputFormat=<flowchartOutputFormat>
+                             Format of the flowchart output (PNG, SVG)
   -g, --generation=<flowchartGenerationStrategy>
                              The flowchart generation strategy. Valid values
                                are SECTION, PROGRAM, and NODRAW
@@ -251,7 +253,7 @@ The simplest way to invoke tasks through the API is using ```CodeTaskRunner```, 
                 ImmutableList.of(new File("/path/to/copybooks")),
                 "/path/to/dialect-idms.jar",
                 LanguageDialect.COBOL, 
-                FlowchartGenerationStrategy.FULL_PROGRAM, 
+                new FullProgram(FlowchartOutputFormat.SVG), 
                 new UUIDProvider())
                 .generateForPrograms(ImmutableList.of(
                         WRITE_RAW_AST,

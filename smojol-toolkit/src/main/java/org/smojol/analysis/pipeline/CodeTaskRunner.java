@@ -4,7 +4,6 @@ import com.mojo.woof.GraphSDK;
 import com.mojo.woof.Neo4JDriverBuilder;
 import lombok.Getter;
 import org.eclipse.lsp.cobol.common.error.SyntaxError;
-import org.smojol.analysis.DiagnosticRuntimeError;
 import org.smojol.analysis.ParseDiagnosticRuntimeError;
 import org.smojol.analysis.LanguageDialect;
 import org.smojol.analysis.ParsePipeline;
@@ -97,7 +96,7 @@ public class CodeTaskRunner {
         String absoluteDialectJarPath = Paths.get(dialectJarPath).toAbsolutePath().normalize().toString();
         SourceConfig sourceConfig = new SourceConfig(programFilename, source, copyBookPaths, cobolParseTreeOutputPath, absoluteDialectJarPath);
 
-        FlowchartOutputConfig flowchartOutputConfig = new FlowchartOutputConfig(astOutputDir, dotFileOutputDir, imageOutputDir, flowchartGenerationStrategy);
+        FlowchartOutputWriter flowchartOutputWriter = new FlowchartOutputWriter(flowchartGenerationStrategy, dotFileOutputDir, imageOutputDir);
         RawASTOutputConfig rawAstOutputConfig = new RawASTOutputConfig(astOutputDir, new CobolTreeVisualiser());
         FlowASTOutputConfig flowASTOutputConfig = new FlowASTOutputConfig(flowASTOutputDir, flowASTOutputPath);
         GraphMLExportConfig graphMLOutputConfig = new GraphMLExportConfig(graphMLExportOutputDir, graphMLExportOutputPath);
@@ -112,7 +111,7 @@ public class CodeTaskRunner {
                 NodeReferenceStrategy.EXISTING_CFG_NODE);
 
         SmojolTasks pipelineTasks = new SmojolTasks(pipeline,
-                sourceConfig, flowchartOutputConfig,
+                sourceConfig, flowchartOutputWriter,
                 rawAstOutputConfig, graphMLOutputConfig,
                 flowASTOutputConfig, cfgOutputConfig,
                 graphBuildConfig, sdk,

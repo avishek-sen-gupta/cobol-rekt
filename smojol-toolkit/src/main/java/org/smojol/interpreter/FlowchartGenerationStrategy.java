@@ -3,24 +3,36 @@ package org.smojol.interpreter;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.analysis.ParsePipeline;
+import org.smojol.common.flowchart.FlowchartOutputFormat;
 import org.smojol.common.navigation.CobolEntityNavigator;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.List;
 
-public interface FlowchartGenerationStrategy {
-    FlowchartGenerationStrategy PER_SECTION = new PerSection();
-    FlowchartGenerationStrategy FULL_PROGRAM = new FullProgram();
-    FlowchartGenerationStrategy DONT_DRAW = new DontDraw();
+import static org.smojol.common.flowchart.FlowchartOutputFormat.PNG;
+import static org.smojol.common.flowchart.FlowchartOutputFormat.SVG;
 
-    void draw(CobolEntityNavigator navigator, ParseTree root, ParsePipeline pipeline, Path dotFileOutputDir, Path imageOutputDir, String programName) throws IOException, InterruptedException;
+public abstract class FlowchartGenerationStrategy {
+    protected final FlowchartOutputFormat outputFormat;
+    public static final FlowchartGenerationStrategy DONT_DRAW = new FlowchartGenerationStrategy(null) {
+        @Override
+        public void draw(CobolEntityNavigator navigator, ParseTree root, ParsePipeline pipeline, Path dotFileOutputDir, Path imageOutputDir, String programName) throws IOException, InterruptedException {
+            System.out.println("Not Drawing Flowchart...");
+        }
+    };
 
-    static FlowchartGenerationStrategy strategy(String generationStrategyAsString) {
-        if (generationStrategyAsString == null) return FULL_PROGRAM;
+    public FlowchartGenerationStrategy(FlowchartOutputFormat outputFormat) {
+        this.outputFormat = outputFormat;
+    }
+
+    public abstract void draw(CobolEntityNavigator navigator, ParseTree root, ParsePipeline pipeline, Path dotFileOutputDir, Path imageOutputDir, String programName) throws IOException, InterruptedException;
+
+    public static FlowchartGenerationStrategy strategy(String generationStrategyAsString, String flowchartOutputFormatAsString) {
+        FlowchartOutputFormat flowchartOutputFormat = "PNG".equals(flowchartOutputFormatAsString) ? PNG : SVG;
+        if (generationStrategyAsString == null) return new FullProgram(flowchartOutputFormat);
         return switch (generationStrategyAsString) {
-            case "SECTION" -> PER_SECTION;
-            case "PROGRAM" -> FULL_PROGRAM;
+            case "SECTION" -> new PerSection(flowchartOutputFormat);
+            case "PROGRAM" -> new FullProgram(flowchartOutputFormat);
             case "NODRAW" -> DONT_DRAW;
             default -> DONT_DRAW;
         };
@@ -34,33 +46,5 @@ public interface FlowchartGenerationStrategy {
         CobolParser.ProcedureSectionContext s = (CobolParser.ProcedureSectionContext) section;
         String sectionName = s.procedureSectionHeader().sectionName().getText();
         return outputPath(sectionName, outputDir, extension);
-    }
-}
-
-class DontDraw implements FlowchartGenerationStrategy {
-    @Override
-    public void draw(CobolEntityNavigator navigator, ParseTree root, ParsePipeline pipeline, Path dotFileOutputDir, Path imageOutputDir, String programName) {
-        System.out.println("Not Drawing Flowchart...");
-    }
-}
-
-class PerSection implements FlowchartGenerationStrategy {
-    @Override
-    public void draw(CobolEntityNavigator navigator, ParseTree root, ParsePipeline pipeline, Path dotFileOutputDir, Path imageOutputDir, String programName) throws IOException, InterruptedException {
-        List<ParseTree> allSections = navigator.findAllByCondition(n -> n.getClass() == CobolParser.ProcedureSectionContext.class, root);
-        for (ParseTree section : allSections) {
-            pipeline.flowcharter().generateFlowchart(section,
-                    FlowchartGenerationStrategy.outputPath(section, dotFileOutputDir, "dot"),
-                    FlowchartGenerationStrategy.outputPath(section, imageOutputDir, "png"), "ortho");
-        }
-    }
-}
-
-class FullProgram implements FlowchartGenerationStrategy {
-    @Override
-    public void draw(CobolEntityNavigator navigator, ParseTree root, ParsePipeline pipeline, Path dotFileOutputDir, Path imageOutputDir, String programName) throws IOException, InterruptedException {
-        pipeline.flowcharter().generateFlowchart(root,
-                FlowchartGenerationStrategy.outputPath(programName, dotFileOutputDir, "dot"),
-                FlowchartGenerationStrategy.outputPath(programName, imageOutputDir, "png"), "ortho");
     }
 }
