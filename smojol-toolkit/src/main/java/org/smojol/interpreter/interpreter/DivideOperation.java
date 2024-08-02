@@ -16,9 +16,10 @@ public class DivideOperation implements CobolOperation {
         this.divide = divide;
     }
 
+    // TODO: Fix this to work with DIVIDE GIVING statements too
     public void run(CobolDataStructure cobolDataStructure) {
         ArithmeticExpressionVisitor visitor = new ArithmeticExpressionVisitor();
-        CobolParser.DivisorContext divisor = divide.getDivisor();
+        CobolParser.DivisorContext divisor = divide.getIntoDivisor();
         List<CobolParser.DivideIntoContext> dividends = divide.getDividends();
         DeepReferenceBuilder builder = new DeepReferenceBuilder();
         dividends.forEach(dividend -> builder.getReference(dividend.generalIdentifier(), cobolDataStructure).resolve().divide(builder.getReference(divisor, cobolDataStructure)));

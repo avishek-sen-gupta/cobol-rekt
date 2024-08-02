@@ -72,7 +72,7 @@ public class DataDependencyPairComputer {
             return ImmutablePair.of(lhses, rhses);
         } else if (node.type() == FlowNodeType.DIVIDE) {
             DivideFlowNode divide = (DivideFlowNode) node;
-            List<CobolDataStructure> divisors = ImmutableList.of(referenceBuilder.getShallowReference(divide.getDivisor(), dataRoot).resolve());
+            List<CobolDataStructure> divisors = ImmutableList.of(referenceBuilder.getShallowReference(divide.getIntoDivisor(), dataRoot).resolve());
             List<CobolDataStructure> dividends = divide.getDividends().stream().map(t -> referenceBuilder.getShallowReference(t.generalIdentifier(), dataRoot).resolve()).toList();
             return ImmutablePair.of(divisors, dividends);
         }

@@ -45,7 +45,7 @@ public class MultiCommand implements Callable<Integer> {
     // Can be replaced with a File[] (and the later conversion removed) if we skip default arguments.
     @Option(names = {"-cp", "--copyBooksDir"},
             required = true,
-            description = "Copybook directories (repeatable)")
+            description = "Copybook directories (repeatable)", split = ",")
     private List<String> copyBookDirs;
 
     @Option(names = {"-r", "--reportDir"},
@@ -77,6 +77,7 @@ public class MultiCommand implements Callable<Integer> {
     public Integer call() throws IOException {
         List<File> copyBookPaths = copyBookDirs.stream().map(c -> Paths.get(c).toAbsolutePath().toFile()).toList();
         CodeTaskRunner taskRunner = new CodeTaskRunner(sourceDir, reportRootDir, copyBookPaths, dialectJarPath, LanguageDialect.dialect(dialect), FlowchartGenerationStrategy.strategy(flowchartGenerationStrategy, flowchartOutputFormat), new UUIDProvider());
+        copyBookPaths.forEach(cpp -> System.out.println(cpp.getAbsolutePath()));
         taskRunner.generateForPrograms(toGraphTasks(commands), programNames, isValidate ? TaskRunnerMode.DIAGNOSTIC_MODE : TaskRunnerMode.PRODUCTION_MODE);
         if (!isValidate) return 0;
         System.out.println("Only validating, all other tasks were ignored");

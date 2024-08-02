@@ -215,7 +215,7 @@ public class SmojolInterpreter implements CobolInterpreter {
             listeners.visit(node, nodeService);
             listeners.notify("Adding " + node, node, nodeService);
             DivideFlowNode divide = (DivideFlowNode) node;
-            listeners.notify(purple(coloured(String.format("%s was affected by %s", delimited(divide.getDividends()), divide.getDivisor()), 227)), node, nodeService);
+            listeners.notify(purple(coloured(String.format("%s was affected by %s", delimited(divide.getDividends()), divide.getIntoDivisor()), 227)), node, nodeService);
 //            new DivideOperation(divide).run(runtimeStackFrames.currentData());
             operations.divide().apply(node).run(runtimeStackFrames.currentData());
             return CobolVmSignal.CONTINUE;

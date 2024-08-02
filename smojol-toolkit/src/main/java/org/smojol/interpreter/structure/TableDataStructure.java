@@ -96,6 +96,7 @@ public class TableDataStructure extends Format1DataStructure {
     @Override
     public boolean buildRedefinitions(CobolDataStructure root) {
         if (structures.getFirst().layout() != null) return false;
+        if (dataDescription.dataRedefinesClause().isEmpty()) return false;
         CobolDataStructure redefinedRecord = root.reference(dataDescription.dataRedefinesClause().getFirst().dataName().getText());
         MemoryAccess originalAccess = redefinedRecord.layout().getAccess();
         int headPointer = originalAccess.fromIndex();

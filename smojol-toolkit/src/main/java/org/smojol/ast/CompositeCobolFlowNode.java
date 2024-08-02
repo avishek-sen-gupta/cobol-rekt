@@ -26,7 +26,7 @@ public class CompositeCobolFlowNode extends CobolFlowNode {
     public void buildInternalFlow() {
         System.out.println("Building internal flow for " + name());
         List<? extends ParseTree> children = getChildren();
-        if (children == null) return;
+        if (children == null || children.isEmpty()) return;
         System.out.println("Looking at " + name());
         internalTreeRoot = nodeService.node(children.getFirst(), this, staticFrameContext.add(this));
         FlowNode current = internalTreeRoot;

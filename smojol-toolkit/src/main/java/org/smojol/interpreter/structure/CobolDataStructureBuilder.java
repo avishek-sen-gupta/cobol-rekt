@@ -75,7 +75,11 @@ public class CobolDataStructureBuilder implements DataStructureBuilder {
                 CobolParser.DataDescriptionEntryFormat1Context format1 = dataDescription.dataDescriptionEntryFormat1();
                 int entryLevel = Integer.parseInt(format1.levelNumber().LEVEL_NUMBER().getSymbol().getText());
                 if (currentLevel == 0) {
-                    if (entryLevel != 1) throw new RuntimeException("Top Level entry must be 01");
+                    if (entryLevel != 1) {
+                        System.out.println("WARNING: Top level variable is not level 01");
+                        // TODO: Should we be strict or lax regarding top level variables not being level 01???
+//                        throw new RuntimeException("Top Level entry must be 01");
+                    }
                     dataStructure = dataStructure.addChild(format1(format1, unresolvedReferenceStrategy));
                 } else if (entryLevel == currentLevel) {
                     dataStructure = dataStructure.addPeer(format1(format1, unresolvedReferenceStrategy));

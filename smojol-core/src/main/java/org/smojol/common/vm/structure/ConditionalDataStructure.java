@@ -189,6 +189,7 @@ public class ConditionalDataStructure extends CobolDataStructure {
     }
 
     public List<CobolDataStructure> matches(String recordID) {
+        if (dataDescription.entryName() == null) return ImmutableList.of();
         return dataDescription.entryName().getText().equals(recordID) ? ImmutableList.of(this) : ImmutableList.of();
     }
 }
