@@ -50,10 +50,10 @@ public class CodeTaskRunner {
         this.dialect = dialect;
         this.flowchartGenerationStrategy = flowchartGenerationStrategy;
         this.idProvider = idProvider;
-        report();
+        reportParameters();
     }
 
-    private void report() {
+    private void reportParameters() {
         System.out.println("Parameters passed in \n--------------------");
         System.out.println("srcDir = " + sourceDir);
         System.out.println("reportRootDir = " + reportRootDir);

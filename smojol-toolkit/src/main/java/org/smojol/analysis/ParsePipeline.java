@@ -30,6 +30,7 @@ import org.eclipse.lsp.cobol.core.engine.pipeline.StageResult;
 import org.eclipse.lsp.cobol.core.engine.pipeline.stages.*;
 import org.eclipse.lsp.cobol.core.preprocessor.TextPreprocessor;
 import org.eclipse.lsp.cobol.core.preprocessor.delegates.GrammarPreprocessor;
+import org.eclipse.lsp.cobol.dialects.idms.IdmsParser;
 import org.smojol.analysis.visualisation.ComponentsBuilder;
 import org.smojol.common.flowchart.FlowchartBuilder;
 import org.smojol.common.idms.DialectIntegratorListener;
@@ -61,6 +62,7 @@ public class ParsePipeline {
     @Getter private CobolEntityNavigator navigator;
     @Getter private CobolDataStructure dataStructures;
     @Getter private ParserRuleContext tree;
+    @Getter private List<ParseTree> transfersOfControl;
 
     public ParsePipeline(SourceConfig sourceConfig, ComponentsBuilder ops, LanguageDialect dialect) {
         this.src = sourceConfig.source();
@@ -150,6 +152,7 @@ public class ParsePipeline {
         // TODO: The navigator itself can probably determine these things,
         navigator = navigatorBuilder.navigator(tree);
         dataStructures = ops.getDataStructureBuilder(navigator).build();
+        transfersOfControl = navigator.findAllByCondition(n -> n.getClass() == IdmsParser.TransferStatementContext.class, tree);
         System.out.println(gson.toJson(timingResult));
         return navigator;
     }

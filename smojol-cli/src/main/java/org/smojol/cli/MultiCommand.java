@@ -18,6 +18,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.function.Function;
 
 @Command(name = "graph", mixinStandardHelpOptions = true, version = "graph 0.1",
         description = "Implements various operations useful for reverse engineering Cobol code")
@@ -81,15 +82,16 @@ public class MultiCommand implements Callable<Integer> {
         taskRunner.generateForPrograms(toGraphTasks(commands), programNames, isValidate ? TaskRunnerMode.DIAGNOSTIC_MODE : TaskRunnerMode.PRODUCTION_MODE);
         if (!isValidate) return 0;
         System.out.println("Only validating, all other tasks were ignored");
-        output(taskRunner.getErrorMap());
+        output(taskRunner.getErrorMap(), SyntaxError::toString);
+        output(taskRunner.getErrorMap(), e -> e.getErrorCode() + ": " + e.getSuggestion());
         return 0;
     }
 
-    private void output(Map<String, List<SyntaxError>> errorMap) {
+    private void output(Map<String, List<SyntaxError>> errorMap, Function<SyntaxError, String> format) {
         if (errorMap.isEmpty()) System.out.println(ConsoleColors.green("No errors found for programs " + String.join(",", programNames)));
         errorMap.forEach((programName, errors) -> {
-            System.out.printf("Program %s%n----------------------", programName);
-            errors.forEach(e -> System.out.printf("%s%n", e));
+            System.out.printf("Program %s%n----------------------%n", programName);
+            errors.forEach(e -> System.out.printf("%s%n", format.apply(e)));
         });
     }
 

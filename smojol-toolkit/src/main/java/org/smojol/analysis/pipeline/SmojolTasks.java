@@ -6,6 +6,7 @@ import com.mojo.woof.Advisor;
 import com.mojo.woof.GraphSDK;
 import com.mojo.woof.OpenAICredentials;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.eclipse.lsp.cobol.dialects.idms.IdmsParser;
 import org.neo4j.driver.Record;
 import org.smojol.analysis.ParsePipeline;
 import org.smojol.analysis.graph.DataStructureSummariseAction;
@@ -153,6 +154,7 @@ public class SmojolTasks {
 
     public SmojolTasks build() throws IOException {
         navigator = pipeline.parse();
+        reportTransfersOfControl();
         dataStructures = pipeline.getDataStructures();
 
         ParseTree procedure = navigator.procedureBodyRoot();
@@ -161,6 +163,12 @@ public class SmojolTasks {
         astRoot = flowcharter.getRoot();
 
         return this;
+    }
+
+    private void reportTransfersOfControl() {
+        System.out.println(ConsoleColors.green("TRANSFERS OF CONTROL\n----------------------------\n"));
+        if (pipeline.getTransfersOfControl().isEmpty()) System.out.println(ConsoleColors.green("No transfers found!"));
+        pipeline.getTransfersOfControl().forEach(toc -> System.out.println(((IdmsParser.TransferStatementContext) toc).idms_program_name()));
     }
 
     public void run(List<AnalysisTask> analysisTasks) throws IOException {
