@@ -6,6 +6,8 @@ import org.smojol.common.id.IdProvider;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.vm.strategy.UnresolvedReferenceStrategy;
 import org.smojol.common.vm.structure.*;
+import org.smojol.common.vm.type.CobolDataType;
+import org.smojol.common.vm.type.TypedRecord;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,11 +34,21 @@ public class CobolDataStructureBuilder implements DataStructureBuilder {
         CobolParser.DataDivisionContext dataDivisionBody = (CobolParser.DataDivisionContext) dataDivision;
         extractFromWorkingStorage(dataDivisionBody);
         extractFromLinkage(dataDivisionBody);
+        extractFromFileSection(dataDivisionBody);
         zerothStructure.expandTables();
         zerothStructure.calculateMemoryRequirements();
         zerothStructure.allocateRecordPointers();
         while (zerothStructure.buildRedefinitions(zerothStructure)) {}
+        zerothStructure.addChild(new StaticDataStructure("WHEN-COMPILED", 1, CobolDataType.STRING, TypedRecord.typedString("01-01-2024")));
         return zerothStructure;
+    }
+
+    private void extractFromFileSection(CobolParser.DataDivisionContext dataDivisionBody) {
+        Optional<CobolParser.DataDivisionSectionContext> maybeFileSection = dataDivisionBody.dataDivisionSection().stream().filter(s -> s.fileSection() != null).findFirst();
+        if (maybeFileSection.isEmpty()) return;
+        CobolParser.FileSectionContext fileSection = maybeFileSection.get().fileSection();
+        List<CobolParser.DataDescriptionEntryContext> allDataDescriptions = fileSection.fileDescriptionEntry().stream().flatMap(fd -> fd.dataDescriptionEntry().stream()).toList();
+        extractFrom(allDataDescriptions, zerothStructure, this::fileDescriptorData);
     }
 
     private void extractFromLinkage(CobolParser.DataDivisionContext dataDivisionBody) {
@@ -61,6 +73,10 @@ public class CobolDataStructureBuilder implements DataStructureBuilder {
 
     private CobolParser.DataDescriptionEntryContext linkageData(CobolParser.DataDescriptionEntryForWorkingStorageAndLinkageSectionContext e) {
         return e.dataDescriptionEntry();
+    }
+
+    private CobolParser.DataDescriptionEntryContext fileDescriptorData(CobolParser.DataDescriptionEntryContext e) {
+        return e;
     }
 
     // TODO: Refactor to state machine maybe

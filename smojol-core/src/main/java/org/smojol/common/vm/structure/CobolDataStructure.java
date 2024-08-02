@@ -21,8 +21,8 @@ import java.util.function.Function;
 
 public abstract class CobolDataStructure extends SimpleTreeNode {
     @Getter protected final CobolDataType dataType;
-    private final String name;
-    @Getter private final int levelNumber;
+    protected final String name;
+    @Getter protected final int levelNumber;
     @Getter private final String id;
     protected List<CobolDataStructure> structures;
     protected CobolDataStructure parent;

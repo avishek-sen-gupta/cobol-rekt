@@ -46,7 +46,13 @@ public class SimpleConditionVisitor extends CobolExpressionVisitor {
         if (ctx.fixedComparison() == null && ctx.relationCombinedComparison() == null) {
             // TODO: Distinguish between abbreviated condition and level 88 conditions
             RelationExpression relation = new RelationExpression(mostRecentRelationalOperation, lhs);
-            expression = new SimpleConditionExpression(mostRecentLhs, relation).standalone();
+            if (mostRecentLhs == null) {
+                // Level 88 condition
+                expression = new SimpleConditionExpression(lhs).standalone();
+            } else {
+                // Abbreviated condition
+                expression = new SimpleConditionExpression(mostRecentLhs, relation).standalone();
+            }
             return expression;
         }
         ExpressionComparisonVisitor comparisonVisitor = new ExpressionComparisonVisitor();

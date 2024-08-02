@@ -15,6 +15,12 @@ public class SimpleConditionExpression extends CobolExpression {
         this.comparison = (RelationExpression) comparison;
     }
 
+    public SimpleConditionExpression(CobolExpression arithmeticExpression) {
+        super(ImmutableList.of());
+        this.lhs = arithmeticExpression;
+        this.comparison = null;
+    }
+
     @Override
     public CobolExpression evaluate(CobolDataStructure data) {
         if (comparison != null) return comparison.evaluate(lhs, data);
