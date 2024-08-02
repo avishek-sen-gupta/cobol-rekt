@@ -166,7 +166,7 @@ public class SmojolTasks {
     }
 
     private void reportTransfersOfControl() {
-        System.out.println(ConsoleColors.green("TRANSFERS OF CONTROL\n----------------------------\n"));
+        System.out.println(ConsoleColors.green(String.format("TRANSFER CONTROL REPORT [%s]\n--------------------------------\n", sourceConfig.programName())));
         if (pipeline.getTransfersOfControl().isEmpty()) System.out.println(ConsoleColors.green("No transfers found!"));
         pipeline.getTransfersOfControl().forEach(toc -> System.out.println(((IdmsParser.TransferStatementContext) toc).idms_program_name()));
     }
