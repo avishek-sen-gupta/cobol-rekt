@@ -1,5 +1,6 @@
 package org.smojol.ast;
 
+import com.google.common.collect.ImmutableList;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.smojol.common.ast.*;
 import org.smojol.common.vm.interpreter.CobolInterpreter;
@@ -154,6 +155,16 @@ public class NullFlowNode implements FlowNode {
     @Override
     public CobolVmSignal acceptInterpreter(CobolInterpreter interpreter, FlowControl flowControl) {
         return CobolVmSignal.CONTINUE;
+    }
+
+    @Override
+    public void addComment(CommentBlock cb) {
+
+    }
+
+    @Override
+    public List<CommentBlock> getCommentBlocks() {
+        return ImmutableList.of();
     }
 
     @Override

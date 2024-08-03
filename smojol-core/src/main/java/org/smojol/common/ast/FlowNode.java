@@ -51,4 +51,8 @@ public interface FlowNode {
     boolean isPassthrough();
 
     CobolVmSignal acceptInterpreter(CobolInterpreter interpreter, FlowControl flowControl);
+
+    void addComment(CommentBlock cb);
+
+    List<CommentBlock> getCommentBlocks();
 }

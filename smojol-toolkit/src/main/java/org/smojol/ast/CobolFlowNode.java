@@ -26,6 +26,7 @@ public class CobolFlowNode implements FlowNode {
     private boolean databaseAccess;
     protected FlowNode scope;
     protected final StackFrames staticFrameContext;
+    private List<CommentBlock> commentBlocks = new ArrayList<>();
 
     public CobolFlowNode(ParseTree executionContext, FlowNode scope, FlowNodeService nodeService, StackFrames stackFrames) {
         this.uuid = nodeService.nextID();
@@ -198,6 +199,15 @@ public class CobolFlowNode implements FlowNode {
     public CobolVmSignal acceptInterpreter(CobolInterpreter interpreter, FlowControl flowControl) {
         CobolVmSignal signal = interpreter.scope(this).execute(this, nodeService);
         return flowControl.apply(() -> continueOrAbort(signal, interpreter, nodeService), signal);
+    }
+
+    @Override
+    public void addComment(CommentBlock cb) {
+        commentBlocks.add(cb);
+    }
+
+    public List<CommentBlock> getCommentBlocks() {
+        return commentBlocks;
     }
 
     // Specifically to return if this node terminated further execution

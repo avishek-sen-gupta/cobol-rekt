@@ -7,6 +7,7 @@ This is an evolving toolkit of capabilities helpful for reverse engineering lega
 - Program / section / customisable node level flowchart generation based on AST (SVG or PNG)
 - Parse Tree generation (with export to JSON)
 - Control Flow Tree generation
+- Allows embedding code comments as comment nodes in the graph
 - The SMOJOL Interpreter (WIP)
 - Injecting AST and Control Flow into Neo4J
 - Injecting Cobol data layouts from Data Division into Neo4J (with dependencies)

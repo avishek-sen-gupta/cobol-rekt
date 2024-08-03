@@ -92,7 +92,6 @@ public class CodeTaskRunner {
     }
 
     private void generateForProgram(String programFilename, String sourceDir, String reportRootDir, LanguageDialect dialect, List<AnalysisTask> tasks) throws IOException {
-        File source = Paths.get(sourceDir, programFilename).toFile().getAbsoluteFile();
         String programReportDir = String.format("%s.report", programFilename);
         Path astOutputDir = Paths.get(reportRootDir, programReportDir, AST_DIR).toAbsolutePath().normalize();
         Path flowASTOutputDir = Paths.get(reportRootDir, programReportDir, FLOW_AST_DIR).toAbsolutePath().normalize();
@@ -105,7 +104,7 @@ public class CodeTaskRunner {
         String cobolParseTreeOutputPath = astOutputDir.resolve(String.format("cobol-%s.json", programFilename)).toAbsolutePath().normalize().toString();
         String flowASTOutputPath = flowASTOutputDir.resolve(String.format("flow-ast-%s.json", programFilename)).toAbsolutePath().normalize().toString();
         String absoluteDialectJarPath = Paths.get(dialectJarPath).toAbsolutePath().normalize().toString();
-        SourceConfig sourceConfig = new SourceConfig(programFilename, source, copyBookPaths, cobolParseTreeOutputPath, absoluteDialectJarPath);
+        SourceConfig sourceConfig = new SourceConfig(programFilename, sourceDir, copyBookPaths, cobolParseTreeOutputPath, absoluteDialectJarPath);
 
         FlowchartOutputWriter flowchartOutputWriter = new FlowchartOutputWriter(flowchartGenerationStrategy, dotFileOutputDir, imageOutputDir);
         RawASTOutputConfig rawAstOutputConfig = new RawASTOutputConfig(astOutputDir, new CobolTreeVisualiser());
@@ -127,77 +126,7 @@ public class CodeTaskRunner {
                 flowASTOutputConfig, cfgOutputConfig,
                 graphBuildConfig, sdk,
                 idProvider).build();
-        List<CommentBlock> commentBlocks = extractComments(programFilename, sourceDir, pipeline.getNavigator());
         pipelineTasks.run(tasks);
     }
-
-    private static List<CommentBlock> extractComments(String programFilename, String sourceDir, CobolEntityNavigator navigator) throws IOException {
-        List<CommentBlock> allCommentBlocks = new ArrayList<>();
-        CommentBlock currentBlock = new CommentBlock();
-        List<String> lines = Files.readAllLines(Paths.get(sourceDir, programFilename), StandardCharsets.ISO_8859_1)
-                .stream().filter(l -> l.trim().length() > 7).toList();
-        List<String> linesWithoutAreaA = lines.stream().map(l -> l.substring(6)).toList();
-        for (String line : linesWithoutAreaA) {
-            if (line.startsWith("*")) {
-                if (!containsWords(line) || validCobol(line.substring(1))) continue;
-                if (currentBlock == null) currentBlock = new CommentBlock();
-                currentBlock.add(line);
-            } else {
-                if (currentBlock == null) continue;
-                currentBlock.setCodeContext(line);
-                allCommentBlocks.add(currentBlock);
-                currentBlock = null;
-            }
-        }
-
-        allCommentBlocks.forEach(block -> {
-            ParseTree matchingNode = navigator.findByCondition(n -> NodeText.originalText(n, NodeText::PASSTHROUGH).contains(block.getCodeContextLine()));
-            block.setAssociatedTree(matchingNode);
-        });
-        return allCommentBlocks;
-    }
-
-    private static boolean containsWords(String line) {
-        return line.chars().mapToObj(c -> Character.isAlphabetic(c) || Character.isDigit(c)).reduce(false, (b, c) -> b || c);
-    }
-
-    private static boolean validCobol(String line) {
-        CobolLexer antlrLexer = new CobolLexer(CharStreams.fromString(line));
-        antlrLexer.removeErrorListeners();
-        CommonTokenStream tokens = new CommonTokenStream(antlrLexer);
-        CobolSentenceParser antlrParser = new CobolSentenceParser(tokens);
-        antlrParser.removeErrorListeners();
-        SentenceParserErrorListener listener = new SentenceParserErrorListener();
-        antlrParser.addErrorListener(listener);
-        CobolSentenceParser.StartRuleContext startRuleContext = antlrParser.startRule();
-        return !listener.hasErrors();
-    }
 }
 
-class SentenceParserErrorListener implements ANTLRErrorListener {
-    private final List<RecognitionException> exceptions = new ArrayList<>();
-
-    @Override
-    public void syntaxError(Recognizer<?, ?> recognizer, Object o, int i, int i1, String s, RecognitionException e) {
-        exceptions.add(e);
-    }
-
-    @Override
-    public void reportAmbiguity(Parser parser, DFA dfa, int i, int i1, boolean b, BitSet bitSet, ATNConfigSet atnConfigSet) {
-
-    }
-
-    @Override
-    public void reportAttemptingFullContext(Parser parser, DFA dfa, int i, int i1, BitSet bitSet, ATNConfigSet atnConfigSet) {
-
-    }
-
-    @Override
-    public void reportContextSensitivity(Parser parser, DFA dfa, int i, int i1, int i2, ATNConfigSet atnConfigSet) {
-
-    }
-
-    public boolean hasErrors() {
-        return !exceptions.isEmpty();
-    }
-}

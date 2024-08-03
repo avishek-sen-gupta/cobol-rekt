@@ -22,4 +22,13 @@ public class CommentBlock {
     public void setAssociatedTree(ParseTree nodeContext) {
         this.nodeContext = nodeContext;
     }
+
+    @Override
+    public String toString() {
+        return String.join("\n", lines);
+    }
+
+    public ParseTree getTree() {
+        return nodeContext;
+    }
 }

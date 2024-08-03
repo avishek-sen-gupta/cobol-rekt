@@ -153,4 +153,17 @@ public class CobolEntityNavigator {
         }
         return node;
     }
+
+    public ParseTree findNarrowestByCondition(ParseTreeSearchCondition c) {
+        return findNarrowestByConditionRecursive(fullProgramTree, c);
+    }
+
+    private ParseTree findNarrowestByConditionRecursive(ParseTree currentNode, ParseTreeSearchCondition c) {
+        if (!c.apply(currentNode)) return null;
+        for (int j = 0; j <= currentNode.getChildCount() - 1; j++) {
+            ParseTree searchResult = findNarrowestByConditionRecursive(currentNode.getChild(j), c);
+            if (searchResult != null) return searchResult;
+        }
+        return currentNode;
+    }
 }

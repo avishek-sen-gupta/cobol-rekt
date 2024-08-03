@@ -5,7 +5,6 @@ import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.common.vm.structure.ConditionalDataStructure;
 import org.smojol.common.vm.structure.NullDataStructure;
-import org.smojol.common.vm.exception.UnresolvedVariableReferenceException;
 import org.smojol.common.vm.reference.CobolReference;
 import org.smojol.common.vm.reference.DeepReferenceBuilder;
 
@@ -37,8 +36,7 @@ public class SimpleConditionVisitor extends CobolExpressionVisitor {
                 // TODO: Tempt fix for variables which don't directly appear in data structures like indexes in INDEXED BY clauses
                 expression = new PrimitiveCobolExpression(resolved.getValue());
                 return expression;
-            }
-            else if (resolved.getClass() == ConditionalDataStructure.class) {
+            } else if (resolved.getClass() == ConditionalDataStructure.class) {
                 expression = lhs;
                 return expression;
             }

@@ -19,8 +19,9 @@ public class Neo4JFlowCFGVisitor implements FlowNodeVisitor {
 
     @Override
     public void visit(FlowNode node, List<FlowNode> outgoingNodes, List<FlowNode> incomingNodes, VisitContext context, FlowNodeService nodeService) {
+        Record sourceRecord = newOrExisting(node);
+        node.getCommentBlocks().forEach(cb -> sdk.hasComment(sourceRecord, sdk.comment(NodeToWoof.toWoofNode(cb, qualifier))));
         outgoingNodes.forEach(o -> {
-            Record sourceRecord = newOrExisting(node);
             Record destinationRecord = newOrExisting(o);
             sdk.isFollowedBy(sourceRecord, destinationRecord);
         });

@@ -19,6 +19,7 @@ import org.smojol.common.ast.*;
 import org.smojol.common.flowchart.*;
 import org.smojol.common.id.IdProvider;
 import org.smojol.common.navigation.CobolEntityNavigator;
+import org.smojol.common.navigation.FlowNodeNavigator;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.interpreter.*;
 
@@ -54,6 +55,23 @@ public class SmojolTasks {
         @Override
         public void run() {
             exportToNeo4J(astRoot, dataStructures, qualifier, graphSDK);
+        }
+    };
+
+    public Runnable ATTACH_COMMENTS = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                List<CommentBlock> commentBlocks = new CommentExtraction().run(sourceConfig.sourcePath(), pipeline.getNavigator());
+                commentBlocks.forEach(cb -> {
+                    System.out.println("Attaching comments");
+                    FlowNode node = new FlowNodeNavigator(astRoot).findByCondition(n -> n.getExecutionContext() == cb.getTree());
+                    if (node == null) astRoot.addComment(cb);
+                    else node.addComment(cb);
+                });
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     };
 
@@ -183,6 +201,7 @@ public class SmojolTasks {
             case DRAW_FLOWCHART -> DRAW_FLOWCHART;
             case WRITE_FLOW_AST -> WRITE_FLOW_AST;
             case WRITE_CFG -> WRITE_CFG;
+            case ATTACH_COMMENTS -> ATTACH_COMMENTS;
         });
     }
 

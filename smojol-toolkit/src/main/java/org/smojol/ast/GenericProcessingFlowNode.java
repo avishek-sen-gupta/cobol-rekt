@@ -1,5 +1,6 @@
 package org.smojol.ast;
 
+import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolDataDivisionParser;
@@ -165,6 +166,16 @@ public class GenericProcessingFlowNode implements FlowNode {
     @Override
     public CobolVmSignal acceptInterpreter(CobolInterpreter interpreter, FlowControl flowControl) {
         return CobolVmSignal.CONTINUE;
+    }
+
+    @Override
+    public void addComment(CommentBlock cb) {
+
+    }
+
+    @Override
+    public List<CommentBlock> getCommentBlocks() {
+        return ImmutableList.of();
     }
 
     @Override

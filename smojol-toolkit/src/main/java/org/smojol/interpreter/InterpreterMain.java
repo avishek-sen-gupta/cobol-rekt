@@ -34,7 +34,7 @@ public class InterpreterMain {
 
     public static void main(String[] args) throws IOException {
         SourceConfig testSourceConfig = new SourceConfig(
-                "test-exp", new File("/Users/asgupta/code/smojol/smojol-test-code/test-exp.cbl"),
+                "test-exp", "/Users/asgupta/code/smojol/smojol-test-code",
                 ImmutableList.of(new File("/Users/asgupta/code/smojol/smojol-test-code")),
                 "/Users/asgupta/code/smojol/out/test-cobol.json",
                 "/Users/asgupta/code/smojol/che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar");
@@ -43,7 +43,7 @@ public class InterpreterMain {
 //        File source = new File("/Users/asgupta/code/smojol/smojol-test-code/simple-redef.cbl");
 
         SourceConfig awsCardDemoConfig = new SourceConfig(
-                "CBACT01C", new File("/Users/asgupta/code/aws-mainframe-modernization-carddemo/app/cbl/CBACT01C.cbl"),
+                "CBACT01C", "/Users/asgupta/code/aws-mainframe-modernization-carddemo/app/cbl/CBACT01C.cbl",
                 ImmutableList.of(new File("/Users/asgupta/code/aws-mainframe-modernization-carddemo/app/cpy")),
                 "/Users/asgupta/code/smojol/out/test-cobol.json",
                 "/Users/asgupta/code/smojol/che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar");

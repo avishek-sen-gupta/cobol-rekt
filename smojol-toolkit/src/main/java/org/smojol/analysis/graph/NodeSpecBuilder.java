@@ -6,6 +6,7 @@ import org.smojol.analysis.graph.graphml.TypedCodeVertex;
 import org.smojol.analysis.graph.graphml.TypedDataStructureVertex;
 import org.smojol.analysis.graph.graphml.TypedGraphEdge;
 import org.smojol.analysis.graph.graphml.TypedGraphVertex;
+import org.smojol.common.ast.CommentBlock;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.NodeText;
 import org.smojol.common.id.IdProvider;
@@ -117,5 +118,18 @@ public class NodeSpecBuilder {
 
     public TypedGraphVertex newDataVertex(CobolDataStructure structure) {
         return new TypedDataStructureVertex(structure, namespaceQualifier.getNamespace());
+    }
+
+    public NodeSpec commentNode(CommentBlock comment) {
+        String id = idProvider.next();
+        return new NodeSpec(ImmutableList.of(COMMENT_NODE),
+                Map.of(ID, id,
+                        INTERNAL_ID, id,
+                        NAME, COMMENT_NODE,
+                        TEXT, comment.toString(),
+                        TYPE, COMMENT_NODE,
+                        ENTITY_TYPE, COMMENT_NODE,
+                        NAMESPACE, namespaceQualifier.getNamespace()
+                ));
     }
 }
