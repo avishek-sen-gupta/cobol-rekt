@@ -3,6 +3,10 @@ package org.smojol.analysis.graph.graphml;
 import lombok.Getter;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.jgrapht.Graph;
+import org.jgrapht.alg.clique.BronKerboschCliqueFinder;
+import org.jgrapht.alg.clustering.KSpanningTreeClustering;
+import org.jgrapht.alg.interfaces.ClusteringAlgorithm;
+import org.jgrapht.graph.AsUndirectedGraph;
 import org.jgrapht.graph.DirectedPseudograph;
 import org.jgrapht.nio.Attribute;
 import org.jgrapht.nio.AttributeType;
@@ -17,8 +21,10 @@ import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.interpreter.navigation.FlowNodeASTTraversal;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static com.mojo.woof.NodeProperties.*;
 import static com.mojo.woof.NodeRelations.*;
@@ -130,5 +136,15 @@ public class JGraphTGraphBuilder {
 
     public void write(File outputPath) {
         export(astGraph, outputPath);
+    }
+
+    public void runAlgo(File outputPath) {
+        AsUndirectedGraph<TypedGraphVertex, TypedGraphEdge> undirected = new AsUndirectedGraph<>(model);
+        BronKerboschCliqueFinder<TypedGraphVertex, TypedGraphEdge> cliqueFinder = new BronKerboschCliqueFinder<>(undirected);
+        ArrayList<Set<TypedGraphVertex>> cliques = new ArrayList<>();
+        cliqueFinder.forEach(cliques::add);
+        KSpanningTreeClustering<TypedGraphVertex, TypedGraphEdge> clusterer = new KSpanningTreeClustering<>(undirected, 50);
+        ClusteringAlgorithm.Clustering<TypedGraphVertex> clustering = clusterer.getClustering();
+        System.out.println("BOOM");
     }
 }

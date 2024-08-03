@@ -3,15 +3,26 @@ package org.smojol.analysis.pipeline;
 import com.mojo.woof.GraphSDK;
 import com.mojo.woof.Neo4JDriverBuilder;
 import lombok.Getter;
+import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.atn.ATNConfigSet;
+import org.antlr.v4.runtime.dfa.DFA;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.common.error.SyntaxError;
+import org.eclipse.lsp.cobol.core.CobolLexer;
+import org.eclipse.lsp.cobol.core.CobolParser;
+import org.eclipse.lsp.cobol.core.CobolSentenceParser;
 import org.smojol.analysis.ParseDiagnosticRuntimeError;
 import org.smojol.analysis.LanguageDialect;
 import org.smojol.analysis.ParsePipeline;
 import org.smojol.analysis.graph.neo4j.NodeReferenceStrategy;
 import org.smojol.analysis.visualisation.ComponentsBuilder;
 import org.smojol.ast.FlowchartBuilderImpl;
+import org.smojol.ast.GenericProcessingFlowNode;
 import org.smojol.common.ast.CobolTreeVisualiser;
+import org.smojol.common.ast.CommentBlock;
+import org.smojol.common.ast.NodeText;
 import org.smojol.common.id.IdProvider;
+import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.navigation.EntityNavigatorBuilder;
 import org.smojol.common.vm.strategy.UnresolvedReferenceThrowStrategy;
 import org.smojol.interpreter.*;
@@ -19,11 +30,11 @@ import org.smojol.interpreter.structure.DefaultFormat1DataStructureBuilder;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CodeTaskRunner {
     private static final String AST_DIR = "ast";
@@ -116,6 +127,77 @@ public class CodeTaskRunner {
                 flowASTOutputConfig, cfgOutputConfig,
                 graphBuildConfig, sdk,
                 idProvider).build();
+        List<CommentBlock> commentBlocks = extractComments(programFilename, sourceDir, pipeline.getNavigator());
         pipelineTasks.run(tasks);
+    }
+
+    private static List<CommentBlock> extractComments(String programFilename, String sourceDir, CobolEntityNavigator navigator) throws IOException {
+        List<CommentBlock> allCommentBlocks = new ArrayList<>();
+        CommentBlock currentBlock = new CommentBlock();
+        List<String> lines = Files.readAllLines(Paths.get(sourceDir, programFilename), StandardCharsets.ISO_8859_1)
+                .stream().filter(l -> l.trim().length() > 7).toList();
+        List<String> linesWithoutAreaA = lines.stream().map(l -> l.substring(6)).toList();
+        for (String line : linesWithoutAreaA) {
+            if (line.startsWith("*")) {
+                if (!containsWords(line) || validCobol(line.substring(1))) continue;
+                if (currentBlock == null) currentBlock = new CommentBlock();
+                currentBlock.add(line);
+            } else {
+                if (currentBlock == null) continue;
+                currentBlock.setCodeContext(line);
+                allCommentBlocks.add(currentBlock);
+                currentBlock = null;
+            }
+        }
+
+        allCommentBlocks.forEach(block -> {
+            ParseTree matchingNode = navigator.findByCondition(n -> NodeText.originalText(n, NodeText::PASSTHROUGH).contains(block.getCodeContextLine()));
+            block.setAssociatedTree(matchingNode);
+        });
+        return allCommentBlocks;
+    }
+
+    private static boolean containsWords(String line) {
+        return line.chars().mapToObj(c -> Character.isAlphabetic(c) || Character.isDigit(c)).reduce(false, (b, c) -> b || c);
+    }
+
+    private static boolean validCobol(String line) {
+        CobolLexer antlrLexer = new CobolLexer(CharStreams.fromString(line));
+        antlrLexer.removeErrorListeners();
+        CommonTokenStream tokens = new CommonTokenStream(antlrLexer);
+        CobolSentenceParser antlrParser = new CobolSentenceParser(tokens);
+        antlrParser.removeErrorListeners();
+        SentenceParserErrorListener listener = new SentenceParserErrorListener();
+        antlrParser.addErrorListener(listener);
+        CobolSentenceParser.StartRuleContext startRuleContext = antlrParser.startRule();
+        return !listener.hasErrors();
+    }
+}
+
+class SentenceParserErrorListener implements ANTLRErrorListener {
+    private final List<RecognitionException> exceptions = new ArrayList<>();
+
+    @Override
+    public void syntaxError(Recognizer<?, ?> recognizer, Object o, int i, int i1, String s, RecognitionException e) {
+        exceptions.add(e);
+    }
+
+    @Override
+    public void reportAmbiguity(Parser parser, DFA dfa, int i, int i1, boolean b, BitSet bitSet, ATNConfigSet atnConfigSet) {
+
+    }
+
+    @Override
+    public void reportAttemptingFullContext(Parser parser, DFA dfa, int i, int i1, BitSet bitSet, ATNConfigSet atnConfigSet) {
+
+    }
+
+    @Override
+    public void reportContextSensitivity(Parser parser, DFA dfa, int i, int i1, int i2, ATNConfigSet atnConfigSet) {
+
+    }
+
+    public boolean hasErrors() {
+        return !exceptions.isEmpty();
     }
 }

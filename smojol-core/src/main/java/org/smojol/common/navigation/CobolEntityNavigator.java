@@ -56,6 +56,10 @@ public class CobolEntityNavigator {
         return findByConditionRecursive(searchRoot, c, 1, -1);
     }
 
+    public ParseTree findByCondition(ParseTreeSearchCondition c) {
+        return findByCondition(fullProgramTree, c);
+    }
+
     public List<ParseTree> statementsContaining(String symbol, ParseTree scope) {
         List<ParseTree> trees = new ArrayList<>();
         findAllByConditionRecursive(scope, trees, n ->

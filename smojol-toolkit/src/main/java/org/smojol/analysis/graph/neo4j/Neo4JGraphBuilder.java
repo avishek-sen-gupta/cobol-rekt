@@ -1,6 +1,7 @@
 package org.smojol.analysis.graph.neo4j;
 
 import com.mojo.woof.GraphSDK;
+import com.mojo.woof.WoofNode;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
@@ -73,7 +74,8 @@ public class Neo4JGraphBuilder {
             System.out.println("FROMS:");
             froms.forEach(f -> System.out.println(f.name()));
             System.out.println("To = " + to.name());
-            Record n4jTo = sdk.findNodes(qualifier.dataNodeSearchSpec(to)).getFirst();
+            List<Record> nodes = sdk.findNodes(qualifier.dataNodeSearchSpec(to));
+            Record n4jTo = !nodes.isEmpty() ? nodes.getFirst() : sdk.createNode(NodeToWoof.dataStructureToWoof(to, qualifier));
             sdk.modifies(attachmentNodeRecord, n4jTo);
             froms.forEach(from -> {
                 Record n4jFrom = sdk.newOrExisting(qualifier.dataNodeSearchSpec(from), NodeToWoof.dataStructureToWoof(from, qualifier));

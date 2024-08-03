@@ -5,7 +5,7 @@ import java.util.function.Supplier;
 
 // TODO: Might need polymorphic types at some point, addition of two strings, for example
 public final class TypedRecord {
-    public static final TypedRecord NULL = new TypedRecord("", CobolDataType.NULL);
+    public static final TypedRecord NULL = new TypedRecord("NULL", CobolDataType.NULL);
     public static final TypedRecord TRUE = new TypedRecord(true, CobolDataType.BOOLEAN);
     public static final TypedRecord FALSE = new TypedRecord(false, CobolDataType.BOOLEAN);
     private final Object value;

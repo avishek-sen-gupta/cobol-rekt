@@ -29,7 +29,7 @@ public class NullDataStructure extends CobolDataStructure {
 
     @Override
     public String name() {
-        return "NULL";
+        return String.format("NULL[%s]", referenceID);
     }
 
     @Override

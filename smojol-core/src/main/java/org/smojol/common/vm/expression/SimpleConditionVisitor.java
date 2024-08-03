@@ -32,9 +32,13 @@ public class SimpleConditionVisitor extends CobolExpressionVisitor {
             CobolParser.QualifiedDataNameContext qualifiedDataNameContext = ((VariableExpression) lhs).getQualifiedDataNameContext();
             CobolReference reference = new DeepReferenceBuilder().getReference(qualifiedDataNameContext, dataRoot);
             String variableName = qualifiedDataNameContext.getText();
-
-            if (reference.resolve().getClass() == NullDataStructure.class) throw new UnresolvedVariableReferenceException(variableName);
-            if (reference.resolve().getClass() == ConditionalDataStructure.class) {
+            CobolDataStructure resolved = reference.resolve();
+            if (resolved.getClass() == NullDataStructure.class) {
+                // TODO: Tempt fix for variables which don't directly appear in data structures like indexes in INDEXED BY clauses
+                expression = new PrimitiveCobolExpression(resolved.getValue());
+                return expression;
+            }
+            else if (resolved.getClass() == ConditionalDataStructure.class) {
                 expression = lhs;
                 return expression;
             }
