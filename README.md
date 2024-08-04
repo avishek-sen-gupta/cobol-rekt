@@ -220,7 +220,7 @@ You can skip the tests as well, using:
 ## Developer Guide
 
 ### CLI Usage
-The individual functionalities can be invoked using different commands. The commands and their effects are listed below:
+The individual functionalities can be invoked using different commands. The commands and their effects are listed below. Further tasks will be added.
 
 - ```WRITE_FLOW_AST```: Writes a more useful form of the AST to JSON. This form is used by the interpreter and other analyses.
 - ```INJECT_INTO_NEO4J```: This injects the unified model into Neo4J. Exposing more fine-grained options is in progress. This requires the environment variable ```NEO4J_URI```, ```NEO4J_USERNAME```, and ```NEO4J_PASSWORD``` to be defined. If you wish to include comments in the graph, the ```ATTACH_COMMENTS``` needs to have run first.
