@@ -236,13 +236,15 @@ The help text is reproduced below (obtained by adding ```--help```):
 Usage: graph [-hvV] [-d=<dialect>] [-dp=<dialectJarPath>]
              [-f=<flowchartOutputFormat>] [-g=<flowchartGenerationStrategy>]
              -r=<reportRootDir> -s=<sourceDir> -c=<commands> [-c=<commands>]...
-             -cp=<copyBookDirs> [-cp=<copyBookDirs>]... [<programNames>...]
+             -cp=<copyBookDirs>[,<copyBookDirs>...] [-cp=<copyBookDirs>[,
+             <copyBookDirs>...]]... [<programNames>...]
 Implements various operations useful for reverse engineering Cobol code
       [<programNames>...]    The programs to analyse
   -c, --commands=<commands>  The commands to run (INJECT_INTO_NEO4J,
                                EXPORT_TO_GRAPHML, WRITE_RAW_AST,
-                               DRAW_FLOWCHART, WRITE_FLOW_AST, WRITE_CFG)
-      -cp, --copyBooksDir=<copyBookDirs>
+                               DRAW_FLOWCHART, WRITE_FLOW_AST, WRITE_CFG,
+                               ATTACH_COMMENTS)
+      -cp, --copyBooksDir=<copyBookDirs>[,<copyBookDirs>...]
                              Copybook directories (repeatable)
   -d, --dialect=<dialect>    The COBOL dialect (COBOL, IDMS)
       -dp, --dialectJarPath=<dialectJarPath>

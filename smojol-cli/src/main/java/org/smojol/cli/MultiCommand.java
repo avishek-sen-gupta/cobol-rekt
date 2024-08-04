@@ -36,7 +36,7 @@ public class MultiCommand implements Callable<Integer> {
 
     @Option(names = {"-c", "--commands"},
             required = true,
-            description = "The commands to run (INJECT_INTO_NEO4J, EXPORT_TO_GRAPHML, WRITE_RAW_AST, DRAW_FLOWCHART, WRITE_FLOW_AST, WRITE_CFG)", split = " ")
+            description = "The commands to run (INJECT_INTO_NEO4J, EXPORT_TO_GRAPHML, WRITE_RAW_AST, DRAW_FLOWCHART, WRITE_FLOW_AST, WRITE_CFG, ATTACH_COMMENTS)", split = " ")
     private List<String> commands;
 
     @CommandLine.Parameters(index = "0..*",
