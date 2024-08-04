@@ -24,7 +24,7 @@ public class ConditionalDataStructure extends CobolDataStructure {
     }
 
     @Override
-    protected boolean isRedefinition() {
+    public boolean isRedefinition() {
         return false;
     }
 

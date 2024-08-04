@@ -1,6 +1,7 @@
 package org.smojol.analysis.pipeline;
 
 import org.smojol.common.vm.structure.CobolDataStructure;
+import org.smojol.common.vm.structure.Format1DataStructure;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,8 @@ public class SerialisableCobolDataStructure {
     private int levelNumber;
     private String rawText;
     private final List<SerialisableCobolDataStructure> children = new ArrayList<>();
+    private boolean isRedefinition;
+    private String redefines;
 
     public SerialisableCobolDataStructure(CobolDataStructure data) {
         name = data.name();
@@ -19,6 +22,8 @@ public class SerialisableCobolDataStructure {
         id = data.getId();
         levelNumber = data.getLevelNumber();
         rawText = data.getRawText();
+        isRedefinition = data.getClass() == Format1DataStructure.class && data.isRedefinition();
+        redefines = isRedefinition ? ((Format1DataStructure) data).getDataDescription().dataRedefinesClause().getFirst().dataName().getText() : "";
     }
 
     public SerialisableCobolDataStructure() {

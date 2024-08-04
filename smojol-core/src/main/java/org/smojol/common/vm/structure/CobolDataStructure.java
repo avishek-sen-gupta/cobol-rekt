@@ -32,7 +32,7 @@ public abstract class CobolDataStructure extends SimpleTreeNode {
     protected CobolDataStructure parent;
     protected boolean isComposite;
 
-    protected abstract boolean isRedefinition();
+    public abstract boolean isRedefinition();
     public abstract String name();
     public abstract Function<CobolParser.DataDescriptionEntryFormat1Context, String> namingScheme();
     public abstract String content();

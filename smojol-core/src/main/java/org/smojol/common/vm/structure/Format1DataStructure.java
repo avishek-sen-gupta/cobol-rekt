@@ -30,7 +30,7 @@ public class Format1DataStructure extends CobolDataStructure {
     protected Pair<DataTypeSpec, Integer> typeSpec;
 
     @Override
-    protected boolean isRedefinition() {
+    public boolean isRedefinition() {
         return dataDescription != null && !dataDescription.dataRedefinesClause().isEmpty();
     }
 

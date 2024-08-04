@@ -18,7 +18,7 @@ public class StaticDataStructure extends CobolDataStructure {
     }
 
     @Override
-    protected boolean isRedefinition() {
+    public boolean isRedefinition() {
         return false;
     }
 
