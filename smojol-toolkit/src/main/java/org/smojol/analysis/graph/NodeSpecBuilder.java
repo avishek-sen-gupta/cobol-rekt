@@ -59,7 +59,7 @@ public class NodeSpecBuilder {
                 Map.of(ID, idProvider.next(),
                         INTERNAL_ID, node.id(),
                         NAME, node.name(),
-                        TEXT, NodeText.originalText(node.getExecutionContext(), NodeText::PASSTHROUGH),
+                        TEXT, node.originalText(),
                         TYPE, node.type().toString(),
                         ENTITY_TYPE, nodeType,
                         NAMESPACE, namespaceQualifier.getNamespace()

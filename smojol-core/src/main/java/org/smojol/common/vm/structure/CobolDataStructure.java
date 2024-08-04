@@ -6,6 +6,7 @@ import hu.webarticum.treeprinter.TreeNode;
 import hu.webarticum.treeprinter.printer.listing.ListingTreePrinter;
 import lombok.Getter;
 import org.eclipse.lsp.cobol.core.CobolParser;
+import org.smojol.common.ast.CommentBlock;
 import org.smojol.common.flowchart.DataStructureVisitor;
 import org.smojol.common.vm.memory.DataLayoutBuilder;
 import org.smojol.common.vm.memory.MemoryLayout;
@@ -24,7 +25,9 @@ public abstract class CobolDataStructure extends SimpleTreeNode {
     protected final String name;
     @Getter protected final int levelNumber;
     @Getter private final String id;
+    @Getter private final String rawText;
     protected List<CobolDataStructure> structures;
+    @Getter protected List<CommentBlock> commentBlocks = new ArrayList<>();
     protected CobolDataStructure parent;
     protected boolean isComposite;
 
@@ -67,18 +70,23 @@ public abstract class CobolDataStructure extends SimpleTreeNode {
         return new ArrayList<>(structures);
     }
 
-    public CobolDataStructure(String name, int levelNumber, CobolDataType dataType) {
-        this(name, new ArrayList<>(), levelNumber, null, false, dataType);
+    public List<CobolDataStructure> subStructures() {
+        return new ArrayList<>(structures);
+    }
+
+    public CobolDataStructure(String name, int levelNumber, CobolDataType dataType, String rawText) {
+        this(name, new ArrayList<>(), levelNumber, null, false, dataType, rawText);
     }
 
     // Root constructor
     public CobolDataStructure(int levelNumber) {
-        this("[ROOT]", levelNumber, CobolDataType.ROOT);
+        this("[ROOT]", levelNumber, CobolDataType.ROOT, "[ROOT]");
     }
 
     // Copy constructor
-    protected CobolDataStructure(String name, List<CobolDataStructure> childStructures, int level, CobolDataStructure parent, boolean isComposite, CobolDataType dataType) {
+    protected CobolDataStructure(String name, List<CobolDataStructure> childStructures, int level, CobolDataStructure parent, boolean isComposite, CobolDataType dataType, String rawText) {
         super(name);
+        this.rawText = rawText;
         // TODO: Inject ID Provider. ID Provider is already present in DataStructureBuilder, inject it into all the constructors
         this.id = UUID.randomUUID().toString();
         this.name = name;
@@ -198,5 +206,9 @@ public abstract class CobolDataStructure extends SimpleTreeNode {
         CobolDataStructure parentNode = visitor.visit(this, parent, root);
         if (stopRecurseCondition.apply(this)) return;
         this.structures.forEach(s -> s.accept(visitor, parentNode, stopRecurseCondition, root));
+    }
+
+    public void addComment(CommentBlock cb) {
+        commentBlocks.add(cb);
     }
 }

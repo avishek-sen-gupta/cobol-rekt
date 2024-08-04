@@ -13,7 +13,7 @@ public class StaticDataStructure extends CobolDataStructure {
     private final TypedRecord value;
 
     public StaticDataStructure(String name, int levelNumber, CobolDataType dataType, TypedRecord value) {
-        super(name, levelNumber, dataType);
+        super(name, levelNumber, dataType, "[STATIC]");
         this.value = value;
     }
 

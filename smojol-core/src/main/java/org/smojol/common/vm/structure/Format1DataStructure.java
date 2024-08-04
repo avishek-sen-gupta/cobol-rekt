@@ -5,6 +5,7 @@ import lombok.Getter;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.eclipse.lsp.cobol.core.CobolParser;
+import org.smojol.common.ast.NodeText;
 import org.smojol.common.flowchart.DataStructureVisitor;
 import org.smojol.common.vm.memory.*;
 import org.smojol.common.vm.reference.CobolReference;
@@ -65,7 +66,8 @@ public class Format1DataStructure extends CobolDataStructure {
     }
 
     protected Format1DataStructure(CobolParser.DataDescriptionEntryFormat1Context dataDescription, UnresolvedReferenceStrategy unresolvedReferenceStrategy, CobolDataType dataType) {
-        super(NamingScheme.IDENTITY.apply(dataDescription), Integer.parseInt(dataDescription.levelNumber().getText()), dataType);
+        super(NamingScheme.IDENTITY.apply(dataDescription), Integer.parseInt(dataDescription.levelNumber().getText()), dataType, NodeText.originalText(dataDescription));
+
         this.namingScheme = NamingScheme.IDENTITY;
         this.dataDescription = dataDescription;
         System.out.println("Setting value for " + dataDescription.getText());
@@ -74,7 +76,7 @@ public class Format1DataStructure extends CobolDataStructure {
 
     // Root constructor
     public Format1DataStructure(int levelNumber, UnresolvedReferenceStrategy unresolvedReferenceStrategy) {
-        super(NamingScheme.ROOT.apply(null), levelNumber, CobolDataType.ROOT);
+        super(NamingScheme.ROOT.apply(null), levelNumber, CobolDataType.ROOT, "[ROOT]");
         this.namingScheme = NamingScheme.ROOT;
         this.layout = new NullMemoryLayout();
         this.unresolvedReferenceStrategy = unresolvedReferenceStrategy;
@@ -82,7 +84,7 @@ public class Format1DataStructure extends CobolDataStructure {
 
     // Copy constructor
     public Format1DataStructure(Function<CobolParser.DataDescriptionEntryFormat1Context, String> namingScheme, CobolParser.DataDescriptionEntryFormat1Context dataDescription, List<CobolDataStructure> childStructures, int level, CobolDataStructure parent, boolean isComposite, UnresolvedReferenceStrategy unresolvedReferenceStrategy, List<ConditionalDataStructure> conditions, CobolDataType dataType) {
-        super(namingScheme.apply(dataDescription), childStructures, level, parent, isComposite, dataType);
+        super(namingScheme.apply(dataDescription), childStructures, level, parent, isComposite, dataType, NodeText.originalText(dataDescription));
         this.namingScheme = namingScheme;
         this.dataDescription = dataDescription;
         this.unresolvedReferenceStrategy = unresolvedReferenceStrategy;

@@ -16,7 +16,7 @@ public class CommentBlock {
     }
 
     public void setCodeContext(String codeContextLine) {
-        this.codeContextLine = codeContextLine;
+        this.codeContextLine = codeContextLine.trim();
     }
 
     public void setAssociatedTree(ParseTree nodeContext) {

@@ -2,6 +2,7 @@ package org.smojol.common.vm.structure;
 
 import com.google.common.collect.ImmutableList;
 import org.eclipse.lsp.cobol.core.CobolParser;
+import org.smojol.common.ast.NodeText;
 import org.smojol.common.flowchart.DataStructureVisitor;
 import org.smojol.common.vm.memory.MemoryLayout;
 import org.smojol.common.vm.memory.MemoryRegion;
@@ -17,7 +18,7 @@ public class ConditionalDataStructure extends CobolDataStructure {
     private final CobolParser.DataDescriptionEntryFormat3Context dataDescription;
 
     public ConditionalDataStructure(CobolParser.DataDescriptionEntryFormat3Context dataDescription, CobolDataStructure parent) {
-        super(dataDescription.getText(), 88, CobolDataType.CONSTRAINT);
+        super(dataDescription.getText(), 88, CobolDataType.CONSTRAINT, NodeText.originalText(dataDescription));
         this.dataDescription = dataDescription;
         this.parent = parent;
     }

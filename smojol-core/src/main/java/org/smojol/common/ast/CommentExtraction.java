@@ -12,14 +12,17 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class CommentExtraction {
     public List<CommentBlock> run(Path sourcePath, CobolEntityNavigator navigator) throws IOException {
         List<CommentBlock> allCommentBlocks = new ArrayList<>();
         CommentBlock currentBlock = new CommentBlock();
-        List<String> lines = Files.readAllLines(sourcePath, StandardCharsets.ISO_8859_1)
-                .stream().filter(l -> l.trim().length() > 7).toList();
+        String[] lineArray = new String(Files.readAllBytes(sourcePath)).split("\n");
+        List<String> lines = Arrays.stream(lineArray).filter(l -> l.length() > 7).toList();
+//        List<String> lines = Files.readAllLines(sourcePath, StandardCharsets.ISO_8859_1)
+//                .stream().filter(l -> l.trim().length() > 7).toList();
         List<String> linesWithoutAreaA = lines.stream().map(l -> l.substring(6)).toList();
         for (String line : linesWithoutAreaA) {
             if (line.startsWith("*")) {

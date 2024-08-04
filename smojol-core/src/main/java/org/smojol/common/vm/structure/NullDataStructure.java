@@ -18,7 +18,7 @@ public class NullDataStructure extends CobolDataStructure {
     private final String referenceID;
 
     public NullDataStructure(String referenceID) {
-        super(referenceID, -99, CobolDataType.NULL);
+        super(referenceID, -99, CobolDataType.NULL, "[NULL]");
         this.referenceID = referenceID;
     }
 

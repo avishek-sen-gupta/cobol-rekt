@@ -18,6 +18,10 @@ public class NodeText {
         return text;
     }
 
+    public static String originalText(ParseTree astNode) {
+        return originalText(astNode, NodeText::PASSTHROUGH);
+    }
+
     public static String originalText(ParseTree astNode, Function<String, String> substitutionStrategy) {
         Token startToken = (astNode instanceof TerminalNode) ? ((TerminalNode) astNode).getSymbol() : ((ParserRuleContext) astNode).start;
         Token stopToken = (astNode instanceof TerminalNode) ? ((TerminalNode) astNode).getSymbol() : ((ParserRuleContext) astNode).stop;

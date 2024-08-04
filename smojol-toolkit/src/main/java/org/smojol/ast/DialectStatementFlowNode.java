@@ -26,13 +26,7 @@ public class DialectStatementFlowNode extends CobolFlowNode {
     // TODO: Rewrite this monstrosity
     @Override
     public String name() {
-        CobolEntityNavigator navigator = nodeService.getNavigator();
-        ParseTree dialectGuidContext = navigator.findByCondition(executionContext, t -> t.getClass() == CobolParser.DialectGuidContext.class);
-        String guid = dialectGuidContext.getText();
-
-        ParseTree idmsTextNode = PersistentData.getDialectNode("IDMS-" + guid);
-        String codeText = NodeText.originalText(idmsTextNode, NodeText::PASSTHROUGH);
-        return truncated(codeText, 30);
+        return truncated(originalText(), 30);
     }
 
     @Override
@@ -72,5 +66,15 @@ public class DialectStatementFlowNode extends CobolFlowNode {
     @Override
     public boolean accessesDatabase() {
         return databaseAccess;
+    }
+
+    @Override
+    public String originalText() {
+        CobolEntityNavigator navigator = nodeService.getNavigator();
+        ParseTree dialectGuidContext = navigator.findByCondition(executionContext, t -> t.getClass() == CobolParser.DialectGuidContext.class);
+        String guid = dialectGuidContext.getText();
+
+        ParseTree idmsTextNode = PersistentData.getDialectNode("IDMS-" + guid);
+        return NodeText.originalText(idmsTextNode, NodeText::PASSTHROUGH);
     }
 }

@@ -16,10 +16,23 @@ public class FlowNodeNavigator {
 
     private FlowNode searchRecursively(FlowNode current, FlowNodeCondition c) {
         if (c.apply(current)) return current;
-        for (FlowNode child: current.astChildren()) {
+        for (FlowNode child : current.astChildren()) {
             FlowNode found = searchRecursively(child, c);
             if (found != null) return found;
         }
         return null;
+    }
+
+    public FlowNode findNarrowestByCondition(FlowNodeCondition c) {
+        return searchNarrowestRecursively(root, c);
+    }
+
+    private FlowNode searchNarrowestRecursively(FlowNode current, FlowNodeCondition c) {
+        if (!c.apply(current)) return null;
+        for (FlowNode child : current.astChildren()) {
+            FlowNode found = searchNarrowestRecursively(child, c);
+            if (found != null) return found;
+        }
+        return current;
     }
 }

@@ -19,6 +19,7 @@ import org.smojol.common.ast.*;
 import org.smojol.common.flowchart.*;
 import org.smojol.common.id.IdProvider;
 import org.smojol.common.navigation.CobolEntityNavigator;
+import org.smojol.common.navigation.DataStructureNavigator;
 import org.smojol.common.navigation.FlowNodeNavigator;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.interpreter.*;
@@ -65,9 +66,17 @@ public class SmojolTasks {
                 List<CommentBlock> commentBlocks = new CommentExtraction().run(sourceConfig.sourcePath(), pipeline.getNavigator());
                 commentBlocks.forEach(cb -> {
                     System.out.println("Attaching comments");
-                    FlowNode node = new FlowNodeNavigator(astRoot).findByCondition(n -> n.getExecutionContext() == cb.getTree());
-                    if (node == null) astRoot.addComment(cb);
-                    else node.addComment(cb);
+                    FlowNode node = new FlowNodeNavigator(astRoot).findNarrowestByCondition(n -> n.originalText().contains(cb.getCodeContextLine()));
+                    if (node != null) node.addComment(cb);
+                    else {
+                        CobolDataStructure dataStructure = new DataStructureNavigator(dataStructures).findByCondition(ds -> ds.getRawText().contains(cb.getCodeContextLine()));
+                        if (dataStructure != null) dataStructure.addComment(cb);
+                        else {
+                            FlowNode possibleIdmsNode = new FlowNodeNavigator(astRoot).findByCondition(n -> n.originalText().contains(cb.getCodeContextLine()));
+                            if (possibleIdmsNode != null) possibleIdmsNode.addComment(cb);
+                            else astRoot.addComment(cb);
+                        }
+                    }
                 });
             } catch (IOException e) {
                 throw new RuntimeException(e);

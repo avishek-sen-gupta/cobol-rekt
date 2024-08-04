@@ -110,7 +110,7 @@ public class CobolFlowNode implements FlowNode {
 
     @Override
     public String originalText() {
-        return NodeText.originalText(executionContext, NodeText::PASSTHROUGH);
+        return NodeText.originalText(executionContext);
     }
 
     @Override
