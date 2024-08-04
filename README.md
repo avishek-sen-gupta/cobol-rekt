@@ -279,7 +279,8 @@ The simplest way to invoke tasks through the API is using ```CodeTaskRunner```, 
                 "/path/to/dialect-idms.jar",
                 LanguageDialect.COBOL, 
                 new FullProgram(FlowchartOutputFormat.SVG), 
-                new UUIDProvider())
+                new UUIDProvider(),
+                new OccursIgnoringFormat1DataStructureBuilder())
                 .generateForPrograms(ImmutableList.of(
                         WRITE_RAW_AST,
                         WRITE_FLOW_AST
@@ -289,6 +290,8 @@ The simplest way to invoke tasks through the API is using ```CodeTaskRunner```, 
 
 This invocation uses some specific conventions when deciding where to output file artifacts under the ```report-dir``` directory.
 If you want more fine-grained control of the location of output artifacts, you can use the ```SmojolTasks``` class, which gives you more configurability in exchange for having to provide more detailed specifications.
+
+**NOTE:** For all analyses, specifying the ```OccursIgnoringFormat1DataStructureBuilder``` class is preferable to prevent extra noise that can be generated when creating arrays for structures using ```OCCURS``` clauses. However, the ```DefaultFormat1DataStructureBuilder``` should be specified when running the interpreter, because that will require the correct number of elements in array data structures.
 
 ## A Note on Copyright
 
