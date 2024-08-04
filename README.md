@@ -6,7 +6,7 @@ This is an evolving toolkit of capabilities helpful for reverse engineering lega
 
 - Program / section / customisable node level flowchart generation based on AST (SVG or PNG)
 - Parse Tree generation (with export to JSON)
-- Control Flow Tree generation
+- Control Flow Tree generation (with export to JSON)
 - Allows embedding code comments as comment nodes in the graph
 - The SMOJOL Interpreter (WIP)
 - Injecting AST and Control Flow into Neo4J
@@ -17,6 +17,7 @@ This is an evolving toolkit of capabilities helpful for reverse engineering lega
 - Exposes a unified model (AST, CFG, Data Structures with appropriate interconnections) which can be analysed through [JGraphT](https://jgrapht.org/) (which is embedded in the library)
 - Support for namespaces to allow unique addressing of (possibly same) graphs
 - Exporting ASTs, CFGs, and record dependencies to GraphML format
+- Exporting data structure layout to JSON
 
 Cobol-REKT is more of a library of useful things intended to be embedded in more formal reverse engineering workflows/pipelines, rather than being a standalone tool (though you can certainly use it as such). Many of the higher-level wrappers are merely sensible defaults; you are encouraged to modify them to suit your needs.
 
@@ -216,11 +217,13 @@ You can skip the tests as well, using:
 The individual functionalities can be invoked using different commands. The commands and their effects are listed below:
 
 - ```WRITE_FLOW_AST```: Writes a more useful form of the AST to JSON. This form is used by the interpreter and other analyses.
-- ```INJECT_INTO_NEO4J```: This injects the unified model into Neo4J. Exposing more fine-grained options is in progress. This requires the environment variable ```NEO4J_URI```, ```NEO4J_USERNAME```, and ```NEO4J_PASSWORD``` to be defined.
+- ```INJECT_INTO_NEO4J```: This injects the unified model into Neo4J. Exposing more fine-grained options is in progress. This requires the environment variable ```NEO4J_URI```, ```NEO4J_USERNAME```, and ```NEO4J_PASSWORD``` to be defined. If you wish to include comments in the graph, the ```ATTACH_COMMENTS``` needs to have run first.
+- ```ATTACH_COMMENTS```: This parses the original source file (excluding copybooks for now) to find the nearest subsequent AST node to associate with.
 - ```EXPORT_TO_GRAPHML```: This exports the unified model to GraphML. Exposing more fine-grained options is in progress.
 - ```WRITE_RAW_AST```: This writes the original parse tree to JSON. Useful for downstream code to build their own AST representations.
 - ```DRAW_FLOWCHART```: This outputs flowcharts for the whole program or section-by-section of the program in PNG format.
 - ```WRITE_CFG```: This outputs the control flow graph of the program as JSON.
+- ```WRITE_DATA_STRUCTURES```: This exports the data structure hierarchy of the program as JSON.
 
 Passing the validation flag (```--validate``` or ```-v```) skips running all tasks, and simply validates whether the source is syntactically correct.
 
