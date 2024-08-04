@@ -8,7 +8,6 @@ import org.eclipse.lsp.cobol.core.CobolSentenceParser;
 import org.smojol.common.navigation.CobolEntityNavigator;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
