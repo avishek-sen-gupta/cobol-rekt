@@ -37,7 +37,7 @@ import org.smojol.common.idms.DialectIntegratorListener;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.navigation.EntityNavigatorBuilder;
 import org.smojol.common.vm.structure.CobolDataStructure;
-import org.smojol.interpreter.SourceConfig;
+import org.smojol.analysis.pipeline.config.SourceConfig;
 
 import java.io.File;
 import java.io.IOException;

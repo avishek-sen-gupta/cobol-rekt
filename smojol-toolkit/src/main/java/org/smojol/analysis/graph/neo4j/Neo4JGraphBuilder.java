@@ -1,7 +1,6 @@
 package org.smojol.analysis.graph.neo4j;
 
 import com.mojo.woof.GraphSDK;
-import com.mojo.woof.WoofNode;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
@@ -11,7 +10,7 @@ import org.smojol.analysis.graph.NodeSpecBuilder;
 import org.smojol.analysis.graph.NodeToWoof;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.vm.structure.CobolDataStructure;
-import org.smojol.interpreter.GraphBuildConfig;
+import org.smojol.analysis.pipeline.config.GraphBuildConfig;
 import org.smojol.interpreter.navigation.FlowNodeASTTraversal;
 
 import java.util.List;

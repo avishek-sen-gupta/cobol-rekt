@@ -3,41 +3,30 @@ package org.smojol.analysis.pipeline;
 import com.mojo.woof.GraphSDK;
 import com.mojo.woof.Neo4JDriverBuilder;
 import lombok.Getter;
-import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.atn.ATNConfigSet;
-import org.antlr.v4.runtime.dfa.DFA;
-import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.common.error.SyntaxError;
-import org.eclipse.lsp.cobol.core.CobolLexer;
-import org.eclipse.lsp.cobol.core.CobolParser;
-import org.eclipse.lsp.cobol.core.CobolSentenceParser;
 import org.smojol.analysis.ParseDiagnosticRuntimeError;
 import org.smojol.analysis.LanguageDialect;
 import org.smojol.analysis.ParsePipeline;
 import org.smojol.analysis.graph.neo4j.NodeReferenceStrategy;
+import org.smojol.analysis.pipeline.config.*;
 import org.smojol.analysis.visualisation.ComponentsBuilder;
 import org.smojol.ast.FlowchartBuilderImpl;
-import org.smojol.ast.GenericProcessingFlowNode;
 import org.smojol.common.ast.CobolTreeVisualiser;
-import org.smojol.common.ast.CommentBlock;
-import org.smojol.common.ast.NodeText;
 import org.smojol.common.id.IdProvider;
-import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.navigation.EntityNavigatorBuilder;
 import org.smojol.common.vm.strategy.UnresolvedReferenceThrowStrategy;
+import org.smojol.common.vm.structure.Format1DataStructureBuilder;
 import org.smojol.interpreter.*;
-import org.smojol.interpreter.structure.DefaultFormat1DataStructureBuilder;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
 public class CodeTaskRunner {
     private static final String AST_DIR = "ast";
+    private static final String DATA_STRUCTURES_DIR = "data_structures";
     private static final String FLOW_AST_DIR = "flow_ast";
     private static final String IMAGES_DIR = "flowcharts";
     private static final String DOTFILES_DIR = "dotfiles";
@@ -52,8 +41,9 @@ public class CodeTaskRunner {
     private final IdProvider idProvider;
     @Getter
     private final Map<String, List<SyntaxError>> errorMap = new HashMap<>();
+    private Format1DataStructureBuilder format1DataStructureBuilder;
 
-    public CodeTaskRunner(String sourceDir, String reportRootDir, List<File> copyBookPaths, String dialectJarPath, LanguageDialect dialect, FlowchartGenerationStrategy flowchartGenerationStrategy, IdProvider idProvider) {
+    public CodeTaskRunner(String sourceDir, String reportRootDir, List<File> copyBookPaths, String dialectJarPath, LanguageDialect dialect, FlowchartGenerationStrategy flowchartGenerationStrategy, IdProvider idProvider, Format1DataStructureBuilder format1DataStructureBuilder) {
         this.sourceDir = sourceDir;
         this.copyBookPaths = copyBookPaths;
         this.dialectJarPath = dialectJarPath;
@@ -61,6 +51,7 @@ public class CodeTaskRunner {
         this.dialect = dialect;
         this.flowchartGenerationStrategy = flowchartGenerationStrategy;
         this.idProvider = idProvider;
+        this.format1DataStructureBuilder = format1DataStructureBuilder;
         reportParameters();
     }
 
@@ -94,6 +85,7 @@ public class CodeTaskRunner {
     private void generateForProgram(String programFilename, String sourceDir, String reportRootDir, LanguageDialect dialect, List<AnalysisTask> tasks) throws IOException {
         String programReportDir = String.format("%s.report", programFilename);
         Path astOutputDir = Paths.get(reportRootDir, programReportDir, AST_DIR).toAbsolutePath().normalize();
+        Path dataStructuresOutputDir = Paths.get(reportRootDir, programReportDir, DATA_STRUCTURES_DIR).toAbsolutePath().normalize();
         Path flowASTOutputDir = Paths.get(reportRootDir, programReportDir, FLOW_AST_DIR).toAbsolutePath().normalize();
         Path imageOutputDir = Paths.get(reportRootDir, programReportDir, IMAGES_DIR).toAbsolutePath().normalize();
         Path dotFileOutputDir = Paths.get(reportRootDir, programReportDir, DOTFILES_DIR).toAbsolutePath().normalize();
@@ -105,6 +97,7 @@ public class CodeTaskRunner {
         String flowASTOutputPath = flowASTOutputDir.resolve(String.format("flow-ast-%s.json", programFilename)).toAbsolutePath().normalize().toString();
         String absoluteDialectJarPath = Paths.get(dialectJarPath).toAbsolutePath().normalize().toString();
         SourceConfig sourceConfig = new SourceConfig(programFilename, sourceDir, copyBookPaths, cobolParseTreeOutputPath, absoluteDialectJarPath);
+        OutputArtifactConfig dataStructuresOutputConfig = new OutputArtifactConfig(dataStructuresOutputDir, programFilename + "-data.json");
 
         FlowchartOutputWriter flowchartOutputWriter = new FlowchartOutputWriter(flowchartGenerationStrategy, dotFileOutputDir, imageOutputDir);
         RawASTOutputConfig rawAstOutputConfig = new RawASTOutputConfig(astOutputDir, new CobolTreeVisualiser());
@@ -114,7 +107,7 @@ public class CodeTaskRunner {
         GraphSDK sdk = new GraphSDK(new Neo4JDriverBuilder().fromEnv());
         ComponentsBuilder ops = new ComponentsBuilder(new CobolTreeVisualiser(),
                 FlowchartBuilderImpl::build, new EntityNavigatorBuilder(), new UnresolvedReferenceThrowStrategy(),
-                new DefaultFormat1DataStructureBuilder(), idProvider);
+                format1DataStructureBuilder, idProvider);
         ParsePipeline pipeline = new ParsePipeline(sourceConfig, ops, dialect);
         GraphBuildConfig graphBuildConfig = new GraphBuildConfig(
                 NodeReferenceStrategy.EXISTING_CFG_NODE,
@@ -124,7 +117,7 @@ public class CodeTaskRunner {
                 sourceConfig, flowchartOutputWriter,
                 rawAstOutputConfig, graphMLOutputConfig,
                 flowASTOutputConfig, cfgOutputConfig,
-                graphBuildConfig, sdk,
+                graphBuildConfig, dataStructuresOutputConfig, sdk,
                 idProvider).build();
         pipelineTasks.run(tasks);
     }

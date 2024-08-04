@@ -2,6 +2,7 @@ package org.smojol.interpreter;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.smojol.analysis.ParsePipeline;
+import org.smojol.analysis.pipeline.config.SourceConfig;
 import org.smojol.common.navigation.CobolEntityNavigator;
 
 import java.io.IOException;

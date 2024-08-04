@@ -7,5 +7,6 @@ public enum AnalysisTask {
     WRITE_FLOW_AST,
     DRAW_FLOWCHART,
     WRITE_CFG,
-    ATTACH_COMMENTS
+    ATTACH_COMMENTS,
+    WRITE_DATA_STRUCTURES
 }

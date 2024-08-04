@@ -1,4 +1,4 @@
-package org.smojol.interpreter;
+package org.smojol.analysis.pipeline.config;
 
 import org.smojol.common.ast.CobolTreeVisualiser;
 

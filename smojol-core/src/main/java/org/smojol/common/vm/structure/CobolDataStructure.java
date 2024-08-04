@@ -8,6 +8,7 @@ import lombok.Getter;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.ast.CommentBlock;
 import org.smojol.common.flowchart.DataStructureVisitor;
+import org.smojol.common.flowchart.StrangeDataStructureVisitor;
 import org.smojol.common.vm.memory.DataLayoutBuilder;
 import org.smojol.common.vm.memory.MemoryLayout;
 import org.smojol.common.vm.memory.MemoryRegion;
@@ -206,6 +207,11 @@ public abstract class CobolDataStructure extends SimpleTreeNode {
         CobolDataStructure parentNode = visitor.visit(this, parent, root);
         if (stopRecurseCondition.apply(this)) return;
         this.structures.forEach(s -> s.accept(visitor, parentNode, stopRecurseCondition, root));
+    }
+
+    public void acceptStrange(StrangeDataStructureVisitor visitor) {
+        StrangeDataStructureVisitor scopedVisitor = visitor.visit(this);
+        this.structures.forEach(s -> s.acceptStrange(scopedVisitor));
     }
 
     public void addComment(CommentBlock cb) {

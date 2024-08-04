@@ -1,4 +1,4 @@
-package org.smojol.interpreter;
+package org.smojol.analysis.pipeline.config;
 
 import java.io.File;
 import java.nio.file.Path;

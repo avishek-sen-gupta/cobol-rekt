@@ -7,6 +7,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.smojol.analysis.LanguageDialect;
 import org.smojol.analysis.graph.NamespaceQualifier;
 import org.smojol.analysis.graph.NodeSpecBuilder;
+import org.smojol.analysis.pipeline.config.SourceConfig;
 import org.smojol.common.ast.CobolTreeVisualiser;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.FlowNodeService;

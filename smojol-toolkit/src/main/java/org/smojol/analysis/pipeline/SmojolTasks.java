@@ -15,6 +15,7 @@ import org.smojol.analysis.graph.NodeSpecBuilder;
 import org.smojol.analysis.graph.SummariseAction;
 import org.smojol.analysis.graph.graphml.JGraphTGraphBuilder;
 import org.smojol.analysis.graph.neo4j.*;
+import org.smojol.analysis.pipeline.config.*;
 import org.smojol.common.ast.*;
 import org.smojol.common.flowchart.*;
 import org.smojol.common.id.IdProvider;
@@ -43,6 +44,7 @@ public class SmojolTasks {
     private final GraphMLExportConfig graphMLOutputConfig;
     private final FlowASTOutputConfig flowASTOutputConfig;
     private final CFGOutputConfig cfgOutputConfig;
+    private final OutputArtifactConfig dataStructuresOutputConfig;
     private final IdProvider idProvider;
     private final GraphBuildConfig graphBuildConfig;
     private final ParsePipeline pipeline;
@@ -84,6 +86,12 @@ public class SmojolTasks {
         }
     };
 
+    public Runnable WRITE_DATA_STRUCTURES = new Runnable() {
+        @Override
+        public void run() {
+            new WriteDataStructuresTask(dataStructures, dataStructuresOutputConfig).run();
+        }
+    };
     public Runnable EXPORT_TO_GRAPHML = new Runnable() {
         @Override
         public void run() {
@@ -165,11 +173,12 @@ public class SmojolTasks {
         }
     };
 
-    public SmojolTasks(ParsePipeline pipeline, SourceConfig sourceConfig, FlowchartOutputWriter flowchartOutputWriter, RawASTOutputConfig rawAstOutputConfig, GraphMLExportConfig graphMLOutputConfig, FlowASTOutputConfig flowASTOutputConfig, CFGOutputConfig cfgOutputConfig, GraphBuildConfig graphBuildConfig, GraphSDK graphSDK, IdProvider idProvider) {
+    public SmojolTasks(ParsePipeline pipeline, SourceConfig sourceConfig, FlowchartOutputWriter flowchartOutputWriter, RawASTOutputConfig rawAstOutputConfig, GraphMLExportConfig graphMLOutputConfig, FlowASTOutputConfig flowASTOutputConfig, CFGOutputConfig cfgOutputConfig, GraphBuildConfig graphBuildConfig, OutputArtifactConfig dataStructuresOutputConfig, GraphSDK graphSDK, IdProvider idProvider) {
         this.pipeline = pipeline;
         this.sourceConfig = sourceConfig;
         this.flowchartOutputWriter = flowchartOutputWriter;
         this.rawAstOutputConfig = rawAstOutputConfig;
+        this.dataStructuresOutputConfig = dataStructuresOutputConfig;
         this.graphSDK = graphSDK;
         this.graphMLOutputConfig = graphMLOutputConfig;
         this.flowASTOutputConfig = flowASTOutputConfig;
@@ -211,6 +220,7 @@ public class SmojolTasks {
             case WRITE_FLOW_AST -> WRITE_FLOW_AST;
             case WRITE_CFG -> WRITE_CFG;
             case ATTACH_COMMENTS -> ATTACH_COMMENTS;
+            case WRITE_DATA_STRUCTURES -> WRITE_DATA_STRUCTURES;
         });
     }
 
