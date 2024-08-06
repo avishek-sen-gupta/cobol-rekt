@@ -5,3 +5,11 @@ fileignoreconfig:
   checksum: 7d588457269a756bd01fbea071f543692092ac1f201e319ca2766165574923cd
 - filename: smojol-test-code/nist85.cbl
   checksum: ab6eb548ef861a2d4b399b74e67ce9ea6234721a82021d07040583f4e15f9648
+- filename: python/src/llm/common/env_vars.py
+  checksum: 44c0b8d3299e23ba7b27ebda5d53deeea3d9b88bde0ceff1a7875bf553d405fc
+- filename: python/src/llm/glossary_builder/main.py
+  checksum: f02e806757a7bf4bc66308dbd185a2ddc9daa87493e1ad73fc5f8aaf428a9099
+- filename: python/src/llm/capability_extractor/capabilities_graph.py
+  checksum: a0bcdb7d63587fc2df2a2dc6d8b2caea6240a7fa6f24e56e454b7fb41d2969c4
+- filename: python/src/llm/capability_extractor/paragraph_capabilities.py
+  checksum: 9947105be22802bd2f8a4c3cd269b8ad3bf7a3120ab86e04b0fd3e8c2d21c7b0

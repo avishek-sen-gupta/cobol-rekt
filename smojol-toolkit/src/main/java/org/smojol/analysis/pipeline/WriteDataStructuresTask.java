@@ -29,7 +29,7 @@ public class WriteDataStructuresTask implements Runnable {
         dataStructures.acceptStrange(visitor);
         try (JsonWriter writer = new JsonWriter(new FileWriter(outputArtifactConfig.fullPath()))) {
             Files.createDirectory(outputArtifactConfig.outputDir());
-            writer.setIndent("  ");  // Optional: for pretty printing
+            writer.setIndent("  ");
             gson.toJson(root, SerialisableCobolDataStructure.class, writer);
         } catch (IOException e) {
             throw new RuntimeException(e);
