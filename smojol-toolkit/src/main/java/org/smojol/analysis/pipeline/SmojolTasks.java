@@ -195,8 +195,8 @@ public class SmojolTasks {
 
         ParseTree procedure = navigator.procedureBodyRoot();
         FlowchartBuilder flowcharter = pipeline.flowcharter();
-        flowcharter.buildFlowAST(procedure).buildControlFlow().buildOverlay();
-        astRoot = flowcharter.getRoot();
+//        flowcharter.buildFlowAST(procedure).buildControlFlow().buildOverlay();
+//        astRoot = flowcharter.getRoot();
 
         return this;
     }
