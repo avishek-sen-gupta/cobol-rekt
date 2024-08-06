@@ -2,6 +2,7 @@ package org.smojol.analysis.pipeline;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.stream.JsonWriter;
 import com.mojo.woof.Advisor;
 import com.mojo.woof.GraphSDK;
 import com.mojo.woof.OpenAICredentials;
@@ -26,6 +27,7 @@ import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.interpreter.*;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
@@ -109,6 +111,7 @@ public class SmojolTasks {
         @Override
         public void run() {
             try {
+                System.out.println(ConsoleColors.green(String.format("Memory usage: %s", Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())));
                 System.out.printf("AST Output Dir is: %s%n", rawAstOutputConfig.astOutputDir());
                 Files.createDirectories(rawAstOutputConfig.astOutputDir());
                 rawAstOutputConfig.visualiser().writeCobolAST(pipeline.getTree(), sourceConfig.cobolParseTreeOutputPath(), false, navigator);
@@ -123,15 +126,22 @@ public class SmojolTasks {
     private void writeFlowAST() {
         SerialisableASTFlowNode serialisableASTFlowRoot = new SerialiseFlowASTTask().serialisedFlowAST(astRoot);
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        String json = gson.toJson(serialisableASTFlowRoot);
-        try {
+        try (JsonWriter writer = new JsonWriter(new FileWriter(flowASTOutputConfig.outputPath()))) {
             Files.createDirectories(flowASTOutputConfig.outputDir());
-            PrintWriter out = new PrintWriter(flowASTOutputConfig.outputPath());
-            out.println(json);
-            out.close();
+            writer.setIndent("  ");
+            gson.toJson(serialisableASTFlowRoot, SerialisableASTFlowNode.class, writer);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+//        String json = gson.toJson(serialisableASTFlowRoot);
+//        try {
+//            Files.createDirectories(flowASTOutputConfig.outputDir());
+//            PrintWriter out = new PrintWriter(flowASTOutputConfig.outputPath());
+//            out.println(json);
+//            out.close();
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
     }
 
     public Runnable DRAW_FLOWCHART = new Runnable() {
@@ -153,16 +163,22 @@ public class SmojolTasks {
             SerialisableCFGGraphCollector cfgGraphCollector = new SerialisableCFGGraphCollector(idProvider);
             astRoot.accept(cfgGraphCollector, -1);
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            String json = gson.toJson(cfgGraphCollector);
-            try {
+            try (JsonWriter writer = new JsonWriter(new FileWriter(cfgOutputConfig.outputPath()))) {
                 Files.createDirectories(cfgOutputConfig.outputDir());
-                PrintWriter out = new PrintWriter(cfgOutputConfig.outputPath());
-                out.println(json);
-                out.close();
+                writer.setIndent("  ");  // Optional: for pretty printing
+                gson.toJson(cfgGraphCollector, SerialisableCFGGraphCollector.class, writer);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-
+//            String json = gson.toJson(cfgGraphCollector);
+//            try {
+//                Files.createDirectories(cfgOutputConfig.outputDir());
+//                PrintWriter out = new PrintWriter(cfgOutputConfig.outputPath());
+//                out.println(json);
+//                out.close();
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            }
         }
     };
 

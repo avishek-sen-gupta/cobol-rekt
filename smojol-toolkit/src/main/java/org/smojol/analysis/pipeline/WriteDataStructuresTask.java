@@ -2,9 +2,12 @@ package org.smojol.analysis.pipeline;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.stream.JsonWriter;
+import org.smojol.common.ast.CobolContextAugmentedTreeNode;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.analysis.pipeline.config.OutputArtifactConfig;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
@@ -24,15 +27,22 @@ public class WriteDataStructuresTask implements Runnable {
         SerialisableCobolDataStructure root = new SerialisableCobolDataStructure();
         DataStructureExporter visitor = new DataStructureExporter(root);
         dataStructures.acceptStrange(visitor);
-        String json = gson.toJson(root);
-        System.out.println("Output: " + outputArtifactConfig.fullPath());
-        try {
+        try (JsonWriter writer = new JsonWriter(new FileWriter(outputArtifactConfig.fullPath()))) {
             Files.createDirectory(outputArtifactConfig.outputDir());
-            PrintWriter out = new PrintWriter(outputArtifactConfig.fullPath());
-            out.println(json);
-            out.close();
+            writer.setIndent("  ");  // Optional: for pretty printing
+            gson.toJson(root, SerialisableCobolDataStructure.class, writer);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+//        String json = gson.toJson(root);
+//        System.out.println("Output: " + outputArtifactConfig.fullPath());
+//        try {
+//            Files.createDirectory(outputArtifactConfig.outputDir());
+//            PrintWriter out = new PrintWriter(outputArtifactConfig.fullPath());
+//            out.println(json);
+//            out.close();
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
     }
 }

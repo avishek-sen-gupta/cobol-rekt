@@ -2,12 +2,16 @@ package org.smojol.common.ast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.stream.JsonWriter;
 import hu.webarticum.treeprinter.printer.listing.ListingTreePrinter;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.smojol.common.flowchart.ConsoleColors;
 import org.smojol.common.navigation.CobolEntityNavigator;
 
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 
 public class CobolTreeVisualiser {
@@ -27,13 +31,11 @@ public class CobolTreeVisualiser {
         CobolContextAugmentedTreeNode graphRoot = new CobolContextAugmentedTreeNode(tree, navigator);
         buildContextGraph(tree, graphRoot, navigator);
         if (outputTree) new ListingTreePrinter().print(graphRoot);
-        try {
-            String s = gson.toJson(graphRoot);
-//            PrintWriter out = new PrintWriter("/Users/asgupta/Downloads/mbrdi-poc/V7523438-compiled-parse-tree.json");
-            PrintWriter out = new PrintWriter(cobolParseTreeOutputPath);
-            out.println(s);
-            out.close();
-        } catch (FileNotFoundException e) {
+        System.out.println(ConsoleColors.green(String.format("Memory usage: %s", Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())));
+        try (JsonWriter writer = new JsonWriter(new FileWriter(cobolParseTreeOutputPath))) {
+            writer.setIndent("  ");
+            gson.toJson(graphRoot, CobolContextAugmentedTreeNode.class, writer);
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
