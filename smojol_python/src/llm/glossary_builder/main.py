@@ -1,13 +1,15 @@
+import argparse
 import json
+import os
+from typing import Any
 
-from langchain.chains import GraphCypherQAChain
-from langchain_community.graphs import Neo4jGraph
 from langchain_openai import AzureChatOpenAI
 
 from src.llm.common.env_vars import openai_config, neo4j_config
+from src.llm.common.parameter_constants import ParameterConstants
 
 
-def explain_through_llm(struct, path, llm):
+def explain_through_llm(struct: dict[str, Any], path: list[str], llm: AzureChatOpenAI) -> None:
     print(f"Path is {path} for {struct['name']}")
     var_name = struct["name"]
     system_message = f"""
@@ -30,7 +32,7 @@ def explain_through_llm(struct, path, llm):
             continue
 
 
-def collect(struct, path, llm, all_paths):
+def collect(struct: dict[str, Any], path: list[str], llm: AzureChatOpenAI, all_paths: list[list[str]]) -> None:
     if "ROOT" not in struct["name"]:
         all_paths += [path + [struct["name"]]]
         # explain_through_llm(struct, path, llm)
@@ -38,13 +40,15 @@ def collect(struct, path, llm, all_paths):
         collect(child, path + [struct["name"]], llm, all_paths)
 
 
-def explain_once(all_paths, llm):
+def explain_once(all_paths: list[list[str]], llm: AzureChatOpenAI) -> list[str]:
     print(f"Explaining {len(all_paths)} data structures")
+    all_explanations: list[str] = []
     for x in range(0, len(all_paths), 20):
-        explain_batch(all_paths[x:(x + 19)], llm, x, len(all_paths))
+        all_explanations += explain_batch(all_paths[x:(x + 19)], llm, x, len(all_paths)) + "\n"
+    return all_explanations
 
 
-def explain_batch(all_paths, llm, index, max):
+def explain_batch(all_paths: list[list[str]], llm: AzureChatOpenAI, index: int, max: int) -> str:
     print(f"Explaining {index} to {index + 19} of {max}...")
     system_message = f"""
                                 You are an expert of Mainframe and IDMS codebases.
@@ -63,57 +67,43 @@ def explain_batch(all_paths, llm, index, max):
         try:
             response = llm.invoke(system_message)
             print(response.content)
-            break
+            return response.content
         except Exception as e:
             print(e)
             continue
 
 
-def build_glossary(llm):
-    with open("/Users/asgupta/code/smojol/out/report/V7525186.report/data_structures/V7525186-data.json", 'r') as file:
-        data_structures = json.load(file)
-        all_paths = []
+def build_glossary(llm: AzureChatOpenAI, input_path: str, output_path: str) -> None:
+    # with open("/Users/asgupta/code/smojol/out/report/V7525186.report/data_structures/V7525186-data.json", 'r') as input_file:
+    with open(input_path, 'r') as input_file:
+        data_structures = json.load(input_file)
+        all_paths: list[list[str]] = []
         collect(data_structures["children"][0], [], llm, all_paths)
-        explain_once(all_paths, llm)
+        all_explanations = explain_once(all_paths, llm)
+        with open(output_path, 'w') as output_file:
+            for explanation in all_explanations:
+                output_file.write(explanation)
         # print(all_paths, llm)
         exit(0)
 
 
 if __name__ == "__main__":
     open_ai_endpoint, open_ai_key = openai_config()
-    neo4j_uri, neo4j_username, neo4j_password = neo4j_config()
+    deployment = os.environ.get("LLM_MODEL_LARGE_CONTEXT")
 
+    parser = argparse.ArgumentParser(prog="build_glossary")
+    parser.add_argument(ParameterConstants.DS_INPUT_PATH)
+    parser.add_argument(ParameterConstants.GLOSSARY_OUTPUT_PATH)
+    args = parser.parse_args()
+    input_path = args.input_path
+    output_path = args.output_path
+    report_dir = args.report_dir
     llm4 = AzureChatOpenAI(
-        deployment_name="gpt-4o",
+        deployment_name=deployment,
         azure_endpoint=open_ai_endpoint,
         openai_api_version="2023-06-01-preview",
         openai_api_key=open_ai_key,
         temperature=0.8,
         request_timeout=6000
     )
-    build_glossary(llm4)
-
-    graph = Neo4jGraph(neo4j_uri, username=neo4j_username, password=neo4j_password)
-    graph.refresh_schema()
-
-    explorerChain = GraphCypherQAChain.from_llm(llm4, graph=graph, verbose=True)
-
-    # while True:
-    #     try:
-    #         response = explorerChain.invoke("""
-    #         'Z-BO-PAMA' is a data structure. Deduce what it represents in the domain, if the domain is automotive after-sales. Return the context surrounding this data structure. Consider all statements
-    #         which modify or access this data structure using the 'MODIFIES' and 'ACCESSES' edges, including
-    #         neighbouring statements. Check to a minimum of 10 neighbouring statements.Also consider other variables
-    #         which affect it using the FLOWS_INTO connection. Also consider any comments attached to neighbouring data
-    #         structures with the 'HAS_COMMENT' connection. the domain-specific string terms must be in plain English.
-    #         Run multiple queries if needed. Do not return an empty list. Re-run the query if you have to. )
-    #         """)
-    #         if len(response) == 0:
-    #             continue
-    #         break
-    #     except Exception as e:
-    #         print(e)
-    #         continue
-    #
-    # context = response["result"]
-    # var_name = "Z-BO-PAMA"
+    build_glossary(llm4, input_path, output_path)

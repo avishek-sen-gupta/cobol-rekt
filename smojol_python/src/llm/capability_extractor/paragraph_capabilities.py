@@ -12,7 +12,7 @@ from src.llm.common.env_vars import openai_config, neo4j_config
 c = ConsoleColors()
 
 
-def collect(struct, path: str, llm: AzureChatOpenAI, all_paths: list[list[str]]) -> None:
+def collect(struct, path: list[str], llm: AzureChatOpenAI, all_paths: list[list[str]]) -> None:
     if "ROOT" not in struct["name"]:
         all_paths += [path + [struct["name"]]]
         # explain_through_llm(struct, path, llm)
@@ -20,7 +20,7 @@ def collect(struct, path: str, llm: AzureChatOpenAI, all_paths: list[list[str]])
         collect(child, path + [struct["name"]], llm, all_paths)
 
 
-def structure(structure_name: str, all_paths: list[list[str]]) -> (str, list[str]):
+def matching_structures(structure_name: str, all_paths: list[list[str]]) -> tuple[str, list[list[str]]]:
     return structure_name, [path for path in all_paths if path[-1] == structure_name]
 
 
@@ -42,15 +42,15 @@ def llm_explanation_block(paragraph_name: str, explanation: str, llm: AzureChatO
     while True:
         try:
             response = llm.invoke(system_message)
-            print(c.grey(response.content))
-            return response.content
+            print(c.grey(str(response.content)))
+            return str(response.content)
         except Exception as e:
             print(c.fail(e))
             continue
 
 
-def all_capabilities(neo4j_uri: str, auth: (str, str), llm: AzureChatOpenAI):
-    master_explanations = {}
+def all_capabilities(neo4j_uri: str, auth: tuple[str, str], llm: AzureChatOpenAI):
+    master_explanations: dict[str, str] = {}
     cache_stats = CacheStats()
     all_paths = data_structure_graph(llm)
     with GraphDatabase.driver(neo4j_uri, auth=auth) as driver:
@@ -93,11 +93,11 @@ def capabilities_for_paragraph(nrds: list[Record], all_paths: list[list[str]], m
     for i, dataNode in enumerate(explanation_map):
         print(c.green(
             f"Explaining variable {dataNode['name']} ({i + 1}/{len(explanation_map)}) [Overall progress = {overall_progress}, num_cache_hits = {cache_stats.hits}]..."))
-        structure_name, structure_path = structure(dataNode["name"], all_paths)
+        structure_name, structure_paths = matching_structures(dataNode["name"], all_paths)
         if structure_name == "FILLER":
             print(c.warning("Skipping FILLER..."))
             continue
-        if len(structure_path) == 0:
+        if len(structure_paths) == 0:
             print(c.warning("Skipping because path is empty, so probably a non-pertinent static constant..."))
             continue
         if structure_name in master_explanations:
@@ -107,7 +107,7 @@ def capabilities_for_paragraph(nrds: list[Record], all_paths: list[list[str]], m
                 structure_name] + "\n"
             cache_stats.add()
             continue
-        generated_explanation = llm_explanation(structure_name, structure_path, llm)
+        generated_explanation = llm_explanation(structure_name, structure_paths[0], llm)
         master_explanations[structure_name] = generated_explanation
         explanation += f"This is the domain relevance of {structure_name}: \n" + generated_explanation + "\n"
 
@@ -117,12 +117,12 @@ def capabilities_for_paragraph(nrds: list[Record], all_paths: list[list[str]], m
 def data_structure_graph(llm: AzureChatOpenAI) -> list[list[str]]:
     with open("/Users/asgupta/code/smojol/out/report/V7525186.report/data_structures/V7525186-data.json", 'r') as file:
         data_structures = json.load(file)
-        all_paths = []
+        all_paths: list[list[str]] = []
         collect(data_structures["children"][0], [], llm, all_paths)
         return all_paths
 
 
-def llm_explanation(struct_name: str, path: str, llm: AzureChatOpenAI) -> str:
+def llm_explanation(struct_name: str, path: list[str], llm: AzureChatOpenAI) -> str:
     print(c.bold(f"Path is {path} for {struct_name}"))
     system_message = f"""
                                 You are an expert of Mainframe and IDMS codebases.
@@ -139,7 +139,7 @@ def llm_explanation(struct_name: str, path: str, llm: AzureChatOpenAI) -> str:
         try:
             response = llm.invoke(system_message)
             print(c.grey(response.content))
-            return response.content
+            return str(response.content)
         except Exception as e:
             print(c.fail(e))
             continue
@@ -156,11 +156,7 @@ if __name__ == "__main__":
     print(c.green(open_ai_endpoint))
     print(c.green(neo4j_uri))
 
-    NEO4J_URI = os.environ.get("NEO4J_URI")
-    NEO4J_USERNAME = os.environ.get("NEO4J_USERNAME")
-    NEO4J_PASSWORD = os.environ.get("NEO4J_PASSWORD")
-
-    AUTH = (NEO4J_USERNAME, NEO4J_PASSWORD)
+    auth = (neo4j_username, neo4j_password)
     llm4 = AzureChatOpenAI(
         deployment_name="gpt-4o",
         azure_endpoint=open_ai_endpoint,
@@ -173,7 +169,7 @@ if __name__ == "__main__":
     f = open("/Users/asgupta/code/smojol-llm/out/capabilities.txt", "w")
     f.write("")
     f.close()
-    capabilities, variable_explanations = all_capabilities(NEO4J_URI, AUTH, llm4)
+    capabilities, variable_explanations = all_capabilities(neo4j_uri, auth, llm4)
     with open("/Users/asgupta/code/smojol-llm/out/variable_explanations.json", "w") as fp:
         json.dump(variable_explanations, fp)
     print(c.cyan(f"Capabilities are: {capabilities}"))

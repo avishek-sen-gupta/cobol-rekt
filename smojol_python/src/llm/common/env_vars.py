@@ -3,7 +3,7 @@ import os
 from src.llm.common.console_colors import ConsoleColors
 
 
-def openai_config():
+def openai_config() -> tuple[str, str]:
     c = ConsoleColors()
     open_ai_key: str = os.environ['AZURE_OPENAI_API_KEY']
     open_ai_endpoint: str = os.environ['AZURE_OPENAI_ENDPOINT']
@@ -13,7 +13,7 @@ def openai_config():
     return open_ai_endpoint, open_ai_key
 
 
-def neo4j_config():
+def neo4j_config() -> tuple[str, str, str, str]:
     c = ConsoleColors()
     neo4j_uri: str = os.environ['NEO4J_URI']
     neo4j_username: str = os.environ['NEO4J_USERNAME']

@@ -1,12 +1,13 @@
 import sys
 from functools import reduce
+from typing import Callable, Iterable
 
 import matplotlib.pyplot as plt
 import numpy as np
 from gensim.models import KeyedVectors
 from langchain_community.graphs import Neo4jGraph
 from langchain_openai import AzureChatOpenAI
-from neo4j import GraphDatabase
+from neo4j import GraphDatabase, Driver
 from scipy.cluster.hierarchy import linkage, dendrogram
 from scipy.spatial.distance import pdist
 from tqdm import tqdm
@@ -18,7 +19,8 @@ from src.llm.common.env_vars import openai_config, neo4j_config
 c = ConsoleColors()
 
 
-def recurse_to_graph(cluster: DomainCluster, parent: DomainCluster, neo4j_runtime_config):
+def recurse_to_graph(cluster: DomainCluster, parent: DomainCluster | None,
+                     neo4j_runtime_config: tuple[Driver, str]) -> None:
     driver, database = neo4j_runtime_config
     print(f".", end="")
     composite_type = "COMPOSITE" if cluster.composite else "LEAF"
@@ -52,7 +54,7 @@ def recurse_to_graph(cluster: DomainCluster, parent: DomainCluster, neo4j_runtim
         recurse_to_graph(child, cluster, neo4j_runtime_config)
 
 
-def recurse_for_domain(cluster: DomainCluster, llm):
+def recurse_for_domain(cluster: DomainCluster, llm: AzureChatOpenAI) -> None:
     if not cluster.composite:
         cluster.umbrella_subdomain = cluster.domain
         return
@@ -65,7 +67,7 @@ def recurse_for_domain(cluster: DomainCluster, llm):
     # cluster.umbrella_subdomain = "DUMMY"
 
 
-def umbrella_term(cluster, llm):
+def umbrella_term(cluster: DomainCluster, llm: AzureChatOpenAI) -> str:
     child_domains: list[str] = list(map(lambda c: c.domain, cluster.children))
     domains_as_string: str = reduce(lambda acc, word: acc + "," + word, child_domains, "")
     child_umbrella_subdomains: list[str] = list(map(lambda c: c.umbrella_subdomain, cluster.children))
@@ -92,7 +94,7 @@ def umbrella_term(cluster, llm):
             continue
 
 
-def attach_paragraphs(pairs: list, neo4j_runtime_config):
+def attach_paragraphs(pairs: list[tuple[str, list[str]]], neo4j_runtime_config: tuple[Driver, str]):
     driver, database = neo4j_runtime_config
     for p in tqdm(pairs, colour="green"):
         domains: list[str] = p[1]
@@ -134,7 +136,7 @@ if __name__ == "__main__":
         line.split(":")[0].replace("'", " "), list(map(lambda term: term.strip(), line.split(":")[1].split(",")))),
                      lines))
 
-    all_terms = list(reduce(lambda full, pair: full + pair[1], pairs, []))
+    all_terms: list[str] = list(reduce(lambda full, pair: full + pair[1], pairs, []))
     unique_terms = list(map(lambda w: w.lower().strip(), set(all_terms)))
 
     print(unique_terms)
@@ -150,7 +152,7 @@ if __name__ == "__main__":
     # Perform hierarchical/agglomerative clustering
     linkage_matrix = linkage(distances, method='ward')
     n = len(words)
-    nodes = {}
+    nodes: dict[int, DomainCluster] = {}
     for index, merge in enumerate(tqdm(linkage_matrix, colour="green")):
         left_index = int(merge[0])
         right_index = int(merge[1])
