@@ -140,3 +140,5 @@ clients/cobol-lsp-vscode-extension/test-report.xml
 out/
 **/__pycache__
 **/.python-version
+**/.env
+
