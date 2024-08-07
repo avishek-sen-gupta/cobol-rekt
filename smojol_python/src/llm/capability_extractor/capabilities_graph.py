@@ -1,3 +1,4 @@
+import argparse
 import sys
 from functools import reduce
 from typing import Callable, Iterable
@@ -15,6 +16,7 @@ from tqdm import tqdm
 from src.llm.capability_extractor.domain_cluster import DomainCluster
 from src.llm.common.console_colors import ConsoleColors
 from src.llm.common.env_vars import openai_config, neo4j_config
+from src.llm.common.parameter_constants import ParameterConstants
 
 c = ConsoleColors()
 
@@ -116,7 +118,15 @@ def attach_paragraphs(pairs: list[tuple[str, list[str]]], neo4j_runtime_config: 
 
 
 if __name__ == "__main__":
-    print(sys.version)
+    parser = argparse.ArgumentParser(prog="build_capabilities_graph")
+    parser.add_argument(ParameterConstants.CAPABILITIES_PATH)
+    parser.add_argument(ParameterConstants.TEXT_EMBEDDINGS_MODEL_PATH)
+    args = parser.parse_args()
+    capabilities_path = args.CAPABILITIES_PATH
+    text_embeddings_model_path = args.TEXT_EMBEDDINGS_MODEL_PATH
+    # capabilities_path = "/Users/asgupta/code/smojol-llm/artifacts/capabilities2.txt"
+    # text_embeddings_model_path = '/Users/asgupta/Downloads/google-news-embeddings/GoogleNews-vectors-negative300.bin'
+
     open_ai_endpoint, open_ai_key = openai_config()
     neo4j_uri, neo4j_username, neo4j_password, neo4j_database = neo4j_config()
 
@@ -130,7 +140,7 @@ if __name__ == "__main__":
         request_timeout=6000
     )
     graph = Neo4jGraph(neo4j_uri, username=neo4j_username, password=neo4j_password)
-    with open("/Users/asgupta/code/smojol-llm/artifacts/capabilities2.txt", "r") as fp:
+    with open(capabilities_path, "r") as fp:
         lines: list[str] = fp.readlines()
     pairs = list(map(lambda line: (
         line.split(":")[0].replace("'", " "), list(map(lambda term: term.strip(), line.split(":")[1].split(",")))),
@@ -142,8 +152,7 @@ if __name__ == "__main__":
     print(unique_terms)
 
     # Load pre-trained word2vec model (Google News 300)
-    model_path = '/Users/asgupta/Downloads/google-news-embeddings/GoogleNews-vectors-negative300.bin'
-    model = KeyedVectors.load_word2vec_format(model_path, binary=True)
+    model = KeyedVectors.load_word2vec_format(text_embeddings_model_path, binary=True)
     words = unique_terms
     words = [word for word in words if word in model]
     word_vectors = np.array([model[word] for word in words])
