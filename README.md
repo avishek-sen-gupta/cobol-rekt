@@ -22,6 +22,7 @@ This is an evolving toolkit of capabilities helpful for reverse engineering lega
 - **ALPHA:** Support for extracting Capability Graph from paragraphs of a program using LLMs
 
 Cobol-REKT is more of a library of useful things intended to be embedded in more formal reverse engineering workflows/pipelines, rather than being a standalone tool (though you can certainly use it as such). Many of the higher-level wrappers are merely sensible defaults; you are encouraged to modify them to suit your needs.
+
 The toolkit consists of Java components, most of which are around parsing, ingestion of, and export from Cobol sources, and Python components, which carry out the analyses. In addition, the support for Neo4J allows you to build custom graph analyses as per your needs.
 
 ## Dependencies
