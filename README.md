@@ -18,6 +18,8 @@ This is an evolving toolkit of capabilities helpful for reverse engineering lega
 - Support for namespaces to allow unique addressing of (possibly same) graphs
 - Exporting ASTs, CFGs, and record dependencies to GraphML format
 - Exporting data structure layout to JSON
+- **ALPHA:** Support for building Glossary of Variables from data structures
+- **ALPHA:** Support for extracting Capability Graph from paragraphs of a program
 
 Cobol-REKT is more of a library of useful things intended to be embedded in more formal reverse engineering workflows/pipelines, rather than being a standalone tool (though you can certainly use it as such). Many of the higher-level wrappers are merely sensible defaults; you are encouraged to modify them to suit your needs.
 
@@ -196,6 +198,53 @@ Custom analyses are a work in progress.
 ## Analysis through Neo4J
 
 You can find some useful Neo4J-based analysis queries in [Analysis](neo4j-analysis.md)
+
+## Building Glossaries **(ALPHA)**
+
+The toolkit supports building glossaries of variables given the data structures in a program. This capability is provided through Python in the ```smojol_python``` component.
+To use this facility, start by exporting the data structures to JSON, through the JAR, like so:
+
+```
+java -jar smojol-cli/target/smojol-cli.jar V7522671 --commands="WRITE_DATA_STRUCTURES" --srcDir /path/to/sources --copyBooksDir /path/to/copybooks --dialectJarPath che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar --dialect IDMS --reportDir /path/to/report/dir
+```
+
+This will generate a JSON file in ```/path/to/report/dir```. After this, you can run:
+
+```
+cd smojol_python
+python -m src.llm.glossary_builder.main /path/to/report/dir/program-data.json out/glossary.md
+```
+
+This will generate the glossary in ```out/glossary.md```. Integrating other out-of-band data sources is a work in progress.
+
+## Build Capability Maps **(ALPHA)**
+
+The toolkit supports extracting a capability map from the paragraphs of a source. For this, you need to generate both the AST in Neo4J, as well as the data structures JSON, you can do this via:
+
+```
+java -jar smojol-cli/target/smojol-cli.jar V7522671 --commands="INJECT_INTO_NEO4J WRITE_DATA_STRUCTURES" --srcDir /path/to/sources --copyBooksDir /path/to/copybooks --dialectJarPath che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar --dialect IDMS --reportDir /path/to/report/dir
+```
+After this, you will want to extract the paragraph capabilities, like so:
+
+```
+python -m src.llm.capability_extractor.paragraph_capabilities /path/to/data/structures/json /paragraph/capabilities/output/path ../paragraph/variables/explanation/output/path
+```
+
+This will generate the capabilities in ```/paragraph/capabilities/output/path```. At this point, you may need to clean parts of the output manually, if some entries do not correpond to a comma-separated list of domain terms (efforts to eliminate this manual process are in progress).
+
+The final step is to actually generate the capability map:
+
+```
+python -m src.llm.capability_extractor.capabilities_graph /paragraph/capabilities/output/path
+```
+
+![Capability Map Extraction Screenshot](documentation/capability-extraction-progress-screenshot.png)
+
+This will take a little time, depending upon the number of paragraphs and their sizes. At the end, it will generate a dendrogram visualisation, as will as the capability map in Neo4J, as illustrated below (for a 10000+ line COBOL program).
+
+![Capability Map Dendrogram](documentation/capability-map-dendrogram.png)
+
+![Capability Map Neo4J](documentation/capability-graph-neo4j.png)
 
 ## How to Build
 

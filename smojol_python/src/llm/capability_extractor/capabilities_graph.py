@@ -30,7 +30,7 @@ def recurse_to_graph(cluster: DomainCluster, parent: DomainCluster | None, datab
         tx.run(
             "MATCH (p:DOMAIN {index: $parent_index})\n" +
             f"CREATE (n:DOMAIN:{composite_type}"
-            + " {isComposite: $is_composite, index: $index, content: $content, domain: $domain, umbrella_domain: $umbrella_subdomain, namespace=$namespace})\n"
+            + " {isComposite: $is_composite, index: $index, content: $content, domain: $domain, umbrella_domain: $umbrella_subdomain, namespace: $namespace})\n"
             + """
             MERGE (p)-[r:CONTAINS]->(n)
             RETURN p,n,r
@@ -44,7 +44,8 @@ def recurse_to_graph(cluster: DomainCluster, parent: DomainCluster | None, datab
                   "content": cluster.content}, database=database)
     else:
         tx.run("""
-            CREATE (n:DOMAIN:COMPOSITE {isComposite: $is_composite, index: $index, content: $content, domain: $domain, umbrella_domain: $umbrella_subdomain})
+            CREATE (n:DOMAIN:COMPOSITE {isComposite: $is_composite, index: $index, content: $content, domain: $domain, 
+            umbrella_domain: $umbrella_subdomain, namespace: $namespace})
             RETURN n
         """, {"is_composite": cluster.composite,
               "index": cluster.index,
@@ -52,6 +53,7 @@ def recurse_to_graph(cluster: DomainCluster, parent: DomainCluster | None, datab
               "domain": cluster.domain,
               "composite_type": composite_type,
               "umbrella_subdomain": cluster.umbrella_subdomain,
+              "namespace": cluster.namespace,
               "content": cluster.content}, database=database)
     for child in cluster.children:
         recurse_to_graph(child, cluster, database, tx, progress)
@@ -182,7 +184,7 @@ if __name__ == "__main__":
         right_cluster = nodes[right_index] if right_index in nodes else DomainCluster(right_index, words, namespace)
         nodes[left_index] = left_cluster
         nodes[right_index] = right_cluster
-        parent_cluster = DomainCluster(n + index, words, [left_cluster, right_cluster], namespace)
+        parent_cluster = DomainCluster(n + index, words, namespace, [left_cluster, right_cluster])
         nodes[n + index] = parent_cluster
 
     print("\nBuilding domain...")
