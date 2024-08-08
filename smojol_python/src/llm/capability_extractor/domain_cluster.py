@@ -4,7 +4,7 @@ from typing import Optional
 
 
 class DomainCluster:
-    def __init__(self, index: int, words: list[str], children: list[DomainCluster] = []):
+    def __init__(self, index: int, words: list[str], children: list[DomainCluster] = [], namespace: str):
         self.parent: Optional[DomainCluster] = None
         self.umbrella_subdomain: str = ""
         self.index: int = index
@@ -12,5 +12,6 @@ class DomainCluster:
         self.composite: bool = not index < len(words)
         self.domain: str = words[index] if index < len(words) else f"CLUSTER-{index}"
         self.content: str = self.domain
+        self.namespace: str = namespace
         for child in self.children:
             child.parent = self

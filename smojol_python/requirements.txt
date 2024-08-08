@@ -9,3 +9,5 @@ scipy
 matplotlib
 tqdm
 mypy
+sentence-transformers
+python-dotenv
