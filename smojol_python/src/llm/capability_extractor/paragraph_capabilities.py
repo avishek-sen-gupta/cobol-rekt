@@ -1,13 +1,16 @@
+import argparse
 import json
-import os
 
-from langchain_community.graphs import Neo4jGraph
+from dotenv import load_dotenv
 from langchain_openai import AzureChatOpenAI
 from neo4j import GraphDatabase, Record
 
 from src.llm.capability_extractor.CacheStats import CacheStats
 from src.llm.common.console_colors import ConsoleColors
 from src.llm.common.env_vars import openai_config, neo4j_config
+from src.llm.common.parameter_constants import ParameterConstants
+
+load_dotenv("env/.env", override=True)
 
 c = ConsoleColors()
 
@@ -49,15 +52,16 @@ def llm_explanation_block(paragraph_name: str, explanation: str, llm: AzureChatO
             continue
 
 
-def all_capabilities(neo4j_uri: str, auth: tuple[str, str], llm: AzureChatOpenAI):
+def all_capabilities(ds_input_path: str, paragrah_capabilities_output_path: str, neo4j_uri: str, auth: tuple[str, str],
+                     llm: AzureChatOpenAI, database: str):
     master_explanations: dict[str, str] = {}
     cache_stats = CacheStats()
-    all_paths = data_structure_graph(llm)
+    all_paths = data_structure_graph(llm, ds_input_path)
     with GraphDatabase.driver(neo4j_uri, auth=auth) as driver:
         result = driver.execute_query("""
             match (n:PARAGRAPH)
             RETURN n
-        """)
+        """, database_=database)
         paragraph_ids = list(map(lambda pnode: (pnode["n"]["internal_id"], pnode["n"]["name"]), result[0]))
         paragraphs_with_capabilities = {}
 
@@ -68,21 +72,22 @@ def all_capabilities(neo4j_uri: str, auth: tuple[str, str], llm: AzureChatOpenAI
             result = driver.execute_query("""
                 match (n:PARAGRAPH{internal_id: $paragraph_id})-[r*1..6]->(d:DATA_STRUCTURE) 
                 RETURN n,r,d
-            """, {"paragraph_id": internal_id})
+            """, {"paragraph_id": internal_id}, database_=database)
             if len(result[0]) == 0:
                 print(c.warning(f"No data nodes found for {pid[1]}, skipping to next paragraph..."))
                 continue
             paragraphs_with_capabilities[pid[1]] = capabilities_for_paragraph(result[0], all_paths, master_explanations,
                                                                               overall_progress, llm,
                                                                               cache_stats)
-            f = open("/Users/asgupta/code/smojol-llm/out/capabilities.txt", "a")
+            f = open(paragrah_capabilities_output_path, "a")
             f.write(f"'{pid[1]}':{paragraphs_with_capabilities[pid[1]]}\n")
             f.close()
 
     return paragraphs_with_capabilities, master_explanations
 
 
-def capabilities_for_paragraph(nrds: list[Record], all_paths: list[list[str]], master_explanations: dict, overall_progress: str,
+def capabilities_for_paragraph(nrds: list[Record], all_paths: list[list[str]], master_explanations: dict,
+                               overall_progress: str,
                                llm: AzureChatOpenAI, cache_stats: CacheStats) -> str:
     if len(nrds) == 0:
         return ""
@@ -114,8 +119,8 @@ def capabilities_for_paragraph(nrds: list[Record], all_paths: list[list[str]], m
     return llm_explanation_block(nrds[0]["n"]["name"], explanation, llm)
 
 
-def data_structure_graph(llm: AzureChatOpenAI) -> list[list[str]]:
-    with open("/Users/asgupta/code/smojol/out/report/V7525186.report/data_structures/V7525186-data.json", 'r') as file:
+def data_structure_graph(llm: AzureChatOpenAI, ds_input_path: str) -> list[list[str]]:
+    with open(ds_input_path, 'r') as file:
         data_structures = json.load(file)
         all_paths: list[list[str]] = []
         collect(data_structures["children"][0], [], llm, all_paths)
@@ -146,13 +151,18 @@ def llm_explanation(struct_name: str, path: list[str], llm: AzureChatOpenAI) -> 
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(prog="build_paragraph_capabilities")
+    parser.add_argument(ParameterConstants.DS_INPUT_PATH)
+    parser.add_argument(ParameterConstants.PARAGRAPH_CAPABILITIES_OUTPUT_PATH)
+    parser.add_argument(ParameterConstants.PARAGRAPH_VARIABLES_EXPLANATIONS_OUTPUT_PATH)
+    args = parser.parse_args()
+    data_structures_input_path = getattr(args, ParameterConstants.DS_INPUT_PATH)
+    paragrah_capabilities_output_path = getattr(args, ParameterConstants.PARAGRAPH_CAPABILITIES_OUTPUT_PATH)
+    paragraph_variables_explanations_output_path = (
+        getattr(args, ParameterConstants.PARAGRAPH_VARIABLES_EXPLANATIONS_OUTPUT_PATH))
+
     open_ai_endpoint, open_ai_key = openai_config()
     neo4j_uri, neo4j_username, neo4j_password, neo4j_database = neo4j_config()
-    # open_ai_key: str = os.environ['AZURE_OPENAI_API_KEY']
-    # open_ai_endpoint: str = os.environ['AZURE_OPENAI_ENDPOINT']
-    # neo4j_url: str = os.environ['NEO4J_URI']
-    # neo4j_username: str = os.environ['NEO4J_USERNAME']
-    # neo4j_password: str = os.environ['NEO4J_PASSWORD']
     print(c.green(open_ai_endpoint))
     print(c.green(neo4j_uri))
 
@@ -165,11 +175,12 @@ if __name__ == "__main__":
         temperature=0.8,
         request_timeout=6000
     )
-    graph = Neo4jGraph(neo4j_uri, username=neo4j_username, password=neo4j_password)
-    f = open("/Users/asgupta/code/smojol-llm/out/capabilities.txt", "w")
+
+    f = open(paragrah_capabilities_output_path, "w")
     f.write("")
     f.close()
-    capabilities, variable_explanations = all_capabilities(neo4j_uri, auth, llm4)
-    with open("/Users/asgupta/code/smojol-llm/out/variable_explanations.json", "w") as fp:
+    capabilities, variable_explanations = all_capabilities(data_structures_input_path,
+                                                           paragrah_capabilities_output_path, neo4j_uri, auth, llm4, neo4j_database)
+    with open(paragraph_variables_explanations_output_path, "w") as fp:
         json.dump(variable_explanations, fp)
     print(c.cyan(f"Capabilities are: {capabilities}"))

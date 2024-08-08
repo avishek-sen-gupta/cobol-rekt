@@ -16,7 +16,7 @@ from src.llm.common.console_colors import ConsoleColors
 from src.llm.common.env_vars import openai_config, neo4j_config
 from src.llm.common.parameter_constants import ParameterConstants
 
-load_dotenv("env/.env")
+load_dotenv("env/.env", override=True)
 c = ConsoleColors()
 
 

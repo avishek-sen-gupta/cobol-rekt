@@ -3,10 +3,13 @@ import json
 import os
 from typing import Any
 
+from dotenv import load_dotenv
 from langchain_openai import AzureChatOpenAI
 
 from src.llm.common.env_vars import openai_config, neo4j_config
 from src.llm.common.parameter_constants import ParameterConstants
+
+load_dotenv("env/.env", override=True)
 
 
 def explain_through_llm(struct: dict[str, Any], path: list[str], llm: AzureChatOpenAI) -> None:
@@ -95,9 +98,8 @@ if __name__ == "__main__":
     parser.add_argument(ParameterConstants.DS_INPUT_PATH)
     parser.add_argument(ParameterConstants.GLOSSARY_OUTPUT_PATH)
     args = parser.parse_args()
-    input_path = args.input_path
-    output_path = args.output_path
-    report_dir = args.report_dir
+    input_path = getattr(args, ParameterConstants.DS_INPUT_PATH)
+    output_path = getattr(args, ParameterConstants.GLOSSARY_OUTPUT_PATH)
     llm4 = AzureChatOpenAI(
         deployment_name=deployment,
         azure_endpoint=open_ai_endpoint,
