@@ -18,8 +18,8 @@ This is an evolving toolkit of capabilities helpful for reverse engineering lega
 - Support for namespaces to allow unique addressing of (possibly same) graphs
 - Exporting ASTs, CFGs, and record dependencies to GraphML format
 - Exporting data structure layout to JSON
-- **ALPHA:** Support for building Glossary of Variables from data structures
-- **ALPHA:** Support for extracting Capability Graph from paragraphs of a program
+- **ALPHA:** Support for building Glossary of Variables from data structures using LLMs
+- **ALPHA:** Support for extracting Capability Graph from paragraphs of a program using LLMs
 
 Cobol-REKT is more of a library of useful things intended to be embedded in more formal reverse engineering workflows/pipelines, rather than being a standalone tool (though you can certainly use it as such). Many of the higher-level wrappers are merely sensible defaults; you are encouraged to modify them to suit your needs.
 The toolkit consists of Java components, most of which are around parsing, ingestion of, and export from Cobol sources, and Python components, which carry out the analyses. In addition, the support for Neo4J allows you to build custom graph analyses as per your needs.
