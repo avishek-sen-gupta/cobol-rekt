@@ -27,8 +27,12 @@ public class WriteDataStructuresTask implements Runnable {
         SerialisableCobolDataStructure root = new SerialisableCobolDataStructure();
         DataStructureExporter visitor = new DataStructureExporter(root);
         dataStructures.acceptStrange(visitor);
+        try {
+            Files.createDirectories(outputArtifactConfig.outputDir());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         try (JsonWriter writer = new JsonWriter(new FileWriter(outputArtifactConfig.fullPath()))) {
-            Files.createDirectory(outputArtifactConfig.outputDir());
             writer.setIndent("  ");
             gson.toJson(root, SerialisableCobolDataStructure.class, writer);
         } catch (IOException e) {

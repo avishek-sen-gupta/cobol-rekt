@@ -142,4 +142,4 @@ out/
 **/.python-version
 **/.env
 artifacts/
-
+**/local.env.sh
