@@ -1,5 +1,7 @@
 package org.smojol.analysis.visualisation;
 
+import hu.webarticum.treeprinter.SimpleTreeNode;
+import hu.webarticum.treeprinter.TreeNode;
 import lombok.Getter;
 import org.smojol.ast.CallTarget;
 import org.smojol.ast.StaticCallTarget;
@@ -7,13 +9,14 @@ import org.smojol.ast.StaticCallTarget;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CobolProgram {
+public class CobolProgram extends SimpleTreeNode {
     @Getter
-    private CallTarget callTarget;
+    private final CallTarget callTarget;
     @Getter
-    private List<CobolProgram> dependencies = new ArrayList<>();
+    private final List<CobolProgram> dependencies = new ArrayList<>();
 
     public CobolProgram(CallTarget callTarget) {
+        super(callTarget.getName());
         this.callTarget = callTarget;
     }
 
@@ -23,6 +26,11 @@ public class CobolProgram {
 
     public List<CobolProgram> staticDependencies() {
         return dependencies.stream().filter(CobolProgram::isStatic).toList();
+    }
+
+    @Override
+    public List<TreeNode> children() {
+        return dependencies.stream().map(d -> (TreeNode) d).toList();
     }
 
     private boolean isStatic() {

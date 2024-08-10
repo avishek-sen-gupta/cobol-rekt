@@ -1,6 +1,7 @@
 package org.smojol.analysis.pipeline;
 
 import com.google.common.collect.ImmutableList;
+import hu.webarticum.treeprinter.printer.listing.ListingTreePrinter;
 import org.smojol.analysis.LanguageDialect;
 import org.smojol.analysis.visualisation.CobolProgram;
 import org.smojol.ast.ProgramDependencies;
@@ -46,6 +47,7 @@ public class AnalyseDependenciesTask {
     public CobolProgram run(String programName) throws IOException {
         CobolProgram rootProgram = new CobolProgram(new StaticCallTarget(programName));
         recurse(rootProgram, copyBookPaths);
+        new ListingTreePrinter().print(rootProgram);
         return rootProgram;
     }
 }

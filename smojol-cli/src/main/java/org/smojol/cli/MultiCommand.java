@@ -21,10 +21,9 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.function.Function;
 
-@Command(name = "graph", mixinStandardHelpOptions = true, version = "graph 0.1",
+@Command(name = "run", mixinStandardHelpOptions = true, version = "graph 0.1",
         description = "Implements various operations useful for reverse engineering Cobol code")
 public class MultiCommand implements Callable<Integer> {
-
     @Option(names = {"-dp", "--dialectJarPath"},
             defaultValue = "che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar",
             description = "Path to dialect .JAR")
