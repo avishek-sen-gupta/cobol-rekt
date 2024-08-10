@@ -336,7 +336,7 @@ java -jar smojol-cli/target/smojol-cli.jar dependency if-test.cbl --srcDir /User
 
 Specifying the ```--neo4j``` flag injects those dependencies into Neo4J, while setting a path through ```export``` will export it to JSON. The screenshot below shows a very simple dependency graph generated from ```if-test.cbl``` (in the ```smojol-test-code``` directory). Dynamic dependencies (resolved through variables and expressions) are not resolved any deeper.
 
-![simple-inter-program-dependency-graph](documentation/inter-program-dependencies2.png)
+![simple-inter-program-dependency-graph](documentation/inter-program-dependencies.png)
 
 The help text for this command is reproduced below:
 
