@@ -48,8 +48,7 @@ Some reverse engineering are listed below. Descriptions of the capabilities whic
 ## Planned Capabilities
 
 - Integrating Domain Knowledge
-- Building Data Structure Glossaries
-- Extracting Feature and Capability Maps
+- Analysing inter-program dependencies (WIP)
 
 ## Flowchart Generation
 
@@ -276,7 +275,7 @@ The individual functionalities can be invoked using different commands. The comm
 
 - ```WRITE_FLOW_AST```: Writes a more useful form of the AST to JSON. This form is used by the interpreter and other analyses.
 - ```INJECT_INTO_NEO4J```: This injects the unified model into Neo4J. Exposing more fine-grained options is in progress. This requires the environment variable ```NEO4J_URI```, ```NEO4J_USERNAME```, and ```NEO4J_PASSWORD``` to be defined. If you wish to include comments in the graph, the ```ATTACH_COMMENTS``` needs to have run first.
-- ```ATTACH_COMMENTS```: This parses the original source file (excluding copybooks for now) to find the nearest subsequent AST node to associate with.
+- ```ATTACH_COMMENTS```: This parses the original source file (excluding copybooks for now) to find comments and attach them to the nearest subsequent AST node.
 - ```EXPORT_TO_GRAPHML```: This exports the unified model to GraphML. Exposing more fine-grained options is in progress.
 - ```WRITE_RAW_AST```: This writes the original parse tree to JSON. Useful for downstream code to build their own AST representations.
 - ```DRAW_FLOWCHART```: This outputs flowcharts for the whole program or section-by-section of the program in PNG format.
