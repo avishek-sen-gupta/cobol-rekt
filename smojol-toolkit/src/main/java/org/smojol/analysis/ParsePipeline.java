@@ -153,8 +153,6 @@ public class ParsePipeline {
         // TODO: The navigator itself can probably determine these things,
         navigator = navigatorBuilder.navigator(tree);
         dataStructures = ops.getDataStructureBuilder(navigator).build();
-        transfersOfControl = navigator.findAllByCondition(n -> n.getClass() == IdmsParser.TransferStatementContext.class, tree);
-        subroutineCalls = navigator.findAllByCondition(n -> n.getClass() == CobolParser.CallStatementContext.class, tree);
         System.out.println(gson.toJson(timingResult));
         return navigator;
     }

@@ -7,8 +7,6 @@ import com.mojo.woof.Advisor;
 import com.mojo.woof.GraphSDK;
 import com.mojo.woof.OpenAICredentials;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.eclipse.lsp.cobol.core.CobolParser;
-import org.eclipse.lsp.cobol.dialects.idms.IdmsParser;
 import org.neo4j.driver.Record;
 import org.smojol.analysis.ParsePipeline;
 import org.smojol.analysis.graph.DataStructureSummariseAction;
@@ -18,6 +16,7 @@ import org.smojol.analysis.graph.SummariseAction;
 import org.smojol.analysis.graph.graphml.JGraphTGraphBuilder;
 import org.smojol.analysis.graph.neo4j.*;
 import org.smojol.analysis.pipeline.config.*;
+import org.smojol.ast.*;
 import org.smojol.common.ast.*;
 import org.smojol.common.flowchart.*;
 import org.smojol.common.id.IdProvider;
@@ -30,7 +29,7 @@ import org.smojol.interpreter.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
@@ -134,15 +133,6 @@ public class SmojolTasks {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-//        String json = gson.toJson(serialisableASTFlowRoot);
-//        try {
-//            Files.createDirectories(flowASTOutputConfig.outputDir());
-//            PrintWriter out = new PrintWriter(flowASTOutputConfig.outputPath());
-//            out.println(json);
-//            out.close();
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
     }
 
     public Runnable DRAW_FLOWCHART = new Runnable() {
@@ -171,15 +161,17 @@ public class SmojolTasks {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-//            String json = gson.toJson(cfgGraphCollector);
-//            try {
-//                Files.createDirectories(cfgOutputConfig.outputDir());
-//                PrintWriter out = new PrintWriter(cfgOutputConfig.outputPath());
-//                out.println(json);
-//                out.close();
-//            } catch (IOException e) {
-//                throw new RuntimeException(e);
-//            }
+        }
+    };
+
+    public Runnable BUILD_PROGRAM_DEPENDENCIES = new Runnable() {
+        @Override
+        public void run() {
+            ProgramDependencies programDependencies = new ProgramDependencies(astRoot, sourceConfig.programName());
+            Gson gson = new GsonBuilder().setPrettyPrinting().excludeFieldsWithoutExposeAnnotation().create();
+//            Files.createDirectories(flowASTOutputConfig.outputDir());
+            String json = gson.toJson(programDependencies);
+            System.out.println(json);
         }
     };
 
@@ -207,7 +199,6 @@ public class SmojolTasks {
 
     public SmojolTasks build() throws IOException {
         navigator = pipeline.parse();
-        reportTransfersOfControl();
         dataStructures = pipeline.getDataStructures();
 
         ParseTree procedure = navigator.procedureBodyRoot();
@@ -216,15 +207,6 @@ public class SmojolTasks {
         astRoot = flowcharter.getRoot();
 
         return this;
-    }
-
-    private void reportTransfersOfControl() {
-        System.out.println(ConsoleColors.green(String.format("TRANSFER CONTROL REPORT [%s]\n--------------------------------\n", sourceConfig.programName())));
-        if (pipeline.getTransfersOfControl().isEmpty() && pipeline.getSubroutineCalls().isEmpty()) {
-            System.out.println(ConsoleColors.green("No transfers found!"));
-            return;
-        }
-        pipeline.getTransfersOfControl().forEach(toc -> System.out.println(((IdmsParser.TransferStatementContext) toc).idms_program_name()));
     }
 
     public void run(List<AnalysisTask> analysisTasks) throws IOException {
@@ -241,6 +223,7 @@ public class SmojolTasks {
             case WRITE_CFG -> WRITE_CFG;
             case ATTACH_COMMENTS -> ATTACH_COMMENTS;
             case WRITE_DATA_STRUCTURES -> WRITE_DATA_STRUCTURES;
+            case BUILD_PROGRAM_DEPENDENCIES -> BUILD_PROGRAM_DEPENDENCIES;
         });
     }
 

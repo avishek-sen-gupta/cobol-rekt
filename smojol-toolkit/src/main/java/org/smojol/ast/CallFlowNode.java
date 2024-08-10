@@ -1,5 +1,6 @@
 package org.smojol.ast;
 
+import lombok.Getter;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.eclipse.lsp.cobol.core.visitor.CobolVisitor;
@@ -12,13 +13,13 @@ import org.smojol.common.vm.stack.StackFrames;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class CallFlowNode extends CobolFlowNode {
-    private final CallTarget callTarget;
+public class CallFlowNode extends CobolFlowNode implements ControlFlowNode {
+    @Getter private final CallTarget callTarget;
 
     public CallFlowNode(ParseTree parseTree, FlowNode scope, FlowNodeService nodeService, StackFrames stackFrames) {
         super(parseTree, scope, nodeService, stackFrames);
         CobolParser.CallStatementContext callStmt = new SyntaxIdentity<CobolParser.CallStatementContext>(getExecutionContext()).get();
-        callTarget = new CallTarget(callStmt);
+        callTarget = CallTarget.target(callStmt);
     }
 
     @Override
@@ -29,5 +30,10 @@ public class CallFlowNode extends CobolFlowNode {
     @Override
     public FlowNodeType type() {
         return FlowNodeType.CALL;
+    }
+
+    @Override
+    public CallTarget callTarget() {
+        return callTarget;
     }
 }
