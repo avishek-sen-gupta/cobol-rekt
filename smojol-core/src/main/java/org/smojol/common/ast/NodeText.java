@@ -6,6 +6,9 @@ import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
+import org.eclipse.lsp.cobol.common.poc.PersistentData;
+import org.eclipse.lsp.cobol.core.CobolParser;
+import org.smojol.common.navigation.CobolEntityNavigator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +23,16 @@ public class NodeText {
 
     public static String originalText(ParseTree astNode) {
         return originalText(astNode, NodeText::PASSTHROUGH);
+    }
+
+    public static String idmsOriginalText(ParseTree astNode, FlowNodeService nodeService) {
+        CobolEntityNavigator navigator = nodeService.getNavigator();
+        ParseTree dialectGuidContext = navigator.findByCondition(astNode, t -> t.getClass() == CobolParser.DialectGuidContext.class);
+        String guid = dialectGuidContext.getText();
+
+        ParseTree idmsTextNode = PersistentData.getDialectNode("IDMS-" + guid);
+        return NodeText.originalText(idmsTextNode, NodeText::PASSTHROUGH);
+
     }
 
     public static String originalText(ParseTree astNode, Function<String, String> substitutionStrategy) {

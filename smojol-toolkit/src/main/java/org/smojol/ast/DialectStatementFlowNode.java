@@ -19,8 +19,9 @@ public class DialectStatementFlowNode extends CobolFlowNode {
     @Override
     public void acceptUnvisited(FlowNodeVisitor visitor, int level) {
         super.acceptUnvisited(visitor, level);
-//        visitor.visitParentChildLink(this, idmsChildNode, nodeService);
-//        idmsChildNode.accept(visitor, level, maxLevel);
+        if (idmsChildNode.getClass() == CobolFlowNode.class) return;
+        visitor.visitParentChildLink(this, idmsChildNode, new VisitContext(level), nodeService);
+        idmsChildNode.accept(visitor, -1);
     }
 
     // TODO: Rewrite this monstrosity
@@ -45,7 +46,11 @@ public class DialectStatementFlowNode extends CobolFlowNode {
             databaseAccess = true;
         }
 
-        if (containerChild.getClass() == CobolParser.DialectIfStatmentContext.class) {
+        if (navigator.findByCondition(containerChild, n -> n.getClass() == IdmsParser.TransferStatementContext.class) != null) {
+            idmsChildNode = new IdmsTransferNode(containerChild, this, nodeService, staticFrameContext);
+            nodeService.register(idmsChildNode);
+            System.out.println("Found a TRANSFER statement");
+        } else if (containerChild.getClass() == CobolParser.DialectIfStatmentContext.class) {
             idmsChildNode = new IdmsIfFlowNode(containerChild, this, nodeService, staticFrameContext);
             nodeService.register(idmsChildNode);
         } else {
@@ -70,11 +75,12 @@ public class DialectStatementFlowNode extends CobolFlowNode {
 
     @Override
     public String originalText() {
-        CobolEntityNavigator navigator = nodeService.getNavigator();
-        ParseTree dialectGuidContext = navigator.findByCondition(executionContext, t -> t.getClass() == CobolParser.DialectGuidContext.class);
-        String guid = dialectGuidContext.getText();
-
-        ParseTree idmsTextNode = PersistentData.getDialectNode("IDMS-" + guid);
-        return NodeText.originalText(idmsTextNode, NodeText::PASSTHROUGH);
+        return NodeText.idmsOriginalText(getExecutionContext(), nodeService);
+//        CobolEntityNavigator navigator = nodeService.getNavigator();
+//        ParseTree dialectGuidContext = navigator.findByCondition(executionContext, t -> t.getClass() == CobolParser.DialectGuidContext.class);
+//        String guid = dialectGuidContext.getText();
+//
+//        ParseTree idmsTextNode = PersistentData.getDialectNode("IDMS-" + guid);
+//        return NodeText.originalText(idmsTextNode, NodeText::PASSTHROUGH);
     }
 }

@@ -63,6 +63,7 @@ public class ParsePipeline {
     @Getter private CobolDataStructure dataStructures;
     @Getter private ParserRuleContext tree;
     @Getter private List<ParseTree> transfersOfControl;
+    @Getter private List<ParseTree> subroutineCalls;
 
     public ParsePipeline(SourceConfig sourceConfig, ComponentsBuilder ops, LanguageDialect dialect) {
         this.src = sourceConfig.source();
@@ -153,6 +154,7 @@ public class ParsePipeline {
         navigator = navigatorBuilder.navigator(tree);
         dataStructures = ops.getDataStructureBuilder(navigator).build();
         transfersOfControl = navigator.findAllByCondition(n -> n.getClass() == IdmsParser.TransferStatementContext.class, tree);
+        subroutineCalls = navigator.findAllByCondition(n -> n.getClass() == CobolParser.CallStatementContext.class, tree);
         System.out.println(gson.toJson(timingResult));
         return navigator;
     }

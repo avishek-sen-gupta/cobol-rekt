@@ -35,6 +35,8 @@ public class FlowchartStylePreferences {
         schemes.put(FlowNodeType.AT_END_PHRASE, new GraphvizStyleScheme(Color.INDIANRED, Color.WHITE, Shape.DOUBLE_CIRCLE));
         schemes.put(FlowNodeType.GOTO, new GraphvizStyleScheme(Color.DARKGREEN, Color.WHITE, Shape.INV_HOUSE));
         schemes.put(FlowNodeType.CONTROL_FLOW, new GraphvizStyleScheme(Color.DARKORANGE2, Color.WHITE, Shape.R_ARROW));
+        schemes.put(FlowNodeType.CALL, new GraphvizStyleScheme(Color.DARKORANGE2, Color.WHEAT, Shape.R_ARROW));
+        schemes.put(FlowNodeType.TRANSFER, new GraphvizStyleScheme(Color.DARKORCHID4, Color.WHEAT, Shape.R_ARROW));
         schemes.put(FlowNodeType.PERFORM, new GraphvizStyleScheme(Color.DARKVIOLET, Color.WHITE, Shape.CDS));
         schemes.put(FlowNodeType.PERFORM_TEST, new GraphvizStyleScheme(Color.WHITE, Color.BLACK, Shape.UNDERLINE));
         schemes.put(FlowNodeType.NEXT_SENTENCE, new GraphvizStyleScheme(Color.DARKSLATEGRAY4, Color.WHITE, Shape.R_ARROW));

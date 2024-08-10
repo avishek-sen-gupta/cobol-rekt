@@ -24,12 +24,14 @@
                		88 V1      VALUE "E".
                		88 V2      VALUE "F".
        PROCEDURE DIVISION.
+       CALL 'ABCD'.
+       TRANSFER CONTROL "EFGH".
        MOVE 50 TO SOMEFRACTION.
        MOVE "ABCD" TO SOMETHING.
        MOVE "E" TO CONDI.
        IF (SOMEFRACTION = 10) OR >20 AND V1
 	       DISPLAY "AMAZE".
-       IF SOMEFRACTION = 100 OR 30 OR 50 
+       IF SOMEFRACTION = 100 OR 30 OR 50
 	       DISPLAY "AMAZE3".
        STOP RUN.
 

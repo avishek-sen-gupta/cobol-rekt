@@ -19,10 +19,10 @@ public class FlowchartBuildMain {
                 "/Users/asgupta/code/smojol/out/report",
                 ImmutableList.of(new File("/Users/asgupta/code/smojol/smojol-test-code")),
                 "/Users/asgupta/code/smojol/che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar",
-                LanguageDialect.COBOL, new FullProgram(FlowchartOutputFormat.SVG), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder())
+                LanguageDialect.IDMS, new FullProgram(FlowchartOutputFormat.SVG), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder())
                 .generateForPrograms(ImmutableList.of(
-                        WRITE_RAW_AST,
-                        WRITE_FLOW_AST,
+//                        WRITE_RAW_AST,
+//                        WRITE_FLOW_AST,
                         DRAW_FLOWCHART
                 ), ImmutableList.of("if-test.cbl"));
     }

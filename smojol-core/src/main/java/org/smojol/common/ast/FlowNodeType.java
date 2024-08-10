@@ -7,6 +7,8 @@ public enum FlowNodeType {
     PERFORM,
     IF_BRANCH,
     DUMMY,
+    TRANSFER,
+    CALL,
     CONTROL_FLOW,
     PARAGRAPH,
     SECTION,
