@@ -1,21 +1,16 @@
 package org.smojol.analysis.pipeline;
 
-public class AnalysisTaskResult {
-    private Object detail;
-
-    public AnalysisTaskResult(Object detail) {
-        this.detail = detail;
-    }
-
+public sealed interface AnalysisTaskResult permits AnalysisTaskResultOK, AnalysisTaskResultError {
+    boolean isSuccess();
     static AnalysisTaskResult OK(Object detail) {
-        return new AnalysisTaskResult(detail);
+        return new AnalysisTaskResultOK(detail);
     }
 
     static AnalysisTaskResult OK() {
-        return new AnalysisTaskResult(null);
+        return OK(new Object());
     }
 
-    public Object getDetail() {
-        return detail;
+    static AnalysisTaskResult ERROR(Exception detail) {
+        return new AnalysisTaskResultError(detail);
     }
 }

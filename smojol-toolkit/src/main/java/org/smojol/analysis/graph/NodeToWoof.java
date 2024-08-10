@@ -4,6 +4,7 @@ import com.mojo.woof.GraphSDK;
 import com.mojo.woof.NodeSpec;
 import com.mojo.woof.WoofNode;
 import org.neo4j.driver.Record;
+import org.smojol.analysis.visualisation.CobolProgram;
 import org.smojol.common.ast.CommentBlock;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.vm.structure.CobolDataStructure;
@@ -30,5 +31,7 @@ public class NodeToWoof {
         return new WoofNode(qualifier.commentNode(node));
     }
 
-
+    public static WoofNode programToWoof(CobolProgram cobolProgram, NodeSpecBuilder qualifier) {
+        return new WoofNode(qualifier.program(cobolProgram));
+    }
 }

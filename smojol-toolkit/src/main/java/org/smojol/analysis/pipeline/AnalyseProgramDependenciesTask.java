@@ -18,13 +18,13 @@ import java.util.Map;
 
 import static org.smojol.analysis.pipeline.CommandLineAnalysisTask.BUILD_PROGRAM_DEPENDENCIES;
 
-public class AnalyseDependenciesTask {
+public class AnalyseProgramDependenciesTask {
     private final String sourceDir;
     private final List<File> copyBookPaths;
     private final String reportRootDir;
     private final String dialectJarPath;
 
-    public AnalyseDependenciesTask(String sourceDir, List<File> copyBookPaths, String reportRootDir, String dialectJarPath) {
+    public AnalyseProgramDependenciesTask(String sourceDir, List<File> copyBookPaths, String reportRootDir, String dialectJarPath) {
         this.sourceDir = sourceDir;
         this.copyBookPaths = copyBookPaths;
         this.reportRootDir = reportRootDir;
@@ -37,17 +37,20 @@ public class AnalyseDependenciesTask {
                 LanguageDialect.IDMS, new FullProgram(FlowchartOutputFormat.SVG), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder())
                 .generateForPrograms(ImmutableList.of(BUILD_PROGRAM_DEPENDENCIES), ImmutableList.of(program.getName()));
         AnalysisTaskResult first = results.get(program.getName()).getFirst();
-        ProgramDependencies dependencies = (ProgramDependencies) first.getDetail();
+        ProgramDependencies dependencies = switch (first) {
+            case AnalysisTaskResultOK o -> (ProgramDependencies) o.getDetail();
+            case AnalysisTaskResultError e -> throw new RuntimeException(e.getException());
+        };
         program.addAll(dependencies.getDependencies().stream().map(CobolProgram::new).toList());
 
         for (CobolProgram childDependency : program.staticDependencies())
             recurse(childDependency, copyBookPaths);
     }
 
-    public CobolProgram run(String programName) throws IOException {
+    public AnalysisTaskResult run(String programName) throws IOException {
         CobolProgram rootProgram = new CobolProgram(new StaticCallTarget(programName));
         recurse(rootProgram, copyBookPaths);
         new ListingTreePrinter().print(rootProgram);
-        return rootProgram;
+        return AnalysisTaskResult.OK(rootProgram);
     }
 }

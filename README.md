@@ -33,7 +33,7 @@ The toolkit consists of Java components, most of which are around parsing, inges
 
 ## Reverse Engineering Use Cases
 
-Some reverse engineering are listed below. Descriptions of the capabilities which support these use cases are provided in later sections.
+Some reverse engineering use cases are listed below. Descriptions of the capabilities which support these use cases are provided in later sections.
 
 - The Parse Tree can be fed to a Graph DB for consumption by an LLM through agents to answer questions about the codebase
 - Static analysis of the parse tree to reveal important operations (database operations, variable dependencies)

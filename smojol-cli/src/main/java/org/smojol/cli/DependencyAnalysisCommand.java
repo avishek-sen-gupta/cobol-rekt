@@ -1,6 +1,10 @@
 package org.smojol.cli;
 
-import org.smojol.analysis.pipeline.AnalyseDependenciesTask;
+import com.mojo.woof.GraphSDK;
+import com.mojo.woof.Neo4JDriverBuilder;
+import org.smojol.analysis.graph.NamespaceQualifier;
+import org.smojol.analysis.graph.NodeSpecBuilder;
+import org.smojol.analysis.pipeline.*;
 import org.smojol.analysis.visualisation.CobolProgram;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
@@ -29,16 +33,18 @@ public class DependencyAnalysisCommand implements Callable<Integer> {
             description = "The program to analyse")
     private String programName;
 
-    // Can be replaced with a File[] (and the later conversion removed) if we skip default arguments.
     @Option(names = {"-cp", "--copyBooksDir"},
             required = true,
             description = "Copybook directories (repeatable)", split = ",")
     private List<String> copyBookDirs;
 
-    @Option(names = {"-r", "--reportDir"},
-            required = true,
-            description = "Output report directory")
-    private String reportRootDir;
+    @Option(names = {"-x", "--export"},
+            description = "Export path")
+    private String exportPath;
+
+    @Option(names = {"-n", "--neo4j"},
+            description = "Export to Neo4J")
+    private boolean injectIntoNeo4j;
 
     @Option(names = {"-d", "--dialect"},
             defaultValue = "COBOL",
@@ -48,10 +54,16 @@ public class DependencyAnalysisCommand implements Callable<Integer> {
     @Override
     public Integer call() throws IOException {
         List<File> copyBookPaths = copyBookDirs.stream().map(c -> Paths.get(c).toAbsolutePath().toFile()).toList();
-        copyBookPaths.forEach(cpp -> System.out.println(cpp.getAbsolutePath()));
-        CobolProgram root = new AnalyseDependenciesTask(sourceDir, copyBookPaths, reportRootDir, dialectJarPath).run(programName);
+        copyBookPaths.forEach(cbp -> System.out.println(cbp.getAbsolutePath()));
+        AnalysisTaskResult result = new AnalyseProgramDependenciesTask(sourceDir, copyBookPaths, "dummy", dialectJarPath).run(programName);
+        CobolProgram root = switch (result) {
+            case AnalysisTaskResultOK ok -> (CobolProgram) ok.getDetail();
+            case AnalysisTaskResultError e -> throw new RuntimeException(e.getException());
+        };
+        if (exportPath != null) new ExportProgramDependenciesTask(exportPath).run(root);
+        if (injectIntoNeo4j)
+            new InjectProgramDependenciesIntoNeo4JTask(new NodeSpecBuilder(new NamespaceQualifier("DEP-GRAPH")),
+                    new GraphSDK(new Neo4JDriverBuilder().fromEnv())).run(root);
         return 0;
     }
 }
-
-

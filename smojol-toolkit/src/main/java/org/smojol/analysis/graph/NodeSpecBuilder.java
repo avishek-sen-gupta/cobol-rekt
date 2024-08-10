@@ -6,9 +6,9 @@ import org.smojol.analysis.graph.graphml.TypedCodeVertex;
 import org.smojol.analysis.graph.graphml.TypedDataStructureVertex;
 import org.smojol.analysis.graph.graphml.TypedGraphEdge;
 import org.smojol.analysis.graph.graphml.TypedGraphVertex;
+import org.smojol.analysis.visualisation.CobolProgram;
 import org.smojol.common.ast.CommentBlock;
 import org.smojol.common.ast.FlowNode;
-import org.smojol.common.ast.NodeText;
 import org.smojol.common.id.IdProvider;
 import org.smojol.common.id.UUIDProvider;
 import org.smojol.common.vm.structure.CobolDataStructure;
@@ -129,6 +129,19 @@ public class NodeSpecBuilder {
                         TEXT, comment.toString(),
                         TYPE, COMMENT_NODE,
                         ENTITY_TYPE, COMMENT_NODE,
+                        NAMESPACE, namespaceQualifier.getNamespace()
+                ));
+    }
+
+    public NodeSpec program(CobolProgram program) {
+        String id = idProvider.next();
+        return new NodeSpec(ImmutableList.of(PROGRAM_NODE),
+                Map.of(ID, id,
+                        INTERNAL_ID, id,
+                        NAME, program.getName(),
+                        TEXT, "",
+                        TYPE, PROGRAM_NODE,
+                        ENTITY_TYPE, PROGRAM_NODE,
                         NAMESPACE, namespaceQualifier.getNamespace()
                 ));
     }
