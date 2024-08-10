@@ -10,12 +10,12 @@ import java.util.Map;
 public interface TaskRunnerMode {
     TaskRunnerMode DIAGNOSTIC_MODE = new TaskRunnerMode() {
         @Override
-        public CodeTaskRunner run(Map<String, List<SyntaxError>> errorMap, CodeTaskRunner codeTaskRunner) {
-            return codeTaskRunner;
+        public Map<String, List<AnalysisTaskResult>> run(Map<String, List<SyntaxError>> errorMap, Map<String, List<AnalysisTaskResult>> results, CodeTaskRunner codeTaskRunner) {
+            return results;
         }
 
         @Override
-        public List<AnalysisTask> tasks(List<AnalysisTask> tasks) {
+        public List<CommandLineAnalysisTask> tasks(List<CommandLineAnalysisTask> tasks) {
             return ImmutableList.of();
         }
 
@@ -26,13 +26,13 @@ public interface TaskRunnerMode {
     };
     TaskRunnerMode PRODUCTION_MODE = new TaskRunnerMode() {
         @Override
-        public CodeTaskRunner run(Map<String, List<SyntaxError>> errorMap, CodeTaskRunner codeTaskRunner) {
+        public Map<String, List<AnalysisTaskResult>> run(Map<String, List<SyntaxError>> errorMap, Map<String, List<AnalysisTaskResult>> taskResults, CodeTaskRunner codeTaskRunner) {
             if (!errorMap.isEmpty()) throw new DiagnosticRuntimeError(errorMap);
-            return codeTaskRunner;
+            return taskResults;
         }
 
         @Override
-        public List<AnalysisTask> tasks(List<AnalysisTask> tasks) {
+        public List<CommandLineAnalysisTask> tasks(List<CommandLineAnalysisTask> tasks) {
             return tasks;
         }
 
@@ -42,7 +42,7 @@ public interface TaskRunnerMode {
         }
     };
 
-    CodeTaskRunner run(Map<String, List<SyntaxError>> errorMap, CodeTaskRunner codeTaskRunner);
+    Map<String, List<AnalysisTaskResult>> run(Map<String, List<SyntaxError>> errorMap, Map<String, List<AnalysisTaskResult>> results, CodeTaskRunner codeTaskRunner);
 
-    List<AnalysisTask> tasks(List<AnalysisTask> tasks);
+    List<CommandLineAnalysisTask> tasks(List<CommandLineAnalysisTask> tasks);
 }

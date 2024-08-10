@@ -10,7 +10,7 @@ import org.smojol.interpreter.structure.OccursIgnoringFormat1DataStructureBuilde
 import java.io.File;
 import java.io.IOException;
 
-import static org.smojol.analysis.pipeline.AnalysisTask.*;
+import static org.smojol.analysis.pipeline.CommandLineAnalysisTask.*;
 import static org.smojol.common.flowchart.FlowchartOutputFormat.PNG;
 
 public class GraphExplorerMain {

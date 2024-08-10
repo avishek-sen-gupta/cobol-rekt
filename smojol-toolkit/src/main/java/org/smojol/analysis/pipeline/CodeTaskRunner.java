@@ -63,26 +63,28 @@ public class CodeTaskRunner {
         System.out.println("copyBookPaths = " + String.join(",", copyBookPaths.stream().map(cp -> cp.toString() + "\n").toList()));
     }
 
-    public CodeTaskRunner generateForPrograms(List<AnalysisTask> tasks, List<String> programFilenames, TaskRunnerMode runnerMode) throws IOException {
+    public Map<String, List<AnalysisTaskResult>> generateForPrograms(List<CommandLineAnalysisTask> tasks, List<String> programFilenames, TaskRunnerMode runnerMode) throws IOException {
+        Map<String, List<AnalysisTaskResult>> results = new HashMap<>();
         for (String programFilename : programFilenames) {
             System.out.println(String.format("Running tasks: %s for program '%s' in %s mode...",
-                    tasks.stream().map(AnalysisTask::name).toList(),
+                    tasks.stream().map(CommandLineAnalysisTask::name).toList(),
                     programFilename, runnerMode.toString()));
             try {
-                generateForProgram(programFilename, sourceDir, reportRootDir, this.dialect, runnerMode.tasks(tasks));
+                List<AnalysisTaskResult> analysisTaskResults = generateForProgram(programFilename, sourceDir, reportRootDir, this.dialect, runnerMode.tasks(tasks));
+                results.put(programFilename, analysisTaskResults);
             } catch (ParseDiagnosticRuntimeError e) {
                 errorMap.put(programFilename, e.getErrors());
             }
         }
 
-        return runnerMode.run(errorMap, this);
+        return runnerMode.run(errorMap, results, this);
     }
 
-    public CodeTaskRunner generateForPrograms(List<AnalysisTask> tasks, List<String> programFilenames) throws IOException {
+    public Map<String, List<AnalysisTaskResult>> generateForPrograms(List<CommandLineAnalysisTask> tasks, List<String> programFilenames) throws IOException {
         return generateForPrograms(tasks, programFilenames, TaskRunnerMode.PRODUCTION_MODE);
     }
 
-    private void generateForProgram(String programFilename, String sourceDir, String reportRootDir, LanguageDialect dialect, List<AnalysisTask> tasks) throws IOException {
+    private List<AnalysisTaskResult> generateForProgram(String programFilename, String sourceDir, String reportRootDir, LanguageDialect dialect, List<CommandLineAnalysisTask> tasks) throws IOException {
         String programReportDir = String.format("%s.report", programFilename);
         Path astOutputDir = Paths.get(reportRootDir, programReportDir, AST_DIR).toAbsolutePath().normalize();
         Path dataStructuresOutputDir = Paths.get(reportRootDir, programReportDir, DATA_STRUCTURES_DIR).toAbsolutePath().normalize();
@@ -90,17 +92,17 @@ public class CodeTaskRunner {
         Path imageOutputDir = Paths.get(reportRootDir, programReportDir, IMAGES_DIR).toAbsolutePath().normalize();
         Path dotFileOutputDir = Paths.get(reportRootDir, programReportDir, DOTFILES_DIR).toAbsolutePath().normalize();
         Path graphMLExportOutputDir = Paths.get(reportRootDir, programReportDir, GRAPHML_DIR).toAbsolutePath().normalize();
-        String graphMLExportOutputPath = graphMLExportOutputDir.resolve(String.format("%s.graphml", programFilename)).toAbsolutePath().normalize().toString();
         Path cfgOutputDir = Paths.get(reportRootDir, programReportDir, CFG_DIR).toAbsolutePath().normalize();
+        String graphMLExportOutputPath = graphMLExportOutputDir.resolve(String.format("%s.graphml", programFilename)).toAbsolutePath().normalize().toString();
         String cfgOutputPath = cfgOutputDir.resolve(String.format("cfg-%s.json", programFilename)).toAbsolutePath().normalize().toString();
         String cobolParseTreeOutputPath = astOutputDir.resolve(String.format("cobol-%s.json", programFilename)).toAbsolutePath().normalize().toString();
         String flowASTOutputPath = flowASTOutputDir.resolve(String.format("flow-ast-%s.json", programFilename)).toAbsolutePath().normalize().toString();
         String absoluteDialectJarPath = Paths.get(dialectJarPath).toAbsolutePath().normalize().toString();
-        SourceConfig sourceConfig = new SourceConfig(programFilename, sourceDir, copyBookPaths, cobolParseTreeOutputPath, absoluteDialectJarPath);
+        SourceConfig sourceConfig = new SourceConfig(programFilename, sourceDir, copyBookPaths, absoluteDialectJarPath);
         OutputArtifactConfig dataStructuresOutputConfig = new OutputArtifactConfig(dataStructuresOutputDir, programFilename + "-data.json");
 
         FlowchartOutputWriter flowchartOutputWriter = new FlowchartOutputWriter(flowchartGenerationStrategy, dotFileOutputDir, imageOutputDir);
-        RawASTOutputConfig rawAstOutputConfig = new RawASTOutputConfig(astOutputDir, new CobolTreeVisualiser());
+        RawASTOutputConfig rawAstOutputConfig = new RawASTOutputConfig(astOutputDir, cobolParseTreeOutputPath, new CobolTreeVisualiser());
         FlowASTOutputConfig flowASTOutputConfig = new FlowASTOutputConfig(flowASTOutputDir, flowASTOutputPath);
         GraphMLExportConfig graphMLOutputConfig = new GraphMLExportConfig(graphMLExportOutputDir, graphMLExportOutputPath);
         CFGOutputConfig cfgOutputConfig = new CFGOutputConfig(cfgOutputDir, cfgOutputPath);
@@ -108,7 +110,7 @@ public class CodeTaskRunner {
         ComponentsBuilder ops = new ComponentsBuilder(new CobolTreeVisualiser(),
                 FlowchartBuilderImpl::build, new EntityNavigatorBuilder(), new UnresolvedReferenceThrowStrategy(),
                 format1DataStructureBuilder, idProvider);
-        ParsePipeline pipeline = new ParsePipeline(sourceConfig, ops, dialect);
+        ParsePipeline pipeline = new ParsePipeline(sourceConfig, rawAstOutputConfig, ops, dialect);
         GraphBuildConfig graphBuildConfig = new GraphBuildConfig(
                 NodeReferenceStrategy.EXISTING_CFG_NODE,
                 NodeReferenceStrategy.EXISTING_CFG_NODE);
@@ -119,7 +121,7 @@ public class CodeTaskRunner {
                 flowASTOutputConfig, cfgOutputConfig,
                 graphBuildConfig, dataStructuresOutputConfig, sdk,
                 idProvider).build();
-        pipelineTasks.run(tasks);
+        return pipelineTasks.run(tasks);
     }
 }
 

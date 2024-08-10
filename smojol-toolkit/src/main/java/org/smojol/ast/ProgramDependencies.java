@@ -1,6 +1,7 @@
 package org.smojol.ast;
 
 import com.google.gson.annotations.Expose;
+import lombok.Getter;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.flowchart.ConsoleColors;
 
@@ -9,7 +10,7 @@ import java.util.List;
 public class ProgramDependencies {
     private final FlowNode root;
     @Expose private final String programName;
-    @Expose private final List<CallTarget> dependencies;
+    @Expose @Getter private final List<CallTarget> dependencies;
 
     public ProgramDependencies(FlowNode root, String programName) {
         this.root = root;
@@ -26,5 +27,13 @@ public class ProgramDependencies {
             return transfers;
         }
         return transfers;
+    }
+
+    public boolean isEmpty() {
+        return dependencies.isEmpty();
+    }
+
+    public List<CallTarget> staticDependencies() {
+        return dependencies.stream().filter(dep -> dep.getClass() == StaticCallTarget.class).toList();
     }
 }

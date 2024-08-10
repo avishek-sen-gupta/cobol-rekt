@@ -20,3 +20,5 @@ fileignoreconfig:
   checksum: d6d7c40bafaebbd6f25e7d1c89f545eab5539e88654ddfbb800e3fe49240f906
 - filename: woof
   checksum: 7d588457269a756bd01fbea071f543692092ac1f201e319ca2766165574923cd
+- filename: che-che4z-lsp-for-cobol-integration
+  checksum: 076f2e54e0504ee9b91abce0f6331dd088439246729c151b70c06bad13160fcc

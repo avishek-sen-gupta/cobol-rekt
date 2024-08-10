@@ -7,6 +7,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.smojol.analysis.LanguageDialect;
 import org.smojol.analysis.graph.NamespaceQualifier;
 import org.smojol.analysis.graph.NodeSpecBuilder;
+import org.smojol.analysis.pipeline.config.RawASTOutputConfig;
 import org.smojol.analysis.pipeline.config.SourceConfig;
 import org.smojol.common.ast.CobolTreeVisualiser;
 import org.smojol.common.ast.FlowNode;
@@ -29,6 +30,7 @@ import org.smojol.interpreter.structure.DefaultFormat1DataStructureBuilder;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 
 public class InterpreterMain {
     private final Logger logger = LoggerFactory.getLogger(InterpreterMain.class);
@@ -37,8 +39,8 @@ public class InterpreterMain {
         SourceConfig testSourceConfig = new SourceConfig(
                 "test-exp", "/Users/asgupta/code/smojol/smojol-test-code",
                 ImmutableList.of(new File("/Users/asgupta/code/smojol/smojol-test-code")),
-                "/Users/asgupta/code/smojol/out/test-cobol.json",
                 "/Users/asgupta/code/smojol/che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar");
+        RawASTOutputConfig rawASTOutputConfig = new RawASTOutputConfig(Paths.get("/Users/asgupta/code/smojol/out"), "/Users/asgupta/code/smojol/out/test-cobol.json", new CobolTreeVisualiser());
 //        File source = new File("/Users/asgupta/code/smojol/smojol-test-code/table-indexing.cbl");
 //        File source = new File("/Users/asgupta/code/smojol/smojol-test-code/table-redef.cbl");
 //        File source = new File("/Users/asgupta/code/smojol/smojol-test-code/simple-redef.cbl");
@@ -46,13 +48,12 @@ public class InterpreterMain {
         SourceConfig awsCardDemoConfig = new SourceConfig(
                 "CBACT01C", "/Users/asgupta/code/aws-mainframe-modernization-carddemo/app/cbl/CBACT01C.cbl",
                 ImmutableList.of(new File("/Users/asgupta/code/aws-mainframe-modernization-carddemo/app/cpy")),
-                "/Users/asgupta/code/smojol/out/test-cobol.json",
                 "/Users/asgupta/code/smojol/che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar");
 
         ComponentsBuilder ops = new ComponentsBuilder(new CobolTreeVisualiser(),
                 (navigator1, dataStructures1, idProvider) -> FlowchartBuilderImpl.build(navigator1, dataStructures1, idProvider), new EntityNavigatorBuilder(), new UnresolvedReferenceDoNothingStrategy(),
                 new DefaultFormat1DataStructureBuilder(), new UUIDProvider());
-        ParsePipeline pipeline = new ParsePipeline(testSourceConfig, ops, LanguageDialect.COBOL);
+        ParsePipeline pipeline = new ParsePipeline(testSourceConfig, rawASTOutputConfig, ops, LanguageDialect.COBOL);
 
         CobolEntityNavigator navigator = pipeline.parse();
         FlowchartBuilder flowcharter = pipeline.flowcharter();

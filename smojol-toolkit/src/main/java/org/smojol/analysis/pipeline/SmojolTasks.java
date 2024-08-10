@@ -16,7 +16,7 @@ import org.smojol.analysis.graph.SummariseAction;
 import org.smojol.analysis.graph.graphml.JGraphTGraphBuilder;
 import org.smojol.analysis.graph.neo4j.*;
 import org.smojol.analysis.pipeline.config.*;
-import org.smojol.ast.*;
+import org.smojol.ast.ProgramDependencies;
 import org.smojol.common.ast.*;
 import org.smojol.common.flowchart.*;
 import org.smojol.common.id.IdProvider;
@@ -29,7 +29,6 @@ import org.smojol.interpreter.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
@@ -56,16 +55,17 @@ public class SmojolTasks {
     private FlowNode astRoot;
 
 
-    public Runnable INJECT_INTO_NEO4J = new Runnable() {
+    public AnalysisTask INJECT_INTO_NEO4J = new AnalysisTask() {
         @Override
-        public void run() {
+        public AnalysisTaskResult run() {
             exportToNeo4J(astRoot, dataStructures, qualifier, graphSDK);
+            return AnalysisTaskResult.OK();
         }
     };
 
-    public Runnable ATTACH_COMMENTS = new Runnable() {
+    public AnalysisTask ATTACH_COMMENTS = new AnalysisTask() {
         @Override
-        public void run() {
+        public AnalysisTaskResult run() {
             try {
                 List<CommentBlock> commentBlocks = new CommentExtraction().run(sourceConfig.sourcePath(), pipeline.getNavigator());
                 commentBlocks.forEach(cb -> {
@@ -82,75 +82,82 @@ public class SmojolTasks {
                         }
                     }
                 });
+                return AnalysisTaskResult.OK();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
     };
 
-    public Runnable WRITE_DATA_STRUCTURES = new Runnable() {
+    public AnalysisTask WRITE_DATA_STRUCTURES = new AnalysisTask() {
         @Override
-        public void run() {
+        public AnalysisTaskResult run() {
             new WriteDataStructuresTask(dataStructures, dataStructuresOutputConfig).run();
+            return AnalysisTaskResult.OK();
         }
     };
-    public Runnable EXPORT_TO_GRAPHML = new Runnable() {
+    public AnalysisTask EXPORT_TO_GRAPHML = new AnalysisTask() {
         @Override
-        public void run() {
+        public AnalysisTaskResult run() {
             try {
                 Files.createDirectories(graphMLOutputConfig.outputDir());
                 String graphMLOutputPath = graphMLOutputConfig.outputDir().resolve(graphMLOutputConfig.outputPath()).toAbsolutePath().normalize().toString();
                 exportToGraphML(astRoot, dataStructures, qualifier, graphMLOutputPath);
+                return AnalysisTaskResult.OK();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
     };
 
-    public Runnable WRITE_RAW_AST = new Runnable() {
+    public AnalysisTask WRITE_RAW_AST = new AnalysisTask() {
         @Override
-        public void run() {
+        public AnalysisTaskResult run() {
             try {
                 System.out.println(ConsoleColors.green(String.format("Memory usage: %s", Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())));
                 System.out.printf("AST Output Dir is: %s%n", rawAstOutputConfig.astOutputDir());
                 Files.createDirectories(rawAstOutputConfig.astOutputDir());
-                rawAstOutputConfig.visualiser().writeCobolAST(pipeline.getTree(), sourceConfig.cobolParseTreeOutputPath(), false, navigator);
+                rawAstOutputConfig.visualiser().writeCobolAST(pipeline.getTree(), rawAstOutputConfig.cobolParseTreeOutputPath(), false, navigator);
+                return AnalysisTaskResult.OK();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
     };
 
-    public Runnable WRITE_FLOW_AST = this::writeFlowAST;
-
-    private void writeFlowAST() {
-        SerialisableASTFlowNode serialisableASTFlowRoot = new SerialiseFlowASTTask().serialisedFlowAST(astRoot);
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        try (JsonWriter writer = new JsonWriter(new FileWriter(flowASTOutputConfig.outputPath()))) {
-            Files.createDirectories(flowASTOutputConfig.outputDir());
-            writer.setIndent("  ");
-            gson.toJson(serialisableASTFlowRoot, SerialisableASTFlowNode.class, writer);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public Runnable DRAW_FLOWCHART = new Runnable() {
+    public AnalysisTask WRITE_FLOW_AST = new AnalysisTask() {
         @Override
-        public void run() {
+        public AnalysisTaskResult run() {
+            SerialisableASTFlowNode serialisableASTFlowRoot = new SerialiseFlowASTTask().serialisedFlowAST(astRoot);
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            try (JsonWriter writer = new JsonWriter(new FileWriter(flowASTOutputConfig.outputPath()))) {
+                Files.createDirectories(flowASTOutputConfig.outputDir());
+                writer.setIndent("  ");
+                gson.toJson(serialisableASTFlowRoot, SerialisableASTFlowNode.class, writer);
+                return AnalysisTaskResult.OK();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    };
+
+    public AnalysisTask DRAW_FLOWCHART = new AnalysisTask() {
+        @Override
+        public AnalysisTaskResult run() {
             ParseTree root = navigator.procedureBodyRoot();
             try {
                 flowchartOutputWriter.createOutputDirs();
                 flowchartOutputWriter.draw(navigator, root, pipeline, sourceConfig);
+                return AnalysisTaskResult.OK();
             } catch (IOException | InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }
     };
 
-    public Runnable WRITE_CFG = new Runnable() {
+    public AnalysisTask WRITE_CFG = new AnalysisTask() {
         @Override
-        public void run() {
+        public AnalysisTaskResult run() {
             SerialisableCFGGraphCollector cfgGraphCollector = new SerialisableCFGGraphCollector(idProvider);
             astRoot.accept(cfgGraphCollector, -1);
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -158,27 +165,25 @@ public class SmojolTasks {
                 Files.createDirectories(cfgOutputConfig.outputDir());
                 writer.setIndent("  ");  // Optional: for pretty printing
                 gson.toJson(cfgGraphCollector, SerialisableCFGGraphCollector.class, writer);
+                return AnalysisTaskResult.OK();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
     };
 
-    public Runnable BUILD_PROGRAM_DEPENDENCIES = new Runnable() {
+    public AnalysisTask BUILD_PROGRAM_DEPENDENCIES = new AnalysisTask() {
         @Override
-        public void run() {
-            ProgramDependencies programDependencies = new ProgramDependencies(astRoot, sourceConfig.programName());
-            Gson gson = new GsonBuilder().setPrettyPrinting().excludeFieldsWithoutExposeAnnotation().create();
-//            Files.createDirectories(flowASTOutputConfig.outputDir());
-            String json = gson.toJson(programDependencies);
-            System.out.println(json);
+        public AnalysisTaskResult run() {
+            return AnalysisTaskResult.OK(new ProgramDependencies(astRoot, sourceConfig.programName()));
         }
     };
 
-    public Runnable SUMMARISE_THROUGH_LLM = new Runnable() {
+    public AnalysisTask SUMMARISE_THROUGH_LLM = new AnalysisTask() {
         @Override
-        public void run() {
+        public AnalysisTaskResult run() {
             summariseThroughLLM(qualifier, graphSDK);
+            return AnalysisTaskResult.OK();
         }
     };
 
@@ -209,12 +214,12 @@ public class SmojolTasks {
         return this;
     }
 
-    public void run(List<AnalysisTask> analysisTasks) throws IOException {
-        tasks(analysisTasks).forEach(Runnable::run);
+    public List<AnalysisTaskResult> run(List<CommandLineAnalysisTask> commandLineAnalysisTasks) throws IOException {
+        return tasks(commandLineAnalysisTasks).map(AnalysisTask::run).toList();
     }
 
-    private Stream<Runnable> tasks(List<AnalysisTask> analysisTasks) {
-        return analysisTasks.stream().map(t -> switch (t) {
+    private Stream<AnalysisTask> tasks(List<CommandLineAnalysisTask> commandLineAnalysisTasks) {
+        return commandLineAnalysisTasks.stream().map(t -> switch (t) {
             case INJECT_INTO_NEO4J -> INJECT_INTO_NEO4J;
             case EXPORT_TO_GRAPHML -> EXPORT_TO_GRAPHML;
             case WRITE_RAW_AST -> WRITE_RAW_AST;

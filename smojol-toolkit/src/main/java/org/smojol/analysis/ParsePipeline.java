@@ -30,7 +30,7 @@ import org.eclipse.lsp.cobol.core.engine.pipeline.StageResult;
 import org.eclipse.lsp.cobol.core.engine.pipeline.stages.*;
 import org.eclipse.lsp.cobol.core.preprocessor.TextPreprocessor;
 import org.eclipse.lsp.cobol.core.preprocessor.delegates.GrammarPreprocessor;
-import org.eclipse.lsp.cobol.dialects.idms.IdmsParser;
+import org.smojol.analysis.pipeline.config.RawASTOutputConfig;
 import org.smojol.analysis.visualisation.ComponentsBuilder;
 import org.smojol.common.flowchart.FlowchartBuilder;
 import org.smojol.common.idms.DialectIntegratorListener;
@@ -65,10 +65,10 @@ public class ParsePipeline {
     @Getter private List<ParseTree> transfersOfControl;
     @Getter private List<ParseTree> subroutineCalls;
 
-    public ParsePipeline(SourceConfig sourceConfig, ComponentsBuilder ops, LanguageDialect dialect) {
+    public ParsePipeline(SourceConfig sourceConfig, RawASTOutputConfig rawAstOutputConfig, ComponentsBuilder ops, LanguageDialect dialect) {
         this.src = sourceConfig.source();
         this.cpyPaths = sourceConfig.copyBookPaths();
-        this.cobolParseTreeOutputPath = sourceConfig.cobolParseTreeOutputPath();
+        this.cobolParseTreeOutputPath = rawAstOutputConfig.cobolParseTreeOutputPath();
         this.ops = ops;
         this.dialect = dialect;
         cpyExt = new String[]{"", ".cpy"};

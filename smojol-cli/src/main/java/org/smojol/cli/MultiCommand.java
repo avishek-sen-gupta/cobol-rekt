@@ -3,7 +3,7 @@ package org.smojol.cli;
 import org.eclipse.lsp.cobol.common.error.SyntaxError;
 import org.smojol.analysis.LanguageDialect;
 import org.smojol.analysis.pipeline.CodeTaskRunner;
-import org.smojol.analysis.pipeline.AnalysisTask;
+import org.smojol.analysis.pipeline.CommandLineAnalysisTask;
 import org.smojol.analysis.pipeline.TaskRunnerMode;
 import org.smojol.common.flowchart.ConsoleColors;
 import org.smojol.common.id.UUIDProvider;
@@ -96,7 +96,7 @@ public class MultiCommand implements Callable<Integer> {
         });
     }
 
-    private List<AnalysisTask> toGraphTasks(List<String> commands) {
-        return commands.stream().map(AnalysisTask::valueOf).toList();
+    private List<CommandLineAnalysisTask> toGraphTasks(List<String> commands) {
+        return commands.stream().map(CommandLineAnalysisTask::valueOf).toList();
     }
 }

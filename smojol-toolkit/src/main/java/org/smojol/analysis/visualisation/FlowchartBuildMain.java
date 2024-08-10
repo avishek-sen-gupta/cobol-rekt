@@ -1,6 +1,7 @@
 package org.smojol.analysis.visualisation;
 
 import com.google.common.collect.ImmutableList;
+import org.eclipse.lsp.cobol.common.poc.PersistentData;
 import org.smojol.analysis.LanguageDialect;
 import org.smojol.analysis.pipeline.CodeTaskRunner;
 import org.smojol.common.flowchart.FlowchartOutputFormat;
@@ -11,7 +12,7 @@ import org.smojol.interpreter.structure.OccursIgnoringFormat1DataStructureBuilde
 import java.io.File;
 import java.io.IOException;
 
-import static org.smojol.analysis.pipeline.AnalysisTask.*;
+import static org.smojol.analysis.pipeline.CommandLineAnalysisTask.*;
 
 public class FlowchartBuildMain {
     public static void main(String[] args) throws IOException, InterruptedException {
@@ -20,10 +21,6 @@ public class FlowchartBuildMain {
                 ImmutableList.of(new File("/Users/asgupta/code/smojol/smojol-test-code")),
                 "/Users/asgupta/code/smojol/che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar",
                 LanguageDialect.IDMS, new FullProgram(FlowchartOutputFormat.SVG), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder())
-                .generateForPrograms(ImmutableList.of(
-//                        WRITE_RAW_AST,
-//                        WRITE_FLOW_AST,
-                        DRAW_FLOWCHART
-                ), ImmutableList.of("if-test.cbl"));
+                .generateForPrograms(ImmutableList.of(BUILD_PROGRAM_DEPENDENCIES), ImmutableList.of("if-test.cbl"));
     }
 }
