@@ -140,7 +140,7 @@ public class NodeSpecBuilder {
                         INTERNAL_ID, id,
                         NAME, program.getName(),
                         TEXT, "",
-                        TYPE, PROGRAM_NODE,
+                        TYPE, program.getCallTarget().getReferenceType().name(),
                         ENTITY_TYPE, PROGRAM_NODE,
                         NAMESPACE, namespaceQualifier.getNamespace()
                 ));

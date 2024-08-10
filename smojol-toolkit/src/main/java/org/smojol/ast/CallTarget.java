@@ -7,7 +7,7 @@ import org.eclipse.lsp.cobol.dialects.idms.IdmsParser;
 
 public abstract class CallTarget {
     @Expose @Getter private final String name;
-    @Expose private final ReferenceType referenceType;
+    @Expose @Getter private final ReferenceType referenceType;
 
     public CallTarget(String callTargetString, ReferenceType referenceType) {
         this.name = callTargetString.trim().replace("\"", "").replace("'", "");
