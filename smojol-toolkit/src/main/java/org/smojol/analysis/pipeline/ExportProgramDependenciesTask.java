@@ -33,7 +33,7 @@ public class ExportProgramDependenciesTask {
         }
         try (JsonWriter writer = new JsonWriter(new FileWriter(exportPath))) {
             writer.setIndent("  ");
-            gson.toJson(root, SerialisableASTFlowNode.class, writer);
+            gson.toJson(root, CobolProgram.class, writer);
             return AnalysisTaskResult.OK();
         } catch (IOException e) {
             return AnalysisTaskResult.ERROR(e);
