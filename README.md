@@ -20,6 +20,7 @@ This is an evolving toolkit of capabilities helpful for reverse engineering lega
 - Exporting data structure layout to JSON
 - **ALPHA:** Support for building Glossary of Variables from data structures using LLMs
 - **ALPHA:** Support for extracting Capability Graph from paragraphs of a program using LLMs
+- **ALPHA:** Injecting and exporting inter-program dependencies
 
 Cobol-REKT is more of a library of useful things intended to be embedded in more formal reverse engineering workflows/pipelines, rather than being a standalone tool (though you can certainly use it as such). Many of the higher-level wrappers are merely sensible defaults; you are encouraged to modify them to suit your needs.
 
@@ -284,7 +285,7 @@ This command encapsulates almost all the tasks that you are likely to run. The d
 - ```DRAW_FLOWCHART```: This outputs flowcharts for the whole program or section-by-section of the program in PNG format.
 - ```WRITE_CFG```: This outputs the control flow graph of the program as JSON.
 - ```WRITE_DATA_STRUCTURES```: This exports the data structure hierarchy of the program as JSON.
-- ```BUILD_PROGRAM_DEPENDENCIES``` (WIP): Builds direct program dependencies from ```CALL``` and IDMS ```TRANSFER CONTROL``` statements. Indirect dependencies are not traced. For tracing the full dependency graph, see the ```dependency``` task.
+- ```BUILD_PROGRAM_DEPENDENCIES``` (ALPHA): Builds direct program dependencies from ```CALL``` and IDMS ```TRANSFER CONTROL``` statements. Indirect dependencies are not traced. For tracing the full dependency graph, see the ```dependency``` task.
 
 Passing the validation flag (```--validate``` or ```-v```) skips running all tasks, and simply validates whether the source is syntactically correct.
 
@@ -332,16 +333,16 @@ Implements various operations useful for reverse engineering Cobol code
 This command is used to trace the inter-program dependencies starting from a root program. To run this, use something like:
 
 ```
-java -jar smojol-cli/target/smojol-cli.jar dependency if-test.cbl --srcDir /Users/asgupta/code/smojol/smojol-test-code --copyBooksDir /Users/asgupta/code/smojol/smojol-test-code --dialectJarPath ./che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar --reportDir out/report
+java -jar smojol-cli/target/smojol-cli.jar dependency if-test.cbl --srcDir /Users/asgupta/code/smojol/smojol-test-code --copyBooksDir /Users/asgupta/code/smojol/smojol-test-code --dialectJarPath ./che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar --export=out.json
 ```
 
-At the moment, it will simply pretty-print the dependency tree on the console. Injecting it into Neo4J and exporting to JSON are in progress.
+At the moment, it will simply pretty-print the dependency tree on the console. Specifying the ```--neo4j``` flag injects those dependencies into Neo4J, while setting a path through ```export``` will export it to JSON.
 
 The help text for this command is reproduced below:
 
 ```
-Usage: app dependency [-hV] [-d=<dialect>] [-dp=<dialectJarPath>]
-                      -r=<reportRootDir> -s=<sourceDir> -cp=<copyBookDirs>[,
+Usage: app dependency [-hnV] [-d=<dialect>] [-dp=<dialectJarPath>]
+                      -s=<sourceDir> [-x=<exportPath>] -cp=<copyBookDirs>[,
                       <copyBookDirs>...] [-cp=<copyBookDirs>[,
                       <copyBookDirs>...]]... <programName>
 Implements various operations useful for reverse engineering Cobol code
@@ -352,10 +353,10 @@ Implements various operations useful for reverse engineering Cobol code
       -dp, --dialectJarPath=<dialectJarPath>
                              Path to dialect .JAR
   -h, --help                 Show this help message and exit.
-  -r, --reportDir=<reportRootDir>
-                             Output report directory
+  -n, --neo4j                Export to Neo4J
   -s, --srcDir=<sourceDir>   The Cobol source directory
   -V, --version              Print version information and exit.
+  -x, --export=<exportPath>  Export path
 ```
 
 ### Programmatic Usage
