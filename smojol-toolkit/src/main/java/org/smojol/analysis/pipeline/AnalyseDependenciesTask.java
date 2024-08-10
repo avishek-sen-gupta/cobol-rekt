@@ -40,8 +40,8 @@ public class AnalyseDependenciesTask {
         ProgramDependencies dependencies = (ProgramDependencies) first.getDetail();
         program.addAll(dependencies.getDependencies().stream().map(CobolProgram::new).toList());
 
-        for (CobolProgram childDep : program.staticDependencies())
-            recurse(childDep, copyBookPaths);
+        for (CobolProgram childDependency : program.staticDependencies())
+            recurse(childDependency, copyBookPaths);
     }
 
     public CobolProgram run(String programName) throws IOException {

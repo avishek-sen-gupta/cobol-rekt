@@ -270,7 +270,11 @@ You can skip the tests as well, using:
 ## Developer Guide
 
 ### CLI Usage
-The individual functionalities can be invoked using different commands. The commands and their effects are listed below. Further tasks will be added.
+The individual functionalities can be invoked using different commands. Further tasks / commands will be added.
+
+#### Command: ```run```
+
+This command encapsulates almost all the tasks that you are likely to run. The descriptions of the various commands are listed below.
 
 - ```WRITE_FLOW_AST```: Writes a more useful form of the AST to JSON. This form is used by the interpreter and other analyses.
 - ```INJECT_INTO_NEO4J```: This injects the unified model into Neo4J. Exposing more fine-grained options is in progress. This requires the environment variable ```NEO4J_URI```, ```NEO4J_USERNAME```, and ```NEO4J_PASSWORD``` to be defined. If you wish to include comments in the graph, the ```ATTACH_COMMENTS``` needs to have run first.
@@ -280,6 +284,7 @@ The individual functionalities can be invoked using different commands. The comm
 - ```DRAW_FLOWCHART```: This outputs flowcharts for the whole program or section-by-section of the program in PNG format.
 - ```WRITE_CFG```: This outputs the control flow graph of the program as JSON.
 - ```WRITE_DATA_STRUCTURES```: This exports the data structure hierarchy of the program as JSON.
+- ```BUILD_PROGRAM_DEPENDENCIES``` (WIP): Builds direct program dependencies from ```CALL``` and IDMS ```TRANSFER CONTROL``` statements. Indirect dependencies are not traced. For tracing the full dependency graph, see the ```dependency``` task.
 
 Passing the validation flag (```--validate``` or ```-v```) skips running all tasks, and simply validates whether the source is syntactically correct.
 
@@ -292,17 +297,18 @@ java -jar smojol-cli/target/smojol-cli.jar test-exp.cbl hello.cbl --commands="WR
 The help text is reproduced below (obtained by adding ```--help```):
 
 ```
-Usage: graph [-hvV] [-d=<dialect>] [-dp=<dialectJarPath>]
-             [-f=<flowchartOutputFormat>] [-g=<flowchartGenerationStrategy>]
-             -r=<reportRootDir> -s=<sourceDir> -c=<commands> [-c=<commands>]...
-             -cp=<copyBookDirs>[,<copyBookDirs>...] [-cp=<copyBookDirs>[,
-             <copyBookDirs>...]]... [<programNames>...]
+Usage: app run [-hvV] [-d=<dialect>] [-dp=<dialectJarPath>]
+               [-f=<flowchartOutputFormat>] [-g=<flowchartGenerationStrategy>]
+               -r=<reportRootDir> -s=<sourceDir> -c=<commands>
+               [-c=<commands>]... -cp=<copyBookDirs>[,<copyBookDirs>...]
+               [-cp=<copyBookDirs>[,<copyBookDirs>...]]... [<programNames>...]
 Implements various operations useful for reverse engineering Cobol code
       [<programNames>...]    The programs to analyse
   -c, --commands=<commands>  The commands to run (INJECT_INTO_NEO4J,
                                EXPORT_TO_GRAPHML, WRITE_RAW_AST,
                                DRAW_FLOWCHART, WRITE_FLOW_AST, WRITE_CFG,
-                               ATTACH_COMMENTS)
+                               ATTACH_COMMENTS, WRITE_DATA_STRUCTURES,
+                               BUILD_PROGRAM_DEPENDENCIES)
       -cp, --copyBooksDir=<copyBookDirs>[,<copyBookDirs>...]
                              Copybook directories (repeatable)
   -d, --dialect=<dialect>    The COBOL dialect (COBOL, IDMS)
@@ -318,6 +324,37 @@ Implements various operations useful for reverse engineering Cobol code
                              Output report directory
   -s, --srcDir=<sourceDir>   The Cobol source directory
   -v, --validate             Only run syntax validation on the input
+  -V, --version              Print version information and exit.
+```
+
+#### Command: ```dependency``` (WIP)
+
+This command is used to trace the inter-program dependencies starting from a root program. To run this, use something like:
+
+```
+java -jar smojol-cli/target/smojol-cli.jar dependency if-test.cbl --srcDir /Users/asgupta/code/smojol/smojol-test-code --copyBooksDir /Users/asgupta/code/smojol/smojol-test-code --dialectJarPath ./che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar --reportDir out/report
+```
+
+At the moment, it will simply pretty-print the dependency tree on the console. Injecting it into Neo4J and exporting to JSON are in progress.
+
+The help text for this command is reproduced below:
+
+```
+Usage: app dependency [-hV] [-d=<dialect>] [-dp=<dialectJarPath>]
+                      -r=<reportRootDir> -s=<sourceDir> -cp=<copyBookDirs>[,
+                      <copyBookDirs>...] [-cp=<copyBookDirs>[,
+                      <copyBookDirs>...]]... <programName>
+Implements various operations useful for reverse engineering Cobol code
+      <programName>          The program to analyse
+      -cp, --copyBooksDir=<copyBookDirs>[,<copyBookDirs>...]
+                             Copybook directories (repeatable)
+  -d, --dialect=<dialect>    The COBOL dialect (COBOL, IDMS)
+      -dp, --dialectJarPath=<dialectJarPath>
+                             Path to dialect .JAR
+  -h, --help                 Show this help message and exit.
+  -r, --reportDir=<reportRootDir>
+                             Output report directory
+  -s, --srcDir=<sourceDir>   The Cobol source directory
   -V, --version              Print version information and exit.
 ```
 
