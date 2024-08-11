@@ -110,7 +110,7 @@ public class SmojolTasks {
         }
     };
 
-    public AnalysisTask COMPARE_PARAGRAPHS = new AnalysisTask() {
+    public AnalysisTask COMPARE_CODE = new AnalysisTask() {
         @Override
         public AnalysisTaskResult run() {
             new CompareCodeBlocksTask(dataStructures, qualifier).run(astRoot, NodeOperationCostFunctions.GENERIC);
@@ -237,7 +237,7 @@ public class SmojolTasks {
             case ATTACH_COMMENTS -> ATTACH_COMMENTS;
             case WRITE_DATA_STRUCTURES -> WRITE_DATA_STRUCTURES;
             case BUILD_PROGRAM_DEPENDENCIES -> BUILD_PROGRAM_DEPENDENCIES;
-            case COMPARE_PARAGRAPHS -> COMPARE_PARAGRAPHS;
+            case COMPARE_CODE -> COMPARE_CODE;
         });
     }
 

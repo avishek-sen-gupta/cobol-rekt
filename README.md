@@ -18,7 +18,7 @@ This is an evolving toolkit of capabilities helpful for reverse engineering lega
 - Exporting ASTs, CFGs, and record dependencies to GraphML format
 - **ALPHA:** Support for building Glossary of Variables from data structures using LLMs
 - **ALPHA:** Support for extracting Capability Graph from paragraphs of a program using LLMs
-- **ALPHA:** Injecting and exporting inter-program dependencies
+- **ALPHA:** Injecting inter-program dependencies into Neo4J (with export to JSON)
 
 Cobol-REKT is more of a library of useful things intended to be embedded in more formal reverse engineering workflows/pipelines, rather than being a standalone tool (though you can certainly use it as such). Many of the higher-level wrappers are merely sensible defaults; you are encouraged to modify them to suit your needs.
 
@@ -46,8 +46,8 @@ Some reverse engineering use cases are listed below. Descriptions of the capabil
 
 ## Planned Capabilities
 
+- Similar Code Detection (WIP)
 - Integrating Domain Knowledge
-- Analysing inter-program dependencies (WIP)
 
 ## Flowchart Generation
 
