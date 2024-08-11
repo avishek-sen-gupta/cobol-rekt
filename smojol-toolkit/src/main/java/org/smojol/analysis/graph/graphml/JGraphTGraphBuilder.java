@@ -37,16 +37,19 @@ public class JGraphTGraphBuilder {
     private final Graph<TypedGraphVertex, TypedGraphEdge> astGraph;
     private final Graph<TypedGraphVertex, TypedGraphEdge> cfgGraph;
     private final Graph<TypedGraphVertex, TypedGraphEdge> dataStructuresGraph;
-    @Getter
-    private final Graph<TypedGraphVertex, TypedGraphEdge> model;
+    @Getter private final Graph<TypedGraphVertex, TypedGraphEdge> model;
     private final JGraphTCodeOperations astGraphOperations;
     private final JGraphTDataOperations dataGraphOperations;
 
     public JGraphTGraphBuilder(CobolDataStructure dataStructures, FlowNode procedureRoot, NodeSpecBuilder qualifier) {
+        this(dataStructures, procedureRoot, qualifier, new DirectedPseudograph<>(TypedGraphEdge.class));
+    }
+
+    public JGraphTGraphBuilder(CobolDataStructure dataStructures, FlowNode procedureRoot, NodeSpecBuilder qualifier, Graph<TypedGraphVertex, TypedGraphEdge> graph) {
         this.dataRoot = dataStructures;
         this.astRoot = this.cfgRoot = procedureRoot;
         this.qualifier = qualifier;
-        model = cfgGraph = astGraph = dataStructuresGraph = new DirectedPseudograph<>(TypedGraphEdge.class);
+        model = cfgGraph = astGraph = dataStructuresGraph = graph;
 //        astGraph = new DirectedAcyclicGraph<>(TypedGraphEdge.class);
 //        cfgGraph = new DefaultDirectedGraph<>(TypedGraphEdge.class);
 //        dataStructuresGraph = new DefaultDirectedGraph<>(TypedGraphEdge.class);

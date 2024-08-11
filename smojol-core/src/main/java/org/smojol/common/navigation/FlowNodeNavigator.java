@@ -1,7 +1,11 @@
 package org.smojol.common.navigation;
 
+import com.google.common.collect.ImmutableList;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.FlowNodeCondition;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class FlowNodeNavigator {
     private final FlowNode root;
@@ -21,6 +25,20 @@ public class FlowNodeNavigator {
             if (found != null) return found;
         }
         return null;
+    }
+
+    public List<FlowNode> findAllByCondition(FlowNodeCondition c) {
+        return searchAllRecursively(root, c);
+    }
+
+    private List<FlowNode> searchAllRecursively(FlowNode current, FlowNodeCondition c) {
+        if (c.apply(current)) return ImmutableList.of(current);
+        ArrayList<FlowNode> flowNodes = new ArrayList<>();
+        for (FlowNode child : current.astChildren()) {
+            List<FlowNode> found = searchAllRecursively(child, c);
+            flowNodes.addAll(found);
+        }
+        return flowNodes;
     }
 
     public FlowNode findNarrowestByCondition(FlowNodeCondition c) {

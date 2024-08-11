@@ -11,3 +11,7 @@ tqdm
 mypy
 sentence-transformers
 python-dotenv
+torch
+torch-geometric
+gSpan
+

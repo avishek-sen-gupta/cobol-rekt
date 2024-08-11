@@ -53,4 +53,9 @@ public class TypedCodeVertex implements TypedGraphVertex {
     public int hashCode() {
         return Objects.hashCode(node);
     }
+
+    @Override
+    public String toString() {
+        return type() + " / " + text();
+    }
 }

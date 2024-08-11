@@ -33,13 +33,15 @@
                     88 V2      VALUE "F".
        PROCEDURE DIVISION.
        SECTION-0 SECTION.
+        P1.
            GO TO SECTION-A.
        SECTION-A SECTION.
+        P2.
            MOVE "-6" TO SOMETEXT.
            MOVE "ABCD" TO LEVEL-10-A(1).
            MOVE "EFGH" TO LEVEL-10-A(2).
            MOVE "IJKL" TO LEVEL-10-A(3).
-
+        P3.
            MOVE "0000" TO LEVEL-20-B(1 1).
            MOVE "0011" TO LEVEL-20-B(1 2).
            MOVE "1100" TO LEVEL-20-B(2 1).
@@ -49,25 +51,42 @@
            SUBTRACT 1 FROM SOMETEXT.
            SUBTRACT 2 FROM 2 GIVING INVOICE-AMOUNT.
            MULTIPLY 2 BY 2 GIVING INVOICE-AMOUNT.
+        P4.
            ADD SOMETEXT TO SOMETEXT.
            MOVE 10 TO SOMEFRACTION(1).
            COMPUTE SOMETEXT = 2 * SOMETEXT + 1.
            COMPUTE SOMETEXT = SOMETEXT / SOMEFRACTION(1).
        SECTION-B SECTION.
+        P5.
            DISPLAY "SOMETEXT = " SOMETEXT.
            IF (SOMETEXT) = "12" OR "13"
             DISPLAY "THAT WORKED"
            ELSE
             DISPLAY "THAT DIDN'T WORK".
            DISPLAY "WEIRD STUFF".
+        P6.
+           MOVE 1234 TO SOMEFRACTION(1).
+           ADD 0 TO SOMEFRACTION(1).
+           SUBTRACT 0 FROM SOMEFRACTION(1).
+       SECTION-B1 SECTION.
+        P7.
+           DISPLAY "SOMETEXT = " SOMETEXT.
+           IF (SOMETEXT) = "12" OR "13"
+            DISPLAY "THAT WORKED"
+           ELSE
+            DISPLAY "THAT DIDN'T WORK".
+           DISPLAY "WEIRD STUFF".
+        P8.
            MOVE 1234 TO SOMEFRACTION(1).
            ADD 0 TO SOMEFRACTION(1).
            SUBTRACT 0 FROM SOMEFRACTION(1).
        SECTION-C SECTION.
+        P9.
            DISPLAY "SOME-UNION-1 = " SOME-UNION-1.
            MOVE 50 TO SOMEFRACTION(1).
            MOVE "ABCD" TO SOMETHING.
            MOVE "E" TO CONDI.
+        P10.
            IF (SOMEFRACTION(1) = 10) OR >20 AND V1
                DISPLAY "AMAZE".
            IF SOMEFRACTION(1) = 100 OR 30 OR 50

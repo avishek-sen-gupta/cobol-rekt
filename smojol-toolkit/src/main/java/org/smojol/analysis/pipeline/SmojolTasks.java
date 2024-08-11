@@ -1,5 +1,6 @@
 package org.smojol.analysis.pipeline;
 
+import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonWriter;
@@ -7,6 +8,13 @@ import com.mojo.woof.Advisor;
 import com.mojo.woof.GraphSDK;
 import com.mojo.woof.OpenAICredentials;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+import org.jgrapht.Graph;
+import org.jgrapht.alg.similarity.ZhangShashaTreeEditDistance;
+import org.jgrapht.graph.AsUndirectedGraph;
+import org.jgrapht.graph.DefaultDirectedGraph;
+import org.jgrapht.graph.DefaultUndirectedGraph;
 import org.neo4j.driver.Record;
 import org.smojol.analysis.ParsePipeline;
 import org.smojol.analysis.graph.DataStructureSummariseAction;
@@ -14,9 +22,13 @@ import org.smojol.analysis.graph.NamespaceQualifier;
 import org.smojol.analysis.graph.NodeSpecBuilder;
 import org.smojol.analysis.graph.SummariseAction;
 import org.smojol.analysis.graph.graphml.JGraphTGraphBuilder;
+import org.smojol.analysis.graph.graphml.TypedGraphEdge;
+import org.smojol.analysis.graph.graphml.TypedGraphVertex;
 import org.smojol.analysis.graph.neo4j.*;
 import org.smojol.analysis.pipeline.config.*;
+import org.smojol.ast.ParagraphFlowNode;
 import org.smojol.ast.ProgramDependencies;
+import org.smojol.ast.SectionFlowNode;
 import org.smojol.common.ast.*;
 import org.smojol.common.flowchart.*;
 import org.smojol.common.id.IdProvider;
@@ -30,6 +42,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -109,6 +122,74 @@ public class SmojolTasks {
             }
         }
     };
+
+    public AnalysisTask COMPARE_PARAGRAPHS = new AnalysisTask() {
+        @Override
+        public AnalysisTaskResult run() {
+//            JGraphTGraphBuilder graphMLExporter = new JGraphTGraphBuilder(dataStructures, astRoot, qualifier, new DefaultDirectedGraph<>(TypedGraphEdge.class));
+//            graphMLExporter.buildAST();
+//            Graph<TypedGraphVertex, TypedGraphEdge> ast = graphMLExporter.getModel();
+//            Graph<TypedGraphVertex, TypedGraphEdge> undirectedAST = new AsUndirectedGraph<>(ast);
+//            List<TypedGraphVertex> paragraphs = undirectedAST.vertexSet().stream().filter(v -> FlowNodeType.SECTION.name().equals(v.type())).toList();
+//            paragraphs.forEach(p -> System.out.println(p.name()));
+
+            List<FlowNode> sectionNodes = new FlowNodeNavigator(astRoot).findAllByCondition(n -> n.getClass() == ParagraphFlowNode.class);
+            List<String> sectionNames = sectionNodes.stream().map(FlowNode::name).toList();
+
+//            List<Pair<TypedGraphVertex, TypedGraphVertex>> allComparandPairs = recurse(paragraphs);
+            List<Pair<FlowNode, FlowNode>> allComparandFlowPairs = recurse_(sectionNodes);
+            List<ImmutablePair<List<ZhangShashaTreeEditDistance.EditOperation<TypedGraphVertex>>, Double>> allDistances = allComparandFlowPairs.stream().map(p -> {
+                JGraphTGraphBuilder graphMLExporterLeft = new JGraphTGraphBuilder(dataStructures, p.getLeft(), qualifier, new DefaultUndirectedGraph<>(TypedGraphEdge.class));
+                JGraphTGraphBuilder graphMLExporterRight = new JGraphTGraphBuilder(dataStructures, p.getRight(), qualifier, new DefaultUndirectedGraph<>(TypedGraphEdge.class));
+                graphMLExporterLeft.buildAST();
+                graphMLExporterRight.buildAST();
+
+                Graph<TypedGraphVertex, TypedGraphEdge> leftModel = graphMLExporterLeft.getModel();
+                Graph<TypedGraphVertex, TypedGraphEdge> rightModel = graphMLExporterRight.getModel();
+                TypedGraphVertex leftRoot = leftModel.vertexSet().stream().filter(v -> FlowNodeType.PARAGRAPH.name().equals(v.type())).toList().getFirst();
+                TypedGraphVertex rightRoot = rightModel.vertexSet().stream().filter(v -> FlowNodeType.PARAGRAPH.name().equals(v.type())).toList().getFirst();
+                ZhangShashaTreeEditDistance<TypedGraphVertex, TypedGraphEdge> editDistance =
+                        new ZhangShashaTreeEditDistance<>(leftModel, leftRoot, rightModel, rightRoot,
+                                v -> 1, v -> 1, (v, w) -> v.type().equals(w.type()) ? 0 : 1);
+                return ImmutablePair.of(editDistance.getEditOperationLists(), editDistance.getDistance());
+            }).toList();
+            for (int i = 0; i < allDistances.size(); i++) {
+                System.out.println(String.format("Distance between %s and %s is %s",
+                        allComparandFlowPairs.get(i).getLeft().name(),
+                        allComparandFlowPairs.get(i).getRight().name(),
+                        allDistances.get(i).getRight()));
+            }
+//            TypedGraphVertex left = paragraphs.get(2);
+//            TypedGraphVertex right = paragraphs.get(3);
+//            ZhangShashaTreeEditDistance<TypedGraphVertex, TypedGraphEdge> xxx = new ZhangShashaTreeEditDistance<>(undirectedAST, left, undirectedAST, right);
+//            double distance = xxx.getDistance();
+//            List<ZhangShashaTreeEditDistance.EditOperation<TypedGraphVertex>> opLists = xxx.getEditOperationLists();
+//            System.out.println(String.format("Distance between %s and %s is %s", left.name(), right.name(), distance));
+            return AnalysisTaskResult.OK();
+        }
+    };
+
+    private List<Pair<FlowNode, FlowNode>> recurse_(List<FlowNode> paragraphs) {
+        if (paragraphs.size() <= 1) return ImmutableList.of();
+        List<ImmutablePair<FlowNode, FlowNode>> comparands =
+                paragraphs.subList(1, paragraphs.size()).stream().map(p -> ImmutablePair.of(paragraphs.getFirst(), p)).toList();
+        List<Pair<FlowNode, FlowNode>> objects = new ArrayList<>();
+        List<Pair<FlowNode, FlowNode>> recursedComparands = recurse_(paragraphs.subList(1, paragraphs.size()));
+        objects.addAll(comparands);
+        objects.addAll(recursedComparands);
+        return objects;
+    }
+
+    private List<Pair<TypedGraphVertex, TypedGraphVertex>> recurse(List<TypedGraphVertex> paragraphs) {
+        if (paragraphs.size() == 1) return ImmutableList.of();
+        List<ImmutablePair<TypedGraphVertex, TypedGraphVertex>> comparands =
+                paragraphs.subList(1, paragraphs.size()).stream().map(p -> ImmutablePair.of(paragraphs.getFirst(), p)).toList();
+        List<Pair<TypedGraphVertex, TypedGraphVertex>> objects = new ArrayList<>();
+        List<Pair<TypedGraphVertex, TypedGraphVertex>> recursedComparands = recurse(paragraphs.subList(1, paragraphs.size()));
+        objects.addAll(comparands);
+        objects.addAll(recursedComparands);
+        return objects;
+    }
 
     public AnalysisTask WRITE_RAW_AST = new AnalysisTask() {
         @Override
@@ -229,6 +310,7 @@ public class SmojolTasks {
             case ATTACH_COMMENTS -> ATTACH_COMMENTS;
             case WRITE_DATA_STRUCTURES -> WRITE_DATA_STRUCTURES;
             case BUILD_PROGRAM_DEPENDENCIES -> BUILD_PROGRAM_DEPENDENCIES;
+            case COMPARE_PARAGRAPHS -> COMPARE_PARAGRAPHS;
         });
     }
 
