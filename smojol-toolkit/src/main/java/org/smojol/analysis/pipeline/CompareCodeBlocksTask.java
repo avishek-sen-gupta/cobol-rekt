@@ -1,0 +1,75 @@
+package org.smojol.analysis.pipeline;
+
+import com.google.common.collect.ImmutableList;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+import org.jgrapht.Graph;
+import org.jgrapht.alg.similarity.ZhangShashaTreeEditDistance;
+import org.jgrapht.graph.DefaultUndirectedGraph;
+import org.smojol.analysis.graph.NodeSpecBuilder;
+import org.smojol.analysis.graph.graphml.JGraphTGraphBuilder;
+import org.smojol.analysis.graph.graphml.TypedGraphEdge;
+import org.smojol.analysis.graph.graphml.TypedGraphVertex;
+import org.smojol.ast.ParagraphFlowNode;
+import org.smojol.common.ast.FlowNode;
+import org.smojol.common.ast.FlowNodeType;
+import org.smojol.common.navigation.FlowNodeNavigator;
+import org.smojol.common.vm.structure.CobolDataStructure;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+public class CompareCodeBlocksTask {
+    private final CobolDataStructure dataStructures;
+    private final NodeSpecBuilder qualifier;
+
+    public CompareCodeBlocksTask(CobolDataStructure dataStructures, NodeSpecBuilder qualifier) {
+        this.dataStructures = dataStructures;
+        this.qualifier = qualifier;
+    }
+
+    public AnalysisTaskResult run(FlowNode astRoot) {
+        List<FlowNode> sectionNodes = new FlowNodeNavigator(astRoot).findAllByCondition(n -> n.getClass() == ParagraphFlowNode.class);
+        HashMap<FlowNode, Pair<TypedGraphVertex, Graph<TypedGraphVertex, TypedGraphEdge>>> flowJGraphTPairs = new HashMap<>();
+        sectionNodes.forEach(n -> {
+            JGraphTGraphBuilder graphMLExporter = new JGraphTGraphBuilder(dataStructures, n, qualifier, new DefaultUndirectedGraph<>(TypedGraphEdge.class));
+            graphMLExporter.buildAST();
+            Graph<TypedGraphVertex, TypedGraphEdge> model = graphMLExporter.getModel();
+            TypedGraphVertex root = model.vertexSet().stream().filter(v -> FlowNodeType.PARAGRAPH.name().equals(v.type())).toList().getFirst();
+            flowJGraphTPairs.put(n, ImmutablePair.of(root, model));
+        });
+
+        List<Pair<FlowNode, FlowNode>> allComparandFlowPairs = recurse(sectionNodes);
+        List<ImmutablePair<List<ZhangShashaTreeEditDistance.EditOperation<TypedGraphVertex>>, Double>> allDistances = allComparandFlowPairs.stream().map(p -> {
+            Pair<TypedGraphVertex, Graph<TypedGraphVertex, TypedGraphEdge>> leftGraphTModel = flowJGraphTPairs.get(p.getLeft());
+            Pair<TypedGraphVertex, Graph<TypedGraphVertex, TypedGraphEdge>> rightGraphTModel = flowJGraphTPairs.get(p.getRight());
+            Graph<TypedGraphVertex, TypedGraphEdge> leftModel = leftGraphTModel.getRight();
+            Graph<TypedGraphVertex, TypedGraphEdge> rightModel = rightGraphTModel.getRight();
+            TypedGraphVertex leftRoot = leftGraphTModel.getLeft();
+            TypedGraphVertex rightRoot = rightGraphTModel.getLeft();
+            ZhangShashaTreeEditDistance<TypedGraphVertex, TypedGraphEdge> editDistance =
+                    new ZhangShashaTreeEditDistance<>(leftModel, leftRoot, rightModel, rightRoot,
+                            v -> 1, v -> 1, (v, w) -> v.type().equals(w.type()) ? 0 : 1);
+            return ImmutablePair.of(editDistance.getEditOperationLists(), editDistance.getDistance());
+        }).toList();
+        for (int i = 0; i < allDistances.size(); i++) {
+            System.out.printf("Distance between %s and %s is %s%n",
+                    allComparandFlowPairs.get(i).getLeft().name(),
+                    allComparandFlowPairs.get(i).getRight().name(),
+                    allDistances.get(i).getRight());
+        }
+        return AnalysisTaskResult.OK();
+    }
+
+    private List<Pair<FlowNode, FlowNode>> recurse(List<FlowNode> paragraphs) {
+        if (paragraphs.size() <= 1) return ImmutableList.of();
+        List<ImmutablePair<FlowNode, FlowNode>> comparands =
+                paragraphs.subList(1, paragraphs.size()).stream().map(p -> ImmutablePair.of(paragraphs.getFirst(), p)).toList();
+        List<Pair<FlowNode, FlowNode>> objects = new ArrayList<>();
+        List<Pair<FlowNode, FlowNode>> recursedComparands = recurse(paragraphs.subList(1, paragraphs.size()));
+        objects.addAll(comparands);
+        objects.addAll(recursedComparands);
+        return objects;
+    }
+}
