@@ -29,7 +29,7 @@ public class CompareCodeBlocksTask {
         this.qualifier = qualifier;
     }
 
-    public AnalysisTaskResult run(FlowNode astRoot, NodeOperationCostFunctionBlock costFunctionBlock) {
+    public AnalysisTaskResult run(FlowNode astRoot, NodeOperationCostFunctions costFunctionBlock) {
         List<FlowNode> sectionNodes = new FlowNodeNavigator(astRoot).findAllByCondition(n -> n.getClass() == ParagraphFlowNode.class);
         HashMap<FlowNode, Pair<TypedGraphVertex, Graph<TypedGraphVertex, TypedGraphEdge>>> flowJGraphTPairs = new HashMap<>();
         sectionNodes.forEach(n -> {
