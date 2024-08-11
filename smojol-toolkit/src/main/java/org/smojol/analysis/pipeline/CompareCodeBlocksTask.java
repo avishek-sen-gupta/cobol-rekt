@@ -29,7 +29,7 @@ public class CompareCodeBlocksTask {
         this.qualifier = qualifier;
     }
 
-    public AnalysisTaskResult run(FlowNode astRoot) {
+    public AnalysisTaskResult run(FlowNode astRoot, NodeOperationCostFunctionBlock costFunctionBlock) {
         List<FlowNode> sectionNodes = new FlowNodeNavigator(astRoot).findAllByCondition(n -> n.getClass() == ParagraphFlowNode.class);
         HashMap<FlowNode, Pair<TypedGraphVertex, Graph<TypedGraphVertex, TypedGraphEdge>>> flowJGraphTPairs = new HashMap<>();
         sectionNodes.forEach(n -> {
@@ -50,7 +50,7 @@ public class CompareCodeBlocksTask {
             TypedGraphVertex rightRoot = rightGraphTModel.getLeft();
             ZhangShashaTreeEditDistance<TypedGraphVertex, TypedGraphEdge> editDistance =
                     new ZhangShashaTreeEditDistance<>(leftModel, leftRoot, rightModel, rightRoot,
-                            v -> 1, v -> 1, (v, w) -> v.type().equals(w.type()) ? 0 : 1);
+                            costFunctionBlock.add(), costFunctionBlock.remove(), costFunctionBlock.change());
             return ImmutablePair.of(editDistance.getEditOperationLists(), editDistance.getDistance());
         }).toList();
         for (int i = 0; i < allDistances.size(); i++) {

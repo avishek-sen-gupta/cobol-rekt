@@ -113,7 +113,7 @@ public class SmojolTasks {
     public AnalysisTask COMPARE_PARAGRAPHS = new AnalysisTask() {
         @Override
         public AnalysisTaskResult run() {
-            new CompareCodeBlocksTask(dataStructures, qualifier).run(astRoot);
+            new CompareCodeBlocksTask(dataStructures, qualifier).run(astRoot, NodeOperationCostFunctionBlock.GENERIC);
             return AnalysisTaskResult.OK();
         }
     };

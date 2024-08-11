@@ -75,7 +75,6 @@
             DISPLAY "THAT WORKED"
            ELSE
             DISPLAY "THAT DIDN'T WORK".
-           DISPLAY "WEIRD STUFF".
         P8.
            MOVE 1234 TO SOMEFRACTION(1).
            ADD 0 TO SOMEFRACTION(1).
