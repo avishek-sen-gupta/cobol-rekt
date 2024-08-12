@@ -19,6 +19,7 @@ This is an evolving toolkit of capabilities helpful for reverse engineering lega
 - **ALPHA:** Support for building Glossary of Variables from data structures using LLMs
 - **ALPHA:** Support for extracting Capability Graph from paragraphs of a program using LLMs
 - **ALPHA:** Injecting inter-program dependencies into Neo4J (with export to JSON)
+- **ALPHA:** Paragraph similarity map
 
 Cobol-REKT is more of a library of useful things intended to be embedded in more formal reverse engineering workflows/pipelines, rather than being a standalone tool (though you can certainly use it as such). Many of the higher-level wrappers are merely sensible defaults; you are encouraged to modify them to suit your needs.
 
@@ -284,14 +285,15 @@ This command encapsulates almost all the tasks that you are likely to run. The d
 - ```WRITE_CFG```: This outputs the control flow graph of the program as JSON.
 - ```WRITE_DATA_STRUCTURES```: This exports the data structure hierarchy of the program as JSON.
 - ```BUILD_PROGRAM_DEPENDENCIES``` (ALPHA): Builds direct program dependencies from ```CALL``` and IDMS ```TRANSFER CONTROL``` statements. Indirect dependencies are not traced. For tracing the full dependency graph, see the ```dependency``` task.
-
-Passing the validation flag (```--validate``` or ```-v```) skips running all tasks, and simply validates whether the source is syntactically correct.
+- ```COMPARE_CODE``` (ALPHA): Builds a map of inter-paragraph similarity based on node edit distances (using the Zhang-Shasha algorithm). Work in Progress.
 
 For example, if you wanted to run all of the above, you could run the following command:
 
 ```
 java -jar smojol-cli/target/smojol-cli.jar test-exp.cbl hello.cbl --commands="WRITE_FLOW_AST INJECT_INTO_NEO4J EXPORT_TO_GRAPHML WRITE_RAW_AST DRAW_FLOWCHART WRITE_CFG" --srcDir /Users/asgupta/code/smojol/smojol-test-code --copyBooksDir /Users/asgupta/code/smojol/smojol-test-code --dialectJarPath ./che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar --reportDir out/report --generation=PROGRAM
 ```
+
+Passing the validation flag (```--validate``` or ```-v```) skips running all tasks, and simply validates whether the source is syntactically correct.
 
 The help text is reproduced below (obtained by adding ```--help```):
 
@@ -307,7 +309,7 @@ Implements various operations useful for reverse engineering Cobol code
                                EXPORT_TO_GRAPHML, WRITE_RAW_AST,
                                DRAW_FLOWCHART, WRITE_FLOW_AST, WRITE_CFG,
                                ATTACH_COMMENTS, WRITE_DATA_STRUCTURES,
-                               BUILD_PROGRAM_DEPENDENCIES)
+                               BUILD_PROGRAM_DEPENDENCIES, COMPARE_CODE)
       -cp, --copyBooksDir=<copyBookDirs>[,<copyBookDirs>...]
                              Copybook directories (repeatable)
   -d, --dialect=<dialect>    The COBOL dialect (COBOL, IDMS)

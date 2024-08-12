@@ -68,10 +68,10 @@ public class CompareCodeBlocksTask {
         if (paragraphs.size() <= 1) return ImmutableList.of();
         List<ImmutablePair<FlowNode, FlowNode>> comparands =
                 paragraphs.subList(1, paragraphs.size()).stream().map(p -> ImmutablePair.of(paragraphs.getFirst(), p)).toList();
-        List<Pair<FlowNode, FlowNode>> objects = new ArrayList<>();
+        List<Pair<FlowNode, FlowNode>> allComparands = new ArrayList<>();
         List<Pair<FlowNode, FlowNode>> recursedComparands = recurse(paragraphs.subList(1, paragraphs.size()));
-        objects.addAll(comparands);
-        objects.addAll(recursedComparands);
-        return objects;
+        allComparands.addAll(comparands);
+        allComparands.addAll(recursedComparands);
+        return allComparands;
     }
 }
