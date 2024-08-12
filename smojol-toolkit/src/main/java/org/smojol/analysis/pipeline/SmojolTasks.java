@@ -41,6 +41,7 @@ public class SmojolTasks {
     private final SourceConfig sourceConfig;
     private final FlowchartOutputWriter flowchartOutputWriter;
     private final RawASTOutputConfig rawAstOutputConfig;
+    private final OutputArtifactConfig similarityOutputConfig;
     private final GraphSDK graphSDK;
     private final GraphMLExportConfig graphMLOutputConfig;
     private final FlowASTOutputConfig flowASTOutputConfig;
@@ -113,10 +114,36 @@ public class SmojolTasks {
     public AnalysisTask COMPARE_CODE = new AnalysisTask() {
         @Override
         public AnalysisTaskResult run() {
-            new CompareCodeBlocksTask(dataStructures, qualifier).run(astRoot, NodeOperationCostFunctions.GENERIC);
-            return AnalysisTaskResult.OK();
+            AnalysisTaskResult result = new CompareCodeBlocksTask(dataStructures, qualifier).run(astRoot, NodeOperationCostFunctions.GENERIC);
+            return switch (result) {
+                case AnalysisTaskResultOK o -> exportToJSON((List<SimilarityResult>) o.getDetail());
+                case AnalysisTaskResultError e -> e;
+            };
         }
     };
+
+    private AnalysisTaskResult exportToJSON(List<SimilarityResult> similarityResults) {
+        List<SerialisableSimilarityResult> serialisableResults = similarityResults.stream().map(s ->
+                new SerialisableSimilarityResult(s.nodes(), s.distance(), s.editOperationLists())).toList();
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+//        String json = gson.toJson(serialisableResults);
+//
+//        System.out.println(json);
+//        return AnalysisTaskResult.OK(json);
+        try {
+            Files.createDirectories(similarityOutputConfig.outputDir());
+        } catch (IOException e) {
+            return AnalysisTaskResult.ERROR(e);
+        }
+        try (JsonWriter writer = new JsonWriter(new FileWriter(similarityOutputConfig.fullPath()))) {
+            Files.createDirectories(similarityOutputConfig.outputDir());
+            writer.setIndent("  ");
+            gson.toJson(serialisableResults, List.class, writer);
+            return AnalysisTaskResult.OK();
+        } catch (IOException e) {
+            return AnalysisTaskResult.ERROR(e);
+        }
+    }
 
     public AnalysisTask WRITE_RAW_AST = new AnalysisTask() {
         @Override
@@ -195,12 +222,13 @@ public class SmojolTasks {
         }
     };
 
-    public SmojolTasks(ParsePipeline pipeline, SourceConfig sourceConfig, FlowchartOutputWriter flowchartOutputWriter, RawASTOutputConfig rawAstOutputConfig, GraphMLExportConfig graphMLOutputConfig, FlowASTOutputConfig flowASTOutputConfig, CFGOutputConfig cfgOutputConfig, GraphBuildConfig graphBuildConfig, OutputArtifactConfig dataStructuresOutputConfig, GraphSDK graphSDK, IdProvider idProvider) {
+    public SmojolTasks(ParsePipeline pipeline, SourceConfig sourceConfig, FlowchartOutputWriter flowchartOutputWriter, RawASTOutputConfig rawAstOutputConfig, GraphMLExportConfig graphMLOutputConfig, FlowASTOutputConfig flowASTOutputConfig, CFGOutputConfig cfgOutputConfig, GraphBuildConfig graphBuildConfig, OutputArtifactConfig dataStructuresOutputConfig, OutputArtifactConfig similarityOutputConfig, GraphSDK graphSDK, IdProvider idProvider) {
         this.pipeline = pipeline;
         this.sourceConfig = sourceConfig;
         this.flowchartOutputWriter = flowchartOutputWriter;
         this.rawAstOutputConfig = rawAstOutputConfig;
         this.dataStructuresOutputConfig = dataStructuresOutputConfig;
+        this.similarityOutputConfig = similarityOutputConfig;
         this.graphSDK = graphSDK;
         this.graphMLOutputConfig = graphMLOutputConfig;
         this.flowASTOutputConfig = flowASTOutputConfig;

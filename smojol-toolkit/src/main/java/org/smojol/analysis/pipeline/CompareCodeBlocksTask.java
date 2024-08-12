@@ -10,6 +10,7 @@ import org.smojol.analysis.graph.NodeSpecBuilder;
 import org.smojol.analysis.graph.graphml.JGraphTGraphBuilder;
 import org.smojol.analysis.graph.graphml.TypedGraphEdge;
 import org.smojol.analysis.graph.graphml.TypedGraphVertex;
+import org.smojol.analysis.pipeline.config.OutputArtifactConfig;
 import org.smojol.ast.ParagraphFlowNode;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.FlowNodeType;
@@ -60,7 +61,7 @@ public class CompareCodeBlocksTask {
                     d.nodes().getRight(),
                     d.distance());
         });
-        return AnalysisTaskResult.OK();
+        return AnalysisTaskResult.OK(allDistances);
     }
 
     private List<Pair<FlowNode, FlowNode>> recurse(List<FlowNode> paragraphs) {

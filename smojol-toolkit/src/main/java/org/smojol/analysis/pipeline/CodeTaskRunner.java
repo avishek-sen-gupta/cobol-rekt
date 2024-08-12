@@ -32,6 +32,7 @@ public class CodeTaskRunner {
     private static final String DOTFILES_DIR = "dotfiles";
     private static final String GRAPHML_DIR = "graphml";
     private static final String CFG_DIR = "cfg";
+    private static final String SIMILARITY_DIR = "similarity";
     private final String sourceDir;
     private final List<File> copyBookPaths;
     private final String dialectJarPath;
@@ -93,6 +94,7 @@ public class CodeTaskRunner {
         Path dotFileOutputDir = Paths.get(reportRootDir, programReportDir, DOTFILES_DIR).toAbsolutePath().normalize();
         Path graphMLExportOutputDir = Paths.get(reportRootDir, programReportDir, GRAPHML_DIR).toAbsolutePath().normalize();
         Path cfgOutputDir = Paths.get(reportRootDir, programReportDir, CFG_DIR).toAbsolutePath().normalize();
+        Path similarityOutputDir = Paths.get(reportRootDir, programReportDir, SIMILARITY_DIR).toAbsolutePath().normalize();
         String graphMLExportOutputPath = graphMLExportOutputDir.resolve(String.format("%s.graphml", programFilename)).toAbsolutePath().normalize().toString();
         String cfgOutputPath = cfgOutputDir.resolve(String.format("cfg-%s.json", programFilename)).toAbsolutePath().normalize().toString();
         String cobolParseTreeOutputPath = astOutputDir.resolve(String.format("cobol-%s.json", programFilename)).toAbsolutePath().normalize().toString();
@@ -100,6 +102,7 @@ public class CodeTaskRunner {
         String absoluteDialectJarPath = Paths.get(dialectJarPath).toAbsolutePath().normalize().toString();
         SourceConfig sourceConfig = new SourceConfig(programFilename, sourceDir, copyBookPaths, absoluteDialectJarPath);
         OutputArtifactConfig dataStructuresOutputConfig = new OutputArtifactConfig(dataStructuresOutputDir, programFilename + "-data.json");
+        OutputArtifactConfig similarityOutputConfig = new OutputArtifactConfig(similarityOutputDir, programFilename + "-similarity.json");
 
         FlowchartOutputWriter flowchartOutputWriter = new FlowchartOutputWriter(flowchartGenerationStrategy, dotFileOutputDir, imageOutputDir);
         RawASTOutputConfig rawAstOutputConfig = new RawASTOutputConfig(astOutputDir, cobolParseTreeOutputPath, new CobolTreeVisualiser());
@@ -119,7 +122,7 @@ public class CodeTaskRunner {
                 sourceConfig, flowchartOutputWriter,
                 rawAstOutputConfig, graphMLOutputConfig,
                 flowASTOutputConfig, cfgOutputConfig,
-                graphBuildConfig, dataStructuresOutputConfig, sdk,
+                graphBuildConfig, dataStructuresOutputConfig, similarityOutputConfig, sdk,
                 idProvider).build();
         return pipelineTasks.run(tasks);
     }
