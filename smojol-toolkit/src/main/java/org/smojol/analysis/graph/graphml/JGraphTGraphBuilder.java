@@ -16,15 +16,15 @@ import org.smojol.analysis.graph.DataDependencyPairComputer;
 import org.smojol.analysis.graph.NodeSpecBuilder;
 import org.smojol.analysis.graph.jgrapht.JGraphTDataOperations;
 import org.smojol.analysis.graph.jgrapht.JGraphTCodeOperations;
+import org.smojol.analysis.pipeline.SerialisableCobolDataStructure;
 import org.smojol.common.ast.FlowNode;
+import org.smojol.common.ast.SerialisableCFGFEdge;
+import org.smojol.common.ast.SerialisableCFGFlowNode;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.interpreter.navigation.FlowNodeASTTraversal;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static com.mojo.woof.NodeProperties.*;
 import static com.mojo.woof.NodeRelations.*;
@@ -37,7 +37,8 @@ public class JGraphTGraphBuilder {
     private final Graph<TypedGraphVertex, TypedGraphEdge> astGraph;
     private final Graph<TypedGraphVertex, TypedGraphEdge> cfgGraph;
     private final Graph<TypedGraphVertex, TypedGraphEdge> dataStructuresGraph;
-    @Getter private final Graph<TypedGraphVertex, TypedGraphEdge> model;
+    @Getter
+    private final Graph<TypedGraphVertex, TypedGraphEdge> model;
     private final JGraphTCodeOperations astGraphOperations;
     private final JGraphTDataOperations dataGraphOperations;
 
@@ -112,7 +113,33 @@ public class JGraphTGraphBuilder {
         return new DefaultAttribute<>(attribute, AttributeType.STRING);
     }
 
-    private void export(Graph<TypedGraphVertex, TypedGraphEdge> graph, File outputPath) {
+    public SerialisableUnifiedModel writeToJSON() {
+        List<SerialisableCFGFlowNode> serialisableCodeVertices = astGraph.vertexSet()
+                .stream()
+                .filter(v -> v.getClass() == TypedCodeVertex.class)
+                .map(c -> new SerialisableCFGFlowNode(((TypedCodeVertex) c).getNode())).toList();
+        List<SerialisableCobolDataStructure> serialisableDataVertices = astGraph.vertexSet()
+                .stream()
+                .filter(v -> v.getClass() == TypedDataStructureVertex.class)
+                .map(c -> new SerialisableCobolDataStructure(((TypedDataStructureVertex) c).getNode())).toList();
+//        List<Object> serialisableNodes = astGraph.vertexSet().stream().map(v -> {
+//            return switch (v) {
+//                case TypedCodeVertex c -> new SerialisableCFGFlowNode(c.getNode());
+//                case TypedDataStructureVertex d -> new SerialisableCobolDataStructure(d.getNode());
+//                default -> v;
+//            };
+//        }).toList();
+        List<SerialisableCFGFEdge> serialisableEdges = astGraph.edgeSet().stream().map(e -> {
+            TypedGraphVertex from = astGraph.getEdgeSource(e);
+            TypedGraphVertex to = astGraph.getEdgeTarget(e);
+            return new SerialisableCFGFEdge(UUID.randomUUID().toString(),
+                    from.id(), to.id(), e.getRelationshipType());
+        }).toList();
+        return new SerialisableUnifiedModel(serialisableCodeVertices, serialisableDataVertices, serialisableEdges);
+//        return ImmutableList.of(serialisableNodes, edges);
+    }
+
+    public void writeToGraphML(File outputPath) {
         GraphMLExporter<TypedGraphVertex, TypedGraphEdge> exporter = new GraphMLExporter<>();
         exporter.registerAttribute(ID, GraphMLExporter.AttributeCategory.NODE, AttributeType.STRING);
         exporter.registerAttribute(TYPE, GraphMLExporter.AttributeCategory.NODE, AttributeType.STRING);
@@ -134,11 +161,7 @@ public class JGraphTGraphBuilder {
                 RELATIONSHIP_TYPE, attr(e.getRelationshipType()),
                 NAMESPACE, attr(e.getNamespace())));
         exporter.setVertexIdProvider(TypedGraphVertex::id);
-        exporter.exportGraph(graph, outputPath);
-    }
-
-    public void write(File outputPath) {
-        export(astGraph, outputPath);
+        exporter.exportGraph(astGraph, outputPath);
     }
 
     public void runAlgo(File outputPath) {

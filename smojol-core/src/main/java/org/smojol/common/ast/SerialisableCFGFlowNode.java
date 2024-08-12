@@ -9,6 +9,7 @@ public class SerialisableCFGFlowNode {
     private final String name;
     private final String originalText;
     private final FlowNodeType type;
+    private final String nodeType = "CODE_VERTEX";
 
     protected SerialisableCFGFlowNode(String id, String label, String name, String originalText, FlowNodeType type) {
         this.id = id;

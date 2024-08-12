@@ -15,6 +15,7 @@ public class SerialisableCobolDataStructure {
     private final List<SerialisableCobolDataStructure> children = new ArrayList<>();
     private boolean isRedefinition;
     private String redefines;
+    private final String nodeType = "DATA_VERTEX";
 
     public SerialisableCobolDataStructure(CobolDataStructure data) {
         name = data.name();

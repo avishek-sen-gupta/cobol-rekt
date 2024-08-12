@@ -14,6 +14,7 @@ import org.smojol.analysis.graph.NamespaceQualifier;
 import org.smojol.analysis.graph.NodeSpecBuilder;
 import org.smojol.analysis.graph.SummariseAction;
 import org.smojol.analysis.graph.graphml.JGraphTGraphBuilder;
+import org.smojol.analysis.graph.graphml.SerialisableUnifiedModel;
 import org.smojol.analysis.graph.neo4j.*;
 import org.smojol.analysis.pipeline.config.*;
 import org.smojol.ast.ProgramDependencies;
@@ -30,6 +31,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -103,7 +106,7 @@ public class SmojolTasks {
             try {
                 Files.createDirectories(graphMLOutputConfig.outputDir());
                 String graphMLOutputPath = graphMLOutputConfig.outputDir().resolve(graphMLOutputConfig.outputPath()).toAbsolutePath().normalize().toString();
-                exportToGraphML(astRoot, dataStructures, qualifier, graphMLOutputPath);
+                exportUnifiedToGraphML(astRoot, dataStructures, qualifier, graphMLOutputPath);
                 return AnalysisTaskResult.OK(CommandLineAnalysisTask.EXPORT_TO_GRAPHML);
             } catch (IOException e) {
                 return AnalysisTaskResult.ERROR(e, CommandLineAnalysisTask.EXPORT_TO_GRAPHML);
@@ -119,6 +122,13 @@ public class SmojolTasks {
                 case AnalysisTaskResultOK o -> exportToJSON((List<SimilarityResult>) o.getDetail());
                 case AnalysisTaskResultError e -> e;
             };
+        }
+    };
+
+    public AnalysisTask EXPORT_UNIFIED_TO_JSON = new AnalysisTask() {
+        @Override
+        public AnalysisTaskResult run() {
+            return exportUnifiedToJSON(astRoot, dataStructures, qualifier, "/Users/asgupta/code/smojol/out/test.json");
         }
     };
 
@@ -265,17 +275,43 @@ public class SmojolTasks {
             case ATTACH_COMMENTS -> ATTACH_COMMENTS;
             case WRITE_DATA_STRUCTURES -> WRITE_DATA_STRUCTURES;
             case BUILD_PROGRAM_DEPENDENCIES -> BUILD_PROGRAM_DEPENDENCIES;
+            case EXPORT_UNIFIED_TO_JSON -> EXPORT_UNIFIED_TO_JSON;
             case COMPARE_CODE -> COMPARE_CODE;
             case SUMMARISE_THROUGH_LLM -> SUMMARISE_THROUGH_LLM;
         });
     }
 
-    private static void exportToGraphML(FlowNode astRoot, CobolDataStructure dataStructures, NodeSpecBuilder qualifier, String outputPath) {
+    private static void exportUnifiedToGraphML(FlowNode astRoot, CobolDataStructure dataStructures, NodeSpecBuilder qualifier, String outputPath) {
         JGraphTGraphBuilder graphMLExporter = new JGraphTGraphBuilder(dataStructures, astRoot, qualifier);
         graphMLExporter.buildAST();
         graphMLExporter.buildCFG();
         graphMLExporter.buildDataStructures();
-        graphMLExporter.write(new File(outputPath));
+        graphMLExporter.writeToGraphML(new File(outputPath));
+    }
+
+    private static AnalysisTaskResult exportUnifiedToJSON(FlowNode astRoot, CobolDataStructure dataStructures, NodeSpecBuilder qualifier, String outputPath) {
+        JGraphTGraphBuilder graphMLExporter = new JGraphTGraphBuilder(dataStructures, astRoot, qualifier);
+        graphMLExporter.buildAST();
+        graphMLExporter.buildCFG();
+        graphMLExporter.buildDataStructures();
+        SerialisableUnifiedModel unifiedModel = graphMLExporter.writeToJSON();
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Path path = Paths.get(outputPath);
+        Path parentDir = path.getParent();
+        if (parentDir != null) {
+            try {
+                Files.createDirectories(parentDir);
+            } catch (IOException e) {
+                return AnalysisTaskResult.ERROR(e, CommandLineAnalysisTask.EXPORT_UNIFIED_TO_JSON);
+            }
+        }
+        try (JsonWriter writer = new JsonWriter(new FileWriter(outputPath))) {
+            writer.setIndent("  ");
+            gson.toJson(unifiedModel, SerialisableUnifiedModel.class, writer);
+            return AnalysisTaskResult.OK(CommandLineAnalysisTask.EXPORT_UNIFIED_TO_JSON);
+        } catch (IOException e) {
+            return AnalysisTaskResult.ERROR(e, CommandLineAnalysisTask.EXPORT_UNIFIED_TO_JSON);
+        }
     }
 
     private void exportToNeo4J(FlowNode root, CobolDataStructure dataStructures, NodeSpecBuilder qualifier, GraphSDK sdk) {
