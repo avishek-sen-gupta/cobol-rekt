@@ -70,9 +70,7 @@ public class Neo4JGraphBuilder {
     private void connect(List<CobolDataStructure> froms, List<CobolDataStructure> tos, FlowNode attachmentNode) {
         Record attachmentNodeRecord = dependencyAttachmentStrategy.reference(attachmentNode, sdk, qualifier);
         tos.forEach(to -> {
-            System.out.println("FROMS:");
             froms.forEach(f -> System.out.println(f.name()));
-            System.out.println("To = " + to.name());
             List<Record> nodes = sdk.findNodes(qualifier.dataNodeSearchSpec(to));
             Record n4jTo = !nodes.isEmpty() ? nodes.getFirst() : sdk.createNode(NodeToWoof.dataStructureToWoof(to, qualifier));
             sdk.modifies(attachmentNodeRecord, n4jTo);
