@@ -6,7 +6,7 @@ from typing import Callable, Protocol
 
 class FlowNode:
     def __init__(self, node_id: str, label: str, name: str, original_text: str, node_type: str):
-        self.children = []
+        self.children: list[FlowNode] = []
         self.type = node_type
         self.original_text = original_text
         self.name = name
@@ -23,7 +23,8 @@ class FlowNode:
 
     def nodes_(self, criterion: Callable[[FlowNode], bool]) -> list[FlowNode]:
         self_match = [self] if criterion(self) else []
-        return self_match + reduce(lambda acc, n: acc + n.nodes_(criterion), self.children, [])
+        initial: list[FlowNode] = []
+        return self_match + reduce(lambda acc, n: acc + n.nodes_(criterion), self.children, initial)
 
     def nodes(self, criterion: Callable[[FlowNode], bool]) -> list[FlowNode]:
         return list(filter(lambda n: n is not None, self.nodes_(criterion)))
