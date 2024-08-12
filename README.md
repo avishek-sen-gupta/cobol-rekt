@@ -76,7 +76,7 @@ This capability can be used by specifiying the ```WRITE_RAW_AST``` task.
 
 ## Control Flow Tree Generation
 
-This capability allows the engineer to produce a control flow tree for the Cobol source. This can be used for straight-up visualisation (the flowchart capability actually uses the control flow tree behind the scenes), or more dynamic analysis through an interpreter. See [SMOJOL (SMol Java-powered CobOL Interpreter)](#SMOJOL (SMol Java-powered CobOL Interpreter)) for a description of how this can help.
+This capability allows the engineer to produce a control flow tree for the Cobol source. This can be used for straight-up visualisation (the flowchart capability actually uses the control flow tree behind the scenes), or more dynamic analysis through an interpreter. See [SMOJOL (SMol Java-powered CobOL Interpreter)](#smojol-smol-java-powered-cobol-interpreter) for a description of how this can help.
 
 The CFG generation is part of the ```INJECT_INTO_NEO4J``` task.
 
