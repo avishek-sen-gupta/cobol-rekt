@@ -41,7 +41,7 @@ public class CompareCodeBlocksTask {
         });
 
         List<Pair<FlowNode, FlowNode>> allComparandFlowPairs = recurse(sectionNodes);
-        List<ImmutablePair<List<ZhangShashaTreeEditDistance.EditOperation<TypedGraphVertex>>, Double>> allDistances = allComparandFlowPairs.stream().map(p -> {
+        List<SimilarityResult> allDistances = allComparandFlowPairs.stream().map(p -> {
             Pair<TypedGraphVertex, Graph<TypedGraphVertex, TypedGraphEdge>> leftGraphTModel = flowJGraphTPairs.get(p.getLeft());
             Pair<TypedGraphVertex, Graph<TypedGraphVertex, TypedGraphEdge>> rightGraphTModel = flowJGraphTPairs.get(p.getRight());
             Graph<TypedGraphVertex, TypedGraphEdge> leftModel = leftGraphTModel.getRight();
@@ -51,14 +51,15 @@ public class CompareCodeBlocksTask {
             ZhangShashaTreeEditDistance<TypedGraphVertex, TypedGraphEdge> editDistance =
                     new ZhangShashaTreeEditDistance<>(leftModel, leftRoot, rightModel, rightRoot,
                             costFunctionBlock.add(), costFunctionBlock.remove(), costFunctionBlock.change());
-            return ImmutablePair.of(editDistance.getEditOperationLists(), editDistance.getDistance());
+//            return ImmutablePair.of(editDistance.getEditOperationLists(), editDistance.getDistance());
+            return new SimilarityResult(p, editDistance.getDistance(), editDistance.getEditOperationLists());
         }).toList();
-        for (int i = 0; i < allDistances.size(); i++) {
+        allDistances.forEach(d -> {
             System.out.printf("Distance between %s and %s is %s%n",
-                    allComparandFlowPairs.get(i).getLeft().name(),
-                    allComparandFlowPairs.get(i).getRight().name(),
-                    allDistances.get(i).getRight());
-        }
+                    d.nodes().getLeft(),
+                    d.nodes().getRight(),
+                    d.distance());
+        });
         return AnalysisTaskResult.OK();
     }
 
