@@ -68,6 +68,6 @@ public class AnalyseProgramDependenciesTask {
         CobolProgram rootProgram = new CobolProgram(new StaticCallTarget(programName));
         recurse(rootProgram, copyBookPaths);
         new ListingTreePrinter().print(rootProgram);
-        return AnalysisTaskResult.OK(rootProgram);
+        return AnalysisTaskResult.OK(BUILD_PROGRAM_DEPENDENCIES, rootProgram);
     }
 }

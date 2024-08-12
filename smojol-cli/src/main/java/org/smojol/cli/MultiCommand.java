@@ -2,9 +2,7 @@ package org.smojol.cli;
 
 import org.eclipse.lsp.cobol.common.error.SyntaxError;
 import org.smojol.analysis.LanguageDialect;
-import org.smojol.analysis.pipeline.CodeTaskRunner;
-import org.smojol.analysis.pipeline.CommandLineAnalysisTask;
-import org.smojol.analysis.pipeline.TaskRunnerMode;
+import org.smojol.analysis.pipeline.*;
 import org.smojol.common.flowchart.ConsoleColors;
 import org.smojol.common.id.UUIDProvider;
 import org.smojol.interpreter.FlowchartGenerationStrategy;
@@ -79,12 +77,23 @@ public class MultiCommand implements Callable<Integer> {
         List<File> copyBookPaths = copyBookDirs.stream().map(c -> Paths.get(c).toAbsolutePath().toFile()).toList();
         CodeTaskRunner taskRunner = new CodeTaskRunner(sourceDir, reportRootDir, copyBookPaths, dialectJarPath, LanguageDialect.dialect(dialect), FlowchartGenerationStrategy.strategy(flowchartGenerationStrategy, flowchartOutputFormat), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder());
         copyBookPaths.forEach(cpp -> System.out.println(cpp.getAbsolutePath()));
-        taskRunner.generateForPrograms(toGraphTasks(commands), programNames, isValidate ? TaskRunnerMode.DIAGNOSTIC_MODE : TaskRunnerMode.PRODUCTION_MODE);
-        if (!isValidate) return 0;
+        Map<String, List<AnalysisTaskResult>> runResults = taskRunner.generateForPrograms(toGraphTasks(commands), programNames, isValidate ? TaskRunnerMode.DIAGNOSTIC_MODE : TaskRunnerMode.PRODUCTION_MODE);
+        if (!isValidate) return processResults(runResults);
         System.out.println("Only validating, all other tasks were ignored");
         output(taskRunner.getErrorMap(), SyntaxError::toString);
         output(taskRunner.getErrorMap(), e -> e.getErrorCode() + ": " + e.getSuggestion());
         return 0;
+    }
+
+    private Integer processResults(Map<String, List<AnalysisTaskResult>> runResults) {
+        List<String> results = runResults.entrySet().stream().map(this::taskResults).toList();
+        results.forEach(System.out::println);
+        return 0;
+    }
+
+    private String taskResults(Map.Entry<String, List<AnalysisTaskResult>> taskResult) {
+        return String.join("\n", taskResult.getValue().stream().map(e -> taskResult.getKey()
+                + " -> " + e.toString()).toList()) + "\n";
     }
 
     private void output(Map<String, List<SyntaxError>> errorMap, Function<SyntaxError, String> format) {

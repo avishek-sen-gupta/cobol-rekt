@@ -61,7 +61,7 @@ public class CompareCodeBlocksTask {
                     d.nodes().getRight(),
                     d.distance());
         });
-        return AnalysisTaskResult.OK(allDistances);
+        return AnalysisTaskResult.OK(CommandLineAnalysisTask.COMPARE_CODE, allDistances);
     }
 
     private List<Pair<FlowNode, FlowNode>> recurse(List<FlowNode> paragraphs) {

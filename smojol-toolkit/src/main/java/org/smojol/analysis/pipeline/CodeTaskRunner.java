@@ -127,4 +127,3 @@ public class CodeTaskRunner {
         return pipelineTasks.run(tasks);
     }
 }
-

@@ -60,7 +60,7 @@ public class SmojolTasks {
         @Override
         public AnalysisTaskResult run() {
             exportToNeo4J(astRoot, dataStructures, qualifier, graphSDK);
-            return AnalysisTaskResult.OK();
+            return AnalysisTaskResult.OK(CommandLineAnalysisTask.INJECT_INTO_NEO4J);
         }
     };
 
@@ -83,9 +83,9 @@ public class SmojolTasks {
                         }
                     }
                 });
-                return AnalysisTaskResult.OK();
+                return AnalysisTaskResult.OK(CommandLineAnalysisTask.ATTACH_COMMENTS);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                return AnalysisTaskResult.ERROR(e, CommandLineAnalysisTask.ATTACH_COMMENTS);
             }
         }
     };
@@ -94,7 +94,7 @@ public class SmojolTasks {
         @Override
         public AnalysisTaskResult run() {
             new WriteDataStructuresTask(dataStructures, dataStructuresOutputConfig).run();
-            return AnalysisTaskResult.OK();
+            return AnalysisTaskResult.OK(CommandLineAnalysisTask.WRITE_DATA_STRUCTURES);
         }
     };
     public AnalysisTask EXPORT_TO_GRAPHML = new AnalysisTask() {
@@ -104,9 +104,9 @@ public class SmojolTasks {
                 Files.createDirectories(graphMLOutputConfig.outputDir());
                 String graphMLOutputPath = graphMLOutputConfig.outputDir().resolve(graphMLOutputConfig.outputPath()).toAbsolutePath().normalize().toString();
                 exportToGraphML(astRoot, dataStructures, qualifier, graphMLOutputPath);
-                return AnalysisTaskResult.OK();
+                return AnalysisTaskResult.OK(CommandLineAnalysisTask.EXPORT_TO_GRAPHML);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                return AnalysisTaskResult.ERROR(e, CommandLineAnalysisTask.EXPORT_TO_GRAPHML);
             }
         }
     };
@@ -126,22 +126,17 @@ public class SmojolTasks {
         List<SerialisableSimilarityResult> serialisableResults = similarityResults.stream().map(s ->
                 new SerialisableSimilarityResult(s.nodes(), s.distance(), s.editOperationLists())).toList();
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-//        String json = gson.toJson(serialisableResults);
-//
-//        System.out.println(json);
-//        return AnalysisTaskResult.OK(json);
         try {
             Files.createDirectories(similarityOutputConfig.outputDir());
         } catch (IOException e) {
-            return AnalysisTaskResult.ERROR(e);
+            return AnalysisTaskResult.ERROR(e, CommandLineAnalysisTask.COMPARE_CODE);
         }
         try (JsonWriter writer = new JsonWriter(new FileWriter(similarityOutputConfig.fullPath()))) {
-            Files.createDirectories(similarityOutputConfig.outputDir());
             writer.setIndent("  ");
             gson.toJson(serialisableResults, List.class, writer);
-            return AnalysisTaskResult.OK();
+            return AnalysisTaskResult.OK(CommandLineAnalysisTask.COMPARE_CODE);
         } catch (IOException e) {
-            return AnalysisTaskResult.ERROR(e);
+            return AnalysisTaskResult.ERROR(e, CommandLineAnalysisTask.COMPARE_CODE);
         }
     }
 
@@ -153,9 +148,9 @@ public class SmojolTasks {
                 System.out.printf("AST Output Dir is: %s%n", rawAstOutputConfig.astOutputDir());
                 Files.createDirectories(rawAstOutputConfig.astOutputDir());
                 rawAstOutputConfig.visualiser().writeCobolAST(pipeline.getTree(), rawAstOutputConfig.cobolParseTreeOutputPath(), false, navigator);
-                return AnalysisTaskResult.OK();
+                return AnalysisTaskResult.OK(CommandLineAnalysisTask.WRITE_RAW_AST);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                return AnalysisTaskResult.ERROR(e, CommandLineAnalysisTask.WRITE_RAW_AST);
             }
         }
     };
@@ -165,13 +160,17 @@ public class SmojolTasks {
         public AnalysisTaskResult run() {
             SerialisableASTFlowNode serialisableASTFlowRoot = new SerialiseFlowASTTask().serialisedFlowAST(astRoot);
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            try (JsonWriter writer = new JsonWriter(new FileWriter(flowASTOutputConfig.outputPath()))) {
+            try {
                 Files.createDirectories(flowASTOutputConfig.outputDir());
+            } catch (IOException e) {
+                return AnalysisTaskResult.ERROR(e, CommandLineAnalysisTask.WRITE_FLOW_AST);
+            }
+            try (JsonWriter writer = new JsonWriter(new FileWriter(flowASTOutputConfig.outputPath()))) {
                 writer.setIndent("  ");
                 gson.toJson(serialisableASTFlowRoot, SerialisableASTFlowNode.class, writer);
-                return AnalysisTaskResult.OK();
+                return AnalysisTaskResult.OK(CommandLineAnalysisTask.WRITE_FLOW_AST);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                return AnalysisTaskResult.ERROR(e, CommandLineAnalysisTask.WRITE_FLOW_AST);
             }
         }
     };
@@ -183,9 +182,9 @@ public class SmojolTasks {
             try {
                 flowchartOutputWriter.createOutputDirs();
                 flowchartOutputWriter.draw(navigator, root, pipeline, sourceConfig);
-                return AnalysisTaskResult.OK();
+                return AnalysisTaskResult.OK(CommandLineAnalysisTask.DRAW_FLOWCHART);
             } catch (IOException | InterruptedException e) {
-                throw new RuntimeException(e);
+                return AnalysisTaskResult.ERROR(e, CommandLineAnalysisTask.DRAW_FLOWCHART);
             }
         }
     };
@@ -200,9 +199,9 @@ public class SmojolTasks {
                 Files.createDirectories(cfgOutputConfig.outputDir());
                 writer.setIndent("  ");  // Optional: for pretty printing
                 gson.toJson(cfgGraphCollector, SerialisableCFGGraphCollector.class, writer);
-                return AnalysisTaskResult.OK();
+                return AnalysisTaskResult.OK(CommandLineAnalysisTask.WRITE_CFG);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                return AnalysisTaskResult.ERROR(e, CommandLineAnalysisTask.WRITE_CFG);
             }
         }
     };
@@ -210,7 +209,8 @@ public class SmojolTasks {
     public AnalysisTask BUILD_PROGRAM_DEPENDENCIES = new AnalysisTask() {
         @Override
         public AnalysisTaskResult run() {
-            return AnalysisTaskResult.OK(new ProgramDependencies(astRoot, sourceConfig.programName()));
+            return AnalysisTaskResult.OK(CommandLineAnalysisTask.BUILD_PROGRAM_DEPENDENCIES,
+                    new ProgramDependencies(astRoot, sourceConfig.programName()));
         }
     };
 
@@ -218,7 +218,7 @@ public class SmojolTasks {
         @Override
         public AnalysisTaskResult run() {
             summariseThroughLLM(qualifier, graphSDK);
-            return AnalysisTaskResult.OK();
+            return AnalysisTaskResult.OK(CommandLineAnalysisTask.SUMMARISE_THROUGH_LLM);
         }
     };
 
@@ -266,6 +266,7 @@ public class SmojolTasks {
             case WRITE_DATA_STRUCTURES -> WRITE_DATA_STRUCTURES;
             case BUILD_PROGRAM_DEPENDENCIES -> BUILD_PROGRAM_DEPENDENCIES;
             case COMPARE_CODE -> COMPARE_CODE;
+            case SUMMARISE_THROUGH_LLM -> SUMMARISE_THROUGH_LLM;
         });
     }
 

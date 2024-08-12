@@ -28,15 +28,15 @@ public class ExportProgramDependenciesTask {
             try {
                 Files.createDirectories(parentDir);
             } catch (IOException e) {
-                return AnalysisTaskResult.ERROR(e);
+                return AnalysisTaskResult.ERROR(e, CommandLineAnalysisTask.BUILD_PROGRAM_DEPENDENCIES);
             }
         }
         try (JsonWriter writer = new JsonWriter(new FileWriter(exportPath))) {
             writer.setIndent("  ");
             gson.toJson(root, CobolProgram.class, writer);
-            return AnalysisTaskResult.OK();
+            return AnalysisTaskResult.OK(CommandLineAnalysisTask.BUILD_PROGRAM_DEPENDENCIES);
         } catch (IOException e) {
-            return AnalysisTaskResult.ERROR(e);
+            return AnalysisTaskResult.ERROR(e, CommandLineAnalysisTask.BUILD_PROGRAM_DEPENDENCIES);
         }
     }
 }

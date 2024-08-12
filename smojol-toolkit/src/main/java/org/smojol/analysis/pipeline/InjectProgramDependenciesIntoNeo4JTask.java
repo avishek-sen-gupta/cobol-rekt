@@ -15,6 +15,6 @@ public class InjectProgramDependenciesIntoNeo4JTask {
 
     public AnalysisTaskResult run(CobolProgram root) {
         root.accept(new CobolProgramDependencyNeo4JVisitor(qualifier, graphSDK));
-        return AnalysisTaskResult.OK();
+        return AnalysisTaskResult.OK("INJECT_PROGRAM_DEPENDENCIES_INTO_NEO4J");
     }
 }
