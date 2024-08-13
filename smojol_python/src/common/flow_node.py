@@ -29,6 +29,10 @@ class FlowNode:
     def nodes(self, criterion: Callable[[FlowNode], bool]) -> list[FlowNode]:
         return list(filter(lambda n: n is not None, self.nodes_(criterion)))
 
+    @classmethod
+    def from_dict(cls, v):
+        return cls(v["id"], v["label"], v["name"], v["originalText"], v["type"])
+
 
 class FlowNodeVisitor(Protocol):
     def visit(self, node: FlowNode) -> FlowNodeVisitor:

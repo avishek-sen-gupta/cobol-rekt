@@ -45,6 +45,11 @@ Some reverse engineering use cases are listed below. Descriptions of the capabil
 - Try out new rules?
 - Identify different flows in the report - use cases for forward engineering
 
+## Work in Progress
+
+- Exporting unified AST, CFG, Data Structure Model to JSON
+- Graph Edit distance between paragraphs through NetworkX
+
 ## Planned Capabilities
 
 - Similar Code Detection (WIP)
