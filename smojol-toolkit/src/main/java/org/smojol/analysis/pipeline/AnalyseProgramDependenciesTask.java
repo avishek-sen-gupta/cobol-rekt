@@ -2,7 +2,7 @@ package org.smojol.analysis.pipeline;
 
 import com.google.common.collect.ImmutableList;
 import hu.webarticum.treeprinter.printer.listing.ListingTreePrinter;
-import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.smojol.analysis.LanguageDialect;
 import org.smojol.analysis.visualisation.CobolProgram;
 import org.smojol.ast.ProgramDependencies;
@@ -15,7 +15,6 @@ import org.smojol.interpreter.structure.OccursIgnoringFormat1DataStructureBuilde
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -35,15 +34,19 @@ public class AnalyseProgramDependenciesTask {
     }
 
     private void recurse(CobolProgram program, List<File> copyBookPaths) throws IOException {
-        System.out.println("Searching for program: " + program.getName() + "...");
-        Collection<File> files = FileUtils.listFiles(new File(sourceDir), null, true);
-        List<File> matchingFiles = files.stream().filter(f -> program.getName().equals(f.getName())).toList();
-        if (matchingFiles.isEmpty()) {
-            System.out.println(ConsoleColors.red("No files matching " + program.getName() + " in " + sourceDir + ". Terminating recursion..."));
-            return;
-        }
-        File foundFile = matchingFiles.getFirst();
-        String srcDir = foundFile.getParent();
+        Pair<File, String> searchResult = new ProgramSearch().run(program.getName(), sourceDir);
+        if (searchResult == ProgramSearch.NO_PATH) return;
+        File foundFile = searchResult.getLeft();
+        String srcDir = searchResult.getRight();
+//        System.out.println("Searching for program: " + program.getName() + "...");
+//        Collection<File> files = FileUtils.listFiles(new File(sourceDir), null, true);
+//        List<File> matchingFiles = files.stream().filter(f -> program.getName().equals(f.getName())).toList();
+//        if (matchingFiles.isEmpty()) {
+//            System.out.println(ConsoleColors.red("No files matching " + program.getName() + " in " + sourceDir + ". Terminating recursion..."));
+//            return;
+//        }
+//        File foundFile = matchingFiles.getFirst();
+//        String srcDir = foundFile.getParent();
         System.out.println("Found " + foundFile.getName() + " in " + srcDir);
         try {
             Map<String, List<AnalysisTaskResult>> results = new CodeTaskRunner(srcDir,

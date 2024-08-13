@@ -75,6 +75,12 @@ public class MultiCommand implements Callable<Integer> {
     @Override
     public Integer call() throws IOException {
         List<File> copyBookPaths = copyBookDirs.stream().map(c -> Paths.get(c).toAbsolutePath().toFile()).toList();
+        Integer returnCode = processPrograms(copyBookPaths);
+        if (returnCode != null) return returnCode;
+        return 0;
+    }
+
+    private Integer processPrograms(List<File> copyBookPaths) throws IOException {
         CodeTaskRunner taskRunner = new CodeTaskRunner(sourceDir, reportRootDir, copyBookPaths, dialectJarPath, LanguageDialect.dialect(dialect), FlowchartGenerationStrategy.strategy(flowchartGenerationStrategy, flowchartOutputFormat), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder());
         copyBookPaths.forEach(cpp -> System.out.println(cpp.getAbsolutePath()));
         Map<String, List<AnalysisTaskResult>> runResults = taskRunner.generateForPrograms(toGraphTasks(commands), programNames, isValidate ? TaskRunnerMode.DIAGNOSTIC_MODE : TaskRunnerMode.PRODUCTION_MODE);
@@ -82,7 +88,7 @@ public class MultiCommand implements Callable<Integer> {
         System.out.println("Only validating, all other tasks were ignored");
         output(taskRunner.getErrorMap(), SyntaxError::toString);
         output(taskRunner.getErrorMap(), e -> e.getErrorCode() + ": " + e.getSuggestion());
-        return 0;
+        return null;
     }
 
     private Integer processResults(Map<String, List<AnalysisTaskResult>> runResults) {

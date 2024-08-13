@@ -3,6 +3,7 @@ package org.smojol.analysis.pipeline;
 import com.mojo.woof.GraphSDK;
 import com.mojo.woof.Neo4JDriverBuilder;
 import lombok.Getter;
+import org.apache.commons.lang3.tuple.Pair;
 import org.eclipse.lsp.cobol.common.error.SyntaxError;
 import org.smojol.analysis.ParseDiagnosticRuntimeError;
 import org.smojol.analysis.LanguageDialect;
@@ -71,7 +72,12 @@ public class CodeTaskRunner {
                     tasks.stream().map(CommandLineAnalysisTask::name).toList(),
                     programFilename, runnerMode.toString()));
             try {
-                List<AnalysisTaskResult> analysisTaskResults = generateForProgram(programFilename, sourceDir, reportRootDir, this.dialect, runnerMode.tasks(tasks));
+                Pair<File, String> programPath = new ProgramSearch().run(programFilename, sourceDir);
+                if (programPath == ProgramSearch.NO_PATH) {
+                    System.out.printf("No program found for '%s' anywhere in path %s \n", programFilename, sourceDir);
+                    continue;
+                }
+                List<AnalysisTaskResult> analysisTaskResults = generateForProgram(programFilename, programPath.getRight(), reportRootDir, this.dialect, runnerMode.tasks(tasks));
                 results.put(programFilename, analysisTaskResults);
             } catch (ParseDiagnosticRuntimeError e) {
                 errorMap.put(programFilename, e.getErrors());
