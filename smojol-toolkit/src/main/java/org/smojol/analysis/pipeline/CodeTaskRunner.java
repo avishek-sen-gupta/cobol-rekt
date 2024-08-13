@@ -43,7 +43,7 @@ public class CodeTaskRunner {
     private final IdProvider idProvider;
     @Getter
     private final Map<String, List<SyntaxError>> errorMap = new HashMap<>();
-    private Format1DataStructureBuilder format1DataStructureBuilder;
+    private final Format1DataStructureBuilder format1DataStructureBuilder;
 
     public CodeTaskRunner(String sourceDir, String reportRootDir, List<File> copyBookPaths, String dialectJarPath, LanguageDialect dialect, FlowchartGenerationStrategy flowchartGenerationStrategy, IdProvider idProvider, Format1DataStructureBuilder format1DataStructureBuilder) {
         this.sourceDir = sourceDir;
