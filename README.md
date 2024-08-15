@@ -13,9 +13,8 @@ This is an evolving toolkit of capabilities helpful for reverse engineering lega
 - Injecting Cobol data layouts from Data Division into Neo4J (with dependencies like MOVE, COMPUTE, etc.) + export to JSON
 - Injecting execution traces from the SMOJOL interpreter into Neo4J
 - Integration with OpenAI GPT to summarise nodes using bottom-up node traversal (AST nodes or Data Structure nodes)
-- Exposes a unified model (AST, CFG, Data Structures with appropriate interconnections) which can be analysed through [JGraphT](https://jgrapht.org/) (which is embedded in the library)
+- Exposes a unified model (AST, CFG, Data Structures with appropriate interconnections) which can be analysed through [JGraphT](https://jgrapht.org/), together with export to GraphML format and JSON.
 - Support for namespaces to allow unique addressing of (possibly same) graphs
-- Exporting ASTs, CFGs, and record dependencies to GraphML format
 - **ALPHA:** Support for building Glossary of Variables from data structures using LLMs
 - **ALPHA:** Support for extracting Capability Graph from paragraphs of a program using LLMs
 - **ALPHA:** Injecting inter-program dependencies into Neo4J (with export to JSON)
@@ -49,7 +48,6 @@ Some reverse engineering use cases are listed below. Descriptions of the capabil
 
 ## Work in Progress
 
-- Exporting unified AST, CFG, Data Structure Model to JSON
 - Graph Edit distance between paragraphs through NetworkX
 
 ## Planned Capabilities
