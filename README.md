@@ -256,6 +256,8 @@ This will take a little time, depending upon the number of paragraphs and their 
 
 ## How to Build
 
+The toolkit uses JDK 21 features; so you'll need the appropriate JDK set up.
+
 Run: ```mvn clean install```.
 
 The Checkstyle step is only applicable for the Eclipse Cobol parser project. You can skip the Checkstyle targets with:
@@ -265,6 +267,13 @@ The Checkstyle step is only applicable for the Eclipse Cobol parser project. You
 You can skip the tests as well, using:
 
 ```mvn clean verify package -Dmaven.test.skip=true```
+
+For running the Python scripts, you can simply do:
+
+```
+cd smojol_python
+pip install -r requirements.txt
+```
 
 ## How to Use
 
