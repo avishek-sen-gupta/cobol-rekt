@@ -25,11 +25,13 @@ Cobol-REKT is more of a library of useful things intended to be embedded in more
 
 The toolkit consists of Java components, most of which are around parsing, ingestion of, and export from Cobol sources, and Python components, which carry out the analyses. In addition, the support for Neo4J allows you to build custom graph analyses as per your needs.
 
-## Dependencies
+## Major Dependencies
 
 - The toolkit uses the grammar available in the [Eclipse Che4z Cobol Support project](https://github.com/eclipse-che4z/che-che4z-lsp-for-cobol) to create the parse tree.
 - The toolkit uses the API from [Woof](https://github.com/asengupta/woof) to interact with Neo4J.
-- The toolkit uses [Graphviz](https://graphviz.org/) for flowchart generation. See its documentation for OS-specific installation instructions.
+- [Graphviz](https://graphviz.org/) for flowchart generation; see its documentation for OS-specific installation instructions.
+- [JGraphT](https://jgrapht.org/) for Java-based graph analyses and some export functionality.
+- [NetworkX](https://networkx.org/) for Python-based graph analyses
 
 ## Reverse Engineering Use Cases
 
