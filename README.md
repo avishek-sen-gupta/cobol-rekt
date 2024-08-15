@@ -268,6 +268,8 @@ You can skip the tests as well, using:
 
 ```mvn clean verify package -Dmaven.test.skip=true```
 
+For generating flowcharts, you will need to set up Graphviz on your box; see the [site](https://graphviz.org/) for OS-specific installation instructions.
+
 For running the Python scripts, you can simply do:
 
 ```
