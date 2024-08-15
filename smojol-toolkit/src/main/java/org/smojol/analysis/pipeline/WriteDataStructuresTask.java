@@ -3,13 +3,11 @@ package org.smojol.analysis.pipeline;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonWriter;
-import org.smojol.common.ast.CobolContextAugmentedTreeNode;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.analysis.pipeline.config.OutputArtifactConfig;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.nio.file.Files;
 
 public class WriteDataStructuresTask implements Runnable {
@@ -26,7 +24,7 @@ public class WriteDataStructuresTask implements Runnable {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         SerialisableCobolDataStructure root = new SerialisableCobolDataStructure();
         DataStructureExporter visitor = new DataStructureExporter(root);
-        dataStructures.acceptStrange(visitor);
+        dataStructures.acceptScopedVisitor(visitor);
         try {
             Files.createDirectories(outputArtifactConfig.outputDir());
         } catch (IOException e) {
