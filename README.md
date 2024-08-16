@@ -213,7 +213,7 @@ The toolkit supports building glossaries of variables given the data structures 
 To use this facility, start by exporting the data structures to JSON, through the JAR, like so:
 
 ```
-java -jar smojol-cli/target/smojol-cli.jar run V7522671 --commands="WRITE_DATA_STRUCTURES" --srcDir /path/to/sources --copyBooksDir /path/to/copybooks --dialectJarPath che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar --dialect IDMS --reportDir /path/to/report/dir
+java -jar smojol-cli/target/smojol-cli.jar run YOUR_PROGRAM --commands="WRITE_DATA_STRUCTURES" --srcDir /path/to/sources --copyBooksDir /path/to/copybooks --dialectJarPath che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar --dialect IDMS --reportDir /path/to/report/dir
 ```
 
 This will generate a JSON file in ```/path/to/report/dir```. After this, you can run:
@@ -230,7 +230,7 @@ This will generate the glossary in ```out/glossary.md```. Integrating other out-
 The toolkit supports extracting a capability map from the paragraphs of a source. For this, you need to generate both the AST in Neo4J, as well as the data structures JSON, you can do this via:
 
 ```
-java -jar smojol-cli/target/smojol-cli.jar run V7522671 --commands="INJECT_INTO_NEO4J WRITE_DATA_STRUCTURES" --srcDir /path/to/sources --copyBooksDir /path/to/copybooks --dialectJarPath che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar --dialect IDMS --reportDir /path/to/report/dir
+java -jar smojol-cli/target/smojol-cli.jar run YOUR_PROGRAM --commands="INJECT_INTO_NEO4J WRITE_DATA_STRUCTURES" --srcDir /path/to/sources --copyBooksDir /path/to/copybooks --dialectJarPath che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar --dialect IDMS --reportDir /path/to/report/dir
 ```
 After this, you will want to extract the paragraph capabilities, like so:
 

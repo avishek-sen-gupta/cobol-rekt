@@ -12,7 +12,7 @@ import java.io.IOException;
 
 public class RunLogger implements ExecutionListener {
     private final StringBuilder sb = new StringBuilder();
-    private String path = "/Users/asgupta/Downloads/mbrdi-poc/report.md";
+    private String path = "/Users/asgupta/Downloads/poc/report.md";
 
     public void close() throws IOException {
         write();
