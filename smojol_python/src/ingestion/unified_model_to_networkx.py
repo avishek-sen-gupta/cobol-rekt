@@ -1,15 +1,20 @@
 from __future__ import annotations
 
+import argparse
 import json
 from typing import Callable
 
 import networkx as nx
+from dotenv import load_dotenv
 from matplotlib import pyplot as plt
 from networkx import Graph
 
 from src.common.analysis_edge import AnalysisEdge
 from src.common.data_node import DataNode
 from src.common.flow_node import FlowNode
+from src.llm.common.parameter_constants import ParameterConstants
+
+load_dotenv("env/.env", override=True)
 
 
 def extract(code_nodes: list[FlowNode], data_nodes: list[DataNode], edges: list[AnalysisEdge],
@@ -58,7 +63,9 @@ def extract_ds(code_nodes: list[FlowNode], data_nodes: list[DataNode], edges: li
     return extract(code_nodes, data_nodes, edges,
                    lambda n: False,
                    lambda d: True,
-                   lambda e: e.edge_type == "CONTAINS_DATA" or e.edge_type == "FLOWS_INTO")
+                   lambda e: e.edge_type == "CONTAINS_DATA" or
+                             e.edge_type == "FLOWS_INTO" or
+                             e.edge_type == "REDEFINES")
 
 
 def extract_ds(code_nodes: list[FlowNode], data_nodes: list[DataNode], edges: list[AnalysisEdge]):
@@ -69,8 +76,11 @@ def extract_ds(code_nodes: list[FlowNode], data_nodes: list[DataNode], edges: li
 
 
 if __name__ == "__main__":
-    with open("/Users/asgupta/code/smojol/out/V7596922.report/unified_model/V7596922-unified.json",
-              'r') as file:
+    parser = argparse.ArgumentParser(prog="unified_model_to_networkx")
+    parser.add_argument(ParameterConstants.UNIFIED_MODEL_PATH)
+    args = parser.parse_args()
+    input_path = getattr(args, ParameterConstants.UNIFIED_MODEL_PATH)
+    with open(input_path, 'r') as file:
         unified = json.load(file)
         code_nodes = [FlowNode.from_dict(v) for v in unified["codeVertices"]]
         data_nodes = [DataNode.from_dict(v) for v in unified["dataVertices"]]
@@ -78,7 +88,6 @@ if __name__ == "__main__":
 
         edges = [AnalysisEdge.from_dict(v) for v in unified["edges"]]
 
-        # graph = extract(code_nodes, data_nodes, edges, )
         g = extract_ast(code_nodes, data_nodes, edges)
         g = extract_cfg(code_nodes, data_nodes, edges)
         g = extract_ds(code_nodes, data_nodes, edges)
