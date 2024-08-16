@@ -7,7 +7,7 @@ import org.smojol.analysis.graph.jgrapht.JGraphTDataOperations;
 import org.smojol.common.flowchart.DataStructureVisitor;
 import org.smojol.common.vm.structure.CobolDataStructure;
 
-import static com.mojo.woof.NodeRelations.CONTAINS;
+import static com.mojo.woof.NodeRelations.CONTAINS_DATA;
 
 public class GraphMLDataStructureVisitor implements DataStructureVisitor {
     @Getter private final Graph<TypedGraphVertex, TypedGraphEdge> dataStructuresGraph;
@@ -24,7 +24,7 @@ public class GraphMLDataStructureVisitor implements DataStructureVisitor {
     public CobolDataStructure visit(CobolDataStructure data, CobolDataStructure parent, CobolDataStructure root) {
         graphOperations.addNode(data);
         if (parent == null) return data;
-        graphOperations.connect(parent, data, CONTAINS);
+        graphOperations.connect(parent, data, CONTAINS_DATA);
         return data;
     }
 }

@@ -75,7 +75,7 @@ public class JGraphTGraphBuilder {
     public FlowNode buildJGraphTNodes(FlowNode node, FlowNode parent) {
         astGraphOperations.addNode(node);
         if (parent == null) return node;
-        astGraphOperations.connect(parent, node, CONTAINS);
+        astGraphOperations.connect(parent, node, CONTAINS_CODE);
         return node;
     }
 

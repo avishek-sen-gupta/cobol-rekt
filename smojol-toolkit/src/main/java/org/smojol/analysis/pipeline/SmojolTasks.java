@@ -38,12 +38,13 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import static com.mojo.woof.NodeProperties.TYPE;
-import static com.mojo.woof.NodeRelations.CONTAINS;
+import static com.mojo.woof.NodeRelations.*;
 
 public class SmojolTasks {
     private final SourceConfig sourceConfig;
     private final FlowchartOutputWriter flowchartOutputWriter;
     private final RawASTOutputConfig rawAstOutputConfig;
+    private final OutputArtifactConfig unifiedModelOutputConfig;
     private final OutputArtifactConfig similarityOutputConfig;
     private final GraphSDK graphSDK;
     private final GraphMLExportConfig graphMLOutputConfig;
@@ -128,7 +129,7 @@ public class SmojolTasks {
     public AnalysisTask EXPORT_UNIFIED_TO_JSON = new AnalysisTask() {
         @Override
         public AnalysisTaskResult run() {
-            return exportUnifiedToJSON(astRoot, dataStructures, qualifier, "/Users/asgupta/code/smojol/out/test.json");
+            return exportUnifiedToJSON(astRoot, dataStructures, qualifier, unifiedModelOutputConfig);
         }
     };
 
@@ -232,12 +233,13 @@ public class SmojolTasks {
         }
     };
 
-    public SmojolTasks(ParsePipeline pipeline, SourceConfig sourceConfig, FlowchartOutputWriter flowchartOutputWriter, RawASTOutputConfig rawAstOutputConfig, GraphMLExportConfig graphMLOutputConfig, FlowASTOutputConfig flowASTOutputConfig, CFGOutputConfig cfgOutputConfig, GraphBuildConfig graphBuildConfig, OutputArtifactConfig dataStructuresOutputConfig, OutputArtifactConfig similarityOutputConfig, GraphSDK graphSDK, IdProvider idProvider) {
+    public SmojolTasks(ParsePipeline pipeline, SourceConfig sourceConfig, FlowchartOutputWriter flowchartOutputWriter, RawASTOutputConfig rawAstOutputConfig, GraphMLExportConfig graphMLOutputConfig, FlowASTOutputConfig flowASTOutputConfig, CFGOutputConfig cfgOutputConfig, GraphBuildConfig graphBuildConfig, OutputArtifactConfig dataStructuresOutputConfig, OutputArtifactConfig unifiedModelOutputConfig, OutputArtifactConfig similarityOutputConfig, GraphSDK graphSDK, IdProvider idProvider) {
         this.pipeline = pipeline;
         this.sourceConfig = sourceConfig;
         this.flowchartOutputWriter = flowchartOutputWriter;
         this.rawAstOutputConfig = rawAstOutputConfig;
         this.dataStructuresOutputConfig = dataStructuresOutputConfig;
+        this.unifiedModelOutputConfig = unifiedModelOutputConfig;
         this.similarityOutputConfig = similarityOutputConfig;
         this.graphSDK = graphSDK;
         this.graphMLOutputConfig = graphMLOutputConfig;
@@ -289,15 +291,14 @@ public class SmojolTasks {
         graphMLExporter.writeToGraphML(new File(outputPath));
     }
 
-    private static AnalysisTaskResult exportUnifiedToJSON(FlowNode astRoot, CobolDataStructure dataStructures, NodeSpecBuilder qualifier, String outputPath) {
+    private static AnalysisTaskResult exportUnifiedToJSON(FlowNode astRoot, CobolDataStructure dataStructures, NodeSpecBuilder qualifier, OutputArtifactConfig outputArtifactConfig) {
         JGraphTGraphBuilder graphMLExporter = new JGraphTGraphBuilder(dataStructures, astRoot, qualifier);
         graphMLExporter.buildAST();
         graphMLExporter.buildCFG();
         graphMLExporter.buildDataStructures();
         SerialisableUnifiedModel unifiedModel = graphMLExporter.writeToJSON();
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        Path path = Paths.get(outputPath);
-        Path parentDir = path.getParent();
+        Path parentDir = outputArtifactConfig.outputDir();
         if (parentDir != null) {
             try {
                 Files.createDirectories(parentDir);
@@ -305,7 +306,7 @@ public class SmojolTasks {
                 return AnalysisTaskResult.ERROR(e, CommandLineAnalysisTask.EXPORT_UNIFIED_TO_JSON);
             }
         }
-        try (JsonWriter writer = new JsonWriter(new FileWriter(outputPath))) {
+        try (JsonWriter writer = new JsonWriter(new FileWriter(outputArtifactConfig.fullPath()))) {
             writer.setIndent("  ");
             gson.toJson(unifiedModel, SerialisableUnifiedModel.class, writer);
             return AnalysisTaskResult.OK(CommandLineAnalysisTask.EXPORT_UNIFIED_TO_JSON);
@@ -335,8 +336,8 @@ public class SmojolTasks {
         Record neo4jDataStructuresRoot = sdk.findNodes(qualifier.dataNodeSearchCriteria(Map.of(TYPE, "ROOT"))).getFirst();
         Advisor advisor = new Advisor(OpenAICredentials.fromEnv());
         // Summarises AST bottom-up
-        sdk.traverse(neo4jProgramRoot, new SummariseAction(advisor, sdk), CONTAINS);
+        sdk.traverse(neo4jProgramRoot, new SummariseAction(advisor, sdk), CONTAINS_CODE);
         // Summarises data structures
-        sdk.traverse(neo4jDataStructuresRoot, new DataStructureSummariseAction(advisor, sdk), CONTAINS);
+        sdk.traverse(neo4jDataStructuresRoot, new DataStructureSummariseAction(advisor, sdk), CONTAINS_DATA);
     }
 }
