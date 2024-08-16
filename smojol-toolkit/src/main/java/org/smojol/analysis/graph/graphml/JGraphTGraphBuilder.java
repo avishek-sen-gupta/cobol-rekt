@@ -18,7 +18,7 @@ import org.smojol.analysis.graph.jgrapht.JGraphTDataOperations;
 import org.smojol.analysis.graph.jgrapht.JGraphTCodeOperations;
 import org.smojol.analysis.pipeline.SerialisableCobolDataStructure;
 import org.smojol.common.ast.FlowNode;
-import org.smojol.common.ast.SerialisableCFGFEdge;
+import org.smojol.common.ast.SerialisableEdge;
 import org.smojol.common.ast.SerialisableCFGFlowNode;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.interpreter.navigation.FlowNodeASTTraversal;
@@ -113,7 +113,7 @@ public class JGraphTGraphBuilder {
         return new DefaultAttribute<>(attribute, AttributeType.STRING);
     }
 
-    public SerialisableUnifiedModel writeToJSON() {
+    public SerialisableUnifiedModel asSerialisable() {
         List<SerialisableCFGFlowNode> serialisableCodeVertices = astGraph.vertexSet()
                 .stream()
                 .filter(v -> v.getClass() == TypedCodeVertex.class)
@@ -122,17 +122,10 @@ public class JGraphTGraphBuilder {
                 .stream()
                 .filter(v -> v.getClass() == TypedDataStructureVertex.class)
                 .map(c -> new SerialisableCobolDataStructure(((TypedDataStructureVertex) c).getNode())).toList();
-//        List<Object> serialisableNodes = astGraph.vertexSet().stream().map(v -> {
-//            return switch (v) {
-//                case TypedCodeVertex c -> new SerialisableCFGFlowNode(c.getNode());
-//                case TypedDataStructureVertex d -> new SerialisableCobolDataStructure(d.getNode());
-//                default -> v;
-//            };
-//        }).toList();
-        List<SerialisableCFGFEdge> serialisableEdges = astGraph.edgeSet().stream().map(e -> {
+        List<SerialisableEdge> serialisableEdges = astGraph.edgeSet().stream().map(e -> {
             TypedGraphVertex from = astGraph.getEdgeSource(e);
             TypedGraphVertex to = astGraph.getEdgeTarget(e);
-            return new SerialisableCFGFEdge(UUID.randomUUID().toString(),
+            return new SerialisableEdge(UUID.randomUUID().toString(),
                     from.id(), to.id(), e.getRelationshipType());
         }).toList();
         return new SerialisableUnifiedModel(serialisableCodeVertices, serialisableDataVertices, serialisableEdges);

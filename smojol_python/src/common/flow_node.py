@@ -5,7 +5,8 @@ from typing import Callable, Protocol
 
 
 class FlowNode:
-    def __init__(self, node_id: str, label: str, name: str, original_text: str, node_type: str):
+    def __init__(self, node_id: str, label: str, name: str, original_text: str, node_type: str, node_category: str):
+        self.node_category = node_category
         self.children: list[FlowNode] = []
         self.type = node_type
         self.original_text = original_text
@@ -31,7 +32,7 @@ class FlowNode:
 
     @classmethod
     def from_dict(cls, v):
-        return cls(v["id"], v["label"], v["name"], v["originalText"], v["type"])
+        return cls(v["id"], v["label"], v["name"], v["originalText"], v["type"], v["nodeType"])
 
 
 class FlowNodeVisitor(Protocol):

@@ -32,7 +32,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -296,7 +295,7 @@ public class SmojolTasks {
         graphMLExporter.buildAST();
         graphMLExporter.buildCFG();
         graphMLExporter.buildDataStructures();
-        SerialisableUnifiedModel unifiedModel = graphMLExporter.writeToJSON();
+        SerialisableUnifiedModel unifiedModel = graphMLExporter.asSerialisable();
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         Path parentDir = outputArtifactConfig.outputDir();
         if (parentDir != null) {

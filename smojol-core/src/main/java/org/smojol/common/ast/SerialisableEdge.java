@@ -1,6 +1,6 @@
 package org.smojol.common.ast;
 
-public record SerialisableCFGFEdge(
+public record SerialisableEdge(
         String id,
         String fromNodeID,
         String toNodeID,

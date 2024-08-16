@@ -10,7 +10,7 @@ import java.util.List;
 
 public class SerialisableCFGGraphCollector implements FlowNodeVisitor {
     private final List<SerialisableCFGFlowNode> nodes = new ArrayList<>();
-    private final List<SerialisableCFGFEdge> edges = new ArrayList<>();
+    private final List<SerialisableEdge> edges = new ArrayList<>();
     private final IdProvider idProvider;
 
     public SerialisableCFGGraphCollector(IdProvider idProvider) {
@@ -21,7 +21,7 @@ public class SerialisableCFGGraphCollector implements FlowNodeVisitor {
     public void visit(FlowNode node, List<FlowNode> outgoingNodes, List<FlowNode> incomingNodes, VisitContext context, FlowNodeService nodeService) {
         nodes.add(new SerialisableCFGFlowNode(node));
         edges.addAll(outgoingNodes.stream()
-                .map(o -> new SerialisableCFGFEdge(idProvider.next(), node.id(), o.id(), NodeRelations.FOLLOWED_BY)).toList());
+                .map(o -> new SerialisableEdge(idProvider.next(), node.id(), o.id(), NodeRelations.FOLLOWED_BY)).toList());
     }
 
     @Override
@@ -31,13 +31,13 @@ public class SerialisableCFGGraphCollector implements FlowNodeVisitor {
 
     @Override
     public void visitParentChildLink(FlowNode parent, FlowNode internalTreeRoot, VisitContext ctx, FlowNodeService nodeService, FlowNodeCondition hideStrategy) {
-        edges.add(new SerialisableCFGFEdge(idProvider.next(), parent.id(),
+        edges.add(new SerialisableEdge(idProvider.next(), parent.id(),
                 internalTreeRoot.id(), NodeRelations.STARTS_WITH));
     }
 
     @Override
     public void visitControlTransfer(FlowNode from, FlowNode to, VisitContext visitContext) {
-        edges.add(new SerialisableCFGFEdge(idProvider.next(), from.id(),
+        edges.add(new SerialisableEdge(idProvider.next(), from.id(),
                 to.id(), NodeRelations.JUMPS_TO));
     }
 
