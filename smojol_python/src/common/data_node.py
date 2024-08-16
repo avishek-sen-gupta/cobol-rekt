@@ -2,8 +2,9 @@ from __future__ import annotations
 
 
 class DataNode:
-    def __init__(self, data_id: str, name: str, content: str, level_number: str, raw_text: str,
+    def __init__(self, data_id: str, name: str, content: str, data_type: str, level_number: str, raw_text: str,
                  is_redefinition: bool, redefines: str):
+        self.data_type = data_type
         self.id = data_id
         self.name = name
         self.content = content
@@ -14,5 +15,5 @@ class DataNode:
 
     @classmethod
     def from_dict(cls, v):
-        return cls(v["id"], v["name"], v["content"], v["levelNumber"], v["rawText"],
+        return cls(v["id"], v["name"], v["content"], v["dataType"], v["levelNumber"], v["rawText"],
                    v["isRedefinition"], v["redefines"])

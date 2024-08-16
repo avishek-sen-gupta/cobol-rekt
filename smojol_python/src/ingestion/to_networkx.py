@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from networkx import Graph, DiGraph
+from networkx import Graph, MultiDiGraph
 
 from src.common.flow_node import FlowNode
 from src.ingestion.networkx_visitor import NetworkXVisitor
@@ -16,8 +16,11 @@ def recursively_build(json_node: dict) -> FlowNode:
     return node
 
 
-def to_networkx(ast_json: dict[str, Any]) -> tuple[Graph, FlowNode]:
-    root = recursively_build(ast_json)
-    graph: Graph = DiGraph()
+def dict_to_networkx(ast_json: dict[str, Any]) -> tuple[Graph, FlowNode]:
+    return flow_node_to_networkx(recursively_build(ast_json))
+
+
+def flow_node_to_networkx(root: FlowNode) -> tuple[Graph, FlowNode]:
+    graph: Graph = MultiDiGraph()
     root.accept(NetworkXVisitor(None, graph))
     return graph, root

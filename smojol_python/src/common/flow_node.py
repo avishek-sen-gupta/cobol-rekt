@@ -6,8 +6,11 @@ from typing import Callable, Protocol
 
 class FlowNode:
     def __init__(self, node_id: str, label: str, name: str, original_text: str, node_type: str, node_category: str):
+        self.internal_root = None
         self.node_category = node_category
         self.children: list[FlowNode] = []
+        self.outgoing_nodes: list[FlowNode] = []
+        self.incoming_nodes: list[FlowNode] = []
         self.type = node_type
         self.original_text = original_text
         self.name = name
@@ -16,6 +19,19 @@ class FlowNode:
 
     def add_all(self, children: list[FlowNode]) -> None:
         self.children += children
+
+    def add_child(self, child: FlowNode) -> None:
+        self.children.append(child)
+
+    def add_outgoing(self, outgoing: FlowNode) -> None:
+        self.outgoing_nodes.append(outgoing)
+        outgoing.add_incoming(self)
+
+    def add_incoming(self, incoming: FlowNode) -> None:
+        self.incoming_nodes.append(incoming)
+
+    def set_internal_root(self, internal_root: FlowNode) -> None:
+        self.internal_root = internal_root
 
     def accept(self, visitor: FlowNodeVisitor) -> None:
         scoped_visitor = visitor.visit(self)
