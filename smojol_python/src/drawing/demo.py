@@ -1,9 +1,9 @@
 import argparse
 import json
 
+import networkx as nx
 from dotenv import load_dotenv
 
-from src.common.pattern.pattern_builder import sentence_sequence_pattern, match_pattern, call_pattern
 from src.ingestion.unified_model_to_networkx import extract_ast, extract_cfg, extract_ds
 from src.llm.common.parameter_constants import ParameterConstants
 
@@ -19,6 +19,5 @@ if __name__ == "__main__":
         ast_x, _, _ = extract_ast(unified)
         cfg_x, _, _ = extract_cfg(unified)
         ds_x, _, _ = extract_ds(unified)
-        x, _, _ = call_pattern(5)
-        # x, _ = sentence_sequence_pattern("MOVE", 18)
-        match_pattern(x, cfg_x)
+        pos = nx.random_layout(ast_x)
+        nx.nx_agraph.write_dot(cfg_x, "/Users/asgupta/code/smojol/out/nxstuff.dot")
