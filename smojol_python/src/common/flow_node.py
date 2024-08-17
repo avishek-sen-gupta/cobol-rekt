@@ -56,6 +56,7 @@ class FlowNode:
         return self.id == other.id
 
     def __hash__(self):
+        # print("Called hash")
         return uuid.UUID(self.id).int
 
     @classmethod

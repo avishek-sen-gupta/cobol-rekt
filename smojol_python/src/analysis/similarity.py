@@ -2,11 +2,14 @@ import argparse
 import json
 
 import networkx as nx
+from dotenv import load_dotenv
 
 from src.common.flow_node import FlowNode
 from src.ingestion.to_networkx import flow_node_to_networkx
 from src.ingestion.unified_model_to_networkx import extract_ast
 from src.llm.common.parameter_constants import ParameterConstants
+
+load_dotenv("env/.env", override=True)
 
 
 def similarity(left: FlowNode, right: FlowNode) -> float:

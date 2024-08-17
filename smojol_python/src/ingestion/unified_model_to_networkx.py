@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Callable, Any
+from typing import Callable, Any, Optional, Union
 
 import networkx as nx
 from networkx import Graph
@@ -16,12 +16,13 @@ def extract(code_nodes: list[FlowNode], data_nodes: list[DataNode], edges: list[
             should_extract_edge: Callable[[AnalysisEdge], bool] = lambda e: True) -> (
         tuple)[Graph, FlowNode, DataNode]:
     all_code_nodes: dict[str, FlowNode] = {}
+    all_data_nodes: dict[str, DataNode] = {}
     graph = nx.MultiDiGraph()
     for n in code_nodes:
+        all_code_nodes[n.id] = n
         if not should_extract_code(n):
             continue
-        all_code_nodes[n.id] = n
-        # graph.add_node(n)
+        graph.add_node(n, id=n.id, obj=n)
 
     for e in edges:
         if not should_extract_edge(e):
@@ -34,23 +35,36 @@ def extract(code_nodes: list[FlowNode], data_nodes: list[DataNode], edges: list[
             all_code_nodes[e.from_node_id].add_outgoing(all_code_nodes[e.to_node_id])
 
     for d in data_nodes:
+        all_data_nodes[d.id] = d
         if not should_extract_data(d):
             continue
         graph.add_node(d)
 
-    # Nodes are added automatically
+    # Nodes are added automatically, but we need to add them explicitly above to add extra attributes
     for e in edges:
         if not should_extract_edge(e):
             continue
-        if e.from_node_id not in all_code_nodes:
+        from_node = node(e.from_node_id, all_code_nodes, all_data_nodes)
+        to_node = node(e.to_node_id, all_code_nodes, all_data_nodes)
+
+        if not from_node:
             raise ModuleNotFoundError(f"From-Node with ID {e.from_node_id} was not found!")
-        if e.to_node_id not in all_code_nodes:
+        if not to_node:
             raise ModuleNotFoundError(f"To-Node with ID {e.to_node_id} was not found!")
-        graph.add_edge(all_code_nodes[e.from_node_id], all_code_nodes[e.to_node_id], edge_type=e.edge_type)
+
+        graph.add_edge(from_node, to_node, edge_type=e.edge_type)
 
     ast_root = [ast_root for ast_root in code_nodes if ast_root.type == "PROCEDURE_DIVISION_BODY"][0]
     ds_root = [ds_root for ds_root in data_nodes if ds_root.data_type == "ROOT"][0]
     return graph, ast_root, ds_root
+
+
+def node(node_id, all_code_nodes, all_data_nodes) -> Union[FlowNode | DataNode | None]:
+    if node_id in all_code_nodes:
+        return all_code_nodes[node_id]
+    elif node_id in all_data_nodes:
+        return all_data_nodes[node_id]
+    return None
 
 
 def extract_ast(unified: dict[str, Any]) -> tuple[Graph, FlowNode, DataNode]:
