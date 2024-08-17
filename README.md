@@ -19,10 +19,11 @@ This is an evolving toolkit of capabilities helpful for reverse engineering lega
 - **ALPHA:** Support for extracting Capability Graph from paragraphs of a program using LLMs
 - **ALPHA:** Injecting inter-program dependencies into Neo4J (with export to JSON)
 - **ALPHA:** Paragraph similarity map
+- **ALPHA:** Code Pattern Detection
 
 Cobol-REKT is more of a library of useful things intended to be embedded in more formal reverse engineering workflows/pipelines, rather than being a standalone tool (though you can certainly use it as such). Many of the higher-level wrappers are merely sensible defaults; you are encouraged to modify them to suit your needs.
 
-The toolkit consists of Java components, most of which are around parsing, ingestion of, and export from Cobol sources, and Python components, which carry out the analyses. In addition, the support for Neo4J allows you to build custom graph analyses as per your needs.
+The toolkit consists of Java components, most of which are around parsing, ingestion of, and export from Cobol sources, and Python components, which carry out the analyses. In addition, the support for Neo4J allows you to build custom graph analyses as per your needs. I expect most of the analysis to happen through Python, hence the Java component tries to unlock as much of the ingested data as possible in different formats.
 
 **If you are trying out Cobol-REKT in your project, I'd love to know and feature it in the README (simply open a PR, and we can go from there)! I'm also welcoming contributors, and/or feature requests for your use cases.**
 
@@ -56,7 +57,7 @@ Some reverse engineering use cases are listed below. Descriptions of the capabil
 
 - Similar Code Detection (WIP)
 - Integrating Domain Knowledge
-- Common Pattern Detection with Configurable Code Patterns
+- Common Pattern Detection with Configurable Code Patterns (WIP)
 
 ## Flowchart Generation
 
@@ -215,6 +216,18 @@ with open(input_path, 'r') as file:
     cfg_x, _, _ = extract_cfg(unified)
     ds_x, _, _ = extract_ds(unified)
 ```
+
+There are currently two tasks implemented using NetworkX.
+
+### Code Similarity
+
+TODO...
+See ```similarity.py```
+
+### Code Pattern Recognition
+
+TODO...
+See ```pattern_matcher.py```
 
 ## Analysis through Neo4J
 
