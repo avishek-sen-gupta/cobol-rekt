@@ -8,21 +8,6 @@ from src.common.flow_node import FlowNode
 from src.common.pattern.pattern_node import PatternNode
 
 
-# def sequence_pattern_sentence_old(statement_type: str, number: int):
-#     subgraph_pattern = MultiDiGraph()
-#     sentences = list(map(lambda n: PatternNode("SENTENCE", n), range(number)))
-#     statements = list(map(lambda n: PatternNode(statement_type, n), range(number)))
-#     for sentence in sentences:
-#         subgraph_pattern.add_node(sentence, obj=sentence)
-#     for statement in statements:
-#         subgraph_pattern.add_node(statement, obj=statement)
-#     for sntc, stmt in zip(sentences, statements):
-#         subgraph_pattern.add_edge(sntc, stmt, edge_type="STARTS_WITH")
-#     sentence_pairs = list(zip(sentences, sentences[1:]))
-#     for s1, s2 in sentence_pairs:
-#         subgraph_pattern.add_edge(s1, s2, edge_type="FOLLOWED_BY")
-#     return subgraph_pattern
-
 def sentence_sequence_pattern(statement_type: str, number: int, subgraph_pattern=MultiDiGraph()) -> tuple[
     Graph, list[PatternNode]]:
     sentences = list(map(lambda n: sentence_with_single_statement(statement_type, subgraph_pattern)[1], range(number)))
@@ -45,17 +30,6 @@ def sentence_with_single_statement(statement_type: str, subgraph_pattern: Graph)
 def call_pattern(number: int, subgraph_pattern=MultiDiGraph()):
     _, call_sentence = sentence_with_single_statement("CALL", subgraph_pattern)
     _, move_sentences = sentence_sequence_pattern("MOVE", number, subgraph_pattern)
-    # sentences = list(map(lambda n: PatternNode("SENTENCE", n), range(number)))
-    # statements = list(map(lambda n: PatternNode("MOVE", n), range(number)))
-    # for sentence in sentences:
-    #     subgraph_pattern.add_node(sentence, obj=sentence)
-    # for statement in statements:
-    #     subgraph_pattern.add_node(statement, obj=statement)
-    # for sntc, stmt in zip(sentences, statements):
-    #     subgraph_pattern.add_edge(sntc, stmt, edge_type="STARTS_WITH")
-    # sentence_pairs = list(zip(sentences, sentences[1:]))
-    # for s1, s2 in sentence_pairs:
-    #     subgraph_pattern.add_edge(s1, s2, edge_type="FOLLOWED_BY")
     subgraph_pattern.add_edge(move_sentences[-1], call_sentence, edge_type="FOLLOWED_BY")
     return subgraph_pattern, move_sentences, call_sentence
 
