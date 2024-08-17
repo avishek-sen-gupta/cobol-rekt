@@ -1,11 +1,14 @@
 import argparse
 import json
+import pygraphviz
 
 import networkx as nx
-from matplotlib import pyplot as plt
+from dotenv import load_dotenv
 
 from src.ingestion.unified_model_to_networkx import extract_ast, extract_cfg, extract_ds
 from src.llm.common.parameter_constants import ParameterConstants
+
+load_dotenv("env/.env", override=True)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog="unified_model_to_networkx")
@@ -18,6 +21,7 @@ if __name__ == "__main__":
         cfg_x, _, _ = extract_cfg(unified)
         ds_x, _, _ = extract_ds(unified)
         pos = nx.random_layout(ast_x)
-        nx.draw(ast_x, pos, with_labels=False)
-        plt.show()
+        nx.nx_agraph.write_dot(ast_x, "/Users/asgupta/code/smojol/out/nxstuff.dot")
+        # nx.draw(ast_x, pos, with_labels=False)
+        # plt.show()
     # print(paragraphs)

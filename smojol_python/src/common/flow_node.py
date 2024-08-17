@@ -1,12 +1,13 @@
 from __future__ import annotations
 
+import uuid
 from functools import reduce
 from typing import Callable, Protocol
 
 
 class FlowNode:
     def __init__(self, node_id: str, label: str, name: str, original_text: str, node_type: str, node_category: str):
-        self.internal_root = None
+        self.internal_roots: list[FlowNode] = []
         self.node_category = node_category
         self.children: list[FlowNode] = []
         self.outgoing_nodes: list[FlowNode] = []
@@ -30,8 +31,8 @@ class FlowNode:
     def add_incoming(self, incoming: FlowNode) -> None:
         self.incoming_nodes.append(incoming)
 
-    def set_internal_root(self, internal_root: FlowNode) -> None:
-        self.internal_root = internal_root
+    def add_internal_root(self, internal_root: FlowNode) -> None:
+        self.internal_roots.append(internal_root)
 
     def accept(self, visitor: FlowNodeVisitor) -> None:
         scoped_visitor = visitor.visit(self)
@@ -45,6 +46,17 @@ class FlowNode:
 
     def nodes(self, criterion: Callable[[FlowNode], bool]) -> list[FlowNode]:
         return list(filter(lambda n: n is not None, self.nodes_(criterion)))
+
+    def __str__(self):
+        return self.original_text
+
+    def __eq__(self, other):
+        if not isinstance(other, FlowNode):
+            return False
+        return self.id == other.id
+
+    def __hash__(self):
+        return uuid.UUID(self.id).int
 
     @classmethod
     def from_dict(cls, v):

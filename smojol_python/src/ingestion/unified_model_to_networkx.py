@@ -10,8 +10,6 @@ from src.common.analysis_edge import AnalysisEdge
 from src.common.data_node import DataNode
 from src.common.flow_node import FlowNode
 
-load_dotenv("env/.env", override=True)
-
 
 def extract(code_nodes: list[FlowNode], data_nodes: list[DataNode], edges: list[AnalysisEdge],
             should_extract_code: Callable[[FlowNode], bool] = lambda n: True,
@@ -24,13 +22,7 @@ def extract(code_nodes: list[FlowNode], data_nodes: list[DataNode], edges: list[
         if not should_extract_code(n):
             continue
         all_nodes[n.id] = n
-        graph.add_node(n)
-
-    for n in data_nodes:
-        if not should_extract_data(n):
-            continue
-        all_nodes[n.id] = n
-        graph.add_node(n)
+        # graph.add_node(n)
 
     for e in edges:
         if not should_extract_edge(e):
@@ -38,10 +30,17 @@ def extract(code_nodes: list[FlowNode], data_nodes: list[DataNode], edges: list[
         if e.edge_type == "CONTAINS_CODE":
             all_nodes[e.from_node_id].add_child(all_nodes[e.to_node_id])
         elif e.edge_type == "STARTS_WITH":
-            all_nodes[e.from_node_id].set_internal_root(all_nodes[e.to_node_id])
+            all_nodes[e.from_node_id].add_internal_root(all_nodes[e.to_node_id])
         elif e.edge_type == "FOLLOWED_BY":
             all_nodes[e.from_node_id].add_outgoing(all_nodes[e.to_node_id])
 
+    for n in data_nodes:
+        if not should_extract_data(n):
+            continue
+        all_nodes[n.id] = n
+        graph.add_node(n)
+
+    # Nodes are added automatically
     for e in edges:
         if not should_extract_edge(e):
             continue
