@@ -1,5 +1,6 @@
 import argparse
 from functools import reduce
+from typing import cast
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -74,7 +75,7 @@ def recurse_for_domain(cluster: DomainCluster, llm, progress: tqdm):
     # cluster.umbrella_subdomain = "DUMMY"
 
 
-def umbrella_term(cluster, llm):
+def umbrella_term(cluster: DomainCluster, llm: AzureChatOpenAI) -> str:
     child_domains: list[str] = list(map(lambda c: c.domain, cluster.children))
     domains_as_string: str = reduce(lambda acc, word: acc + "," + word, child_domains, "")
     child_umbrella_subdomains: list[str] = list(map(lambda c: c.umbrella_subdomain, cluster.children))
@@ -156,8 +157,9 @@ if __name__ == "__main__":
         line.split(":")[0].replace("'", " "), list(map(lambda term: term.strip(), line.split(":")[1].split(",")))),
                      lines))
 
-    all_terms = list(reduce(lambda full, pair: full + pair[1], pairs, []))
-    unique_terms = list(map(lambda w: w.lower().strip(), set(all_terms)))
+    terms_accumulator: list[str] = []
+    all_terms: list[str] = list(reduce(lambda full, pair: cast(list[str], full) + pair[1], pairs, terms_accumulator))
+    unique_terms: list[str] = list(map(lambda w: w.lower().strip(), set(all_terms)))
 
     print(unique_terms)
 
@@ -176,7 +178,7 @@ if __name__ == "__main__":
     # Perform hierarchical/agglomerative clustering
     linkage_matrix = linkage(distances, method='ward')
     n = len(words)
-    nodes = {}
+    nodes:dict[int, DomainCluster] = {}
     for index, merge in enumerate(tqdm(linkage_matrix, colour="green")):
         left_index = int(merge[0])
         right_index = int(merge[1])

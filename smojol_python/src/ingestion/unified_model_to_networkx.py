@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import Callable, Any
 
 import networkx as nx
-from dotenv import load_dotenv
 from networkx import Graph
 
 from src.common.analysis_edge import AnalysisEdge
@@ -16,39 +15,38 @@ def extract(code_nodes: list[FlowNode], data_nodes: list[DataNode], edges: list[
             should_extract_data: Callable[[DataNode], bool] = lambda d: True,
             should_extract_edge: Callable[[AnalysisEdge], bool] = lambda e: True) -> (
         tuple)[Graph, FlowNode, DataNode]:
-    all_nodes: dict[str, FlowNode | DataNode] = {}
+    all_code_nodes: dict[str, FlowNode] = {}
     graph = nx.MultiDiGraph()
     for n in code_nodes:
         if not should_extract_code(n):
             continue
-        all_nodes[n.id] = n
+        all_code_nodes[n.id] = n
         # graph.add_node(n)
 
     for e in edges:
         if not should_extract_edge(e):
             continue
         if e.edge_type == "CONTAINS_CODE":
-            all_nodes[e.from_node_id].add_child(all_nodes[e.to_node_id])
+            all_code_nodes[e.from_node_id].add_child(all_code_nodes[e.to_node_id])
         elif e.edge_type == "STARTS_WITH":
-            all_nodes[e.from_node_id].add_internal_root(all_nodes[e.to_node_id])
+            all_code_nodes[e.from_node_id].add_internal_root(all_code_nodes[e.to_node_id])
         elif e.edge_type == "FOLLOWED_BY":
-            all_nodes[e.from_node_id].add_outgoing(all_nodes[e.to_node_id])
+            all_code_nodes[e.from_node_id].add_outgoing(all_code_nodes[e.to_node_id])
 
-    for n in data_nodes:
-        if not should_extract_data(n):
+    for d in data_nodes:
+        if not should_extract_data(d):
             continue
-        all_nodes[n.id] = n
-        graph.add_node(n)
+        graph.add_node(d)
 
     # Nodes are added automatically
     for e in edges:
         if not should_extract_edge(e):
             continue
-        if e.from_node_id not in all_nodes:
+        if e.from_node_id not in all_code_nodes:
             raise ModuleNotFoundError(f"From-Node with ID {e.from_node_id} was not found!")
-        if e.to_node_id not in all_nodes:
+        if e.to_node_id not in all_code_nodes:
             raise ModuleNotFoundError(f"To-Node with ID {e.to_node_id} was not found!")
-        graph.add_edge(all_nodes[e.from_node_id], all_nodes[e.to_node_id], edge_type=e.edge_type)
+        graph.add_edge(all_code_nodes[e.from_node_id], all_code_nodes[e.to_node_id], edge_type=e.edge_type)
 
     ast_root = [ast_root for ast_root in code_nodes if ast_root.type == "PROCEDURE_DIVISION_BODY"][0]
     ds_root = [ds_root for ds_root in data_nodes if ds_root.data_type == "ROOT"][0]
