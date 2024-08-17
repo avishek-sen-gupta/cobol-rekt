@@ -56,6 +56,7 @@ Some reverse engineering use cases are listed below. Descriptions of the capabil
 
 - Similar Code Detection (WIP)
 - Integrating Domain Knowledge
+- Common Pattern Detection with Configurable Code Patterns
 
 ## Flowchart Generation
 
@@ -201,7 +202,19 @@ The file will be in the ```import``` directory inside the directory where the cu
 
 In addition to writing to Neo4J and leveraging its data science capabilities to analyse the graph(s), the library also embeds [JGraphT](https://jgrapht.org/), a powerful library of graph algorithms. The ```JGraphTBuilder``` class converts the unified model (AST, CFG, Data Structures) into a DirectedPseudograph (because there can be both loops and parallel edges between two nodes), for consequent analysis through the JGraphT API.
 
-Custom analyses are a work in progress.
+Custom analyses are a work in progress. The ```COMPARE_CODE``` task, for example, uses the JGraphT library.
+
+## Analysis through NetworkX
+
+If you export the Unified Model to JSON, you can import it into NetworkX quite easily. The ```unified_model_to_networkx``` script lets you ingest the JSON and create both the fully-connected NetworkX graph, as well as the in-memory Python equivalent of the Unified Model. You're free to extract out specific parts of the model through convenience functions. The following code extracts out the AST, CFG, and the data structures separately. You can customise extraction for your use case; take a look at any one of those convenience methods for guidance.
+
+```
+with open(input_path, 'r') as file:
+    unified = json.load(file)
+    ast_x, _, _ = extract_ast(unified)
+    cfg_x, _, _ = extract_cfg(unified)
+    ds_x, _, _ = extract_ds(unified)
+```
 
 ## Analysis through Neo4J
 

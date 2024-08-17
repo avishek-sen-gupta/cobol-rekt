@@ -11,7 +11,7 @@ from src.llm.common.parameter_constants import ParameterConstants
 load_dotenv("env/.env", override=True)
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(prog="unified_model_to_networkx")
+    parser = argparse.ArgumentParser(prog="pattern_matcher")
     parser.add_argument(ParameterConstants.UNIFIED_MODEL_PATH)
     args = parser.parse_args()
     input_path = getattr(args, ParameterConstants.UNIFIED_MODEL_PATH)
