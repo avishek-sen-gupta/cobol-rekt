@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from langchain_openai import AzureChatOpenAI
 from neo4j import GraphDatabase, Record
 
-from src.llm.capability_extractor.CacheStats import CacheStats
+from src.llm.capability_extractor.cache_stats import CacheStats
 from src.llm.common.console_colors import ConsoleColors
 from src.llm.common.env_vars import openai_config, neo4j_config
 from src.llm.common.parameter_constants import ParameterConstants
