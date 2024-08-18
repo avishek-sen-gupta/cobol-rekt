@@ -27,3 +27,5 @@ fileignoreconfig:
   checksum: 2716c08eeeaab8c987dae4619ca0a8cfb72d1093cd28f1687f3f2c197d882d43
 - filename: smojol_python/src/common/scrub_neo4j.py
   checksum: c8e93f7e1dab2e2bc6f9a811c878371d8729835f1dbced72e0c0490b7eb130c3
+- filename: smojol_python/src/analysis/frequent_pattern_miner.py
+  checksum: b5d7135135db97c9de436f53d9b4da33d95f8f8459f471bcb59589733eb09ede

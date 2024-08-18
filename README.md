@@ -18,8 +18,8 @@ This is an evolving toolkit of capabilities helpful for reverse engineering lega
 - **ALPHA:** Support for building Glossary of Variables from data structures using LLMs
 - **ALPHA:** Support for extracting Capability Graph from paragraphs of a program using LLMs
 - **ALPHA:** Injecting inter-program dependencies into Neo4J (with export to JSON)
-- **ALPHA:** Paragraph similarity map
-- **ALPHA:** Code Pattern Detection
+- **ALPHA:** Paragraph similarity map (Java / Python)
+- **ALPHA:** Code Pattern Detection (Neo4J / NetworkX)
 
 Cobol-REKT is more of a library of useful things intended to be embedded in more formal reverse engineering workflows/pipelines, rather than being a standalone tool (though you can certainly use it as such). Many of the higher-level wrappers are merely sensible defaults; you are encouraged to modify them to suit your needs.
 
@@ -164,6 +164,8 @@ The interpreter can run in two modes:
 
 ## Planned Capabilities
 
+- Support symbolic execution
+- Support EVALUATE statements
 - Handle GIVING phrases in ADD/SUBTRACT/MULTIPLY/DIVIDE
 - PERFORM VARYING
 - PERFORM INLINE...VARYING
@@ -306,7 +308,7 @@ You can skip the tests as well, using:
 
 For generating flowcharts, you will need to set up Graphviz on your box; see the [site](https://graphviz.org/) for OS-specific installation instructions.
 
-For running the Python scripts, you can simply do:
+Before using any of the Python components, you will need to install dependencies, like so:
 
 ```
 cd smojol_python
@@ -324,7 +326,7 @@ pip install -r requirements.txt
 ## Developer Guide
 
 ### CLI Usage
-The individual functionalities can be invoked using different commands. Further tasks / commands will be added.
+The individual functionalities in the Java component can be invoked using different commands. Further tasks / commands will be added.
 
 #### Command: ```run```
 
