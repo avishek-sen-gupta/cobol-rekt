@@ -99,11 +99,12 @@ public class MultiCommand implements Callable<Integer> {
 
     private String taskResults(Map.Entry<String, List<AnalysisTaskResult>> taskResult) {
         return String.join("\n", taskResult.getValue().stream().map(e -> taskResult.getKey()
-                + " -> " + e.toString()).toList()) + "\n";
+                + " -> " + (e.isSuccess() ? ConsoleColors.green(e.toString()) : ConsoleColors.red(e.toString()))).toList()) + "\n";
     }
 
     private void output(Map<String, List<SyntaxError>> errorMap, Function<SyntaxError, String> format) {
-        if (errorMap.isEmpty()) System.out.println(ConsoleColors.green("No errors found for programs " + String.join(",", programNames)));
+        if (errorMap.isEmpty())
+            System.out.println(ConsoleColors.green("No errors found for programs " + String.join(",", programNames)));
         errorMap.forEach((programName, errors) -> {
             System.out.printf("Program %s%n----------------------%n", programName);
             errors.forEach(e -> System.out.printf("%s%n", format.apply(e)));
