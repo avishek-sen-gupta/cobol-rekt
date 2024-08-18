@@ -25,7 +25,7 @@ Cobol-REKT is more of a library of useful things intended to be embedded in more
 
 **It is also to be noted that OpenAI integration is only attached to specific features. Much of the functionality of this toolkit is based on deterministic analysis.**
 
-The toolkit consists of Java components, most of which are around parsing, ingestion of, and export from Cobol sources, and Python components, which carry out the analyses. In addition, the support for Neo4J allows you to build custom graph analyses as per your needs. I expect most of the analysis to happen through Python, hence the Java component tries to unlock as much of the ingested data as possible in different formats.
+The toolkit consists of Java components, most of which are around parsing, ingestion of, and export from Cobol sources, and Python components, which carry out the analyses. In addition, the support for Neo4J allows you to build custom graph analyses as per your needs. I expect most of the analysis to happen through Python (using Neo4J or NetworkX), hence the Java component tries to unlock as much of the ingested data as possible in different formats.
 
 **If you are trying out Cobol-REKT in your project, I'd love to know and feature it in the README (simply open a PR, and we can go from there)! I'm also welcoming contributors, and/or feature requests for your use cases.**
 
@@ -36,6 +36,8 @@ The toolkit consists of Java components, most of which are around parsing, inges
 - [Graphviz](https://graphviz.org/) for flowchart generation; see its documentation for OS-specific installation instructions.
 - [JGraphT](https://jgrapht.org/) for Java-based graph analyses and some export functionality.
 - [NetworkX](https://networkx.org/) for Python-based graph analyses
+- [Neo4J](https://neo4j.com/) is required for using tasks involving Neo4J. The APOC and GDS plugins will need to be installed. All the tasks have also been tested using Neo4J Desktop.
+- A subscription to OpenAI's GPT-4o (or your choice of deployment) will be needed for capabilities which use LLMs. The tasks have been tested using Azure's OpenAI offering.
 
 ## Reverse Engineering Use Cases
 
