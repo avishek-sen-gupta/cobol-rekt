@@ -36,6 +36,7 @@ The toolkit consists of Java components, most of which are around parsing, inges
 - [Graphviz](https://graphviz.org/) for flowchart generation; see its documentation for OS-specific installation instructions.
 - [JGraphT](https://jgrapht.org/) for Java-based graph analyses and some export functionality.
 - [NetworkX](https://networkx.org/) for Python-based graph analyses
+- An implementation of the gSpan algorithm for Frequent Subgraph Mining is adapted from [https://github.com/betterenvi/gSpan].
 - [Neo4J](https://neo4j.com/) is required for using tasks involving Neo4J. The APOC and GDS plugins will need to be installed. All the tasks have also been tested using Neo4J Desktop.
 - A subscription to OpenAI's GPT-4o (or your choice of deployment) will be needed for capabilities which use LLMs. The tasks have been tested using Azure's OpenAI offering.
 
@@ -449,7 +450,8 @@ If you want more fine-grained control of the location of output artifacts, you c
 
 ## A Note on Copyright
 
-This toolkit is distributed under the MIT License. However, the Eclipse Cobol Parser project is distributed under the Eclipse Public License V2. Accordingly, all modifications to the parser fall under the EPL v2 license, while the toolkit proper falls under the MIT License.
+- This toolkit is distributed under the MIT License. However, the Eclipse Cobol Parser project is distributed under the Eclipse Public License V2. Accordingly, all modifications to the parser fall under the EPL v2 license, while the toolkit proper falls under the MIT License.
+- The gSpan algorithm implementation is taken from [https://github.com/betterenvi/gSpan](https://github.com/betterenvi/gSpan), which is also under the MIT License.
 
 ## Caveats
 
