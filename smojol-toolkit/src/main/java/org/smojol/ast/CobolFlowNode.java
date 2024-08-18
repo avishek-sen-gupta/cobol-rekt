@@ -118,6 +118,11 @@ public class CobolFlowNode implements FlowNode {
         return FlowNodeType.ATOMIC;
     }
 
+    @Override
+    public List<FlowNodeCategory> categories() {
+        return ImmutableList.of(FlowNodeCategory.GENERIC_CODE);
+    }
+
     protected String defaultName() {
         return executionContext.getClass().getSimpleName() + "/" + uuid;
     }

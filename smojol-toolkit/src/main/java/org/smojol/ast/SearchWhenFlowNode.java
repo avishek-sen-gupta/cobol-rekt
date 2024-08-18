@@ -52,4 +52,9 @@ public class SearchWhenFlowNode extends CompositeCobolFlowNode {
         CobolParser.SearchWhenContext searchWhenStatementContext = (CobolParser.SearchWhenContext) executionContext;
         return "When\n" + NodeText.originalText(searchWhenStatementContext.condition(), NodeText::PASSTHROUGH);
     }
+
+    @Override
+    public List<FlowNodeCategory> categories() {
+        return ImmutableList.of(FlowNodeCategory.SEARCH);
+    }
 }

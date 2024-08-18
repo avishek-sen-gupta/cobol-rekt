@@ -1,11 +1,14 @@
 package org.smojol.ast;
 
+import com.google.common.collect.ImmutableList;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.eclipse.lsp.cobol.dialects.idms.IdmsParser;
 import org.smojol.common.ast.*;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.vm.stack.StackFrames;
+
+import java.util.List;
 
 public class DialectStatementFlowNode extends CobolFlowNode {
     private FlowNode idmsChildNode;
@@ -75,11 +78,10 @@ public class DialectStatementFlowNode extends CobolFlowNode {
     @Override
     public String originalText() {
         return NodeText.idmsOriginalText(getExecutionContext(), nodeService);
-//        CobolEntityNavigator navigator = nodeService.getNavigator();
-//        ParseTree dialectGuidContext = navigator.findByCondition(executionContext, t -> t.getClass() == CobolParser.DialectGuidContext.class);
-//        String guid = dialectGuidContext.getText();
-//
-//        ParseTree idmsTextNode = PersistentData.getDialectNode("IDMS-" + guid);
-//        return NodeText.originalText(idmsTextNode, NodeText::PASSTHROUGH);
+    }
+
+    @Override
+    public List<FlowNodeCategory> categories() {
+        return ImmutableList.of(FlowNodeCategory.DIALECT);
     }
 }

@@ -1,5 +1,6 @@
 package org.smojol.ast;
 
+import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolParser;
@@ -50,5 +51,10 @@ public class GenericOnClauseFlowNode extends CompositeCobolFlowNode {
     @Override
     public void linkParentToChild(FlowNodeVisitor visitor, int level) {
         visitor.visitParentChildLink(this, internalTreeRoot, new VisitContext(level), nodeService, CHILD_IS_CONDITIONAL_STATEMENT);
+    }
+
+    @Override
+    public List<FlowNodeCategory> categories() {
+        return ImmutableList.of(FlowNodeCategory.DECISION);
     }
 }

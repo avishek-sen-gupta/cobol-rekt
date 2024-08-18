@@ -2,6 +2,8 @@ package org.smojol.common.ast;
 
 import lombok.Getter;
 
+import java.util.List;
+
 @Getter
 public class SerialisableCFGFlowNode {
     private final String id;
@@ -9,17 +11,19 @@ public class SerialisableCFGFlowNode {
     private final String name;
     private final String originalText;
     private final FlowNodeType type;
+    private final List<FlowNodeCategory> categories;
     private final String nodeType = "CODE_VERTEX";
 
-    protected SerialisableCFGFlowNode(String id, String label, String name, String originalText, FlowNodeType type) {
+    protected SerialisableCFGFlowNode(String id, String label, String name, String originalText, FlowNodeType type, List<FlowNodeCategory> categories) {
         this.id = id;
         this.label = label;
         this.name = name;
         this.originalText = originalText;
         this.type = type;
+        this.categories = categories;
     }
 
     public SerialisableCFGFlowNode(FlowNode current) {
-        this(current.id(), current.label(), current.name(), current.originalText(), current.type());
+        this(current.id(), current.label(), current.name(), current.originalText(), current.type(), current.categories());
     }
 }

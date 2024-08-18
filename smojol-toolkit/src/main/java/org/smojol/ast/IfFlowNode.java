@@ -1,5 +1,6 @@
 package org.smojol.ast;
 
+import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolParser;
@@ -8,6 +9,8 @@ import org.smojol.common.vm.interpreter.CobolInterpreter;
 import org.smojol.common.vm.interpreter.CobolVmSignal;
 import org.smojol.common.vm.interpreter.FlowControl;
 import org.smojol.common.vm.stack.StackFrames;
+
+import java.util.List;
 
 @Getter
 public class IfFlowNode extends CobolFlowNode {
@@ -62,4 +65,8 @@ public class IfFlowNode extends CobolFlowNode {
         return "IS \n" + truncated(codeText, 40) + "?\n";
     }
 
+    @Override
+    public List<FlowNodeCategory> categories() {
+        return ImmutableList.of(FlowNodeCategory.DECISION);
+    }
 }

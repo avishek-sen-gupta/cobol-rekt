@@ -1,9 +1,13 @@
 package org.smojol.ast;
 
+import com.google.common.collect.ImmutableList;
+import org.smojol.common.ast.FlowNodeCategory;
 import org.smojol.common.ast.FlowNodeService;
 import org.smojol.common.ast.FlowNodeType;
 import org.smojol.common.ast.FlowNodeVisitor;
 import org.smojol.common.vm.stack.StackFrames;
+
+import java.util.List;
 
 public class DummyFlowNode extends CobolFlowNode {
     public DummyFlowNode(FlowNodeService nodeService, StackFrames stackFrames) {
@@ -38,5 +42,10 @@ public class DummyFlowNode extends CobolFlowNode {
     @Override
     public FlowNodeType type() {
         return FlowNodeType.DUMMY;
+    }
+
+    @Override
+    public List<FlowNodeCategory> categories() {
+        return ImmutableList.of(FlowNodeCategory.PLACEHOLDER);
     }
 }

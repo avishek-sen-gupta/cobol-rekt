@@ -1,13 +1,17 @@
 package org.smojol.ast;
 
+import com.google.common.collect.ImmutableList;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.smojol.common.ast.FlowNode;
+import org.smojol.common.ast.FlowNodeCategory;
 import org.smojol.common.ast.FlowNodeService;
 import org.smojol.common.ast.FlowNodeType;
 import org.smojol.common.vm.interpreter.CobolInterpreter;
 import org.smojol.common.vm.interpreter.CobolVmSignal;
 import org.smojol.common.vm.interpreter.FlowControl;
 import org.smojol.common.vm.stack.StackFrames;
+
+import java.util.List;
 
 public class ExitFlowNode extends CobolFlowNode {
     public ExitFlowNode(ParseTree parseTree, FlowNode scope, FlowNodeService nodeService, StackFrames stackFrames) {
@@ -22,5 +26,10 @@ public class ExitFlowNode extends CobolFlowNode {
     @Override
     public FlowNodeType type() {
         return FlowNodeType.EXIT;
+    }
+
+    @Override
+    public List<FlowNodeCategory> categories() {
+        return ImmutableList.of(FlowNodeCategory.TERMINAL);
     }
 }

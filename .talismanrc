@@ -22,3 +22,9 @@ fileignoreconfig:
   checksum: 7d588457269a756bd01fbea071f543692092ac1f201e319ca2766165574923cd
 - filename: che-che4z-lsp-for-cobol-integration
   checksum: 076f2e54e0504ee9b91abce0f6331dd088439246729c151b70c06bad13160fcc
+- filename: woof
+  checksum: 7d588457269a756bd01fbea071f543692092ac1f201e319ca2766165574923cd
+- filename: smojol_python/src/analysis/neo4j_pattern_matcher.py
+  checksum: 2716c08eeeaab8c987dae4619ca0a8cfb72d1093cd28f1687f3f2c197d882d43
+- filename: smojol_python/src/common/scrub_neo4j.py
+  checksum: c8e93f7e1dab2e2bc6f9a811c878371d8729835f1dbced72e0c0490b7eb130c3

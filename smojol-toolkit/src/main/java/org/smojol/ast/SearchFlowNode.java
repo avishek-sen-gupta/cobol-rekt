@@ -1,5 +1,6 @@
 package org.smojol.ast;
 
+import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolParser;
@@ -80,4 +81,8 @@ public class SearchFlowNode extends CobolFlowNode {
 //        return CobolContextAugmentedTreeNode.originalText(executionContext, CobolEntityNavigator::PASSTHROUGH);
     }
 
+    @Override
+    public List<FlowNodeCategory> categories() {
+        return ImmutableList.of(FlowNodeCategory.SEARCH);
+    }
 }

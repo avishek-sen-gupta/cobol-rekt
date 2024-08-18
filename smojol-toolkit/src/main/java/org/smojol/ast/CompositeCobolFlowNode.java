@@ -1,5 +1,6 @@
 package org.smojol.ast;
 
+import com.google.common.collect.ImmutableList;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolParser;
@@ -126,5 +127,10 @@ public class CompositeCobolFlowNode extends CobolFlowNode {
     @Override
     public boolean contains(FlowNode node) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public List<FlowNodeCategory> categories() {
+        return ImmutableList.of(FlowNodeCategory.CODE_BLOCK);
     }
 }

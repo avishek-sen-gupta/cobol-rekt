@@ -1,8 +1,10 @@
 package org.smojol.ast;
 
+import com.google.common.collect.ImmutableList;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.ast.FlowNode;
+import org.smojol.common.ast.FlowNodeCategory;
 import org.smojol.common.ast.FlowNodeService;
 import org.smojol.common.ast.FlowNodeType;
 import org.smojol.common.vm.stack.StackFrames;
@@ -30,5 +32,10 @@ public class AtEndPhraseFlowNode extends CompositeCobolFlowNode {
     @Override
     public FlowNodeType type() {
         return FlowNodeType.AT_END_PHRASE;
+    }
+
+    @Override
+    public List<FlowNodeCategory> categories() {
+        return ImmutableList.of(FlowNodeCategory.CODE_BLOCK);
     }
 }

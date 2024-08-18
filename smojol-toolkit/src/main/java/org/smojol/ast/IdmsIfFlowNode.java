@@ -1,11 +1,14 @@
 package org.smojol.ast;
 
+import com.google.common.collect.ImmutableList;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.eclipse.lsp.cobol.dialects.idms.IdmsParser;
 import org.smojol.common.ast.*;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.vm.stack.StackFrames;
+
+import java.util.List;
 
 public class IdmsIfFlowNode extends CobolFlowNode {
     private FlowNode ifThenBlock;
@@ -67,4 +70,8 @@ public class IdmsIfFlowNode extends CobolFlowNode {
         return FlowNodeType.IF_BRANCH;
     }
 
+    @Override
+    public List<FlowNodeCategory> categories() {
+        return ImmutableList.of(FlowNodeCategory.DECISION);
+    }
 }

@@ -1,5 +1,6 @@
 package org.smojol.ast;
 
+import com.google.common.collect.ImmutableList;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.ast.*;
@@ -53,5 +54,10 @@ public class GoToFlowNode extends CobolFlowNode {
     @Override
     public FlowNodeType type() {
         return FlowNodeType.CONTROL_FLOW;
+    }
+
+    @Override
+    public List<FlowNodeCategory> categories() {
+        return ImmutableList.of(FlowNodeCategory.CONTROL_FLOW);
     }
 }

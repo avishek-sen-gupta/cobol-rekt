@@ -67,6 +67,11 @@ public class GenericProcessingFlowNode implements FlowNode {
     }
 
     @Override
+    public List<FlowNodeCategory> categories() {
+        return ImmutableList.of(FlowNodeCategory.CODE_BLOCK);
+    }
+
+    @Override
     public void accept(FlowNodeVisitor visitor, int level) {
 
     }

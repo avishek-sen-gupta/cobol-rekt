@@ -1,11 +1,14 @@
 package org.smojol.ast;
 
+import com.google.common.collect.ImmutableList;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.smojol.common.ast.*;
 import org.smojol.common.vm.interpreter.CobolInterpreter;
 import org.smojol.common.vm.interpreter.CobolVmSignal;
 import org.smojol.common.vm.interpreter.FlowControl;
 import org.smojol.common.vm.stack.StackFrames;
+
+import java.util.List;
 
 public class NextSentenceFlowNode extends CobolFlowNode {
     private FlowNode destinationSentenceNode;
@@ -48,5 +51,10 @@ public class NextSentenceFlowNode extends CobolFlowNode {
     @Override
     public CobolVmSignal acceptInterpreter(CobolInterpreter interpreter, FlowControl flowControl) {
         return interpreter.scope(this).executeNextSentence(this, nodeService);
+    }
+
+    @Override
+    public List<FlowNodeCategory> categories() {
+        return ImmutableList.of(FlowNodeCategory.CONTROL_FLOW);
     }
 }

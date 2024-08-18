@@ -44,6 +44,7 @@ public interface FlowNode {
     String originalText();
     ParseTree getExecutionContext();
     FlowNodeType type();
+    List<FlowNodeCategory> categories();
 
     FlowNode passthrough();
 

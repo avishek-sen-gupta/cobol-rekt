@@ -4,10 +4,7 @@ import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolParser;
-import org.smojol.common.ast.FlowNode;
-import org.smojol.common.ast.FlowNodeService;
-import org.smojol.common.ast.FlowNodeType;
-import org.smojol.common.ast.SyntaxIdentity;
+import org.smojol.common.ast.*;
 import org.smojol.common.vm.interpreter.CobolInterpreter;
 import org.smojol.common.vm.interpreter.CobolVmSignal;
 import org.smojol.common.vm.interpreter.FlowControl;
@@ -61,5 +58,10 @@ public class SubtractFlowNode extends CobolFlowNode {
     @Override
     public boolean isMergeable() {
         return true;
+    }
+
+    @Override
+    public List<FlowNodeCategory> categories() {
+        return ImmutableList.of(FlowNodeCategory.COMPUTATIONAL, FlowNodeCategory.DATA_FLOW);
     }
 }

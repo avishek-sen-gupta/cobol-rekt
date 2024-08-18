@@ -1,8 +1,11 @@
 package org.smojol.ast;
 
+import com.google.common.collect.ImmutableList;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.smojol.common.ast.*;
 import org.smojol.common.vm.stack.StackFrames;
+
+import java.util.List;
 
 public class IfThenFlowNode extends CompositeCobolFlowNode {
     public IfThenFlowNode(ParseTree parseTree, FlowNode scope, FlowNodeService nodeService, StackFrames stackFrames) {
@@ -27,5 +30,10 @@ public class IfThenFlowNode extends CompositeCobolFlowNode {
     @Override
     public void linkParentToChild(FlowNodeVisitor visitor, int level) {
         visitor.visitParentChildLink(this, internalTreeRoot, new VisitContext(level), nodeService, CHILD_IS_CONDITIONAL_STATEMENT);
+    }
+
+    @Override
+    public List<FlowNodeCategory> categories() {
+        return ImmutableList.of(FlowNodeCategory.DECISION);
     }
 }

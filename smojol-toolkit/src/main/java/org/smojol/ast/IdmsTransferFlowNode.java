@@ -1,11 +1,13 @@
 package org.smojol.ast;
 
-import lombok.Getter;
+import com.google.common.collect.ImmutableList;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.dialects.idms.IdmsParser;
 import org.smojol.common.ast.*;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.vm.stack.StackFrames;
+
+import java.util.List;
 
 public class IdmsTransferFlowNode extends CobolFlowNode implements ControlFlowNode {
     private CallTarget callTarget;
@@ -34,5 +36,10 @@ public class IdmsTransferFlowNode extends CobolFlowNode implements ControlFlowNo
     @Override
     public CallTarget callTarget() {
         return callTarget;
+    }
+
+    @Override
+    public List<FlowNodeCategory> categories() {
+        return ImmutableList.of(FlowNodeCategory.CONTROL_FLOW);
     }
 }

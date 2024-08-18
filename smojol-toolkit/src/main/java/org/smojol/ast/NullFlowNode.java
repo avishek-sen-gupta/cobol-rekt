@@ -143,6 +143,11 @@ public class NullFlowNode implements FlowNode {
     }
 
     @Override
+    public List<FlowNodeCategory> categories() {
+        return ImmutableList.of(FlowNodeCategory.UNKNOWN);
+    }
+
+    @Override
     public FlowNode passthrough() {
         return null;
     }

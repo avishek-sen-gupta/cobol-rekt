@@ -19,6 +19,8 @@ import java.util.Map;
 import static com.mojo.woof.NodeLabels.*;
 import static com.mojo.woof.NodeProperties.*;
 import static com.mojo.woof.NodeProperties.LEVEL;
+import static org.smojol.common.ast.FlowNodeCategory.METADATA;
+import static org.smojol.common.ast.FlowNodeCategory.PROGRAM;
 
 public class NodeSpecBuilder {
     private final NamespaceQualifier namespaceQualifier;
@@ -41,6 +43,7 @@ public class NodeSpecBuilder {
                         TEXT, structure.content(),
                         TYPE, structure.getDataType().toString(),
                         ENTITY_TYPE, DATA_STRUCTURE,
+                        ENTITY_CATEGORIES, ImmutableList.of(),
                         LEVEL, structure.getLevelNumber(),
                         NAMESPACE, namespaceQualifier.getNamespace()
                 ));
@@ -62,6 +65,7 @@ public class NodeSpecBuilder {
                         TEXT, node.originalText(),
                         TYPE, node.type().toString(),
                         ENTITY_TYPE, nodeType,
+                        ENTITY_CATEGORIES, node.categories().stream().map(Enum::name).toList(),
                         NAMESPACE, namespaceQualifier.getNamespace()
                 ));
     }
@@ -74,6 +78,7 @@ public class NodeSpecBuilder {
                         TEXT, node.getExecutionContext().getText(),
                         TYPE, node.type().toString(),
                         ENTITY_TYPE, CFG_TRACE,
+                        ENTITY_CATEGORIES, node.categories().stream().map(Enum::name).toList(),
                         NAMESPACE, namespaceQualifier.getNamespace()
                 ));
     }
@@ -129,6 +134,7 @@ public class NodeSpecBuilder {
                         TEXT, comment.toString(),
                         TYPE, COMMENT_NODE,
                         ENTITY_TYPE, COMMENT_NODE,
+                        ENTITY_CATEGORIES, ImmutableList.of(METADATA),
                         NAMESPACE, namespaceQualifier.getNamespace()
                 ));
     }
@@ -142,6 +148,7 @@ public class NodeSpecBuilder {
                         TEXT, "",
                         TYPE, program.getCallTarget().getReferenceType().name(),
                         ENTITY_TYPE, PROGRAM_NODE,
+                        ENTITY_CATEGORIES, ImmutableList.of(PROGRAM),
                         NAMESPACE, namespaceQualifier.getNamespace()
                 ));
     }
