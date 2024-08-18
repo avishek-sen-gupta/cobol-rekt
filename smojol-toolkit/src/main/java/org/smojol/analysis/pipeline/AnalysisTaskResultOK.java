@@ -2,9 +2,10 @@ package org.smojol.analysis.pipeline;
 
 import lombok.Getter;
 
+@Getter
 public final class AnalysisTaskResultOK implements AnalysisTaskResult {
     private final String task;
-    @Getter private Object detail;
+    private final Object detail;
 
     public AnalysisTaskResultOK(Object detail) {
         this("<UNKNOWN_TASK>", detail);

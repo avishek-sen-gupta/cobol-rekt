@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from neo4j import GraphDatabase
 from neo4j.graph import Path
 
-from src.analysis.neo4j_pattern_queries import call_pattern
+from src.analysis.neo4j_pattern_queries import call_statement_pattern
 
 load_dotenv("env/.env", override=True)
 
@@ -13,7 +13,7 @@ def match_pattern(neo4j_credentials: tuple[str, tuple[str, str], str]) -> list[P
     neo4j_uri, neo4j_auth, neo4j_database = neo4j_credentials
 
     with GraphDatabase.driver(neo4j_uri, auth=neo4j_auth) as driver:
-        result = driver.execute_query(call_pattern(), {}, database_=neo4j_database)
+        result = driver.execute_query(call_statement_pattern(), {}, database_=neo4j_database)
         return list(map(lambda record: record[0], result[0]))
 
 

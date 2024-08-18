@@ -1,13 +1,7 @@
 package org.smojol.analysis.pipeline;
 
-import java.io.IOException;
-
 public sealed interface AnalysisTaskResult permits AnalysisTaskResultOK, AnalysisTaskResultError {
     boolean isSuccess();
-//    static AnalysisTaskResult OK(Object detail) {
-//        return OK("<UNKNOWN_TASK>", detail);
-//    }
-
     static AnalysisTaskResult OK(CommandLineAnalysisTask task) {
         return OK(task.name());
     }

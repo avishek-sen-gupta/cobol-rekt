@@ -2,8 +2,9 @@ package org.smojol.analysis.pipeline;
 
 import lombok.Getter;
 
+@Getter
 public final class AnalysisTaskResultError implements AnalysisTaskResult {
-    @Getter private final Exception exception;
+    private final Exception exception;
     private final String task;
 
     public AnalysisTaskResultError(Exception exception) {

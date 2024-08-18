@@ -77,7 +77,7 @@ The dotted lines indicate things that are inside a node. So, in the above exampl
 
 ## Parse Tree Generation
 
-This allows the engineer to produce the parse tree of Cobol source. This is suitable for use in further static analysis, transformation (into a control flow tree, for example), and inputs to other systems (informed chunking to an LLM, into a graph database for further exploration, etc.). See [Reverse Engineering Use Cases] for more examples.
+This allows the engineer to produce the parse tree of Cobol source. This is suitable for use in further static analysis, transformation (into a control flow tree, for example), and inputs to other systems (informed chunking to an LLM, into a graph database for further exploration, etc.). See [Reverse Engineering Use Cases](#reverse-engineering-use-cases) for more examples.
 
 Most of the capabilities are already present in the Che4z library. Some new grammars have been added. They are:
 
@@ -224,14 +224,20 @@ There are currently two tasks implemented using NetworkX.
 ### Code Similarity
 
 TODO...
-See ```similarity.py```
+See ```similarity.py```.
 
 ### Code Pattern Recognition
 
-TODO...
-See ```pattern_matcher.py```
+It is very easy to do pattern matching in Neo4J, so you might choose to use those facilities instead (see [Analysis through Neo4J](#analysis-through-neo4j)). However, pattern matching is also possible using NetworkX directly using subgraph isomorphisms.
+
+You will need to construct the subgraph pattern through code, which is not as elegant as writing Cypher queries, but it does work. See ```pattern_matcher.py``` for an example.
 
 ## Analysis through Neo4J
+
+### Code Pattern Recognition
+
+You can match patterns pretty easily through Cypher. See ```neo4j_pattern_matcher.py``` for an example of how to match a call pattern, i.e., a bunch of sequential ```MOVE``` statements, followed by a ```CALL``` statement. The patterns being developed are documented in ```neo4j_pattern_queries.py```.
+
 
 You can find some useful Neo4J-based analysis queries in [Analysis](neo4j-analysis.md)
 
@@ -310,7 +316,7 @@ pip install -r requirements.txt
 - See ```FlowChartBuildMain.java``` for examples of how flowcharts are created.
 - See ```InterpreterMain.java``` for an example of how to run the interpreter on your code, as well as inject execution traces into Neo4J.
 - See ```GraphExplorerMain.java``` for an example of how to inject ASTs, data structures, and CFGs into Neo4J.
-- CLI support is ongoing.
+- See ```DependencyBuildMain.java``` for an example how inter-program dependencies can be injected into Neo4J.
 - More detailed guides on programmatic use are on the way.
 
 ## Developer Guide
@@ -414,7 +420,7 @@ Implements various operations useful for reverse engineering Cobol code
 The simplest way to invoke tasks through the API is using ```CodeTaskRunner```, like so:
 
 ```
-        new CodeTaskRunner(
+        List<AnalysisTaskResult> analysisTaskResults = new CodeTaskRunner(
                 "/path/to/src",
                 "path/to/report-dir",
                 ImmutableList.of(new File("/path/to/copybooks")),
@@ -429,6 +435,8 @@ The simplest way to invoke tasks through the API is using ```CodeTaskRunner```, 
                 ), ImmutableList.of("program.cbl"));
 
 ```
+
+Depending upon the number of tasks invoked, the result will contain a list of ```AnalysisTaskResult``` objects, which can be either ```AnalysisTaskResultOK``` or ```AnalysisTaskResultError```. You can use them to determine what you want to do.
 
 This invocation uses some specific conventions when deciding where to output file artifacts under the ```report-dir``` directory.
 If you want more fine-grained control of the location of output artifacts, you can use the ```SmojolTasks``` class, which gives you more configurability in exchange for having to provide more detailed specifications.
