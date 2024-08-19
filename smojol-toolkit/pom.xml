@@ -65,7 +65,6 @@
                                     <goal>single</goal>
                                 </goals>
                                 <configuration>
-                                    <finalName>smojol-toolkit</finalName>
                                     <archive>
                                         <manifest>
                                             <mainClass>org.smojol.toolkit.interpreter.InterpreterMain</mainClass>

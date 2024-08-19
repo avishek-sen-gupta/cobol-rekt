@@ -144,7 +144,6 @@
                             <goal>single</goal>
                         </goals>
                         <configuration>
-                            <finalName>smojol-cli</finalName>
                             <archive>
                                 <manifest>
                                     <mainClass>org.smojol.cli.MultiCommandCLI</mainClass>
