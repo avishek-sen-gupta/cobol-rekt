@@ -7,6 +7,7 @@ import com.mojo.woof.Advisor;
 import com.mojo.woof.GraphSDK;
 import com.mojo.woof.OpenAICredentials;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.apache.commons.lang3.tuple.Triple;
 import org.neo4j.driver.Record;
 import org.smojol.analysis.ParsePipeline;
 import org.smojol.analysis.graph.DataStructureSummariseAction;
@@ -250,15 +251,23 @@ public class SmojolTasks {
     }
 
     public SmojolTasks build() throws IOException {
-        navigator = pipeline.parse();
-        dataStructures = pipeline.getDataStructures();
+        Triple<CobolEntityNavigator, CobolDataStructure, FlowNode> parseEntities = buildRawAST(pipeline);
+        navigator = parseEntities.getLeft();
+        dataStructures = parseEntities.getMiddle();
+        astRoot = parseEntities.getRight();
+        return this;
+    }
+
+    private static Triple<CobolEntityNavigator, CobolDataStructure, FlowNode> buildRawAST(ParsePipeline pipeline) throws IOException {
+        CobolEntityNavigator navigator = pipeline.parse();
+        CobolDataStructure dataStructures = pipeline.getDataStructures();
 
         ParseTree procedure = navigator.procedureBodyRoot();
         FlowchartBuilder flowcharter = pipeline.flowcharter();
         flowcharter.buildFlowAST(procedure).buildControlFlow().buildOverlay();
-        astRoot = flowcharter.getRoot();
+        FlowNode astRoot = flowcharter.getRoot();
 
-        return this;
+        return Triple.of(navigator, dataStructures, astRoot);
     }
 
     public List<AnalysisTaskResult> run(List<CommandLineAnalysisTask> commandLineAnalysisTasks) throws IOException {

@@ -20,6 +20,6 @@ public class FlowchartBuildMain {
                 ImmutableList.of(new File("/Users/asgupta/code/smojol/smojol-test-code")),
                 "/Users/asgupta/code/smojol/che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar",
                 LanguageDialect.IDMS, new FullProgram(FlowchartOutputFormat.SVG), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder())
-                .generateForPrograms(ImmutableList.of(DRAW_FLOWCHART), ImmutableList.of("test-exp.cbl"));
+                .runForPrograms(ImmutableList.of(DRAW_FLOWCHART), ImmutableList.of("test-exp.cbl"));
     }
 }

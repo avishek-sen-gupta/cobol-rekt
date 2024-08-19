@@ -10,7 +10,7 @@ import java.util.Map;
 public interface TaskRunnerMode {
     TaskRunnerMode DIAGNOSTIC_MODE = new TaskRunnerMode() {
         @Override
-        public Map<String, List<AnalysisTaskResult>> run(Map<String, List<SyntaxError>> errorMap, Map<String, List<AnalysisTaskResult>> results, CodeTaskRunner codeTaskRunner) {
+        public Map<String, List<AnalysisTaskResult>> run(Map<String, List<SyntaxError>> errorMap, Map<String, List<AnalysisTaskResult>> results) {
             return results;
         }
 
@@ -26,7 +26,7 @@ public interface TaskRunnerMode {
     };
     TaskRunnerMode PRODUCTION_MODE = new TaskRunnerMode() {
         @Override
-        public Map<String, List<AnalysisTaskResult>> run(Map<String, List<SyntaxError>> errorMap, Map<String, List<AnalysisTaskResult>> taskResults, CodeTaskRunner codeTaskRunner) {
+        public Map<String, List<AnalysisTaskResult>> run(Map<String, List<SyntaxError>> errorMap, Map<String, List<AnalysisTaskResult>> taskResults) {
             if (!errorMap.isEmpty()) throw new DiagnosticRuntimeError(errorMap);
             return taskResults;
         }
@@ -42,7 +42,7 @@ public interface TaskRunnerMode {
         }
     };
 
-    Map<String, List<AnalysisTaskResult>> run(Map<String, List<SyntaxError>> errorMap, Map<String, List<AnalysisTaskResult>> results, CodeTaskRunner codeTaskRunner);
+    Map<String, List<AnalysisTaskResult>> run(Map<String, List<SyntaxError>> errorMap, Map<String, List<AnalysisTaskResult>> results);
 
     List<CommandLineAnalysisTask> tasks(List<CommandLineAnalysisTask> tasks);
 }

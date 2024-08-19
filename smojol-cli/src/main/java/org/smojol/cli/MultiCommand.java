@@ -1,6 +1,5 @@
 package org.smojol.cli;
 
-import org.eclipse.lsp.cobol.common.error.SyntaxError;
 import org.smojol.analysis.LanguageDialect;
 import org.smojol.analysis.pipeline.*;
 import org.smojol.common.flowchart.ConsoleColors;
@@ -17,7 +16,6 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
-import java.util.function.Function;
 
 @Command(name = "run", mixinStandardHelpOptions = true, version = "graph 0.1",
         description = "Implements various operations useful for reverse engineering Cobol code")
@@ -75,20 +73,20 @@ public class MultiCommand implements Callable<Integer> {
     @Override
     public Integer call() throws IOException {
         List<File> copyBookPaths = copyBookDirs.stream().map(c -> Paths.get(c).toAbsolutePath().toFile()).toList();
-        Integer returnCode = processPrograms(copyBookPaths);
-        if (returnCode != null) return returnCode;
-        return 0;
+        return processPrograms(copyBookPaths);
     }
 
     private Integer processPrograms(List<File> copyBookPaths) throws IOException {
+        if (isValidate) {
+            System.out.println("Only validating, all other tasks were ignored");
+            boolean validationResult = new ValidateTaskRunner().processPrograms(programNames, sourceDir, LanguageDialect.dialect(dialect), copyBookPaths, dialectJarPath);
+            return validationResult ? 0 : 1;
+        }
+
         CodeTaskRunner taskRunner = new CodeTaskRunner(sourceDir, reportRootDir, copyBookPaths, dialectJarPath, LanguageDialect.dialect(dialect), FlowchartGenerationStrategy.strategy(flowchartGenerationStrategy, flowchartOutputFormat), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder());
         copyBookPaths.forEach(cpp -> System.out.println(cpp.getAbsolutePath()));
-        Map<String, List<AnalysisTaskResult>> runResults = taskRunner.generateForPrograms(toGraphTasks(commands), programNames, isValidate ? TaskRunnerMode.DIAGNOSTIC_MODE : TaskRunnerMode.PRODUCTION_MODE);
-        if (!isValidate) return processResults(runResults);
-        System.out.println("Only validating, all other tasks were ignored");
-        output(taskRunner.getErrorMap(), SyntaxError::toString);
-        output(taskRunner.getErrorMap(), e -> e.getErrorCode() + ": " + e.getSuggestion());
-        return null;
+        Map<String, List<AnalysisTaskResult>> runResults = taskRunner.runForPrograms(toGraphTasks(commands), programNames, TaskRunnerMode.PRODUCTION_MODE);
+        return processResults(runResults);
     }
 
     private Integer processResults(Map<String, List<AnalysisTaskResult>> runResults) {
@@ -100,15 +98,6 @@ public class MultiCommand implements Callable<Integer> {
     private String taskResults(Map.Entry<String, List<AnalysisTaskResult>> taskResult) {
         return String.join("\n", taskResult.getValue().stream().map(e -> taskResult.getKey()
                 + " -> " + (e.isSuccess() ? ConsoleColors.green(e.toString()) : ConsoleColors.red(e.toString()))).toList()) + "\n";
-    }
-
-    private void output(Map<String, List<SyntaxError>> errorMap, Function<SyntaxError, String> format) {
-        if (errorMap.isEmpty())
-            System.out.println(ConsoleColors.green("No errors found for programs " + String.join(",", programNames)));
-        errorMap.forEach((programName, errors) -> {
-            System.out.printf("Program %s%n----------------------%n", programName);
-            errors.forEach(e -> System.out.printf("%s%n", format.apply(e)));
-        });
     }
 
     private List<CommandLineAnalysisTask> toGraphTasks(List<String> commands) {

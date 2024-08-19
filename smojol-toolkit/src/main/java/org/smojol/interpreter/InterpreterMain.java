@@ -51,9 +51,9 @@ public class InterpreterMain {
                 "/Users/asgupta/code/smojol/che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar");
 
         ComponentsBuilder ops = new ComponentsBuilder(new CobolTreeVisualiser(),
-                (navigator1, dataStructures1, idProvider) -> FlowchartBuilderImpl.build(navigator1, dataStructures1, idProvider), new EntityNavigatorBuilder(), new UnresolvedReferenceDoNothingStrategy(),
+                FlowchartBuilderImpl::build, new EntityNavigatorBuilder(), new UnresolvedReferenceDoNothingStrategy(),
                 new DefaultFormat1DataStructureBuilder(), new UUIDProvider());
-        ParsePipeline pipeline = new ParsePipeline(testSourceConfig, rawASTOutputConfig, ops, LanguageDialect.COBOL);
+        ParsePipeline pipeline = new ParsePipeline(testSourceConfig, ops, LanguageDialect.COBOL);
 
         CobolEntityNavigator navigator = pipeline.parse();
         FlowchartBuilder flowcharter = pipeline.flowcharter();

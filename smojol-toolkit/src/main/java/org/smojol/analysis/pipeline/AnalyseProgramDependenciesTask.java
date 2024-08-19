@@ -52,7 +52,7 @@ public class AnalyseProgramDependenciesTask {
             Map<String, List<AnalysisTaskResult>> results = new CodeTaskRunner(srcDir,
                     reportRootDir, copyBookPaths, dialectJarPath,
                     LanguageDialect.IDMS, new FullProgram(FlowchartOutputFormat.SVG), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder())
-                    .generateForPrograms(ImmutableList.of(BUILD_PROGRAM_DEPENDENCIES), ImmutableList.of(program.getName()));
+                    .runForPrograms(ImmutableList.of(BUILD_PROGRAM_DEPENDENCIES), ImmutableList.of(program.getName()));
             AnalysisTaskResult first = results.get(program.getName()).getFirst();
             ProgramDependencies dependencies = switch (first) {
                 case AnalysisTaskResultOK o -> (ProgramDependencies) o.getDetail();

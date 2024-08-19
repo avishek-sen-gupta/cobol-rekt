@@ -20,7 +20,7 @@ public class GraphExplorerMain {
                 "/Users/asgupta/code/smojol/out/report",
                 ImmutableList.of(new File("/Users/asgupta/code/smojol/smojol-test-code")),
                 dialectJarPath, LanguageDialect.COBOL   , new FullProgram(PNG), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder())
-                .generateForPrograms(ImmutableList.of(
+                .runForPrograms(ImmutableList.of(
                         INJECT_INTO_NEO4J,
                         EXPORT_TO_GRAPHML,
                         WRITE_FLOW_AST

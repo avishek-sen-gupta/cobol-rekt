@@ -66,7 +66,7 @@ public class CodeTaskRunner {
         System.out.println("copyBookPaths = " + String.join(",", copyBookPaths.stream().map(cp -> cp.toString() + "\n").toList()));
     }
 
-    public Map<String, List<AnalysisTaskResult>> generateForPrograms(List<CommandLineAnalysisTask> tasks, List<String> programFilenames, TaskRunnerMode runnerMode) throws IOException {
+    public Map<String, List<AnalysisTaskResult>> runForPrograms(List<CommandLineAnalysisTask> tasks, List<String> programFilenames, TaskRunnerMode runnerMode) throws IOException {
         Map<String, List<AnalysisTaskResult>> results = new HashMap<>();
         for (String programFilename : programFilenames) {
             System.out.println(String.format("Running tasks: %s for program '%s' in %s mode...",
@@ -78,21 +78,21 @@ public class CodeTaskRunner {
                     System.out.printf("No program found for '%s' anywhere in path %s \n", programFilename, sourceDir);
                     continue;
                 }
-                List<AnalysisTaskResult> analysisTaskResults = generateForProgram(programFilename, programPath.getRight(), reportRootDir, this.dialect, runnerMode.tasks(tasks));
+                List<AnalysisTaskResult> analysisTaskResults = runForProgram(programFilename, programPath.getRight(), reportRootDir, this.dialect, runnerMode.tasks(tasks));
                 results.put(programFilename, analysisTaskResults);
             } catch (ParseDiagnosticRuntimeError e) {
                 errorMap.put(programFilename, e.getErrors());
             }
         }
 
-        return runnerMode.run(errorMap, results, this);
+        return runnerMode.run(errorMap, results);
     }
 
-    public Map<String, List<AnalysisTaskResult>> generateForPrograms(List<CommandLineAnalysisTask> tasks, List<String> programFilenames) throws IOException {
-        return generateForPrograms(tasks, programFilenames, TaskRunnerMode.PRODUCTION_MODE);
+    public Map<String, List<AnalysisTaskResult>> runForPrograms(List<CommandLineAnalysisTask> tasks, List<String> programFilenames) throws IOException {
+        return runForPrograms(tasks, programFilenames, TaskRunnerMode.PRODUCTION_MODE);
     }
 
-    private List<AnalysisTaskResult> generateForProgram(String programFilename, String sourceDir, String reportRootDir, LanguageDialect dialect, List<CommandLineAnalysisTask> tasks) throws IOException {
+    private List<AnalysisTaskResult> runForProgram(String programFilename, String sourceDir, String reportRootDir, LanguageDialect dialect, List<CommandLineAnalysisTask> tasks) throws IOException {
         String programReportDir = String.format("%s.report", programFilename);
         Path astOutputDir = Paths.get(reportRootDir, programReportDir, AST_DIR).toAbsolutePath().normalize();
         Path dataStructuresOutputDir = Paths.get(reportRootDir, programReportDir, DATA_STRUCTURES_DIR).toAbsolutePath().normalize();
@@ -122,7 +122,7 @@ public class CodeTaskRunner {
         ComponentsBuilder ops = new ComponentsBuilder(new CobolTreeVisualiser(),
                 FlowchartBuilderImpl::build, new EntityNavigatorBuilder(), new UnresolvedReferenceThrowStrategy(),
                 format1DataStructureBuilder, idProvider);
-        ParsePipeline pipeline = new ParsePipeline(sourceConfig, rawAstOutputConfig, ops, dialect);
+        ParsePipeline pipeline = new ParsePipeline(sourceConfig, ops, dialect);
         GraphBuildConfig graphBuildConfig = new GraphBuildConfig(
                 NodeReferenceStrategy.EXISTING_CFG_NODE,
                 NodeReferenceStrategy.EXISTING_CFG_NODE);
