@@ -12,7 +12,7 @@ This is an evolving toolkit of capabilities helpful for reverse engineering lega
 - Injecting AST and Control Flow into Neo4J
 - Injecting Cobol data layouts from Data Division into Neo4J (with dependencies like MOVE, COMPUTE, etc.) + export to JSON
 - Injecting execution traces from the SMOJOL interpreter into Neo4J
-- Integration with OpenAI GPT to summarise nodes using bottom-up node traversal (AST nodes or Data Structure nodes)
+- Perform actions on graphs using depth first traversals in Neo4J (AST nodes or Data Structure nodes). Use cases can include aggregating lower-level summaries (using an LLM) into more abstract descriptions of functionality, a la GraphRAG.
 - Exposes a unified model (AST, CFG, Data Structures with appropriate interconnections) which can be analysed through [JGraphT](https://jgrapht.org/), together with export to GraphML format and JSON.
 - Support for namespaces to allow unique addressing of (possibly same) graphs
 - **ALPHA:** Support for building Glossary of Variables from data structures using LLMs
