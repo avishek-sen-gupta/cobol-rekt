@@ -68,7 +68,7 @@
                                     <finalName>smojol-toolkit</finalName>
                                     <archive>
                                         <manifest>
-                                            <mainClass>org.smojol.interpreter.InterpreterMain</mainClass>
+                                            <mainClass>org.smojol.toolkit.interpreter.InterpreterMain</mainClass>
                                         </manifest>
                                     </archive>
                                     <descriptorRefs>

@@ -2,10 +2,10 @@ package org.smojol.cli;
 
 import com.mojo.woof.GraphSDK;
 import com.mojo.woof.Neo4JDriverBuilder;
-import org.smojol.analysis.graph.NamespaceQualifier;
-import org.smojol.analysis.graph.NodeSpecBuilder;
-import org.smojol.analysis.pipeline.*;
-import org.smojol.analysis.visualisation.CobolProgram;
+import org.smojol.toolkit.analysis.graph.NamespaceQualifier;
+import org.smojol.toolkit.analysis.graph.NodeSpecBuilder;
+import org.smojol.common.program.CobolProgram;
+import org.smojol.toolkit.analysis.pipeline.*;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;

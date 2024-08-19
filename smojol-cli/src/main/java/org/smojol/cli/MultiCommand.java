@@ -1,11 +1,14 @@
 package org.smojol.cli;
 
-import org.smojol.analysis.LanguageDialect;
-import org.smojol.analysis.pipeline.*;
+import org.smojol.toolkit.analysis.pipeline.LanguageDialect;
 import org.smojol.common.flowchart.ConsoleColors;
 import org.smojol.common.id.UUIDProvider;
-import org.smojol.interpreter.FlowchartGenerationStrategy;
-import org.smojol.interpreter.structure.OccursIgnoringFormat1DataStructureBuilder;
+import org.smojol.toolkit.analysis.pipeline.AnalysisTaskResult;
+import org.smojol.toolkit.analysis.pipeline.CodeTaskRunner;
+import org.smojol.toolkit.analysis.pipeline.CommandLineAnalysisTask;
+import org.smojol.toolkit.analysis.pipeline.TaskRunnerMode;
+import org.smojol.toolkit.flowchart.FlowchartGenerationStrategy;
+import org.smojol.toolkit.interpreter.structure.OccursIgnoringFormat1DataStructureBuilder;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;

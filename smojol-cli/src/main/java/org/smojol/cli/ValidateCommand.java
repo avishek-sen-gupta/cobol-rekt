@@ -1,6 +1,6 @@
 package org.smojol.cli;
 
-import org.smojol.analysis.LanguageDialect;
+import org.smojol.toolkit.analysis.pipeline.LanguageDialect;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;

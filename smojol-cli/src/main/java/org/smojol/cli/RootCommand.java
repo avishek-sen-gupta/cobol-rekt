@@ -13,5 +13,3 @@ public class RootCommand implements Callable<Integer> {
         return 0;
     }
 }
-
-
