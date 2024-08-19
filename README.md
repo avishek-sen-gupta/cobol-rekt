@@ -350,7 +350,11 @@ For example, if you wanted to run all of the above, you could run the following 
 java -jar smojol-cli/target/smojol-cli.jar run test-exp.cbl hello.cbl --commands="WRITE_FLOW_AST INJECT_INTO_NEO4J EXPORT_TO_GRAPHML WRITE_RAW_AST DRAW_FLOWCHART WRITE_CFG" --srcDir /Users/asgupta/code/smojol/smojol-test-code --copyBooksDir /Users/asgupta/code/smojol/smojol-test-code --dialectJarPath ./che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar --reportDir out/report --generation=PROGRAM
 ```
 
-Passing the validation flag (```--validate``` or ```-v```) skips running all tasks, and simply validates whether the source is syntactically correct.
+Passing the validation flag (```--validate``` or ```-v```) skips running all tasks, and simply validates whether the source is syntactically correct. Alternatively, you can use the ```validate``` command explicitly, like so:
+
+```
+java -jar smojol-cli/target/smojol-cli.jar validate minimum.cbl  --srcDir smojol-test-code/ --copyBooksDir /Users/asgupta/code/smojol/smojol-test-code --dialectJarPath che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar --dialect IDMS
+```
 
 The help text is reproduced below (obtained by adding ```--help```):
 
