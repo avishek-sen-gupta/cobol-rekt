@@ -1,5 +1,8 @@
 package org.smojol.toolkit.analysis.pipeline;
 
+import com.google.common.collect.ImmutableList;
+import org.smojol.common.structure.DataStructureContext;
+import org.smojol.common.structure.SourceSection;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.common.vm.structure.Format1DataStructure;
 
@@ -17,6 +20,8 @@ public class SerialisableCobolDataStructure {
     private String redefines;
     private final String nodeType = "DATA_VERTEX";
     private String dataType;
+    private List<DataStructureContext> categories;
+    private SourceSection sourceSection;
 
     public SerialisableCobolDataStructure(CobolDataStructure data) {
         name = data.name();
@@ -25,6 +30,8 @@ public class SerialisableCobolDataStructure {
         id = data.getId();
         levelNumber = data.getLevelNumber();
         rawText = data.getRawText();
+        categories = ImmutableList.of(data.dataCategory());
+        sourceSection = data.getSourceSection();
         isRedefinition = data.getClass() == Format1DataStructure.class && data.isRedefinition();
         redefines = isRedefinition ? ((Format1DataStructure) data).getDataDescription().dataRedefinesClause().getFirst().dataName().getText() : "";
     }
