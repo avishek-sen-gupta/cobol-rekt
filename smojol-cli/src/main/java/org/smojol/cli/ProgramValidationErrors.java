@@ -45,4 +45,8 @@ public class ProgramValidationErrors {
     public boolean hasNonSyntaxErrors() {
         return nonSyntaxErrors.length > 0;
     }
+
+    public boolean hasSyntaxErrors() {
+        return !syntaxErrors.isEmpty();
+    }
 }

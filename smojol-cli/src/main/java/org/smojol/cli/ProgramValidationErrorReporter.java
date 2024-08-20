@@ -18,20 +18,29 @@ public class ProgramValidationErrorReporter {
         }
 
         reportSyntaxErrors(ve, SyntaxError::toString);
+        System.out.printf("Validation Summary: Program %s%n-------------------------------%n", ve.getProgramFileName());
         reportNonSyntaxErrors(ve);
         reportSyntaxErrors(ve, e -> e.getErrorCode() + ": " + e.getSuggestion());
     }
 
     private void reportSyntaxErrors(ProgramValidationErrors singleProgramValidationErrors, Function<SyntaxError, String> format) {
-        String programFileName = singleProgramValidationErrors.getProgramFileName();
-        System.out.printf("Program %s%n----------------------%n", programFileName);
+        System.out.printf("Validation Details: Program %s%n----------------------%n", singleProgramValidationErrors.getProgramFileName());
+        if (!singleProgramValidationErrors.hasSyntaxErrors()) {
+            System.out.println(ConsoleColors.green(String.format("No Syntax Errors for %s%n",
+                    singleProgramValidationErrors.getProgramFileName())));
+            return;
+        }
         singleProgramValidationErrors.getSyntaxErrors().forEach(e -> {
             System.out.printf("%s%n", format.apply(e));
         });
     }
 
     private void reportNonSyntaxErrors(ProgramValidationErrors singleProgramValidationErrors) {
-        if (!singleProgramValidationErrors.hasNonSyntaxErrors()) return;
+        if (!singleProgramValidationErrors.hasNonSyntaxErrors()) {
+            System.out.println(ConsoleColors.green(String.format("No Non-Syntax Errors for %s%n",
+                    singleProgramValidationErrors.getProgramFileName())));
+            return;
+        }
         for (String e : singleProgramValidationErrors.getNonSyntaxErrors()) {
             System.out.printf("Non-Syntax Error for %s: %s%n", singleProgramValidationErrors.getProgramFileName(),
                     ConsoleColors.red(e));
