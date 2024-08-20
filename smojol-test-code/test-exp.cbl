@@ -31,6 +31,9 @@
                01  CONDI         PIC X VALUE "E".
                     88 V1      VALUE "E".
                     88 V2      VALUE "F".
+           LINKAGE SECTION.
+               01  SOMETHING-LINKAGE      PIC XXXX.
+               01  SOMEFRACTION-LINKAGE   PIC 9999 OCCURS 2.
        PROCEDURE DIVISION.
        SECTION-0 SECTION.
         P1.

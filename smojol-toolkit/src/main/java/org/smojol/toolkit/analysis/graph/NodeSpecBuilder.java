@@ -88,7 +88,7 @@ public class NodeSpecBuilder {
     public NodeSpec dataNodeSearchSpec(CobolDataStructure structure) {
         return dataNodeSearchCriteria(Map.of(INTERNAL_ID, structure.getId(),
                 NAME, structure.name(),
-                ENTITY_CATEGORIES, ImmutableList.of(structure.dataCategory()),
+                ENTITY_CATEGORIES, ImmutableList.of(structure.dataCategory().name()),
                 NAMESPACE, namespaceQualifier.getNamespace()));
     }
 

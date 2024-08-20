@@ -84,7 +84,6 @@ public class CobolDataStructureBuilder implements DataStructureBuilder {
     // TODO: Refactor to state machine maybe
     // TODO: Refactor to use builder in addChild(), addPeer() to inject parent directly into constructor
     private <T> void extractFrom(List<T> dataLayouts, CobolDataStructure root, Function<T, CobolParser.DataDescriptionEntryContext> retriever, SourceSection sourceSection) {
-
         int currentLevel = 0;
         CobolDataStructure dataStructure = root;
         // TODO: Does not check if you are adding a structure under a level 77 structure, which is invalid

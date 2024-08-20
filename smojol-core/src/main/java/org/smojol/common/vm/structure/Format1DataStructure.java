@@ -68,7 +68,6 @@ public class Format1DataStructure extends CobolDataStructure {
 
     public Format1DataStructure(CobolParser.DataDescriptionEntryFormat1Context dataDescription, UnresolvedReferenceStrategy unresolvedReferenceStrategy, CobolDataType dataType, SourceSection sourceSection) {
         super(NamingScheme.IDENTITY.apply(dataDescription), Integer.parseInt(dataDescription.levelNumber().getText()), dataType, NodeText.originalText(dataDescription), sourceSection);
-
         this.namingScheme = NamingScheme.IDENTITY;
         this.dataDescription = dataDescription;
         System.out.println("Setting value for " + dataDescription.getText());
