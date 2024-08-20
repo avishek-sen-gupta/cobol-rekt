@@ -1,6 +1,7 @@
 package org.smojol.common.vm.structure;
 
 import org.eclipse.lsp.cobol.core.CobolParser;
+import org.smojol.common.structure.SourceSection;
 import org.smojol.common.vm.memory.*;
 import org.smojol.common.vm.reference.CobolReference;
 import org.smojol.common.vm.type.CobolDataType;
@@ -13,7 +14,7 @@ public class StaticDataStructure extends CobolDataStructure {
     private final TypedRecord value;
 
     public StaticDataStructure(String name, int levelNumber, CobolDataType dataType, TypedRecord value) {
-        super(name, levelNumber, dataType, "[STATIC]");
+        super(name, levelNumber, dataType, "[STATIC]", SourceSection.PROCEDURE_DIVISION);
         this.value = value;
     }
 

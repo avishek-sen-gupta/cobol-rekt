@@ -2,6 +2,7 @@ package org.smojol.common.vm.structure;
 
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.flowchart.ConsoleColors;
+import org.smojol.common.structure.SourceSection;
 import org.smojol.common.vm.reference.CobolReference;
 import org.smojol.common.vm.memory.MemoryLayout;
 import org.smojol.common.vm.memory.MemoryRegion;
@@ -18,7 +19,7 @@ public class NullDataStructure extends CobolDataStructure {
     private final String referenceID;
 
     public NullDataStructure(String referenceID) {
-        super(referenceID, -99, CobolDataType.NULL, "[NULL]");
+        super(referenceID, -99, CobolDataType.NULL, "[NULL]", SourceSection.NONE);
         this.referenceID = referenceID;
     }
 

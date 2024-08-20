@@ -1,6 +1,7 @@
 package org.smojol.common.vm.reference;
 
 import org.eclipse.lsp.cobol.core.CobolParser;
+import org.smojol.common.structure.SourceSection;
 import org.smojol.common.vm.memory.MemoryLayout;
 import org.smojol.common.vm.memory.MemoryRegion;
 import org.smojol.common.vm.memory.NullMemoryLayout;
@@ -18,7 +19,7 @@ public class DetachedDataStructure extends CobolDataStructure {
     private final TypedRecord value;
 
     public DetachedDataStructure(TypedRecord value) {
-        super(value.toString(), -1, CobolDataType.DETACHED, "[DETACHED]");
+        super(value.toString(), -1, CobolDataType.DETACHED, "[DETACHED]", SourceSection.PROCEDURE_DIVISION);
         this.value = value;
     }
 

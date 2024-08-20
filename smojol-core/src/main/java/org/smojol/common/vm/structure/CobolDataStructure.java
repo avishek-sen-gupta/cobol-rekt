@@ -8,6 +8,8 @@ import lombok.Getter;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.ast.CommentBlock;
 import org.smojol.common.flowchart.DataStructureVisitor;
+import org.smojol.common.structure.DataStructureContext;
+import org.smojol.common.structure.SourceSection;
 import org.smojol.common.vm.memory.DataLayoutBuilder;
 import org.smojol.common.vm.memory.MemoryLayout;
 import org.smojol.common.vm.memory.MemoryRegion;
@@ -26,6 +28,7 @@ public abstract class CobolDataStructure extends SimpleTreeNode {
     @Getter protected final int levelNumber;
     @Getter private final String id;
     @Getter private final String rawText;
+    @Getter protected final SourceSection sourceSection;
     protected List<CobolDataStructure> structures;
     @Getter protected List<CommentBlock> commentBlocks = new ArrayList<>();
     protected CobolDataStructure parent;
@@ -74,19 +77,20 @@ public abstract class CobolDataStructure extends SimpleTreeNode {
         return new ArrayList<>(structures);
     }
 
-    public CobolDataStructure(String name, int levelNumber, CobolDataType dataType, String rawText) {
-        this(name, new ArrayList<>(), levelNumber, null, false, dataType, rawText);
+    public CobolDataStructure(String name, int levelNumber, CobolDataType dataType, String rawText, SourceSection sourceSection) {
+        this(name, new ArrayList<>(), levelNumber, null, false, dataType, rawText, sourceSection);
     }
 
     // Root constructor
     public CobolDataStructure(int levelNumber) {
-        this("[ROOT]", levelNumber, CobolDataType.ROOT, "[ROOT]");
+        this("[ROOT]", levelNumber, CobolDataType.ROOT, "[ROOT]", SourceSection.ROOT);
     }
 
     // Copy constructor
-    protected CobolDataStructure(String name, List<CobolDataStructure> childStructures, int level, CobolDataStructure parent, boolean isComposite, CobolDataType dataType, String rawText) {
+    protected CobolDataStructure(String name, List<CobolDataStructure> childStructures, int level, CobolDataStructure parent, boolean isComposite, CobolDataType dataType, String rawText, SourceSection sourceSection) {
         super(name);
         this.rawText = rawText;
+        this.sourceSection = sourceSection;
         // TODO: Inject ID Provider. ID Provider is already present in DataStructureBuilder, inject it into all the constructors
         this.id = UUID.randomUUID().toString();
         this.name = name;
@@ -215,5 +219,16 @@ public abstract class CobolDataStructure extends SimpleTreeNode {
 
     public void addComment(CommentBlock cb) {
         commentBlocks.add(cb);
+    }
+
+    public DataStructureContext dataCategory() {
+        return switch (sourceSection) {
+            case LINKAGE -> DataStructureContext.PARAMETER;
+            case WORKING_STORAGE -> DataStructureContext.GLOBAL;
+            case ROOT -> DataStructureContext.ROOT;
+            case NONE -> DataStructureContext.NONE;
+            case PROCEDURE_DIVISION -> DataStructureContext.LOCAL;
+            case FILE_DESCRIPTOR -> DataStructureContext.IO;
+        };
     }
 }

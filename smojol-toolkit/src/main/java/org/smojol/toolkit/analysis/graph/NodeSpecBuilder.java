@@ -2,6 +2,7 @@ package org.smojol.toolkit.analysis.graph;
 
 import com.google.common.collect.ImmutableList;
 import com.mojo.woof.NodeSpec;
+import org.smojol.common.structure.DataStructureContext;
 import org.smojol.toolkit.analysis.graph.graphml.TypedCodeVertex;
 import org.smojol.toolkit.analysis.graph.graphml.TypedDataStructureVertex;
 import org.smojol.toolkit.analysis.graph.graphml.TypedGraphEdge;
@@ -41,10 +42,11 @@ public class NodeSpecBuilder {
                         INTERNAL_ID, structure.getId(),
                         NAME, structure.name(),
                         TEXT, structure.content(),
-                        TYPE, structure.getDataType().toString(),
+                        TYPE, structure.getDataType().name(),
                         ENTITY_TYPE, DATA_STRUCTURE,
-                        ENTITY_CATEGORIES, ImmutableList.of(),
+                        ENTITY_CATEGORIES, ImmutableList.of(structure.dataCategory().name()),
                         LEVEL, structure.getLevelNumber(),
+                        SECTION_SOURCE, structure.getSourceSection().name(),
                         NAMESPACE, namespaceQualifier.getNamespace()
                 ));
     }
@@ -84,7 +86,10 @@ public class NodeSpecBuilder {
     }
 
     public NodeSpec dataNodeSearchSpec(CobolDataStructure structure) {
-        return dataNodeSearchCriteria(Map.of(INTERNAL_ID, structure.getId(), NAME, structure.name(), NAMESPACE, namespaceQualifier.getNamespace()));
+        return dataNodeSearchCriteria(Map.of(INTERNAL_ID, structure.getId(),
+                NAME, structure.name(),
+                ENTITY_CATEGORIES, ImmutableList.of(structure.dataCategory()),
+                NAMESPACE, namespaceQualifier.getNamespace()));
     }
 
     public NodeSpec cfgNodeSearchSpec(FlowNode node) {
