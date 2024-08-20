@@ -37,10 +37,14 @@ public class ValidateCommand implements Callable<Integer> {
             description = "The COBOL dialect (COBOL, IDMS)")
     private String dialect;
 
+    @Option(names = {"-o", "--output"},
+            description = "Validation results output path")
+    private String outputPath;
+
     @Override
     public Integer call() {
         List<File> copyBookPaths = copyBookDirs.stream().map(c -> Paths.get(c).toAbsolutePath().toFile()).toList();
         return new ValidateTaskRunner().processPrograms(programNames, sourceDir,
-                LanguageDialect.valueOf(dialect), copyBookPaths, dialectJarPath) ? 0 : 1;
+                LanguageDialect.valueOf(dialect), copyBookPaths, dialectJarPath, outputPath) ? 0 : 1;
     }
 }

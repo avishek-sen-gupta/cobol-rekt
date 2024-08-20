@@ -82,7 +82,7 @@ public class MultiCommand implements Callable<Integer> {
     private Integer processPrograms(List<File> copyBookPaths) throws IOException {
         if (isValidate) {
             System.out.println("Only validating, all other tasks were ignored");
-            boolean validationResult = new ValidateTaskRunner().processPrograms(programNames, sourceDir, LanguageDialect.dialect(dialect), copyBookPaths, dialectJarPath);
+            boolean validationResult = new ValidateTaskRunner().processPrograms(programNames, sourceDir, LanguageDialect.dialect(dialect), copyBookPaths, dialectJarPath, null);
             return validationResult ? 0 : 1;
         }
 
