@@ -354,7 +354,7 @@ For example, if you wanted to run all of the above, you could run the following 
 java -jar smojol-cli/target/smojol-cli.jar run test-exp.cbl hello.cbl --commands="WRITE_FLOW_AST INJECT_INTO_NEO4J EXPORT_TO_GRAPHML WRITE_RAW_AST DRAW_FLOWCHART WRITE_CFG" --srcDir /Users/asgupta/code/smojol/smojol-test-code --copyBooksDir /Users/asgupta/code/smojol/smojol-test-code --dialectJarPath ./che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar --reportDir out/report --generation=PROGRAM
 ```
 
-Passing the validation flag (```--validate``` or ```-v```) skips running all tasks, and simply validates whether the source is syntactically correct.
+Passing the validation flag (```--validate``` or ```-v```) skips running all tasks, and simply validates whether the source is syntactically correct. This is non-strict validation, i.e., invalid variable references are reported, but do not cause failure.
 
 The help text is reproduced below (obtained by adding ```--help```):
 
@@ -431,10 +431,12 @@ java -jar smojol-cli/target/smojol-cli.jar validate minimum.cbl test-exp.cbl --s
 
 If you specify a path to ```output```, the results will be written to the corresponding file as JSON.
 
+By default, this is non-strict validation, i.e., invalid variable references are reported, but do not cause failure. If the ```--strict``` flag is also specified, invalid variable references in the program will cause the task to fail.
+
 The help text is reproduced below:
 
 ```
-Usage: app validate [-hV] [-d=<dialect>] [-dp=<dialectJarPath>]
+Usage: app validate [-htV] [-d=<dialect>] [-dp=<dialectJarPath>]
                     [-o=<outputPath>] -s=<sourceDir> -cp=<copyBookDirs>[,
                     <copyBookDirs>...] [-cp=<copyBookDirs>[,
                     <copyBookDirs>...]]... [<programNames>...]
@@ -448,6 +450,8 @@ Validates the candidate COBOL code
   -h, --help                 Show this help message and exit.
   -o, --output=<outputPath>  Validation results output path
   -s, --srcDir=<sourceDir>   The Cobol source directory
+  -t, --strict               Force strict validation, verify all variable
+                               usages are valid
   -V, --version              Print version information and exit.
 ```
 
