@@ -93,9 +93,13 @@ public class MultiCommand implements Callable<Integer> {
     }
 
     private Integer processResults(Map<String, List<AnalysisTaskResult>> runResults) {
-        List<String> results = runResults.entrySet().stream().map(this::taskResults).toList();
-        results.forEach(System.out::println);
-        return 0;
+        List<String> resultMessages = runResults.entrySet().stream().map(this::taskResults).toList();
+        Boolean allSucceeded = runResults.values().stream().map(rs ->
+                        rs.stream().map(AnalysisTaskResult::isSuccess)
+                                .reduce(true, (innerAll, x) -> innerAll && x))
+                .reduce((a, b) -> a && b).get();
+        resultMessages.forEach(System.out::println);
+        return allSucceeded ? 0 : 1;
     }
 
     private String taskResults(Map.Entry<String, List<AnalysisTaskResult>> taskResult) {

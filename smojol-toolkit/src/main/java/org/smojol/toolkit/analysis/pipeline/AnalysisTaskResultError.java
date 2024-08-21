@@ -1,6 +1,7 @@
 package org.smojol.toolkit.analysis.pipeline;
 
 import lombok.Getter;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 
 @Getter
 public final class AnalysisTaskResultError implements AnalysisTaskResult {
@@ -22,7 +23,7 @@ public final class AnalysisTaskResultError implements AnalysisTaskResult {
 
     @Override
     public String toString() {
-        return exception.toString();
+        return ExceptionUtils.getStackTrace(exception);
     }
 
     @Override
