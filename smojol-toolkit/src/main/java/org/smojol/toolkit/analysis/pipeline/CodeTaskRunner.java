@@ -117,7 +117,6 @@ public class CodeTaskRunner {
         FlowASTOutputConfig flowASTOutputConfig = new FlowASTOutputConfig(flowASTOutputDir, flowASTOutputPath);
         GraphMLExportConfig graphMLOutputConfig = new GraphMLExportConfig(graphMLExportOutputDir, graphMLExportOutputPath);
         CFGOutputConfig cfgOutputConfig = new CFGOutputConfig(cfgOutputDir, cfgOutputPath);
-        GraphSDK sdk = new GraphSDK(new Neo4JDriverBuilder().fromEnv());
         ComponentsBuilder ops = new ComponentsBuilder(new CobolTreeVisualiser(),
                 FlowchartBuilderImpl::build, new EntityNavigatorBuilder(), new UnresolvedReferenceThrowStrategy(),
                 format1DataStructureBuilder, idProvider);
@@ -130,8 +129,8 @@ public class CodeTaskRunner {
                 sourceConfig, flowchartOutputWriter,
                 rawAstOutputConfig, graphMLOutputConfig,
                 flowASTOutputConfig, cfgOutputConfig,
-                graphBuildConfig, dataStructuresOutputConfig, unifiedModelOutputConfig, similarityOutputConfig, sdk,
-                idProvider).build();
+                graphBuildConfig, dataStructuresOutputConfig, unifiedModelOutputConfig, similarityOutputConfig,
+                idProvider, new Neo4JDriverBuilder()).build();
         return pipelineTasks.run(tasks);
     }
 }

@@ -62,8 +62,12 @@ public class DependencyAnalysisCommand implements Callable<Integer> {
         };
         if (exportPath != null) new ExportProgramDependenciesTask(exportPath).run(root);
         if (injectIntoNeo4j)
-            new InjectProgramDependenciesIntoNeo4JTask(new NodeSpecBuilder(new NamespaceQualifier("DEP-GRAPH")),
-                    new GraphSDK(new Neo4JDriverBuilder().fromEnv())).run(root);
+            try (GraphSDK graphSDK = new GraphSDK(new Neo4JDriverBuilder().fromEnv())) {
+                new InjectProgramDependenciesIntoNeo4JTask(new NodeSpecBuilder(new NamespaceQualifier("DEP-GRAPH")),
+                        graphSDK).run(root);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         return 0;
     }
 }

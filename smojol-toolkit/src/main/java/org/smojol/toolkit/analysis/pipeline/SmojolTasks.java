@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonWriter;
 import com.mojo.woof.Advisor;
 import com.mojo.woof.GraphSDK;
+import com.mojo.woof.Neo4JDriverBuilder;
 import com.mojo.woof.OpenAICredentials;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.apache.commons.lang3.tuple.Triple;
@@ -48,13 +49,13 @@ public class SmojolTasks {
     private final RawASTOutputConfig rawAstOutputConfig;
     private final OutputArtifactConfig unifiedModelOutputConfig;
     private final OutputArtifactConfig similarityOutputConfig;
-    private final GraphSDK graphSDK;
     private final GraphMLExportConfig graphMLOutputConfig;
     private final FlowASTOutputConfig flowASTOutputConfig;
     private final CFGOutputConfig cfgOutputConfig;
     private final OutputArtifactConfig dataStructuresOutputConfig;
     private final IdProvider idProvider;
     private final GraphBuildConfig graphBuildConfig;
+    private final Neo4JDriverBuilder neo4JDriverBuilder;
     private final ParsePipeline pipeline;
     private CobolEntityNavigator navigator;
     private CobolDataStructure dataStructures;
@@ -65,8 +66,12 @@ public class SmojolTasks {
     public AnalysisTask INJECT_INTO_NEO4J = new AnalysisTask() {
         @Override
         public AnalysisTaskResult run() {
-            exportToNeo4J(astRoot, dataStructures, qualifier, graphSDK);
-            return AnalysisTaskResult.OK(CommandLineAnalysisTask.INJECT_INTO_NEO4J);
+            try (GraphSDK graphSDK = new GraphSDK(neo4JDriverBuilder.fromEnv())) {
+                exportToNeo4J(astRoot, dataStructures, qualifier, graphSDK);
+                return AnalysisTaskResult.OK(CommandLineAnalysisTask.INJECT_INTO_NEO4J);
+            } catch (Exception e) {
+                return AnalysisTaskResult.ERROR(e, CommandLineAnalysisTask.INJECT_INTO_NEO4J);
+            }
         }
     };
 
@@ -230,12 +235,16 @@ public class SmojolTasks {
     public AnalysisTask SUMMARISE_THROUGH_LLM = new AnalysisTask() {
         @Override
         public AnalysisTaskResult run() {
-            summariseThroughLLM(qualifier, graphSDK);
-            return AnalysisTaskResult.OK(CommandLineAnalysisTask.SUMMARISE_THROUGH_LLM);
+            try (GraphSDK graphSDK = new GraphSDK(neo4JDriverBuilder.fromEnv())) {
+                summariseThroughLLM(qualifier, graphSDK);
+                return AnalysisTaskResult.OK(CommandLineAnalysisTask.SUMMARISE_THROUGH_LLM);
+            } catch (Exception e) {
+                return AnalysisTaskResult.ERROR(e, CommandLineAnalysisTask.SUMMARISE_THROUGH_LLM);
+            }
         }
     };
 
-    public SmojolTasks(ParsePipeline pipeline, SourceConfig sourceConfig, FlowchartOutputWriter flowchartOutputWriter, RawASTOutputConfig rawAstOutputConfig, GraphMLExportConfig graphMLOutputConfig, FlowASTOutputConfig flowASTOutputConfig, CFGOutputConfig cfgOutputConfig, GraphBuildConfig graphBuildConfig, OutputArtifactConfig dataStructuresOutputConfig, OutputArtifactConfig unifiedModelOutputConfig, OutputArtifactConfig similarityOutputConfig, GraphSDK graphSDK, IdProvider idProvider) {
+    public SmojolTasks(ParsePipeline pipeline, SourceConfig sourceConfig, FlowchartOutputWriter flowchartOutputWriter, RawASTOutputConfig rawAstOutputConfig, GraphMLExportConfig graphMLOutputConfig, FlowASTOutputConfig flowASTOutputConfig, CFGOutputConfig cfgOutputConfig, GraphBuildConfig graphBuildConfig, OutputArtifactConfig dataStructuresOutputConfig, OutputArtifactConfig unifiedModelOutputConfig, OutputArtifactConfig similarityOutputConfig, IdProvider idProvider, Neo4JDriverBuilder neo4JDriverBuilder) {
         this.pipeline = pipeline;
         this.sourceConfig = sourceConfig;
         this.flowchartOutputWriter = flowchartOutputWriter;
@@ -243,12 +252,12 @@ public class SmojolTasks {
         this.dataStructuresOutputConfig = dataStructuresOutputConfig;
         this.unifiedModelOutputConfig = unifiedModelOutputConfig;
         this.similarityOutputConfig = similarityOutputConfig;
-        this.graphSDK = graphSDK;
         this.graphMLOutputConfig = graphMLOutputConfig;
         this.flowASTOutputConfig = flowASTOutputConfig;
         this.cfgOutputConfig = cfgOutputConfig;
         this.idProvider = idProvider;
         this.graphBuildConfig = graphBuildConfig;
+        this.neo4JDriverBuilder = neo4JDriverBuilder;
         qualifier = new NodeSpecBuilder(new NamespaceQualifier("NEW-CODE"));
     }
 
