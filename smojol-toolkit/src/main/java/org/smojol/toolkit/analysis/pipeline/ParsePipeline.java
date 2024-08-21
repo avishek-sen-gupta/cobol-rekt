@@ -35,6 +35,7 @@ import org.smojol.common.flowchart.FlowchartBuilder;
 import org.smojol.common.idms.DialectIntegratorListener;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.navigation.EntityNavigatorBuilder;
+import org.smojol.common.dialect.LanguageDialect;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.toolkit.analysis.error.ParseDiagnosticRuntimeError;
 import org.smojol.toolkit.analysis.pipeline.config.SourceConfig;

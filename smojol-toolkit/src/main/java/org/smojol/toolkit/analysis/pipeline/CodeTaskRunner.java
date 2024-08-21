@@ -1,10 +1,10 @@
 package org.smojol.toolkit.analysis.pipeline;
 
-import com.mojo.woof.GraphSDK;
 import com.mojo.woof.Neo4JDriverBuilder;
 import lombok.Getter;
 import org.apache.commons.lang3.tuple.Pair;
 import org.eclipse.lsp.cobol.common.error.SyntaxError;
+import org.smojol.common.dialect.LanguageDialect;
 import org.smojol.toolkit.analysis.error.ParseDiagnosticRuntimeError;
 import org.smojol.toolkit.analysis.graph.neo4j.NodeReferenceStrategy;
 import org.smojol.common.dependency.ComponentsBuilder;

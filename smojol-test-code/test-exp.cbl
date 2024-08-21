@@ -40,7 +40,7 @@
            GO TO SECTION-A.
        SECTION-A SECTION.
         P2.
-           MOVE "-6" TO SOMETEXT.
+           MOVE "-6" TO SOMETEXT2.
            MOVE "ABCD" TO LEVEL-10-A(1).
            MOVE "EFGH" TO LEVEL-10-A(2).
            MOVE "IJKL" TO LEVEL-10-A(3).

@@ -69,6 +69,10 @@ public class CobolEntityNavigator {
         return trees;
     }
 
+    public List<ParseTree> findAllByCondition(ParseTreeSearchCondition c) {
+        return this.findAllByCondition(c, fullProgramTree);
+    }
+
     public List<ParseTree> findAllByCondition(ParseTreeSearchCondition c, ParseTree scope) {
         return this.findAllByCondition(c, scope, -1);
     }

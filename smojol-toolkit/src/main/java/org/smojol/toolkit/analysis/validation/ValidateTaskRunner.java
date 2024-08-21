@@ -1,9 +1,17 @@
-package org.smojol.cli;
+package org.smojol.toolkit.analysis.validation;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.apache.commons.lang3.tuple.Pair;
+import org.eclipse.lsp.cobol.core.CobolParser;
+import org.smojol.common.dialect.LanguageDialect;
 import org.smojol.common.flowchart.ConsoleColors;
+import org.smojol.common.navigation.CobolEntityNavigator;
+import org.smojol.common.validation.ProgramValidationErrorReporter;
+import org.smojol.common.validation.ProgramValidationErrors;
+import org.smojol.common.vm.structure.CobolDataStructure;
+import org.smojol.common.vm.structure.NullDataStructure;
 import org.smojol.toolkit.analysis.pipeline.*;
 import org.smojol.toolkit.analysis.error.ParseDiagnosticRuntimeError;
 import org.smojol.toolkit.analysis.pipeline.config.SourceConfig;
@@ -18,12 +26,17 @@ import org.smojol.toolkit.interpreter.structure.OccursIgnoringFormat1DataStructu
 import java.io.*;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.function.Function;
 
 public class ValidateTaskRunner {
     public boolean processPrograms(List<String> programNames, String sourceDir, LanguageDialect dialect, List<File> copyBookPaths, String dialectJarPath, String outputPath) {
+        return processPrograms(programNames, sourceDir, dialect, copyBookPaths, dialectJarPath, outputPath, ProgramValidationErrors::IS_PARTIAL_SUCCESS);
+    }
+
+    public boolean processPrograms(List<String> programNames, String sourceDir, LanguageDialect dialect, List<File> copyBookPaths, String dialectJarPath, String outputPath, Function<ProgramValidationErrors, Boolean> criterion) {
         String absoluteDialectJarPath = Paths.get(dialectJarPath).toAbsolutePath().normalize().toString();
         List<ProgramValidationErrors> validationErrors = programNames.stream().map(p -> run(copyBookPaths, absoluteDialectJarPath, p, sourceDir, dialect)).toList();
-        List<Boolean> allResults = validationErrors.stream().map(ProgramValidationErrors::isSuccess).toList();
+        List<Boolean> allResults = validationErrors.stream().map(criterion).toList();
         new ProgramValidationErrorReporter().reportPrograms(validationErrors);
         if (outputPath != null) writeToFile(validationErrors, outputPath);
         return allResults.stream().reduce(true, (all, b) -> all && b);
@@ -55,10 +68,14 @@ public class ValidateTaskRunner {
         SourceConfig sourceConfig = new SourceConfig(programFilename, programPath.getRight(), copyBookPaths, absoluteDialectJarPath);
         ParsePipeline pipeline = new ParsePipeline(sourceConfig, ops, dialect);
         try {
-            pipeline.parse();
-            return ProgramValidationErrors.noError(programFilename);
+            CobolEntityNavigator navigator = pipeline.parse();
+            List<ParseTree> allVariableUsages = navigator.findAllByCondition(n -> n.getClass() == CobolParser.VariableUsageNameContext.class);
+            CobolDataStructure dataStructures = pipeline.getDataStructures();
+            List<ParseTree> usageSearchResults = allVariableUsages.stream().filter(gid -> dataStructures.reference(gid.getText()).getClass() == NullDataStructure.class).toList();
+            if (usageSearchResults.isEmpty()) return ProgramValidationErrors.noError(programFilename);
+            return ProgramValidationErrors.usageErrors(programFilename, usageSearchResults);
         } catch (ParseDiagnosticRuntimeError e) {
-            return new ProgramValidationErrors(programFilename, e.getErrors());
+            return ProgramValidationErrors.parseErrors(programFilename, e.getErrors());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

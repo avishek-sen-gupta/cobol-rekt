@@ -1,7 +1,7 @@
 package org.smojol.toolkit.analysis.graph;
 
 import com.google.common.collect.ImmutableList;
-import org.smojol.toolkit.analysis.pipeline.LanguageDialect;
+import org.smojol.common.dialect.LanguageDialect;
 import org.smojol.toolkit.analysis.pipeline.CodeTaskRunner;
 import org.smojol.common.id.UUIDProvider;
 import org.smojol.toolkit.interpreter.FullProgram;

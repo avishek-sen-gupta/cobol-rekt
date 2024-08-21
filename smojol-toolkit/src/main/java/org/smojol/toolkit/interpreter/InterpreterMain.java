@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.mojo.woof.GraphSDK;
 import com.mojo.woof.Neo4JDriverBuilder;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.smojol.toolkit.analysis.pipeline.LanguageDialect;
+import org.smojol.common.dialect.LanguageDialect;
 import org.smojol.toolkit.analysis.graph.NamespaceQualifier;
 import org.smojol.toolkit.analysis.graph.NodeSpecBuilder;
 import org.smojol.toolkit.analysis.pipeline.config.RawASTOutputConfig;

@@ -1,4 +1,4 @@
-package org.smojol.cli;
+package org.smojol.common.validation;
 
 import org.eclipse.lsp.cobol.common.error.SyntaxError;
 import org.smojol.common.flowchart.ConsoleColors;
@@ -12,7 +12,7 @@ public class ProgramValidationErrorReporter {
     }
 
     private void reportProgram(ProgramValidationErrors ve) {
-        if (ve.isSuccess()) {
+        if (ve.IS_COMPLETE_SUCCESS()) {
             System.out.println(ConsoleColors.green("No errors found for program: " + ve.getProgramFileName()));
             return;
         }
@@ -20,7 +20,19 @@ public class ProgramValidationErrorReporter {
         reportSyntaxErrors(ve, SyntaxError::toString);
         System.out.printf("Validation Summary: Program %s%n--------------------------------------------------------------%n", ve.getProgramFileName());
         reportNonSyntaxErrors(ve);
+        reportReferenceErrors(ve);
         reportSyntaxErrors(ve, e -> e.getErrorCode() + ": " + e.getSuggestion());
+    }
+
+    private void reportReferenceErrors(ProgramValidationErrors errors) {
+        System.out.printf("Reference Errors: Program %s%n--------------------------------------------------------------%n", errors.getProgramFileName());
+        if (!errors.hasReferenceErrors()) {
+            System.out.println(ConsoleColors.green(String.format("No Syntax Errors for %s%n",
+                    errors.getProgramFileName())));
+            return;
+        }
+        String undefinedStructuresList = String.join(",", errors.getReferenceErrors());
+        System.out.printf("The following data structures referenced in the program were not defined: %s%n", undefinedStructuresList);
     }
 
     private void reportSyntaxErrors(ProgramValidationErrors singleProgramValidationErrors, Function<SyntaxError, String> format) {
@@ -30,9 +42,7 @@ public class ProgramValidationErrorReporter {
                     singleProgramValidationErrors.getProgramFileName())));
             return;
         }
-        singleProgramValidationErrors.getSyntaxErrors().forEach(e -> {
-            System.out.printf("%s%n", format.apply(e));
-        });
+        singleProgramValidationErrors.getSyntaxErrors().forEach(e -> System.out.printf("%s%n", format.apply(e)));
     }
 
     private void reportNonSyntaxErrors(ProgramValidationErrors singleProgramValidationErrors) {

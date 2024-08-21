@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 public class DataDependencyPairComputer {
+    // TODO: This can be rewritten bottom-up by finding all references, and then working our way up to a statement or a sentence
     public static Map.Entry<List<CobolDataStructure>, List<CobolDataStructure>> dependencyPairs(FlowNode node, CobolDataStructure dataRoot) {
         if (node.type() != FlowNodeType.MOVE
                 && node.type() != FlowNodeType.COMPUTE

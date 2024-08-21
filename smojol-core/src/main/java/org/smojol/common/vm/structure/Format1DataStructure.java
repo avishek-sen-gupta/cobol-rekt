@@ -104,7 +104,7 @@ public class Format1DataStructure extends CobolDataStructure {
 
     @Override
     public void reset(String recordID) {
-        List<? extends CobolDataStructure> path = searchRecursively(recordID, this, new AccessChain(ImmutableList.of(new StaticAccessLink(this))));
+        List<? extends CobolDataStructure> path = searchRecursively(recordID, this);
         unresolvedReferenceStrategy.runIfResolved(path, recordID, () -> path.getLast().reset());
     }
 
@@ -115,7 +115,7 @@ public class Format1DataStructure extends CobolDataStructure {
 
     @Override
     public void set(String destinationRecordID, CobolReference ref) {
-        List<? extends CobolDataStructure> path = searchRecursively(destinationRecordID, this, new AccessChain(ImmutableList.of(new StaticAccessLink(this))));
+        List<? extends CobolDataStructure> path = searchRecursively(destinationRecordID, this);
         unresolvedReferenceStrategy.runIfResolved(path, destinationRecordID, () -> {
             ConversionStrategy.set(path.getLast(), ref);
         });
@@ -129,7 +129,7 @@ public class Format1DataStructure extends CobolDataStructure {
 
     @Override
     public void add(String recordID, CobolReference ref) {
-        List<? extends CobolDataStructure> path = searchRecursively(recordID, this, new AccessChain(ImmutableList.of(new StaticAccessLink(this))));
+        List<? extends CobolDataStructure> path = searchRecursively(recordID, this);
         unresolvedReferenceStrategy.runIfResolved(path, recordID, () -> {
             CobolDataStructure record = path.getLast();
             record.add(ref);
@@ -138,7 +138,7 @@ public class Format1DataStructure extends CobolDataStructure {
 
     @Override
     public void subtract(String recordID, CobolReference ref) {
-        List<? extends CobolDataStructure> path = searchRecursively(recordID, this, new AccessChain(ImmutableList.of(new StaticAccessLink(this))));
+        List<? extends CobolDataStructure> path = searchRecursively(recordID, this);
         unresolvedReferenceStrategy.runIfResolved(path, recordID, () -> {
             CobolDataStructure record = path.getLast();
             record.subtract(ref);
@@ -148,7 +148,7 @@ public class Format1DataStructure extends CobolDataStructure {
 
     @Override
     public void multiply(String recordID, CobolReference ref) {
-        List<? extends CobolDataStructure> path = searchRecursively(recordID, this, new AccessChain(ImmutableList.of(new StaticAccessLink(this))));
+        List<? extends CobolDataStructure> path = searchRecursively(recordID, this);
         unresolvedReferenceStrategy.runIfResolved(path, recordID, () -> {
             CobolDataStructure record = path.getLast();
             record.multiply(ref);
@@ -158,7 +158,7 @@ public class Format1DataStructure extends CobolDataStructure {
 
     @Override
     public void divide(String recordID, CobolReference ref) {
-        List<? extends CobolDataStructure> path = searchRecursively(recordID, this, new AccessChain(ImmutableList.of(new StaticAccessLink(this))));
+        List<? extends CobolDataStructure> path = searchRecursively(recordID, this);
         unresolvedReferenceStrategy.runIfResolved(path, recordID, () -> {
             CobolDataStructure record = path.getLast();
             record.divide(ref);
@@ -193,6 +193,7 @@ public class Format1DataStructure extends CobolDataStructure {
 
     @Override
     public List<CobolDataStructure> matches(String recordID) {
+//        boolean selfMatch = dataDescription != null && dataDescription.entryName().dataName().getText().equals(recordID);
         boolean selfMatch = dataDescription != null && dataDescription.entryName().getText().equals(recordID);
         Optional<ConditionalDataStructure> condition = condition(recordID);
         List<CobolDataStructure> matches = new ArrayList<>();

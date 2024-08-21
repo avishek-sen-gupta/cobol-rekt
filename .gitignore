@@ -136,6 +136,7 @@ clients/cobol-lsp-vscode-extension/test-report.xml
 **/InterpreterMainForTestingOnly.java
 **/GraphExplorerMainForTestingOnly.java
 **/FlowchartBuildProduction.java
+**/ValidateProgramMainForProduction.java
 
 out/
 **/__pycache__

@@ -143,7 +143,7 @@ public abstract class CobolDataStructure extends SimpleTreeNode {
     }
 
     public List<? extends CobolDataStructure> rootRecord(CobolParser.GeneralIdentifierContext subRecord) {
-        return searchRecursively(subRecord.getText(), this, new AccessChain(ImmutableList.of(new StaticAccessLink(this))));
+        return searchRecursively(subRecord.getText(), this);
     }
 
     public TypedRecord value(String subRecordID) {
@@ -151,17 +151,17 @@ public abstract class CobolDataStructure extends SimpleTreeNode {
     }
 
     public CobolDataStructure reference(String subRecordID) {
-        List<? extends CobolDataStructure> path = searchRecursively(subRecordID, this, new AccessChain(ImmutableList.of(new StaticAccessLink(this))));
+        List<? extends CobolDataStructure> path = searchRecursively(subRecordID, this);
         if (path.isEmpty()) return new NullDataStructure(subRecordID);
         return path.getLast();
     }
 
-    public List<? extends CobolDataStructure> searchRecursively(String subRecordID, CobolDataStructure currentStructure, AccessChain chain) {
+    public List<? extends CobolDataStructure> searchRecursively(String subRecordID, CobolDataStructure currentStructure) {
         List<CobolDataStructure> matches = currentStructure.matches(subRecordID);
         if (!matches.isEmpty())
             return matches;
         for (CobolDataStructure structure : currentStructure.structures) {
-            List<? extends CobolDataStructure> results = searchRecursively(subRecordID, structure, new AccessChain(ImmutableList.of(new StaticAccessLink(this))));
+            List<? extends CobolDataStructure> results = searchRecursively(subRecordID, structure);
             if (results.isEmpty()) continue;
             List<CobolDataStructure> path = new ArrayList<>(ImmutableList.of(currentStructure));
             path.addAll(results);

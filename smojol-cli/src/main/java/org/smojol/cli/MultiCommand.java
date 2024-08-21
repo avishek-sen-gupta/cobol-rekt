@@ -1,6 +1,8 @@
 package org.smojol.cli;
 
-import org.smojol.toolkit.analysis.pipeline.LanguageDialect;
+import org.smojol.common.validation.ProgramValidationErrors;
+import org.smojol.toolkit.analysis.validation.ValidateTaskRunner;
+import org.smojol.common.dialect.LanguageDialect;
 import org.smojol.common.flowchart.ConsoleColors;
 import org.smojol.common.id.UUIDProvider;
 import org.smojol.toolkit.analysis.pipeline.AnalysisTaskResult;
@@ -82,7 +84,7 @@ public class MultiCommand implements Callable<Integer> {
     private Integer processPrograms(List<File> copyBookPaths) throws IOException {
         if (isValidate) {
             System.out.println("Only validating, all other tasks were ignored");
-            boolean validationResult = new ValidateTaskRunner().processPrograms(programNames, sourceDir, LanguageDialect.dialect(dialect), copyBookPaths, dialectJarPath, null);
+            boolean validationResult = new ValidateTaskRunner().processPrograms(programNames, sourceDir, LanguageDialect.dialect(dialect), copyBookPaths, dialectJarPath, null, ProgramValidationErrors::IS_PARTIAL_SUCCESS);
             return validationResult ? 0 : 1;
         }
 

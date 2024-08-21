@@ -9,6 +9,7 @@ import org.smojol.common.program.StaticCallTarget;
 import org.smojol.common.flowchart.ConsoleColors;
 import org.smojol.common.flowchart.FlowchartOutputFormat;
 import org.smojol.common.id.UUIDProvider;
+import org.smojol.common.dialect.LanguageDialect;
 import org.smojol.toolkit.interpreter.FullProgram;
 import org.smojol.toolkit.interpreter.structure.OccursIgnoringFormat1DataStructureBuilder;
 
