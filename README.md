@@ -57,14 +57,14 @@ Some reverse engineering use cases are listed below. Descriptions of the capabil
 ## Work in Progress
 
 - Graph Edit distance between paragraphs through NetworkX
+- Clone Detection
+- Common Pattern Detection with Configurable Code Patterns
 
 ## Planned Capabilities
 
 **NOTE: Some of these will currently be IDMS-specific.**
 
-- Similar Code Detection (WIP)
 - Integrating Domain Knowledge
-- Common Pattern Detection with Configurable Code Patterns (WIP)
 - Transaction Lists and Participants (```BIND RUN-UNIT```, ```BIND RECORD```, ...)
 - Identify UI interactions and participants (```INSPECT```, ```MAP IN```, ```INQUIRE MAP```, Panel Definition parsing)
 
