@@ -18,13 +18,13 @@ public class ProgramValidationErrorReporter {
         }
 
         reportSyntaxErrors(ve, SyntaxError::toString);
-        System.out.printf("Validation Summary: Program %s%n-------------------------------%n", ve.getProgramFileName());
+        System.out.printf("Validation Summary: Program %s%n--------------------------------------------------------------%n", ve.getProgramFileName());
         reportNonSyntaxErrors(ve);
         reportSyntaxErrors(ve, e -> e.getErrorCode() + ": " + e.getSuggestion());
     }
 
     private void reportSyntaxErrors(ProgramValidationErrors singleProgramValidationErrors, Function<SyntaxError, String> format) {
-        System.out.printf("Validation Details: Program %s%n----------------------%n", singleProgramValidationErrors.getProgramFileName());
+        System.out.printf("Validation Details: Program %s%n--------------------------------------------------------------%n", singleProgramValidationErrors.getProgramFileName());
         if (!singleProgramValidationErrors.hasSyntaxErrors()) {
             System.out.println(ConsoleColors.green(String.format("No Syntax Errors for %s%n",
                     singleProgramValidationErrors.getProgramFileName())));
