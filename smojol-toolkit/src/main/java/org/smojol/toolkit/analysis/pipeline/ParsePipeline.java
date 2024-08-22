@@ -20,7 +20,6 @@ import org.eclipse.lsp.cobol.common.error.SyntaxError;
 import org.eclipse.lsp.cobol.common.mapping.ExtendedDocument;
 import org.eclipse.lsp.cobol.common.mapping.ExtendedText;
 import org.eclipse.lsp.cobol.common.message.MessageService;
-import org.eclipse.lsp.cobol.core.CobolParser;
 import org.eclipse.lsp.cobol.core.engine.analysis.AnalysisContext;
 import org.eclipse.lsp.cobol.core.engine.dialects.DialectService;
 import org.eclipse.lsp.cobol.core.engine.errors.ErrorFinalizerService;
@@ -137,7 +136,7 @@ public class ParsePipeline {
         tree = lastStageResult.getData().getTree();
         ParseTreeWalker walker = new ParseTreeWalker();
         EntityNavigatorBuilder navigatorBuilder = ops.getCobolEntityNavigatorBuilder();
-        verifyNoNullDialectStatements(tree, navigatorBuilder);
+        dialect.verifyNoNullDialectStatements(tree, navigatorBuilder);
         DialectIntegratorListener dialectIntegrationListener = new DialectIntegratorListener();
         walker.walk(dialectIntegrationListener, tree);
         System.out.println("[INFO] Restored " + dialectIntegrationListener.getRestores() + " nodes.");
@@ -149,21 +148,6 @@ public class ParsePipeline {
         dataStructures = ops.getDataStructureBuilder(navigator).build();
         System.out.println(gson.toJson(timingResult));
         return navigator;
-    }
-
-    private static void verifyNoNullDialectStatements(ParserRuleContext tree, EntityNavigatorBuilder navigatorBuilder) {
-        CobolEntityNavigator navigator = navigatorBuilder.navigator(tree);
-        List<ParseTree> nullDialectStatements = navigator.findAllByCondition(n -> n.getClass() == CobolParser.DialectStatementContext.class
-                && ((CobolParser.DialectStatementContext) n).dialectNodeFiller() != null
-                && ((CobolParser.DialectStatementContext) n).dialectNodeFiller().whatever() != null, tree);
-        nullDialectStatements.forEach(n -> {
-            boolean removed = ((ParserRuleContext) n.getParent()).children.remove(n);
-            System.out.println(removed ? "removed" : "not removed");
-        });
-        List<ParseTree> nullIdmsNodes = navigator.findAllByCondition(n -> n.getClass() == CobolParser.DialectNodeFillerContext.class
-                && ((CobolParser.DialectNodeFillerContext) n).whatever() != null, tree);
-
-        if (!nullIdmsNodes.isEmpty()) throw new RuntimeException("Null IDMS nodes detected, please run preprocess()");
     }
 
     /**
