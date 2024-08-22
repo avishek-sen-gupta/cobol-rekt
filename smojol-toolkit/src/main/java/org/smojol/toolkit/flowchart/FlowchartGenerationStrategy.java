@@ -33,6 +33,7 @@ public abstract class FlowchartGenerationStrategy {
         if (generationStrategyAsString == null) return new FullProgram(flowchartOutputFormat);
         return switch (generationStrategyAsString) {
             case "SECTION" -> new PerSection(flowchartOutputFormat);
+            case "PARAGRAPH" -> new PerParagraph(flowchartOutputFormat);
             case "PROGRAM" -> new FullProgram(flowchartOutputFormat);
             case "NODRAW" -> DONT_DRAW;
             default -> DONT_DRAW;
@@ -43,9 +44,13 @@ public abstract class FlowchartGenerationStrategy {
         return outputDir.resolve(String.format("%s.%s", label, extension)).toString();
     }
 
-    static String outputPath(ParseTree section, Path outputDir, String extension) {
-        CobolParser.ProcedureSectionContext s = (CobolParser.ProcedureSectionContext) section;
-        String sectionName = s.procedureSectionHeader().sectionName().getText();
+    static String outputPath(CobolParser.ProcedureSectionContext section, Path outputDir, String extension) {
+        String sectionName = section.procedureSectionHeader().sectionName().getText();
         return outputPath(sectionName, outputDir, extension);
+    }
+
+    static String outputPath(CobolParser.ParagraphContext paragraph, Path outputDir, String extension) {
+        String paragraphName = paragraph.paragraphDefinitionName().getText();
+        return outputPath(paragraphName, outputDir, extension);
     }
 }

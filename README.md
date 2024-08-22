@@ -4,7 +4,7 @@
 
 This is an evolving toolkit of capabilities helpful for reverse engineering legacy Cobol code. As of now, the following capabilities are available:
 
-- Program / section / customisable node level flowchart generation based on AST (SVG or PNG)
+- Program / section / paragraph level flowchart generation based on AST (SVG or PNG)
 - Parse Tree generation (with export to JSON)
 - Control Flow Tree generation (with export to JSON)
 - Allows embedding code comments as comment nodes in the graph
@@ -64,6 +64,7 @@ Some reverse engineering use cases are listed below. Descriptions of the capabil
 
 **NOTE: Some of these will currently be IDMS-specific.**
 
+- Support ```CALL``` graphical nodes in flowchart
 - Integrating Domain Knowledge
 - Transaction Lists and Participants (```BIND RUN-UNIT```, ```BIND RECORD```, ...)
 - Identify UI interactions and participants (```INSPECT```, ```MAP IN```, ```INQUIRE MAP```, Panel Definition parsing)
@@ -380,7 +381,7 @@ Implements various operations useful for reverse engineering Cobol code
                              Format of the flowchart output (PNG, SVG)
   -g, --generation=<flowchartGenerationStrategy>
                              The flowchart generation strategy. Valid values
-                               are SECTION, PROGRAM, and NODRAW
+                               are SECTION, PROGRAM, PARAGRAPH, and NODRAW
   -h, --help                 Show this help message and exit.
   -r, --reportDir=<reportRootDir>
                              Output report directory

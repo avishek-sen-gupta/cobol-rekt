@@ -17,9 +17,9 @@ public class PerSection extends FlowchartGenerationStrategy {
 
     @Override
     public void draw(CobolEntityNavigator navigator, ParseTree root, ParsePipeline pipeline, Path dotFileOutputDir, Path imageOutputDir, String programName) throws IOException, InterruptedException {
-        List<ParseTree> allSections = navigator.findAllByCondition(n -> n.getClass() == CobolParser.ProcedureSectionContext.class, root);
-        for (ParseTree section : allSections) {
-            System.out.println("Generating flowchart for section: " + ((CobolParser.ProcedureSectionContext) section).procedureSectionHeader().sectionName());
+        List<CobolParser.ProcedureSectionContext> allSections = navigator.findAllByCondition(n -> n.getClass() == CobolParser.ProcedureSectionContext.class, root).stream().map(s -> (CobolParser.ProcedureSectionContext) s).toList();
+        for (CobolParser.ProcedureSectionContext section : allSections) {
+            System.out.println("Generating flowchart for section: " + section.procedureSectionHeader().sectionName());
             pipeline.flowcharter().generateFlowchart(section,
                     FlowchartGenerationStrategy.outputPath(section, dotFileOutputDir, "dot"),
                     FlowchartGenerationStrategy.outputPath(section, imageOutputDir, this.outputFormat.extension()), this.outputFormat);

@@ -27,6 +27,23 @@ public class DataTypeParserTest {
     }
 
     @Test
+    public void canParseNumericDataLayoutsWithCommasAndMinusSymbols() {
+        String input = "-ZZZ,ZZZ,ZZZ.ZZ";
+        CobolDataTypesLexer antlrLexer = new CobolDataTypesLexer(CharStreams.fromString(input));
+        antlrLexer.removeErrorListeners();
+        CommonTokenStream tokenStream = new CommonTokenStream(antlrLexer);
+//        antlrLexer.addErrorListener(listener);
+        CobolDataTypes antlrParser = new CobolDataTypes(tokenStream);
+        antlrParser.removeErrorListeners();
+        CobolDataTypes.StartRuleContext startRuleContext = antlrParser.startRule();
+//        antlrParser.addErrorListener(listener);
+//        antlrParser.setErrorHandler(errorStrategy);
+//        antlrParser.addParseListener(treeListener);
+        assertNotNull(startRuleContext.dataTypeSpec().fraction());
+        assertNull(startRuleContext.dataTypeSpec().alphanumeric());
+    }
+
+    @Test
     public void canParseAlphanumericDataLayouts() {
         String input = "9(34)9XX9X(23)99(1)99XXX(12)9(23)99";
         CobolDataTypesLexer antlrLexer = new CobolDataTypesLexer(CharStreams.fromString(input));
