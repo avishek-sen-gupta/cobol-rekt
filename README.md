@@ -329,6 +329,16 @@ pip install -r requirements.txt
 - See ```DependencyBuildMain.java``` for an example how inter-program dependencies can be injected into Neo4J.
 - More detailed guides on programmatic use are on the way.
 
+## Running against AWS Card Demo
+
+The library has been tested (validation, flowchart generation, AST generation, Unified Model generation) against the [AWS Card Demo](https://github.com/aws-samples/aws-mainframe-modernization-carddemo) codebase. To run it against that codebase, do the following:
+
+- Clone the repository
+- Create an empty file ```app/cpy/DFHAID```
+- Create an empty file ```app/cpy/DFHBMSCA```
+
+Now run your commands as usual.
+
 ## Developer Guide
 
 ### CLI Usage
@@ -496,6 +506,7 @@ If you want more fine-grained control of the location of output artifacts, you c
 - This was built based on a time-boxed PoC, and thus isn't well-covered by tests yet. More are being added on an ongoing basis.
 - Cobol is a large language, and thus the interpreter's capabilities are not exhaustive. However, the hope is that the subset currently present is useful enough to get started with reverse engineering legacy code. Obviously, more capabilities are being added on an ongoing basis.
 - There are 4 superfluous directories at the top (engine, parser, dialect-daco, dialect-idms), which are a hack to get the Che4z Checkstyle targets to run because of a path configuration issue.
+- Visual indicators in picture clauses, like ```-```, ```,```, and ```Z``` are currently ignored.
 
 The rest of this file is mostly technical notes for my personal documentation.
 
