@@ -3,5 +3,5 @@ myArray=("CBACT01C.cbl" "CBACT04C.cbl" "CBTRN03C.cbl" "CBACT03C.cbl" "CBSTM03B.C
 # "CBACT03C.cbl"
 . config-local/local.env.sh
 for str in ${myArray[@]}; do
-java -jar smojol-cli/target/smojol-cli.jar run $str --commands="DRAW_FLOWCHART" --srcDir /Users/asgupta/code/aws-mainframe-modernization-carddemo/app/cbl --copyBooksDir "/Users/asgupta/code/aws-mainframe-modernization-carddemo/app/cpy,/Users/asgupta/code/aws-mainframe-modernization-carddemo/app/cpy-bms" --dialectJarPath che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar --dialect COBOL --reportDir out --generation=PARAGRAPH
+java -jar smojol-cli/target/smojol-cli.jar run $str --commands="EXPORT_UNIFIED_TO_JSON" --srcDir /Users/asgupta/code/aws-mainframe-modernization-carddemo/app/cbl --copyBooksDir "/Users/asgupta/code/aws-mainframe-modernization-carddemo/app/cpy,/Users/asgupta/code/aws-mainframe-modernization-carddemo/app/cpy-bms" --dialectJarPath che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar --dialect COBOL --reportDir out --generation=PARAGRAPH
 done

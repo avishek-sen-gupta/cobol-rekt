@@ -20,6 +20,6 @@ public class AwsCardDemoFlowchartBuildMain {
                         new File("/Users/asgupta/code/aws-mainframe-modernization-carddemo/app/cpy-bms")),
                 "/Users/asgupta/code/smojol/che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar",
                 LanguageDialect.COBOL, new FullProgram(FlowchartOutputFormat.SVG), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder())
-                .runForPrograms(ImmutableList.of(CommandLineAnalysisTask.DRAW_FLOWCHART), ImmutableList.of("CBACT03C.cbl"));
+                .runForPrograms(ImmutableList.of(CommandLineAnalysisTask.EXPORT_UNIFIED_TO_JSON), ImmutableList.of("CBACT04C.cbl"));
     }
 }
