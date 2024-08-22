@@ -508,6 +508,10 @@ If you want more fine-grained control of the location of output artifacts, you c
 - There are 4 superfluous directories at the top (engine, parser, dialect-daco, dialect-idms), which are a hack to get the Che4z Checkstyle targets to run because of a path configuration issue.
 - Visual indicators in picture clauses, like ```-```, ```,```, and ```Z``` are currently ignored.
 
+## Known Issues
+
+- IDMS ```SCHEMA SECTION``` get translated to ```DataDivisionContext``` nodes which have the word ```_SCHEMA_``` as the leading word in their textual description. However, this is not present in the correct child ```DialectNodeFillerContext``` node.
+
 The rest of this file is mostly technical notes for my personal documentation.
 
 ## Valid Type Specifications for External Zoned Decimal and Alphanumeric
