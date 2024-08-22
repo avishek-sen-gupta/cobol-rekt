@@ -25,7 +25,7 @@ public class IdmsTransferFlowNode extends CobolFlowNode implements ControlFlowNo
 
     @Override
     public String name() {
-        return NodeText.idmsOriginalText(getExecutionContext(), nodeService);
+        return NodeText.dialectOriginalText(getExecutionContext(), nodeService);
     }
 
     @Override

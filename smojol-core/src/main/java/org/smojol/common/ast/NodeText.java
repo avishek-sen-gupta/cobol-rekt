@@ -25,9 +25,10 @@ public class NodeText {
         return originalText(astNode, NodeText::PASSTHROUGH);
     }
 
-    public static String idmsOriginalText(ParseTree astNode, FlowNodeService nodeService) {
+    public static String dialectOriginalText(ParseTree astNode, FlowNodeService nodeService) {
         CobolEntityNavigator navigator = nodeService.getNavigator();
         ParseTree dialectGuidContext = navigator.findByCondition(astNode, t -> t.getClass() == CobolParser.DialectGuidContext.class);
+        if (dialectGuidContext == null) return astNode.getText();
         String guid = dialectGuidContext.getText();
 
         ParseTree idmsTextNode = PersistentData.getDialectNode("IDMS-" + guid);

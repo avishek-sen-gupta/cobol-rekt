@@ -77,7 +77,7 @@ public class DialectStatementFlowNode extends CobolFlowNode {
 
     @Override
     public String originalText() {
-        return NodeText.idmsOriginalText(getExecutionContext(), nodeService);
+        return NodeText.dialectOriginalText(getExecutionContext(), nodeService);
     }
 
     @Override
