@@ -29,6 +29,10 @@ import java.util.function.Function;
 public class ValidateTaskRunner {
     private final ProgramSearch programSearch;
 
+    public ValidateTaskRunner() {
+        this(new ProgramSearch());
+    }
+
     public ValidateTaskRunner(ProgramSearch programSearch) {
         this.programSearch = programSearch;
     }

@@ -17,7 +17,7 @@ public class DependencyBuildMain {
         AnalysisTaskResult result = new AnalyseProgramDependenciesTask("/Users/asgupta/code/smojol/smojol-test-code",
                 ImmutableList.of(new File("/Users/asgupta/code/smojol/smojol-test-code")),
                 "/Users/asgupta/code/smojol/out/report",
-                "/Users/asgupta/code/smojol/che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar", LanguageDialect.IDMS, programSearch)
+                "/Users/asgupta/code/smojol/che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar", LanguageDialect.IDMS, new ProgramSearch())
                 .run("if-test.cbl");
         CobolProgram root = switch (result) {
             case AnalysisTaskResultOK o -> (CobolProgram) o.getDetail();
