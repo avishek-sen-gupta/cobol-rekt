@@ -23,16 +23,20 @@ public class AnalyseProgramDependenciesTask {
     private final List<File> copyBookPaths;
     private final String reportRootDir;
     private final String dialectJarPath;
+    private final LanguageDialect dialect;
+    private final ProgramSearch programSearch;
 
-    public AnalyseProgramDependenciesTask(String sourceDir, List<File> copyBookPaths, String reportRootDir, String dialectJarPath) {
+    public AnalyseProgramDependenciesTask(String sourceDir, List<File> copyBookPaths, String reportRootDir, String dialectJarPath, LanguageDialect dialect, ProgramSearch programSearch) {
         this.sourceDir = sourceDir;
         this.copyBookPaths = copyBookPaths;
         this.reportRootDir = reportRootDir;
         this.dialectJarPath = dialectJarPath;
+        this.dialect = dialect;
+        this.programSearch = programSearch;
     }
 
     private void recurse(CobolProgram program, List<File> copyBookPaths) throws IOException {
-        Pair<File, String> searchResult = new ProgramSearch().run(program.getName(), sourceDir);
+        Pair<File, String> searchResult = programSearch.run(program.getName(), sourceDir);
         if (searchResult == ProgramSearch.NO_PATH) return;
         File foundFile = searchResult.getLeft();
         String srcDir = searchResult.getRight();
@@ -49,7 +53,7 @@ public class AnalyseProgramDependenciesTask {
         try {
             Map<String, List<AnalysisTaskResult>> results = new CodeTaskRunner(srcDir,
                     reportRootDir, copyBookPaths, dialectJarPath,
-                    LanguageDialect.IDMS, new FullProgram(FlowchartOutputFormat.SVG), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder())
+                    dialect, new FullProgram(FlowchartOutputFormat.SVG), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder(), programSearch)
                     .runForPrograms(ImmutableList.of(CommandLineAnalysisTask.BUILD_PROGRAM_DEPENDENCIES), ImmutableList.of(program.getName()));
             AnalysisTaskResult first = results.get(program.getName()).getFirst();
             ProgramDependencies dependencies = switch (first) {

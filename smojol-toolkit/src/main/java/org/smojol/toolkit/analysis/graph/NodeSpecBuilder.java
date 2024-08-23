@@ -139,7 +139,7 @@ public class NodeSpecBuilder {
                         TEXT, comment.toString(),
                         TYPE, COMMENT_NODE,
                         ENTITY_TYPE, COMMENT_NODE,
-                        ENTITY_CATEGORIES, ImmutableList.of(METADATA),
+                        ENTITY_CATEGORIES, ImmutableList.of(METADATA.name()),
                         NAMESPACE, namespaceQualifier.getNamespace()
                 ));
     }
@@ -153,7 +153,7 @@ public class NodeSpecBuilder {
                         TEXT, "",
                         TYPE, program.getCallTarget().getProgramReferenceType().name(),
                         ENTITY_TYPE, PROGRAM_NODE,
-                        ENTITY_CATEGORIES, ImmutableList.of(PROGRAM),
+                        ENTITY_CATEGORIES, ImmutableList.of(PROGRAM.name()),
                         NAMESPACE, namespaceQualifier.getNamespace()
                 ));
     }

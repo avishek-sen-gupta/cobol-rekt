@@ -44,8 +44,9 @@ public class CodeTaskRunner {
     @Getter
     private final Map<String, List<SyntaxError>> errorMap = new HashMap<>();
     private final Format1DataStructureBuilder format1DataStructureBuilder;
+    private final ProgramSearch programSearch;
 
-    public CodeTaskRunner(String sourceDir, String reportRootDir, List<File> copyBookPaths, String dialectJarPath, LanguageDialect dialect, FlowchartGenerationStrategy flowchartGenerationStrategy, IdProvider idProvider, Format1DataStructureBuilder format1DataStructureBuilder) {
+    public CodeTaskRunner(String sourceDir, String reportRootDir, List<File> copyBookPaths, String dialectJarPath, LanguageDialect dialect, FlowchartGenerationStrategy flowchartGenerationStrategy, IdProvider idProvider, Format1DataStructureBuilder format1DataStructureBuilder, ProgramSearch programSearch) {
         this.sourceDir = sourceDir;
         this.copyBookPaths = copyBookPaths;
         this.dialectJarPath = dialectJarPath;
@@ -54,6 +55,7 @@ public class CodeTaskRunner {
         this.flowchartGenerationStrategy = flowchartGenerationStrategy;
         this.idProvider = idProvider;
         this.format1DataStructureBuilder = format1DataStructureBuilder;
+        this.programSearch = programSearch;
         reportParameters();
     }
 
@@ -68,11 +70,11 @@ public class CodeTaskRunner {
     public Map<String, List<AnalysisTaskResult>> runForPrograms(List<CommandLineAnalysisTask> tasks, List<String> programFilenames, TaskRunnerMode runnerMode) throws IOException {
         Map<String, List<AnalysisTaskResult>> results = new HashMap<>();
         for (String programFilename : programFilenames) {
-            System.out.println(String.format("Running tasks: %s for program '%s' in %s mode...",
+            System.out.printf("Running tasks: %s for program '%s' in %s mode...%n",
                     tasks.stream().map(CommandLineAnalysisTask::name).toList(),
-                    programFilename, runnerMode.toString()));
+                    programFilename, runnerMode.toString());
             try {
-                Pair<File, String> programPath = new ProgramSearch().run(programFilename, sourceDir);
+                Pair<File, String> programPath = programSearch.run(programFilename, sourceDir);
                 if (programPath == ProgramSearch.NO_PATH) {
                     System.out.printf("No program found for '%s' anywhere in path %s \n", programFilename, sourceDir);
                     continue;

@@ -27,6 +27,12 @@ import java.util.List;
 import java.util.function.Function;
 
 public class ValidateTaskRunner {
+    private final ProgramSearch programSearch;
+
+    public ValidateTaskRunner(ProgramSearch programSearch) {
+        this.programSearch = programSearch;
+    }
+
     public boolean processPrograms(List<String> programNames, String sourceDir, LanguageDialect dialect, List<File> copyBookPaths, String dialectJarPath, String outputPath) {
         return processPrograms(programNames, sourceDir, dialect, copyBookPaths, dialectJarPath, outputPath, ProgramValidationErrors::IS_PARTIAL_SUCCESS);
     }
@@ -57,7 +63,7 @@ public class ValidateTaskRunner {
                 FlowchartBuilderImpl::build, new EntityNavigatorBuilder(), new UnresolvedReferenceDoNothingStrategy(),
                 new OccursIgnoringFormat1DataStructureBuilder(), new UUIDProvider());
 
-        Pair<File, String> programPath = new ProgramSearch().run(programFilename, sourceDir);
+        Pair<File, String> programPath = programSearch.run(programFilename, sourceDir);
         if (programPath == ProgramSearch.NO_PATH) {
 //            System.out.printf("No program found for '%s' anywhere in path %s \n", programFilename, sourceDir);
             return ProgramValidationErrors.sourceNotFound(programFilename);

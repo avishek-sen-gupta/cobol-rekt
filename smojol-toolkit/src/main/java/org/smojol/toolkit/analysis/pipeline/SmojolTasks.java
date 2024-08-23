@@ -213,8 +213,12 @@ public class SmojolTasks {
             SerialisableCFGGraphCollector cfgGraphCollector = new SerialisableCFGGraphCollector(idProvider);
             astRoot.accept(cfgGraphCollector, -1);
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            try (JsonWriter writer = new JsonWriter(new FileWriter(cfgOutputConfig.outputPath()))) {
+            try {
                 Files.createDirectories(cfgOutputConfig.outputDir());
+            } catch (IOException e) {
+                return AnalysisTaskResult.ERROR(e, CommandLineAnalysisTask.WRITE_CFG);
+            }
+            try (JsonWriter writer = new JsonWriter(new FileWriter(cfgOutputConfig.outputPath()))) {
                 writer.setIndent("  ");  // Optional: for pretty printing
                 gson.toJson(cfgGraphCollector, SerialisableCFGGraphCollector.class, writer);
                 return AnalysisTaskResult.OK(CommandLineAnalysisTask.WRITE_CFG);

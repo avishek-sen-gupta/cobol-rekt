@@ -19,7 +19,7 @@ public class GraphExplorerMain {
         new CodeTaskRunner("/Users/asgupta/code/smojol/smojol-test-code",
                 "/Users/asgupta/code/smojol/out/report",
                 ImmutableList.of(new File("/Users/asgupta/code/smojol/smojol-test-code")),
-                dialectJarPath, LanguageDialect.COBOL   , new FullProgram(PNG), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder())
+                dialectJarPath, LanguageDialect.COBOL   , new FullProgram(PNG), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder(), programSearch)
                 .runForPrograms(ImmutableList.of(
                         CommandLineAnalysisTask.INJECT_INTO_NEO4J,
                         CommandLineAnalysisTask.EXPORT_TO_GRAPHML,

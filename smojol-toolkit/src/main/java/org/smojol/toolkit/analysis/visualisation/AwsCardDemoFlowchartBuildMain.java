@@ -19,7 +19,7 @@ public class AwsCardDemoFlowchartBuildMain {
                 ImmutableList.of(new File("/Users/asgupta/code/aws-mainframe-modernization-carddemo/app/cpy"),
                         new File("/Users/asgupta/code/aws-mainframe-modernization-carddemo/app/cpy-bms")),
                 "/Users/asgupta/code/smojol/che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar",
-                LanguageDialect.COBOL, new FullProgram(FlowchartOutputFormat.SVG), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder())
-                .runForPrograms(ImmutableList.of(CommandLineAnalysisTask.EXPORT_UNIFIED_TO_JSON), ImmutableList.of("CSUTLDTC.cbl"));
+                LanguageDialect.COBOL, new FullProgram(FlowchartOutputFormat.SVG), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder(), programSearch)
+                .runForPrograms(ImmutableList.of(CommandLineAnalysisTask.WRITE_RAW_AST), ImmutableList.of("COCRDSLC.cbl"));
     }
 }

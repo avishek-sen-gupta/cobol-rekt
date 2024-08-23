@@ -2,6 +2,7 @@ package org.smojol.cli;
 
 import com.mojo.woof.GraphSDK;
 import com.mojo.woof.Neo4JDriverBuilder;
+import org.smojol.common.dialect.LanguageDialect;
 import org.smojol.toolkit.analysis.graph.NamespaceQualifier;
 import org.smojol.toolkit.analysis.graph.NodeSpecBuilder;
 import org.smojol.common.program.CobolProgram;
@@ -51,11 +52,16 @@ public class DependencyAnalysisCommand implements Callable<Integer> {
             description = "The COBOL dialect (COBOL, IDMS)")
     private String dialect;
 
+    @Option(names = {"-p", "--permissiveSearch"},
+            description = "Match filename using looser criteria")
+    private boolean isPermissiveSearch;
+
     @Override
     public Integer call() throws IOException {
         List<File> copyBookPaths = copyBookDirs.stream().map(c -> Paths.get(c).toAbsolutePath().toFile()).toList();
         copyBookPaths.forEach(cbp -> System.out.println(cbp.getAbsolutePath()));
-        AnalysisTaskResult result = new AnalyseProgramDependenciesTask(sourceDir, copyBookPaths, "dummy", dialectJarPath).run(programName);
+        ProgramSearch programSearch = isPermissiveSearch ? new ProgramSearch(ProgramSearch.PERMISSIVE) : new ProgramSearch();
+        AnalysisTaskResult result = new AnalyseProgramDependenciesTask(sourceDir, copyBookPaths, "dummy", dialectJarPath, LanguageDialect.dialect(dialect), programSearch).run(programName);
         CobolProgram root = switch (result) {
             case AnalysisTaskResultOK ok -> (CobolProgram) ok.getDetail();
             case AnalysisTaskResultError e -> throw new RuntimeException(e.getException());

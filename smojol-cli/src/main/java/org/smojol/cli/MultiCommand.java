@@ -1,14 +1,11 @@
 package org.smojol.cli;
 
 import org.smojol.common.validation.ProgramValidationErrors;
+import org.smojol.toolkit.analysis.pipeline.*;
 import org.smojol.toolkit.analysis.validation.ValidateTaskRunner;
 import org.smojol.common.dialect.LanguageDialect;
 import org.smojol.common.flowchart.ConsoleColors;
 import org.smojol.common.id.UUIDProvider;
-import org.smojol.toolkit.analysis.pipeline.AnalysisTaskResult;
-import org.smojol.toolkit.analysis.pipeline.CodeTaskRunner;
-import org.smojol.toolkit.analysis.pipeline.CommandLineAnalysisTask;
-import org.smojol.toolkit.analysis.pipeline.TaskRunnerMode;
 import org.smojol.toolkit.flowchart.FlowchartGenerationStrategy;
 import org.smojol.toolkit.interpreter.structure.OccursIgnoringFormat1DataStructureBuilder;
 import picocli.CommandLine;
@@ -75,6 +72,10 @@ public class MultiCommand implements Callable<Integer> {
             description = "Format of the flowchart output (PNG, SVG)")
     private String flowchartOutputFormat;
 
+    @Option(names = {"-p", "--permissiveSearch"},
+            description = "Match filename using looser criteria")
+    private boolean isPermissiveSearch;
+
     @Override
     public Integer call() throws IOException {
         List<File> copyBookPaths = copyBookDirs.stream().map(c -> Paths.get(c).toAbsolutePath().toFile()).toList();
@@ -82,13 +83,14 @@ public class MultiCommand implements Callable<Integer> {
     }
 
     private Integer processPrograms(List<File> copyBookPaths) throws IOException {
+        ProgramSearch programSearch = isPermissiveSearch ? new ProgramSearch(ProgramSearch.PERMISSIVE) : new ProgramSearch();
         if (isValidate) {
             System.out.println("Only validating, all other tasks were ignored");
-            boolean validationResult = new ValidateTaskRunner().processPrograms(programNames, sourceDir, LanguageDialect.dialect(dialect), copyBookPaths, dialectJarPath, null, ProgramValidationErrors::IS_PARTIAL_SUCCESS);
+            boolean validationResult = new ValidateTaskRunner(programSearch).processPrograms(programNames, sourceDir, LanguageDialect.dialect(dialect), copyBookPaths, dialectJarPath, null, ProgramValidationErrors::IS_PARTIAL_SUCCESS);
             return validationResult ? 0 : 1;
         }
 
-        CodeTaskRunner taskRunner = new CodeTaskRunner(sourceDir, reportRootDir, copyBookPaths, dialectJarPath, LanguageDialect.dialect(dialect), FlowchartGenerationStrategy.strategy(flowchartGenerationStrategy, flowchartOutputFormat), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder());
+        CodeTaskRunner taskRunner = new CodeTaskRunner(sourceDir, reportRootDir, copyBookPaths, dialectJarPath, LanguageDialect.dialect(dialect), FlowchartGenerationStrategy.strategy(flowchartGenerationStrategy, flowchartOutputFormat), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder(), programSearch);
         copyBookPaths.forEach(cpp -> System.out.println(cpp.getAbsolutePath()));
         Map<String, List<AnalysisTaskResult>> runResults = taskRunner.runForPrograms(toGraphTasks(commands), programNames, TaskRunnerMode.PRODUCTION_MODE);
         return processResults(runResults);
