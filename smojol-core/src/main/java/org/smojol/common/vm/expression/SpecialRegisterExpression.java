@@ -9,7 +9,7 @@ public class SpecialRegisterExpression extends CobolExpression {
 
     public SpecialRegisterExpression(CobolParser.SpecialRegisterContext specialRegisterContext) {
         GeneralIdentifierVisitor generalIdentifierVisitor = new GeneralIdentifierVisitor();
-        specialRegisterContext.accept(generalIdentifierVisitor);
+        specialRegisterContext.generalIdentifier().accept(generalIdentifierVisitor);
         expression = generalIdentifierVisitor.getExpression();
         children.add(expression);
     }
