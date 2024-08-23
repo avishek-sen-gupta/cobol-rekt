@@ -41,7 +41,9 @@ public class DialectStatementFlowNode extends CobolFlowNode {
         LocalisedDialect dialect = containerNode.getDialect();
         switch (dialect) {
             case IDMS: buildIdmsFlow(navigator);
+                       break;
             case CICS: buildCicsFLow(containerNode);
+                       break;
         }
     }
 

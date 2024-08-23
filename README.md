@@ -59,14 +59,13 @@ Some reverse engineering use cases are listed below. Descriptions of the capabil
 - Graph Edit distance between paragraphs through NetworkX
 - Clone Detection
 - Common Pattern Detection with Configurable Code Patterns
+- CICS support
 
 ## Planned Capabilities
 
-**NOTE: Some of these will currently be IDMS-specific.**
-
 - Integrating Domain Knowledge
-- Transaction Lists and Participants (```BIND RUN-UNIT```, ```BIND RECORD```, ...)
-- Identify UI interactions and participants (```INSPECT```, ```MAP IN```, ```INQUIRE MAP```, Panel Definition parsing)
+- IDMS Transaction Lists and Participants (```BIND RUN-UNIT```, ```BIND RECORD```, ...)
+- IDMS Identify UI interactions and participants (```INSPECT```, ```MAP IN```, ```INQUIRE MAP```, Panel Definition parsing)
 
 ## Flowchart Generation
 

@@ -49,7 +49,7 @@ public class CobolFlowNodeFactory {
             return new ComputeFlowNode(parseTree, scope, nodeService, stackFrames);
 
         else if (SyntaxIdentity.isOfType(parseTree, CobolParser.DialectStatementContext.class))
-            return new DialectStatementFlowNode(parseTree, scope, nodeService, stackFrames);
+            return DialectFlowNodeFactory.flowNode(parseTree, scope, nodeService, stackFrames);
         else if (SyntaxIdentity.isOfType(parseTree, CobolParser.ConditionalStatementCallContext.class))
             return new ConditionalStatementFlowNode(parseTree, scope, nodeService, stackFrames);
         // This needs to come last in all the statement classifications, or things will break
