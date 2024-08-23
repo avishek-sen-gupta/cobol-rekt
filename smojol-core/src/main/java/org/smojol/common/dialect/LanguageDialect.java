@@ -14,7 +14,7 @@ public enum LanguageDialect {
     COBOL {
         @Override
         public AnalysisConfig analysisConfig(String dialectConfigJarPath) {
-            return AnalysisConfig.defaultConfig(CopybookProcessingMode.ENABLED);
+            return AnalysisConfig.substitutingDefaultConfig(CopybookProcessingMode.ENABLED);
         }
 
         @Override

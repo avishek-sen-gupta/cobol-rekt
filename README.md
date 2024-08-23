@@ -64,7 +64,6 @@ Some reverse engineering use cases are listed below. Descriptions of the capabil
 
 **NOTE: Some of these will currently be IDMS-specific.**
 
-- Support ```CALL``` graphical nodes in flowchart
 - Integrating Domain Knowledge
 - Transaction Lists and Participants (```BIND RUN-UNIT```, ```BIND RECORD```, ...)
 - Identify UI interactions and participants (```INSPECT```, ```MAP IN```, ```INQUIRE MAP```, Panel Definition parsing)
@@ -543,11 +542,3 @@ These are some other commands tried on larger graphs:
 ### This prints out all levels
 
 ```dot -Kdot -v5 -Gsize=200,200\! -Goverlap=scale -Tpng -Gnslimit=4 -Gnslimit1=4 -Gmaxiter=2000 -Gsplines=line dotfile.dot -oflowchart-level5.png```
-
-## Testing workflows locally
-
-Run:
-
-```
-act -W workflows-local/local-generate-flowchart.yml --container-architecture linux/amd64
-```

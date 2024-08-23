@@ -32,6 +32,7 @@ public class ShallowReferenceBuilder {
     }
 
     public CobolReference getShallowReference(CobolParser.GeneralIdentifierContext to, CobolDataStructure data) {
+        if (to.functionCall() != null) return new FunctionCallCobolReference(to.functionCall());
         return new VariableCobolReference(data.reference(to.qualifiedDataName().variableUsageName().getText()));
     }
 

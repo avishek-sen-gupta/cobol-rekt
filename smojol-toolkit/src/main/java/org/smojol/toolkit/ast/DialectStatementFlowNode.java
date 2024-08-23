@@ -2,16 +2,18 @@ package org.smojol.toolkit.ast;
 
 import com.google.common.collect.ImmutableList;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.eclipse.lsp.cobol.common.poc.LocalisedDialect;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.eclipse.lsp.cobol.dialects.idms.IdmsParser;
 import org.smojol.common.ast.*;
+import org.smojol.common.idms.IdmsContainerNode;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.vm.stack.StackFrames;
 
 import java.util.List;
 
 public class DialectStatementFlowNode extends CobolFlowNode {
-    private FlowNode idmsChildNode;
+    private FlowNode dialectChildNode;
     private boolean databaseAccess = false;
 
     public DialectStatementFlowNode(ParseTree parseTree, FlowNode scope, FlowNodeService nodeService, StackFrames stackFrames) {
@@ -21,9 +23,9 @@ public class DialectStatementFlowNode extends CobolFlowNode {
     @Override
     public void acceptUnvisited(FlowNodeVisitor visitor, int level) {
         super.acceptUnvisited(visitor, level);
-        if (idmsChildNode.getClass() == CobolFlowNode.class) return;
-        visitor.visitParentChildLink(this, idmsChildNode, new VisitContext(level), nodeService);
-        idmsChildNode.accept(visitor, -1);
+        if (dialectChildNode.getClass() == CobolFlowNode.class) return;
+        visitor.visitParentChildLink(this, dialectChildNode, new VisitContext(level), nodeService);
+        dialectChildNode.accept(visitor, -1);
     }
 
     // TODO: Rewrite this monstrosity
@@ -35,6 +37,19 @@ public class DialectStatementFlowNode extends CobolFlowNode {
     @Override
     public void buildInternalFlow() {
         CobolEntityNavigator navigator = nodeService.getNavigator();
+        IdmsContainerNode containerNode = (IdmsContainerNode) navigator.findByCondition(n -> n.getClass() == IdmsContainerNode.class);
+        LocalisedDialect dialect = containerNode.getDialect();
+        switch (dialect) {
+            case IDMS: buildIdmsFlow(navigator);
+            case CICS: buildCicsFLow(containerNode);
+        }
+    }
+
+    private void buildCicsFLow(IdmsContainerNode containerNode) {
+        dialectChildNode = new CicsBlockFlowNode(containerNode, this, nodeService, staticFrameContext);
+    }
+
+    private void buildIdmsFlow(CobolEntityNavigator navigator) {
         ParseTree containerChild = executionContext.getChild(0);
         System.out.println("IDMS DATA: " + containerChild.getText());
         // TODO: Replace with proper type checking
@@ -49,20 +64,20 @@ public class DialectStatementFlowNode extends CobolFlowNode {
         }
 
         if (navigator.findByCondition(containerChild, n -> n.getClass() == IdmsParser.TransferStatementContext.class) != null) {
-            idmsChildNode = new IdmsTransferFlowNode(containerChild, this, nodeService, staticFrameContext);
-            nodeService.register(idmsChildNode);
+            dialectChildNode = new IdmsTransferFlowNode(containerChild, this, nodeService, staticFrameContext);
+            nodeService.register(dialectChildNode);
             System.out.println("Found a TRANSFER statement");
         } else if (containerChild.getClass() == CobolParser.DialectIfStatmentContext.class) {
-            idmsChildNode = new IdmsIfFlowNode(containerChild, this, nodeService, staticFrameContext);
-            nodeService.register(idmsChildNode);
+            dialectChildNode = new IdmsIfFlowNode(containerChild, this, nodeService, staticFrameContext);
+            nodeService.register(dialectChildNode);
         } else {
             // Treat everything as an IDMS statement for now
-            idmsChildNode = nodeService.node(
+            dialectChildNode = nodeService.node(
                     navigator.findByCondition(executionContext,
                             n -> n.getClass() == IdmsParser.IdmsStatementsContext.class), this, staticFrameContext);
 //            idmsChildNode = idmsContainerChartNode(executionContext);
         }
-        idmsChildNode.buildFlow();
+        dialectChildNode.buildFlow();
     }
 
     @Override
