@@ -19,7 +19,15 @@ public class DetachedDataStructure extends CobolDataStructure {
     private final TypedRecord value;
 
     public DetachedDataStructure(TypedRecord value) {
-        super(value.toString(), -1, CobolDataType.DETACHED, "[DETACHED]", SourceSection.PROCEDURE_DIVISION);
+        this(value.toString(), value, "[DETACHED]");
+    }
+
+    public DetachedDataStructure(String name, TypedRecord value) {
+        this(name, value, "[UNREFERENCED]");
+    }
+
+    private DetachedDataStructure(String name, TypedRecord value, String rawText) {
+        super(name, -1, CobolDataType.DETACHED, rawText, SourceSection.PROCEDURE_DIVISION);
         this.value = value;
     }
 
@@ -50,7 +58,7 @@ public class DetachedDataStructure extends CobolDataStructure {
 
     @Override
     public List<CobolDataStructure> matches(String recordID) {
-        return List.of();
+        return name.equals(recordID) ? List.of(this) : List.of();
     }
 
     @Override

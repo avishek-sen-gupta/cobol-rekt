@@ -4,14 +4,12 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.apache.commons.lang3.tuple.Pair;
-import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.dialect.LanguageDialect;
 import org.smojol.common.flowchart.ConsoleColors;
 import org.smojol.common.navigation.CobolEntityNavigator;
+import org.smojol.common.structure.UnreferencedVariableSearch;
 import org.smojol.common.validation.ProgramValidationErrorReporter;
 import org.smojol.common.validation.ProgramValidationErrors;
-import org.smojol.common.vm.structure.CobolDataStructure;
-import org.smojol.common.vm.structure.NullDataStructure;
 import org.smojol.toolkit.analysis.pipeline.*;
 import org.smojol.toolkit.analysis.error.ParseDiagnosticRuntimeError;
 import org.smojol.toolkit.analysis.pipeline.config.SourceConfig;
@@ -69,9 +67,8 @@ public class ValidateTaskRunner {
         ParsePipeline pipeline = new ParsePipeline(sourceConfig, ops, dialect);
         try {
             CobolEntityNavigator navigator = pipeline.parse();
-            List<ParseTree> allVariableUsages = navigator.findAllByCondition(n -> n.getClass() == CobolParser.VariableUsageNameContext.class);
-            CobolDataStructure dataStructures = pipeline.getDataStructures();
-            List<ParseTree> usageSearchResults = allVariableUsages.stream().filter(gid -> dataStructures.reference(gid.getText()).getClass() == NullDataStructure.class).toList();
+//            List<ParseTree> usageSearchResults = unreferencedVariableSearch(navigator, pipeline);
+            List<ParseTree> usageSearchResults = new UnreferencedVariableSearch().run(navigator, pipeline.getDataStructures());
             if (usageSearchResults.isEmpty()) return ProgramValidationErrors.noError(programFilename);
             return ProgramValidationErrors.usageErrors(programFilename, usageSearchResults);
         } catch (ParseDiagnosticRuntimeError e) {

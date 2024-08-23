@@ -2,13 +2,17 @@ package org.smojol.common.vm.expression;
 
 import org.smojol.common.vm.structure.CobolDataStructure;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class CobolExpression {
-    private List<CobolExpression> children;
+    protected final List<CobolExpression> children = new ArrayList<CobolExpression>();
+
+    public CobolExpression() {
+    }
 
     public CobolExpression(List<CobolExpression> children) {
-        this.children = children;
+        this.children.addAll(children);
     }
 
     public abstract CobolExpression evaluate(CobolDataStructure data);

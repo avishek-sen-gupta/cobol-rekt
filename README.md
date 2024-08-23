@@ -510,6 +510,7 @@ If you want more fine-grained control of the location of output artifacts, you c
 ## Known Issues
 
 - IDMS ```SCHEMA SECTION``` get translated to ```DataDivisionContext``` nodes which have the word ```_SCHEMA_``` as the leading word in their textual description. However, this is not present in the correct child ```DialectNodeFillerContext``` node.
+- Expressions in general identifiers (```LENGTH OF...```, etc.) return static values. References to special registers resolve the variable reference (for dependency computations) only resolve one level down.
 
 The rest of this file is mostly technical notes for my personal documentation.
 

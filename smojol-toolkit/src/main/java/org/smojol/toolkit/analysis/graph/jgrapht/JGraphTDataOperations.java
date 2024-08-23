@@ -43,6 +43,10 @@ public class JGraphTDataOperations {
 //        TypedGraphVertex vTo = new TypedDataStructureVertex(to);
         TypedGraphVertex vTo = qualifier.newDataVertex(to);
 //        return graph.addEdge(vFrom, vTo, new TypedGraphEdge(edgeType));
-        return graph.addEdge(vFrom, vTo, qualifier.newEdge(edgeType));
+        try {
+            return graph.addEdge(vFrom, vTo, qualifier.newEdge(edgeType));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

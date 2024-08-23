@@ -106,6 +106,11 @@ public abstract class CobolDataStructure extends SimpleTreeNode {
         return parent;
     }
 
+    public CobolDataStructure addChildren(List<? extends CobolDataStructure> dataStructures) {
+        dataStructures.forEach(this::addChild);
+        return this;
+    }
+
     public CobolDataStructure addChild(CobolDataStructure dataStructure) {
         this.isComposite = true;
         dataStructure.setParent(this);

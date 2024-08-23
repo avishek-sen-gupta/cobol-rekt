@@ -9,6 +9,7 @@ public class GeneralIdentifierVisitor extends CobolExpressionVisitor {
             expression = new VariableExpression(ctx.qualifiedDataName());
         else if (ctx.functionCall() != null)
             expression = new FunctionCallExpression(ctx.functionCall());
+        expression = new SpecialRegisterExpression(ctx.specialRegister());
         return expression;
         // TODO: Other forms of general identifiers are not supported yet
     }

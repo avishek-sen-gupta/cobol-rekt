@@ -4,6 +4,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.id.IdProvider;
 import org.smojol.common.navigation.CobolEntityNavigator;
+import org.smojol.common.vm.reference.DetachedDataStructure;
 import org.smojol.common.vm.strategy.UnresolvedReferenceStrategy;
 import org.smojol.common.vm.structure.*;
 import org.smojol.common.vm.type.CobolDataType;
@@ -41,8 +42,20 @@ public class CobolDataStructureBuilder implements DataStructureBuilder {
         while (zerothStructure.buildRedefinitions(zerothStructure)) {
             System.out.println("Building redefinitions...");
         }
-        zerothStructure.addChild(new StaticDataStructure("WHEN-COMPILED", 1, CobolDataType.STRING, TypedRecord.typedString("01-01-2024")));
+        addGlobalSystemStructures();
+        addUnreferencedStructures();
         return zerothStructure;
+    }
+
+    private void addGlobalSystemStructures() {
+        zerothStructure.addChild(new StaticDataStructure("WHEN-COMPILED", 1, CobolDataType.STRING, TypedRecord.typedString("01-01-2024")));
+    }
+
+    private void addUnreferencedStructures() {
+        List<ParseTree> unreferencedVariables = new UnreferencedVariableSearch().run(navigator, zerothStructure);
+        List<? extends CobolDataStructure> unreferencedStructures = unreferencedVariables.stream().map(uv -> new DetachedDataStructure(uv.getText(), TypedRecord.typedNumber(1))).toList();
+        zerothStructure.addChildren(unreferencedStructures);
+
     }
 
     private void extractFromFileSection(CobolParser.DataDivisionContext dataDivisionBody) {

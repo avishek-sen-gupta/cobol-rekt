@@ -33,6 +33,8 @@ public class ShallowReferenceBuilder {
 
     public CobolReference getShallowReference(CobolParser.GeneralIdentifierContext to, CobolDataStructure data) {
         if (to.functionCall() != null) return new FunctionCallCobolReference(to.functionCall());
+        // TODO: This needs to be a recursive chain if specialRegisters are nested. This is a very simplistic implementation
+        else if (to.specialRegister() != null) return new VariableCobolReference(data.reference(to.specialRegister().generalIdentifier().qualifiedDataName().variableUsageName().getText()));
         return new VariableCobolReference(data.reference(to.qualifiedDataName().variableUsageName().getText()));
     }
 
