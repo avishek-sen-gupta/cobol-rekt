@@ -83,7 +83,7 @@ public class MultiCommand implements Callable<Integer> {
     }
 
     private Integer processPrograms(List<File> copyBookPaths) throws IOException {
-        ProgramSearch programSearch = isPermissiveSearch ? new ProgramSearch(ProgramSearch.PERMISSIVE) : new ProgramSearch();
+        ProgramSearch programSearch = ProgramSearch.searchStrategy(isPermissiveSearch);
         if (isValidate) {
             System.out.println("Only validating, all other tasks were ignored");
             boolean validationResult = new ValidateTaskRunner(programSearch).processPrograms(programNames, sourceDir, LanguageDialect.dialect(dialect), copyBookPaths, dialectJarPath, null, ProgramValidationErrors::IS_PARTIAL_SUCCESS);

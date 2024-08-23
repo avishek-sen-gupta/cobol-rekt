@@ -30,6 +30,10 @@ public class ProgramSearch {
         this.matchStrategy = matchStrategy;
     }
 
+    public static ProgramSearch searchStrategy(boolean isPermissiveSearch) {
+        return isPermissiveSearch ? new ProgramSearch(ProgramSearch.PERMISSIVE) : new ProgramSearch();
+    }
+
     public Pair<File, String> run(String program, String sourceDir) {
         System.out.println("Searching for program: " + program + "...");
         Collection<File> files = FileUtils.listFiles(new File(sourceDir), null, true);

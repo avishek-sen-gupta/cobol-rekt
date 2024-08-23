@@ -320,14 +320,6 @@ cd smojol_python
 pip install -r requirements.txt
 ```
 
-## How to Use
-
-- See ```FlowChartBuildMain.java``` for examples of how flowcharts are created.
-- See ```InterpreterMain.java``` for an example of how to run the interpreter on your code, as well as inject execution traces into Neo4J.
-- See ```GraphExplorerMain.java``` for an example of how to inject ASTs, data structures, and CFGs into Neo4J.
-- See ```DependencyBuildMain.java``` for an example how inter-program dependencies can be injected into Neo4J.
-- More detailed guides on programmatic use are on the way.
-
 ## Running against AWS Card Demo
 
 The library has been tested (validation, flowchart generation, AST generation, Unified Model generation) against the [AWS Card Demo](https://github.com/aws-samples/aws-mainframe-modernization-carddemo) codebase. To run it against that codebase, do the following:
@@ -366,10 +358,12 @@ java -jar smojol-cli/target/smojol-cli.jar run test-exp.cbl hello.cbl --commands
 
 Passing the validation flag (```--validate``` or ```-v```) skips running all tasks, and simply validates whether the source is syntactically correct. This is non-strict validation, i.e., invalid variable references are reported, but do not cause failure.
 
+Specifying the ```--permissiveSearch``` flag matches file names more permissively, i.e., case-insensitive matching, and optional matching of files with ```.cbl``` extensions.
+
 The help text is reproduced below (obtained by adding ```--help```):
 
 ```
-Usage: app run [-hvV] [-d=<dialect>] [-dp=<dialectJarPath>]
+Usage: app run [-hpvV] [-d=<dialect>] [-dp=<dialectJarPath>]
                [-f=<flowchartOutputFormat>] [-g=<flowchartGenerationStrategy>]
                -r=<reportRootDir> -s=<sourceDir> -c=<commands>
                [-c=<commands>]... -cp=<copyBookDirs>[,<copyBookDirs>...]
@@ -380,7 +374,8 @@ Implements various operations useful for reverse engineering Cobol code
                                EXPORT_TO_GRAPHML, WRITE_RAW_AST,
                                DRAW_FLOWCHART, WRITE_FLOW_AST, WRITE_CFG,
                                ATTACH_COMMENTS, WRITE_DATA_STRUCTURES,
-                               BUILD_PROGRAM_DEPENDENCIES, COMPARE_CODE)
+                               BUILD_PROGRAM_DEPENDENCIES, COMPARE_CODE,
+                               EXPORT_UNIFIED_TO_JSON)
       -cp, --copyBooksDir=<copyBookDirs>[,<copyBookDirs>...]
                              Copybook directories (repeatable)
   -d, --dialect=<dialect>    The COBOL dialect (COBOL, IDMS)
@@ -392,6 +387,7 @@ Implements various operations useful for reverse engineering Cobol code
                              The flowchart generation strategy. Valid values
                                are SECTION, PROGRAM, PARAGRAPH, and NODRAW
   -h, --help                 Show this help message and exit.
+  -p, --permissiveSearch     Match filename using looser criteria
   -r, --reportDir=<reportRootDir>
                              Output report directory
   -s, --srcDir=<sourceDir>   The Cobol source directory
@@ -414,7 +410,7 @@ Specifying the ```--neo4j``` flag injects those dependencies into Neo4J, while s
 The help text for this command is reproduced below:
 
 ```
-Usage: app dependency [-hnV] [-d=<dialect>] [-dp=<dialectJarPath>]
+Usage: app dependency [-hnpV] [-d=<dialect>] [-dp=<dialectJarPath>]
                       -s=<sourceDir> [-x=<exportPath>] -cp=<copyBookDirs>[,
                       <copyBookDirs>...] [-cp=<copyBookDirs>[,
                       <copyBookDirs>...]]... <programName>
@@ -427,6 +423,7 @@ Implements various operations useful for reverse engineering Cobol code
                              Path to dialect .JAR
   -h, --help                 Show this help message and exit.
   -n, --neo4j                Export to Neo4J
+  -p, --permissiveSearch     Match filename using looser criteria
   -s, --srcDir=<sourceDir>   The Cobol source directory
   -V, --version              Print version information and exit.
   -x, --export=<exportPath>  Export path
@@ -446,7 +443,7 @@ By default, this is non-strict validation, i.e., invalid variable references are
 The help text is reproduced below:
 
 ```
-Usage: app validate [-htV] [-d=<dialect>] [-dp=<dialectJarPath>]
+Usage: app validate [-hptV] [-d=<dialect>] [-dp=<dialectJarPath>]
                     [-o=<outputPath>] -s=<sourceDir> -cp=<copyBookDirs>[,
                     <copyBookDirs>...] [-cp=<copyBookDirs>[,
                     <copyBookDirs>...]]... [<programNames>...]
@@ -459,6 +456,7 @@ Validates the candidate COBOL code
                              Path to dialect .JAR
   -h, --help                 Show this help message and exit.
   -o, --output=<outputPath>  Validation results output path
+  -p, --permissiveSearch     Match filename using looser criteria
   -s, --srcDir=<sourceDir>   The Cobol source directory
   -t, --strict               Force strict validation, verify all variable
                                usages are valid
@@ -469,22 +467,16 @@ Validates the candidate COBOL code
 
 **NOTE: The API is under active development, and may be subject to change.**
 
-The simplest way to invoke tasks through the API is using ```CodeTaskRunner```, like so:
+The simplest way to invoke tasks associated with the ```CodeTaskRunner``` through the API is using ```CodeTaskRunner```, like so:
 
 ```
-        List<AnalysisTaskResult> analysisTaskResults = new CodeTaskRunner(
-                "/path/to/src",
-                "path/to/report-dir",
-                ImmutableList.of(new File("/path/to/copybooks")),
+        CodeTaskRunner codeTaskRunner1 = new CodeTaskRunner("/path/to/src",
+                "/path/to/report",
+                ImmutableList.of(new File("/path/1/to/cpy"),
+                        new File("/path/2/to/cpy"),
+                        new File("/path/3/to/cpy")),
                 "/path/to/dialect-idms.jar",
-                LanguageDialect.COBOL, 
-                new FullProgram(FlowchartOutputFormat.SVG), 
-                new UUIDProvider(),
-                new OccursIgnoringFormat1DataStructureBuilder())
-                .generateForPrograms(ImmutableList.of(
-                        WRITE_RAW_AST,
-                        WRITE_FLOW_AST
-                ), ImmutableList.of("program.cbl"));
+                LanguageDialect.IDMS, new FullProgram(PNG), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder(), new ProgramSearch());
 
 ```
 
@@ -494,6 +486,15 @@ This invocation uses some specific conventions when deciding where to output fil
 If you want more fine-grained control of the location of output artifacts, you can use the ```SmojolTasks``` class, which gives you more configurability in exchange for having to provide more detailed specifications.
 
 **NOTE:** For all analyses, specifying the ```OccursIgnoringFormat1DataStructureBuilder``` class is preferable to prevent extra noise that can be generated when creating arrays for structures using ```OCCURS``` clauses. However, the ```DefaultFormat1DataStructureBuilder``` should be specified when running the interpreter, because that will require the correct number of elements in array data structures.
+
+## How to Use
+
+- See ```FlowChartBuildMain.java``` for examples of how flowcharts are created.
+- See ```InterpreterMain.java``` for an example of how to run the interpreter on your code, as well as inject execution traces into Neo4J.
+- See ```GraphExplorerMain.java``` for an example of how to inject ASTs, data structures, and CFGs into Neo4J.
+- See ```DependencyBuildMain.java``` for an example how inter-program dependencies can be injected into Neo4J.
+- See ```ValidateProgramMain.java``` for an example of how to run validation through code.
+- More detailed guides on programmatic use are on the way.
 
 ## A Note on Copyright
 

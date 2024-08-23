@@ -60,7 +60,7 @@ public class DependencyAnalysisCommand implements Callable<Integer> {
     public Integer call() throws IOException {
         List<File> copyBookPaths = copyBookDirs.stream().map(c -> Paths.get(c).toAbsolutePath().toFile()).toList();
         copyBookPaths.forEach(cbp -> System.out.println(cbp.getAbsolutePath()));
-        ProgramSearch programSearch = isPermissiveSearch ? new ProgramSearch(ProgramSearch.PERMISSIVE) : new ProgramSearch();
+        ProgramSearch programSearch = ProgramSearch.searchStrategy(isPermissiveSearch);
         AnalysisTaskResult result = new AnalyseProgramDependenciesTask(sourceDir, copyBookPaths, "dummy", dialectJarPath, LanguageDialect.dialect(dialect), programSearch).run(programName);
         CobolProgram root = switch (result) {
             case AnalysisTaskResultOK ok -> (CobolProgram) ok.getDetail();
