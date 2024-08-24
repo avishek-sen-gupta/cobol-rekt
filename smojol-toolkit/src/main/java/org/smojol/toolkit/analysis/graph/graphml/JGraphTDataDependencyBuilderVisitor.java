@@ -28,14 +28,19 @@ public class JGraphTDataDependencyBuilderVisitor extends FlowNodeASTVisitor<Cobo
     }
 
     @Override
-    public FlowNodeASTVisitor<CobolDataStructure> visit(FlowNode node) {
+    public CobolDataStructure visit(FlowNode node) {
         Map.Entry<List<CobolDataStructure>, List<CobolDataStructure>> pairs = DataDependencyPairComputer.dependencyPairs(node, dataRoot);
-        if (ImmutablePair.nullPair().equals(pairs)) return this;
+        if (ImmutablePair.nullPair().equals(pairs)) return dataRoot;
         if (pairs.getValue().isEmpty()) {
             accesses(node, pairs.getKey());
-            return this;
+            return dataRoot;
         }
         connect(pairs.getKey(), pairs.getValue(), node);
+        return dataRoot;
+    }
+
+    @Override
+    public FlowNodeASTVisitor<CobolDataStructure> scope(FlowNode n, CobolDataStructure visitResult) {
         return this;
     }
 

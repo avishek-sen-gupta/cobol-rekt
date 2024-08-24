@@ -11,10 +11,15 @@ public class SerialisableFlowNodeASTVisitor extends FlowNodeASTVisitor<Serialisa
     }
 
     @Override
-    public FlowNodeASTVisitor<SerialisableASTFlowNode> visit(FlowNode node) {
+    public SerialisableASTFlowNode visit(FlowNode node) {
         SerialisableASTFlowNode child = new SerialisableASTFlowNode(node);
-        if (ancestor == null) return new SerialisableFlowNodeASTVisitor(child);
+        if (ancestor == null) return child;
         ancestor.addChild(child);
-        return new SerialisableFlowNodeASTVisitor(child);
+        return child;
+    }
+
+    @Override
+    public FlowNodeASTVisitor<SerialisableASTFlowNode> scope(FlowNode n, SerialisableASTFlowNode visitResult) {
+        return new SerialisableFlowNodeASTVisitor(visitResult);
     }
 }

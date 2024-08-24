@@ -83,8 +83,7 @@ public class SmojolTasks {
     public AnalysisTask BUILD_PSEUDO_BYTECODE = new AnalysisTask() {
         @Override
         public AnalysisTaskResult run() {
-            new BuildPseudoBytecodeTask(flowRoot, dataStructures).run();
-            return AnalysisTaskResult.OK(CommandLineAnalysisTask.BUILD_PSEUDO_BYTECODE);
+            return new BuildPseudocodeTask(flowRoot, dataStructures).run();
         }
     };
 

@@ -24,10 +24,16 @@ public class Neo4JASTBuilderVisitor extends FlowNodeASTVisitor<Record> {
     }
 
     @Override
-    public FlowNodeASTVisitor<Record> visit(FlowNode node) {
+    public Record visit(FlowNode node) {
         Record record = astNodeReferenceStrategy.reference(node, graphSDK, qualifier);
-        if (ancestor == null) return new Neo4JASTBuilderVisitor(astNodeReferenceStrategy, graphSDK, qualifier, record);
+        if (ancestor == null) return record;
         graphSDK.containsCodeNode(ancestor, record);
-        return new Neo4JASTBuilderVisitor(astNodeReferenceStrategy, graphSDK, qualifier, record);
+        return record;
     }
+
+    @Override
+    public FlowNodeASTVisitor<Record> scope(FlowNode n, Record visitResult) {
+        return new Neo4JASTBuilderVisitor(astNodeReferenceStrategy, graphSDK, qualifier, visitResult);
+    }
+
 }

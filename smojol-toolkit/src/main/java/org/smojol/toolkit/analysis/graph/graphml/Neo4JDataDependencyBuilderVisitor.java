@@ -34,14 +34,19 @@ public class Neo4JDataDependencyBuilderVisitor extends FlowNodeASTVisitor<Record
     }
 
     @Override
-    public FlowNodeASTVisitor<Record> visit(FlowNode node) {
+    public Record visit(FlowNode node) {
         Map.Entry<List<CobolDataStructure>, List<CobolDataStructure>> pairs = DataDependencyPairComputer.dependencyPairs(node, dataRoot);
-        if (ImmutablePair.nullPair().equals(pairs)) return this;
+        if (ImmutablePair.nullPair().equals(pairs)) return null;
         if (pairs.getValue().isEmpty()) {
             accesses(node, pairs.getKey());
-            return this;
+            return null;
         }
         connect(pairs.getKey(), pairs.getValue(), node);
+        return null;
+    }
+
+    @Override
+    public FlowNodeASTVisitor<Record> scope(FlowNode n, Record visitResult) {
         return this;
     }
 

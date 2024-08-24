@@ -19,10 +19,15 @@ public class JGraphTASTGraphBuilderVisitor extends FlowNodeASTVisitor<FlowNode> 
     }
 
     @Override
-    public FlowNodeASTVisitor<FlowNode> visit(FlowNode node) {
+    public FlowNode visit(FlowNode node) {
         astGraphOperations.addNode(node);
-        if (ancestor == null) return new JGraphTASTGraphBuilderVisitor(astGraphOperations, node);
+        if (ancestor == null) return node;
         astGraphOperations.connect(ancestor, node, CONTAINS_CODE);
-        return new JGraphTASTGraphBuilderVisitor(astGraphOperations, node);
+        return node;
+    }
+
+    @Override
+    public FlowNodeASTVisitor<FlowNode> scope(FlowNode n, FlowNode visitResult) {
+        return new JGraphTASTGraphBuilderVisitor(astGraphOperations, visitResult);
     }
 }
