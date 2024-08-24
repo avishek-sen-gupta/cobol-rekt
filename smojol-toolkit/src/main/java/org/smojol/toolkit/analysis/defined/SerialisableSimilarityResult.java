@@ -1,9 +1,10 @@
-package org.smojol.toolkit.analysis.pipeline;
+package org.smojol.toolkit.analysis.defined;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.alg.similarity.ZhangShashaTreeEditDistance;
 import org.smojol.toolkit.analysis.graph.graphml.TypedGraphVertex;
 import org.smojol.common.ast.FlowNode;
+import org.smojol.toolkit.analysis.pipeline.SerialisableNodeOperation;
 
 import java.util.List;
 

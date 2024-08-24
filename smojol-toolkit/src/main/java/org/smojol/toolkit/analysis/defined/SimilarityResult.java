@@ -1,4 +1,4 @@
-package org.smojol.toolkit.analysis.pipeline;
+package org.smojol.toolkit.analysis.defined;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.alg.similarity.ZhangShashaTreeEditDistance;

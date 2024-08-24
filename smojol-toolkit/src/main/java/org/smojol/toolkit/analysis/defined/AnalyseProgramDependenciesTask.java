@@ -1,15 +1,19 @@
-package org.smojol.toolkit.analysis.pipeline;
+package org.smojol.toolkit.analysis.defined;
 
 import com.google.common.collect.ImmutableList;
 import hu.webarticum.treeprinter.printer.listing.ListingTreePrinter;
 import org.apache.commons.lang3.tuple.Pair;
 import org.smojol.common.program.CobolProgram;
-import org.smojol.common.ast.ProgramDependencies;
 import org.smojol.common.program.StaticCallTarget;
 import org.smojol.common.flowchart.ConsoleColors;
 import org.smojol.common.flowchart.FlowchartOutputFormat;
 import org.smojol.common.id.UUIDProvider;
 import org.smojol.common.dialect.LanguageDialect;
+import org.smojol.toolkit.task.CommandLineAnalysisTask;
+import org.smojol.toolkit.analysis.pipeline.ProgramSearch;
+import org.smojol.toolkit.task.AnalysisTaskResult;
+import org.smojol.toolkit.task.AnalysisTaskResultError;
+import org.smojol.toolkit.task.AnalysisTaskResultOK;
 import org.smojol.toolkit.interpreter.FullProgram;
 import org.smojol.toolkit.interpreter.structure.OccursIgnoringFormat1DataStructureBuilder;
 
@@ -56,8 +60,8 @@ public class AnalyseProgramDependenciesTask {
                     dialect, new FullProgram(FlowchartOutputFormat.SVG), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder(), programSearch)
                     .runForPrograms(ImmutableList.of(CommandLineAnalysisTask.BUILD_PROGRAM_DEPENDENCIES), ImmutableList.of(program.getName()));
             AnalysisTaskResult first = results.get(program.getName()).getFirst();
-            ProgramDependencies dependencies = switch (first) {
-                case AnalysisTaskResultOK o -> (ProgramDependencies) o.getDetail();
+            ProgramDependenciesTask dependencies = switch (first) {
+                case AnalysisTaskResultOK o -> (ProgramDependenciesTask) o.getDetail();
                 case AnalysisTaskResultError e -> throw new RuntimeException(e.getException());
             };
             program.addAll(dependencies.getDependencies().stream().map(CobolProgram::new).toList());

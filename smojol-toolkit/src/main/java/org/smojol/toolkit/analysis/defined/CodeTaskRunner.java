@@ -1,10 +1,12 @@
-package org.smojol.toolkit.analysis.pipeline;
+package org.smojol.toolkit.analysis.defined;
 
 import com.mojo.woof.Neo4JDriverBuilder;
 import lombok.Getter;
 import org.apache.commons.lang3.tuple.Pair;
 import org.eclipse.lsp.cobol.common.error.SyntaxError;
 import org.smojol.common.dialect.LanguageDialect;
+import org.smojol.toolkit.analysis.pipeline.*;
+import org.smojol.toolkit.task.AnalysisTaskResult;
 import org.smojol.toolkit.analysis.error.ParseDiagnosticRuntimeError;
 import org.smojol.toolkit.analysis.graph.neo4j.NodeReferenceStrategy;
 import org.smojol.common.dependency.ComponentsBuilder;
@@ -17,6 +19,9 @@ import org.smojol.common.vm.strategy.UnresolvedReferenceThrowStrategy;
 import org.smojol.common.vm.structure.Format1DataStructureBuilder;
 import org.smojol.toolkit.flowchart.FlowchartGenerationStrategy;
 import org.smojol.toolkit.flowchart.FlowchartOutputWriter;
+import org.smojol.toolkit.task.CommandLineAnalysisTask;
+import org.smojol.toolkit.task.SmojolTasks;
+import org.smojol.toolkit.task.TaskRunnerMode;
 
 import java.io.File;
 import java.io.IOException;

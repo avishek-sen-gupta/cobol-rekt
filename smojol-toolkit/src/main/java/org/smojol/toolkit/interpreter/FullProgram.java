@@ -1,7 +1,7 @@
 package org.smojol.toolkit.interpreter;
 
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.smojol.toolkit.analysis.pipeline.ParsePipeline;
+import org.smojol.common.flowchart.FlowchartBuilder;
 import org.smojol.common.flowchart.FlowchartOutputFormat;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.toolkit.flowchart.FlowchartGenerationStrategy;
@@ -15,8 +15,8 @@ public class FullProgram extends FlowchartGenerationStrategy {
     }
 
     @Override
-    public void draw(CobolEntityNavigator navigator, ParseTree root, ParsePipeline pipeline, Path dotFileOutputDir, Path imageOutputDir, String programName) throws IOException, InterruptedException {
-        pipeline.flowcharter().generateFlowchart(root,
+    public void draw(CobolEntityNavigator navigator, ParseTree root, FlowchartBuilder flowcharter, Path dotFileOutputDir, Path imageOutputDir, String programName) throws IOException, InterruptedException {
+        flowcharter.generateFlowchart(root,
                 FlowchartGenerationStrategy.outputPath(programName, dotFileOutputDir, "dot"),
                 FlowchartGenerationStrategy.outputPath(programName, imageOutputDir, this.outputFormat.extension()), this.outputFormat);
     }

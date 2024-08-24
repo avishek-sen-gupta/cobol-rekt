@@ -1,4 +1,4 @@
-package org.smojol.toolkit.analysis.pipeline;
+package org.smojol.toolkit.task;
 
 public interface AnalysisTask {
     AnalysisTaskResult run();

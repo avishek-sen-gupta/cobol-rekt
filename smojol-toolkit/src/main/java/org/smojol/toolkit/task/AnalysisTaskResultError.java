@@ -1,4 +1,4 @@
-package org.smojol.toolkit.analysis.pipeline;
+package org.smojol.toolkit.task;
 
 import lombok.Getter;
 import org.apache.commons.lang3.exception.ExceptionUtils;

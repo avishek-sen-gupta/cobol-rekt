@@ -1,5 +1,7 @@
 package org.smojol.cli;
 
+import org.smojol.toolkit.analysis.defined.CodeTaskRunner;
+import org.smojol.toolkit.task.AnalysisTaskResult;
 import org.smojol.common.validation.ProgramValidationErrors;
 import org.smojol.toolkit.analysis.pipeline.*;
 import org.smojol.toolkit.analysis.validation.ValidateTaskRunner;
@@ -8,6 +10,8 @@ import org.smojol.common.flowchart.ConsoleColors;
 import org.smojol.common.id.UUIDProvider;
 import org.smojol.toolkit.flowchart.FlowchartGenerationStrategy;
 import org.smojol.toolkit.interpreter.structure.OccursIgnoringFormat1DataStructureBuilder;
+import org.smojol.toolkit.task.CommandLineAnalysisTask;
+import org.smojol.toolkit.task.TaskRunnerMode;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;

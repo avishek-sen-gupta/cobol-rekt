@@ -1,4 +1,4 @@
-package org.smojol.toolkit.analysis.pipeline;
+package org.smojol.toolkit.task;
 
 import com.google.common.collect.ImmutableList;
 import org.eclipse.lsp.cobol.common.error.SyntaxError;

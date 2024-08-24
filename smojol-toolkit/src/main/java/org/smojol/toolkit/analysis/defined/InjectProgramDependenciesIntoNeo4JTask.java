@@ -1,6 +1,8 @@
-package org.smojol.toolkit.analysis.pipeline;
+package org.smojol.toolkit.analysis.defined;
 
 import com.mojo.woof.GraphSDK;
+import org.smojol.toolkit.analysis.pipeline.CobolProgramDependencyNeo4JVisitor;
+import org.smojol.toolkit.task.AnalysisTaskResult;
 import org.smojol.toolkit.analysis.graph.NodeSpecBuilder;
 import org.smojol.common.program.CobolProgram;
 

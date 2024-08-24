@@ -1,4 +1,4 @@
-package org.smojol.toolkit.analysis.pipeline;
+package org.smojol.toolkit.analysis.defined;
 
 import com.google.common.collect.ImmutableList;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -6,6 +6,9 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;
 import org.jgrapht.alg.similarity.ZhangShashaTreeEditDistance;
 import org.jgrapht.graph.DefaultUndirectedGraph;
+import org.smojol.toolkit.task.CommandLineAnalysisTask;
+import org.smojol.toolkit.analysis.pipeline.NodeOperationCostFunctions;
+import org.smojol.toolkit.task.AnalysisTaskResult;
 import org.smojol.toolkit.analysis.graph.NodeSpecBuilder;
 import org.smojol.toolkit.analysis.graph.graphml.JGraphTGraphBuilder;
 import org.smojol.toolkit.analysis.graph.graphml.TypedGraphEdge;

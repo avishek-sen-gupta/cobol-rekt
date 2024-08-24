@@ -1,4 +1,4 @@
-package org.smojol.toolkit.analysis.pipeline;
+package org.smojol.toolkit.analysis.defined;
 
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.SerialisableASTFlowNode;

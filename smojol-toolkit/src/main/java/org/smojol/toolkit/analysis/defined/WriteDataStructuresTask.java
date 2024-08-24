@@ -1,8 +1,13 @@
-package org.smojol.toolkit.analysis.pipeline;
+package org.smojol.toolkit.analysis.defined;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonWriter;
+import org.smojol.toolkit.task.CommandLineAnalysisTask;
+import org.smojol.toolkit.analysis.pipeline.DataStructureExporter;
+import org.smojol.toolkit.analysis.pipeline.SerialisableCobolDataStructure;
+import org.smojol.toolkit.task.AnalysisTask;
+import org.smojol.toolkit.task.AnalysisTaskResult;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.toolkit.analysis.pipeline.config.OutputArtifactConfig;
 
@@ -10,7 +15,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 
-public class WriteDataStructuresTask implements Runnable {
+public class WriteDataStructuresTask implements AnalysisTask {
     private final CobolDataStructure dataStructures;
     private final OutputArtifactConfig outputArtifactConfig;
 
@@ -20,7 +25,7 @@ public class WriteDataStructuresTask implements Runnable {
     }
 
     @Override
-    public void run() {
+    public AnalysisTaskResult run() {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         SerialisableCobolDataStructure root = new SerialisableCobolDataStructure();
         DataStructureExporter visitor = new DataStructureExporter(root);
@@ -28,13 +33,14 @@ public class WriteDataStructuresTask implements Runnable {
         try {
             Files.createDirectories(outputArtifactConfig.outputDir());
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            return AnalysisTaskResult.ERROR(e, CommandLineAnalysisTask.WRITE_DATA_STRUCTURES);
         }
         try (JsonWriter writer = new JsonWriter(new FileWriter(outputArtifactConfig.fullPath()))) {
             writer.setIndent("  ");
             gson.toJson(root, SerialisableCobolDataStructure.class, writer);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            return AnalysisTaskResult.ERROR(e, CommandLineAnalysisTask.WRITE_DATA_STRUCTURES);
         }
+        return AnalysisTaskResult.OK(CommandLineAnalysisTask.WRITE_DATA_STRUCTURES);
     }
 }

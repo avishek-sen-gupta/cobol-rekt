@@ -2,7 +2,7 @@ package org.smojol.toolkit.flowchart;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolParser;
-import org.smojol.toolkit.analysis.pipeline.ParsePipeline;
+import org.smojol.common.flowchart.FlowchartBuilder;
 import org.smojol.common.flowchart.FlowchartOutputFormat;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.toolkit.interpreter.FullProgram;
@@ -17,7 +17,7 @@ public abstract class FlowchartGenerationStrategy {
     protected final FlowchartOutputFormat outputFormat;
     public static final FlowchartGenerationStrategy DONT_DRAW = new FlowchartGenerationStrategy(null) {
         @Override
-        public void draw(CobolEntityNavigator navigator, ParseTree root, ParsePipeline pipeline, Path dotFileOutputDir, Path imageOutputDir, String programName) {
+        public void draw(CobolEntityNavigator navigator, ParseTree root, FlowchartBuilder flowcharter, Path dotFileOutputDir, Path imageOutputDir, String programName) {
             System.out.println("Not Drawing Flowchart...");
         }
     };
@@ -26,7 +26,7 @@ public abstract class FlowchartGenerationStrategy {
         this.outputFormat = outputFormat;
     }
 
-    public abstract void draw(CobolEntityNavigator navigator, ParseTree root, ParsePipeline pipeline, Path dotFileOutputDir, Path imageOutputDir, String programName) throws IOException, InterruptedException;
+    public abstract void draw(CobolEntityNavigator navigator, ParseTree root, FlowchartBuilder flowcharter, Path dotFileOutputDir, Path imageOutputDir, String programName) throws IOException, InterruptedException;
 
     public static FlowchartGenerationStrategy strategy(String generationStrategyAsString, String flowchartOutputFormatAsString) {
         FlowchartOutputFormat flowchartOutputFormat = "PNG".equals(flowchartOutputFormatAsString) ? PNG : SVG;

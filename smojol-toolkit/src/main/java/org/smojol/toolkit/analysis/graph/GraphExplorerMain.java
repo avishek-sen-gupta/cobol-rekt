@@ -2,12 +2,12 @@ package org.smojol.toolkit.analysis.graph;
 
 import com.google.common.collect.ImmutableList;
 import org.smojol.common.dialect.LanguageDialect;
-import org.smojol.toolkit.analysis.pipeline.CodeTaskRunner;
+import org.smojol.toolkit.analysis.defined.CodeTaskRunner;
 import org.smojol.common.id.UUIDProvider;
 import org.smojol.toolkit.analysis.pipeline.ProgramSearch;
 import org.smojol.toolkit.interpreter.FullProgram;
 import org.smojol.toolkit.interpreter.structure.OccursIgnoringFormat1DataStructureBuilder;
-import org.smojol.toolkit.analysis.pipeline.CommandLineAnalysisTask;
+import org.smojol.toolkit.task.CommandLineAnalysisTask;
 
 import java.io.File;
 import java.io.IOException;
