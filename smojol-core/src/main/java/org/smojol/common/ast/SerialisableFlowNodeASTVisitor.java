@@ -1,17 +1,20 @@
 package org.smojol.common.ast;
 
 
-public class SerialisableFlowNodeASTVisitor implements FlowNodeASTVisitor<SerialisableASTFlowNode> {
-    SerialisableASTFlowNode root = new SerialisableASTFlowNode();
-    @Override
-    public SerialisableASTFlowNode visit(FlowNode node, SerialisableASTFlowNode parent) {
-        SerialisableASTFlowNode child = new SerialisableASTFlowNode(node);
-        parent.addChild(child);
-        return child;
+public class SerialisableFlowNodeASTVisitor extends FlowNodeASTVisitor<SerialisableASTFlowNode> {
+    public SerialisableFlowNodeASTVisitor(SerialisableASTFlowNode ancestorNode) {
+        super(ancestorNode);
+    }
+
+    public SerialisableFlowNodeASTVisitor() {
+        this(null);
     }
 
     @Override
-    public SerialisableASTFlowNode root() {
-        return root;
+    public FlowNodeASTVisitor<SerialisableASTFlowNode> visit(FlowNode node) {
+        SerialisableASTFlowNode child = new SerialisableASTFlowNode(node);
+        if (ancestor == null) return new SerialisableFlowNodeASTVisitor(child);
+        ancestor.addChild(child);
+        return new SerialisableFlowNodeASTVisitor(child);
     }
 }

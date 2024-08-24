@@ -36,15 +36,5 @@ public class WriteDataStructuresTask implements Runnable {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-//        String json = gson.toJson(root);
-//        System.out.println("Output: " + outputArtifactConfig.fullPath());
-//        try {
-//            Files.createDirectory(outputArtifactConfig.outputDir());
-//            PrintWriter out = new PrintWriter(outputArtifactConfig.fullPath());
-//            out.println(json);
-//            out.close();
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
     }
 }

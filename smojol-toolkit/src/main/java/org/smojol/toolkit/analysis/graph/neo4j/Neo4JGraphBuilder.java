@@ -1,20 +1,16 @@
 package org.smojol.toolkit.analysis.graph.neo4j;
 
 import com.mojo.woof.GraphSDK;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
 import org.neo4j.driver.Record;
-import org.smojol.toolkit.analysis.graph.DataDependencyPairComputer;
 import org.smojol.toolkit.analysis.graph.NodeSpecBuilder;
-import org.smojol.toolkit.analysis.graph.NodeToWoof;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.vm.structure.CobolDataStructure;
+import org.smojol.toolkit.analysis.graph.graphml.Neo4JASTBuilderVisitor;
+import org.smojol.toolkit.analysis.graph.graphml.Neo4JDataDependencyBuilderVisitor;
 import org.smojol.toolkit.analysis.pipeline.config.GraphBuildConfig;
 import org.smojol.toolkit.interpreter.navigation.FlowNodeASTTraversal;
-
-import java.util.List;
-import java.util.Map;
 
 public class Neo4JGraphBuilder {
     private final GraphSDK sdk;
@@ -33,52 +29,12 @@ public class Neo4JGraphBuilder {
     }
 
     public void buildAST(FlowNode node) {
-        new FlowNodeASTTraversal<Record>().build(node, this::make);
+//        new FlowNodeASTTraversal<Record>().build(node, this::make);
+        new FlowNodeASTTraversal<Record>().accept(node, new Neo4JASTBuilderVisitor(astNodeReferenceStrategy, sdk, qualifier));
     }
 
     public void buildDataDependencies(FlowNode root) {
-        new FlowNodeASTTraversal<Boolean>().build(root, this::buildDataDependency);
-    }
-
-    public Record make(FlowNode tree, Record parent) {
-        Record record = astNodeReferenceStrategy.reference(tree, sdk, qualifier);
-        if (parent == null) return record;
-        sdk.containsCodeNode(parent, record);
-        return record;
-    }
-
-    public Boolean buildDataDependency(FlowNode node, Boolean parent) {
-        Map.Entry<List<CobolDataStructure>, List<CobolDataStructure>> pairs = DataDependencyPairComputer.dependencyPairs(node, data);
-        if (ImmutablePair.nullPair().equals(pairs)) return false;
-        if (pairs.getValue().isEmpty()) {
-            accesses(node, pairs.getKey());
-            return true;
-        }
-        connect(pairs.getKey(), pairs.getValue(), node);
-        return true;
-    }
-
-    private void accesses(FlowNode attachmentNode, List<CobolDataStructure> dataNodes) {
-        System.out.println("Attaching IF??? " + attachmentNode.type() + " " + dataNodes.size());
-        Record attachmentNodeRecord = dependencyAttachmentStrategy.reference(attachmentNode, sdk, qualifier);
-        dataNodes.forEach(n -> {
-            Record n4jFrom = sdk.newOrExisting(qualifier.dataNodeSearchSpec(n), NodeToWoof.dataStructureToWoof(n, qualifier));
-            sdk.accesses(attachmentNodeRecord, n4jFrom);
-        });
-    }
-
-    private void connect(List<CobolDataStructure> froms, List<CobolDataStructure> tos, FlowNode attachmentNode) {
-        Record attachmentNodeRecord = dependencyAttachmentStrategy.reference(attachmentNode, sdk, qualifier);
-        tos.forEach(to -> {
-            froms.forEach(f -> System.out.println(f.name()));
-            List<Record> nodes = sdk.findNodes(qualifier.dataNodeSearchSpec(to));
-            Record n4jTo = !nodes.isEmpty() ? nodes.getFirst() : sdk.createNode(NodeToWoof.dataStructureToWoof(to, qualifier));
-            sdk.modifies(attachmentNodeRecord, n4jTo);
-            froms.forEach(from -> {
-                Record n4jFrom = sdk.newOrExisting(qualifier.dataNodeSearchSpec(from), NodeToWoof.dataStructureToWoof(from, qualifier));
-                sdk.flowsInto(n4jFrom, n4jTo);
-                sdk.accesses(attachmentNodeRecord, n4jFrom);
-            });
-        });
+//        new FlowNodeASTTraversal<Boolean>().build(root, this::buildDataDependency);
+        new FlowNodeASTTraversal<Record>().accept(root, new Neo4JDataDependencyBuilderVisitor(data, sdk, qualifier, dependencyAttachmentStrategy));
     }
 }

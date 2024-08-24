@@ -108,6 +108,15 @@ public class SmojolTasks {
             return AnalysisTaskResult.OK(CommandLineAnalysisTask.WRITE_DATA_STRUCTURES);
         }
     };
+
+    public AnalysisTask BUILD_PSEUDO_BYTECODE = new AnalysisTask() {
+        @Override
+        public AnalysisTaskResult run() {
+            new BuildPseudoBytecodeTask(astRoot, dataStructures).run();
+            return AnalysisTaskResult.OK(CommandLineAnalysisTask.BUILD_PSEUDO_BYTECODE);
+        }
+    };
+
     public AnalysisTask EXPORT_TO_GRAPHML = new AnalysisTask() {
         @Override
         public AnalysisTaskResult run() {
@@ -303,6 +312,7 @@ public class SmojolTasks {
             case EXPORT_UNIFIED_TO_JSON -> EXPORT_UNIFIED_TO_JSON;
             case COMPARE_CODE -> COMPARE_CODE;
             case SUMMARISE_THROUGH_LLM -> SUMMARISE_THROUGH_LLM;
+            case BUILD_PSEUDO_BYTECODE -> BUILD_PSEUDO_BYTECODE;
         });
     }
 

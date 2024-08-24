@@ -1,7 +1,6 @@
 package org.smojol.toolkit.analysis.graph.graphml;
 
 import lombok.Getter;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.jgrapht.Graph;
 import org.jgrapht.alg.clique.BronKerboschCliqueFinder;
 import org.jgrapht.alg.clustering.KSpanningTreeClustering;
@@ -12,7 +11,6 @@ import org.jgrapht.nio.Attribute;
 import org.jgrapht.nio.AttributeType;
 import org.jgrapht.nio.DefaultAttribute;
 import org.jgrapht.nio.graphml.GraphMLExporter;
-import org.smojol.toolkit.analysis.graph.DataDependencyPairComputer;
 import org.smojol.toolkit.analysis.graph.NodeSpecBuilder;
 import org.smojol.toolkit.analysis.graph.jgrapht.JGraphTDataOperations;
 import org.smojol.toolkit.analysis.graph.jgrapht.JGraphTCodeOperations;
@@ -59,7 +57,9 @@ public class JGraphTGraphBuilder {
     }
 
     public void buildAST() {
-        new FlowNodeASTTraversal<FlowNode>().build(astRoot, this::buildJGraphTNodes);
+//        new FlowNodeASTTraversal<FlowNode>().build(astRoot, this::buildJGraphTNodes);
+        JGraphTASTGraphBuilderVisitor jGraphTASTGraphBuilderVisitor = new JGraphTASTGraphBuilderVisitor(astGraphOperations);
+        new FlowNodeASTTraversal<FlowNode>().accept(astRoot, jGraphTASTGraphBuilderVisitor);
     }
 
     public void buildCFG() {
@@ -69,44 +69,8 @@ public class JGraphTGraphBuilder {
     public void buildDataStructures() {
         dataRoot.accept(new GraphMLDataStructureVisitor(dataStructuresGraph, qualifier), null, n -> false, dataRoot);
         dataRoot.accept(new GraphMLRedefinitionVisitor(dataStructuresGraph, qualifier), null, n -> false, dataRoot);
-        new FlowNodeASTTraversal<Boolean>().build(astRoot, this::buildDataDependency);
-    }
-
-    public FlowNode buildJGraphTNodes(FlowNode node, FlowNode parent) {
-        astGraphOperations.addNode(node);
-        if (parent == null) return node;
-        astGraphOperations.connect(parent, node, CONTAINS_CODE);
-        return node;
-    }
-
-    public Boolean buildDataDependency(FlowNode node, Boolean parent) {
-        Map.Entry<List<CobolDataStructure>, List<CobolDataStructure>> pairs = DataDependencyPairComputer.dependencyPairs(node, dataRoot);
-        if (ImmutablePair.nullPair().equals(pairs)) return false;
-        if (pairs.getValue().isEmpty()) {
-            accesses(node, pairs.getKey());
-            return true;
-        }
-        connect(pairs.getKey(), pairs.getValue(), node);
-        return true;
-    }
-
-    private void accesses(FlowNode node, List<CobolDataStructure> accessedStructures) {
-        accessedStructures.forEach(s -> {
-            if (!dataGraphOperations.containsVertex(s)) dataGraphOperations.addNode(s);
-            dataGraphOperations.connect(node, s, ACCESSES);
-        });
-
-    }
-
-    private void connect(List<CobolDataStructure> froms, List<CobolDataStructure> tos, FlowNode node) {
-        tos.forEach(to -> {
-            dataGraphOperations.connect(node, to, MODIFIES);
-            froms.forEach(from -> {
-                if (!dataGraphOperations.containsVertex(from)) dataGraphOperations.addNode(from);
-                dataGraphOperations.connect(node, from, ACCESSES);
-                dataGraphOperations.connect(from, to, FLOWS_INTO);
-            });
-        });
+//        new FlowNodeASTTraversal<Boolean>().build(astRoot, this::buildDataDependency);
+        new FlowNodeASTTraversal<CobolDataStructure>().accept(astRoot, new JGraphTDataDependencyBuilderVisitor(dataGraphOperations, dataRoot));
     }
 
     private Attribute attr(String attribute) {
