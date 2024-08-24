@@ -67,7 +67,7 @@
                                 <configuration>
                                     <archive>
                                         <manifest>
-                                            <mainClass>org.smojol.toolkit.interpreter.InterpreterMain</mainClass>
+                                            <mainClass>org.smojol.toolkit.examples.InterpreterMain</mainClass>
                                         </manifest>
                                     </archive>
                                     <descriptorRefs>

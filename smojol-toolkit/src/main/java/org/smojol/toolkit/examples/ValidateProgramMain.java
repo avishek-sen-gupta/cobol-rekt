@@ -1,4 +1,4 @@
-package org.smojol.cli;
+package org.smojol.toolkit.examples;
 
 import com.google.common.collect.ImmutableList;
 import org.smojol.toolkit.analysis.validation.ValidateTaskRunner;

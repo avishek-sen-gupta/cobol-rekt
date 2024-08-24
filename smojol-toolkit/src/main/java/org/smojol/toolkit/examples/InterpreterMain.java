@@ -1,4 +1,4 @@
-package org.smojol.toolkit.interpreter;
+package org.smojol.toolkit.examples;
 
 import com.google.common.collect.ImmutableList;
 import com.mojo.woof.GraphSDK;

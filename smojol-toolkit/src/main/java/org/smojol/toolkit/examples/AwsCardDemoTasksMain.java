@@ -1,4 +1,4 @@
-package org.smojol.toolkit.analysis.visualisation;
+package org.smojol.toolkit.examples;
 
 import com.google.common.collect.ImmutableList;
 import org.smojol.common.dialect.LanguageDialect;
@@ -13,7 +13,7 @@ import org.smojol.toolkit.interpreter.structure.OccursIgnoringFormat1DataStructu
 import java.io.File;
 import java.io.IOException;
 
-public class AwsCardDemoFlowchartBuildMain {
+public class AwsCardDemoTasksMain {
     public static void main(String[] args) throws IOException, InterruptedException {
         new CodeTaskRunner("/Users/asgupta/code/aws-mainframe-modernization-carddemo/app/cbl",
                 "/Users/asgupta/code/smojol/out/report",

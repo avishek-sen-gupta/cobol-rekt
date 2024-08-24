@@ -1,4 +1,4 @@
-package org.smojol.toolkit.analysis.graph;
+package org.smojol.toolkit.examples;
 
 import com.google.common.collect.ImmutableList;
 import org.smojol.common.dialect.LanguageDialect;
