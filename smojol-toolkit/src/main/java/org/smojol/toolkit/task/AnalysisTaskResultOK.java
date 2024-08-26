@@ -2,9 +2,8 @@ package org.smojol.toolkit.task;
 
 import lombok.Getter;
 
-@Getter
 public final class AnalysisTaskResultOK implements AnalysisTaskResult {
-    private final String task;
+    @Getter private final String task;
     private final Object detail;
 
     public AnalysisTaskResultOK(Object detail) {
@@ -14,6 +13,10 @@ public final class AnalysisTaskResultOK implements AnalysisTaskResult {
     public AnalysisTaskResultOK(String task, Object detail) {
         this.task = task;
         this.detail = detail;
+    }
+
+    public <T> T getDetail() {
+        return (T) detail;
     }
 
     @Override

@@ -54,7 +54,7 @@ public class AnalyseProgramDependenciesTask {
                     .runForPrograms(ImmutableList.of(CommandLineAnalysisTask.BUILD_PROGRAM_DEPENDENCIES), ImmutableList.of(foundFile.getName()));
             AnalysisTaskResult first = results.get(program.getName()).getFirst();
             List<CallTarget> dependencies = switch (first) {
-                case AnalysisTaskResultOK o -> (List<CallTarget>) o.getDetail();
+                case AnalysisTaskResultOK o -> o.getDetail();
                 case AnalysisTaskResultError e -> throw new RuntimeException(e.getException());
             };
             program.addAll(dependencies.stream().map(CobolProgram::new).toList());

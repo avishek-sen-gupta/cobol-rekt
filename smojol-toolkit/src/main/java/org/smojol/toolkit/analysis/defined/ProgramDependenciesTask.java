@@ -44,7 +44,7 @@ public class ProgramDependenciesTask implements AnalysisTask {
     public AnalysisTaskResult run() {
         AnalysisTaskResult pseudocodeBuildTask = new BuildPseudocodeTask(root).run();
         if (!pseudocodeBuildTask.isSuccess()) return pseudocodeBuildTask;
-        List<PseudocodeInstruction> instructions = (List<PseudocodeInstruction>) ((AnalysisTaskResultOK) pseudocodeBuildTask).getDetail();
+        List<PseudocodeInstruction> instructions = ((AnalysisTaskResultOK) pseudocodeBuildTask).getDetail();
         List<PseudocodeInstruction> allTransfers = instructions.stream().filter(ins -> ins.isBody() && ins.getNode() instanceof ControlFlowNode).toList();
         List<CallTarget> resolvedCallTargets = allTransfers.stream().map(t -> ((ControlFlowNode) t.getNode()).callTarget().resolve(t, instructions)).toList();
         dependencies.addAll(resolvedCallTargets);

@@ -26,7 +26,7 @@ public class DependencyBuildMain {
                 LanguageDialect.IDMS, new ProgramSearch())
                 .run("if-test.cbl");
         CobolProgram root = switch (result) {
-            case AnalysisTaskResultOK o -> (CobolProgram) o.getDetail();
+            case AnalysisTaskResultOK o -> o.getDetail();
             case AnalysisTaskResultError e -> throw new RuntimeException(e.getException());
         };
 

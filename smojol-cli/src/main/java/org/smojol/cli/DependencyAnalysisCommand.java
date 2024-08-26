@@ -69,7 +69,7 @@ public class DependencyAnalysisCommand implements Callable<Integer> {
         ProgramSearch programSearch = ProgramSearch.searchStrategy(isPermissiveSearch);
         AnalysisTaskResult result = new AnalyseProgramDependenciesTask(sourceDir, copyBookPaths, "dummy", dialectJarPath, LanguageDialect.dialect(dialect), programSearch).run(programName);
         CobolProgram root = switch (result) {
-            case AnalysisTaskResultOK ok -> (CobolProgram) ok.getDetail();
+            case AnalysisTaskResultOK ok -> ok.getDetail();
             case AnalysisTaskResultError e -> throw new RuntimeException(e.getException());
         };
         if (exportPath != null) new ExportProgramDependenciesTask(exportPath).run(root);

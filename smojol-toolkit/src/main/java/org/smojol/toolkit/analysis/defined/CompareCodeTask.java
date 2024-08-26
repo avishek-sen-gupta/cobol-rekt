@@ -36,7 +36,7 @@ public class CompareCodeTask implements AnalysisTask {
     public AnalysisTaskResult run() {
         AnalysisTaskResult result = new CompareCodeBlocksTask(dataStructures, qualifier).run(astRoot, NodeOperationCostFunctions.GENERIC);
         return switch (result) {
-            case AnalysisTaskResultOK o -> exportToJSON((List<SimilarityResult>) o.getDetail());
+            case AnalysisTaskResultOK o -> exportToJSON(o.getDetail());
             case AnalysisTaskResultError e -> e;
         };
     }
