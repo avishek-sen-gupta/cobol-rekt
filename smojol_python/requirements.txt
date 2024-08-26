@@ -13,3 +13,4 @@ sentence-transformers
 python-dotenv
 networkx
 pygraphviz
+jsonpath-rw
