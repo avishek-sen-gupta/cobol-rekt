@@ -1,4 +1,7 @@
-package org.smojol.common.ast;
+package org.smojol.common.pseudocode;
+
+import org.smojol.common.ast.AggregatingFlowNodeASTVisitor;
+import org.smojol.common.ast.FlowNode;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,17 +16,17 @@ public class PseudocodeGeneratorVisitor extends AggregatingFlowNodeASTVisitor<Li
 
     @Override
     public void visit(FlowNode node) {
-        instructions.add(new PseudocodeInstruction("DETAIL / " + node.label(), node));
+        instructions.add(PseudocodeInstructionGenerator.visiting(node));
     }
 
     @Override
     public void enter(FlowNode node) {
-        instructions.add(new PseudocodeInstruction("ENTER / " + node.label(), node));
+        instructions.add(PseudocodeInstructionGenerator.entering(node));
     }
 
     @Override
     public void exit(FlowNode node) {
-        instructions.add(new PseudocodeInstruction("EXIT / " + node.label(), node));
+        instructions.add(PseudocodeInstructionGenerator.exiting(node));
     }
 
     @Override

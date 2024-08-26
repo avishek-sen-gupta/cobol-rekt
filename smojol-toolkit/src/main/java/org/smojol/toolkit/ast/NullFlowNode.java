@@ -49,7 +49,12 @@ public class NullFlowNode implements FlowNode {
 
     @Override
     public List<FlowNode> getOutgoingNodes() {
-        return List.of();
+        return ImmutableList.of();
+    }
+
+    @Override
+    public List<FlowNode> getIncomingNodes() {
+        return ImmutableList.of();
     }
 
     @Override

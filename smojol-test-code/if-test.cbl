@@ -25,6 +25,7 @@
                		88 V2      VALUE "F".
        PROCEDURE DIVISION.
        CALL 'ABCD'.
+       MOVE "RESOLVED_PATH" TO SOMETHING.
        CALL SOMETHING.
        TRANSFER CONTROL "EFGH".
        MOVE 50 TO SOMEFRACTION.

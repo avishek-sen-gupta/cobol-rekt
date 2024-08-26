@@ -19,7 +19,8 @@ public class ProgramSearch {
     public static final ImmutablePair<File, String> NO_PATH = ImmutablePair.nullPair();
     public static final Function2<String, File, Boolean> STRICT = (name, f) -> name.equals(f.getName());
     public static final Function2<String, File, Boolean> PERMISSIVE = (name, f) -> name.equalsIgnoreCase(f.getName()) ||
-            String.format("%s.cbl", name.toUpperCase()).equals(f.getName().toUpperCase());
+            String.format("%s.cbl", name.toUpperCase()).equals(f.getName().toUpperCase()) ||
+            f.getName().toUpperCase().contains(name.toUpperCase());
     private final Function2<String, File, Boolean> matchStrategy;
 
     public ProgramSearch() {

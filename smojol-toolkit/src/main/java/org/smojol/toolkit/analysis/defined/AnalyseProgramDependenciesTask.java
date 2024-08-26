@@ -2,7 +2,9 @@ package org.smojol.toolkit.analysis.defined;
 
 import com.google.common.collect.ImmutableList;
 import hu.webarticum.treeprinter.printer.listing.ListingTreePrinter;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.smojol.common.ast.CallTarget;
 import org.smojol.common.program.CobolProgram;
 import org.smojol.common.program.StaticCallTarget;
 import org.smojol.common.flowchart.ConsoleColors;
@@ -44,32 +46,23 @@ public class AnalyseProgramDependenciesTask {
         if (searchResult == ProgramSearch.NO_PATH) return;
         File foundFile = searchResult.getLeft();
         String srcDir = searchResult.getRight();
-//        System.out.println("Searching for program: " + program.getName() + "...");
-//        Collection<File> files = FileUtils.listFiles(new File(sourceDir), null, true);
-//        List<File> matchingFiles = files.stream().filter(f -> program.getName().equals(f.getName())).toList();
-//        if (matchingFiles.isEmpty()) {
-//            System.out.println(ConsoleColors.red("No files matching " + program.getName() + " in " + sourceDir + ". Terminating recursion..."));
-//            return;
-//        }
-//        File foundFile = matchingFiles.getFirst();
-//        String srcDir = foundFile.getParent();
         System.out.println("Found " + foundFile.getName() + " in " + srcDir);
         try {
             Map<String, List<AnalysisTaskResult>> results = new CodeTaskRunner(srcDir,
                     reportRootDir, copyBookPaths, dialectJarPath,
                     dialect, new FullProgram(FlowchartOutputFormat.SVG), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder(), programSearch)
-                    .runForPrograms(ImmutableList.of(CommandLineAnalysisTask.BUILD_PROGRAM_DEPENDENCIES), ImmutableList.of(program.getName()));
+                    .runForPrograms(ImmutableList.of(CommandLineAnalysisTask.BUILD_PROGRAM_DEPENDENCIES), ImmutableList.of(foundFile.getName()));
             AnalysisTaskResult first = results.get(program.getName()).getFirst();
-            ProgramDependenciesTask dependencies = switch (first) {
-                case AnalysisTaskResultOK o -> (ProgramDependenciesTask) o.getDetail();
+            List<CallTarget> dependencies = switch (first) {
+                case AnalysisTaskResultOK o -> (List<CallTarget>) o.getDetail();
                 case AnalysisTaskResultError e -> throw new RuntimeException(e.getException());
             };
-            program.addAll(dependencies.getDependencies().stream().map(CobolProgram::new).toList());
+            program.addAll(dependencies.stream().map(CobolProgram::new).toList());
 
             for (CobolProgram childDependency : program.staticDependencies())
                 recurse(childDependency, copyBookPaths);
         } catch (IOException | RuntimeException e) {
-            System.out.println(ConsoleColors.red("Error, terminating recursion down this path. Error: " + e.getMessage()));
+            System.out.println(ConsoleColors.red("Error, terminating recursion down this path. Error: " + ExceptionUtils.getStackTrace(e)));
         }
     }
 

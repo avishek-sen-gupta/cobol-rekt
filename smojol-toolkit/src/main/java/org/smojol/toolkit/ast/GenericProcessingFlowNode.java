@@ -152,6 +152,11 @@ public class GenericProcessingFlowNode implements FlowNode {
     }
 
     @Override
+    public List<FlowNode> getIncomingNodes() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
     public String label() {
         StringBuilder builder = new StringBuilder("Processing\n------------------------\n");
         nodes.forEach(n -> builder.append(NodeText.originalText(n.getExecutionContext(), NodeText::PASSTHROUGH)).append("\n"));

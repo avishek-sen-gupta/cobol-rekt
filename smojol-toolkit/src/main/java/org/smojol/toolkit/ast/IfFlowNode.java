@@ -69,4 +69,9 @@ public class IfFlowNode extends CobolFlowNode {
     public List<FlowNodeCategory> categories() {
         return ImmutableList.of(FlowNodeCategory.DECISION);
     }
+
+    @Override
+    public List<FlowNode> astChildren() {
+        return ImmutableList.of(ifThenBlock, ifElseBlock);
+    }
 }

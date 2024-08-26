@@ -80,10 +80,10 @@ public class SmojolTasks {
         }
     };
 
-    public AnalysisTask BUILD_PSEUDO_BYTECODE = new AnalysisTask() {
+    public AnalysisTask BUILD_PSEUDOCODE = new AnalysisTask() {
         @Override
         public AnalysisTaskResult run() {
-            return new BuildPseudocodeTask(flowRoot, dataStructures).run();
+            return new BuildPseudocodeTask(flowRoot).run();
         }
     };
 
@@ -174,7 +174,7 @@ public class SmojolTasks {
             case EXPORT_UNIFIED_TO_JSON -> EXPORT_UNIFIED_TO_JSON;
             case COMPARE_CODE -> COMPARE_CODE;
             case SUMMARISE_THROUGH_LLM -> SUMMARISE_THROUGH_LLM;
-            case BUILD_PSEUDO_BYTECODE -> BUILD_PSEUDO_BYTECODE;
+            case BUILD_PSEUDOCODE -> BUILD_PSEUDOCODE;
         });
     }
 }

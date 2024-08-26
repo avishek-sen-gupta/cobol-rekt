@@ -17,6 +17,7 @@ public interface FlowNode {
     void addIncomingNode(FlowNode flowNode);
 
     @Deprecated List<FlowNode> getOutgoingNodes();
+    List<FlowNode> getIncomingNodes();
 
     // TODO: The implementations need rewrite. This is currently not elegant.
     FlowNode next(FlowNodeCondition nodeCondition, FlowNode startingNode, boolean isComplete);

@@ -22,15 +22,15 @@ public class DependencyBuildMain {
         AnalysisTaskResult result = new AnalyseProgramDependenciesTask("/Users/asgupta/code/smojol/smojol-test-code",
                 ImmutableList.of(new File("/Users/asgupta/code/smojol/smojol-test-code")),
                 "/Users/asgupta/code/smojol/out/report",
-                "/Users/asgupta/code/smojol/che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar", LanguageDialect.IDMS, new ProgramSearch())
+                "/Users/asgupta/code/smojol/che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar",
+                LanguageDialect.IDMS, new ProgramSearch())
                 .run("if-test.cbl");
         CobolProgram root = switch (result) {
             case AnalysisTaskResultOK o -> (CobolProgram) o.getDetail();
             case AnalysisTaskResultError e -> throw new RuntimeException(e.getException());
         };
 
-        new InjectProgramDependenciesIntoNeo4JTask(new NodeSpecBuilder(new NamespaceQualifier("DEP-GRAPH")),
-                new GraphSDK(new Neo4JDriverBuilder().fromEnv())).run(root);
-
+//        new InjectProgramDependenciesIntoNeo4JTask(new NodeSpecBuilder(new NamespaceQualifier("DEP-GRAPH")),
+//                new GraphSDK(new Neo4JDriverBuilder().fromEnv())).run(root);
     }
 }

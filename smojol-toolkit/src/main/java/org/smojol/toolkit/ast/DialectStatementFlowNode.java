@@ -101,4 +101,9 @@ public class DialectStatementFlowNode extends CobolFlowNode {
     public List<FlowNodeCategory> categories() {
         return ImmutableList.of(FlowNodeCategory.DIALECT);
     }
+
+    @Override
+    public List<FlowNode> astChildren() {
+        return ImmutableList.of(dialectChildNode);
+    }
 }

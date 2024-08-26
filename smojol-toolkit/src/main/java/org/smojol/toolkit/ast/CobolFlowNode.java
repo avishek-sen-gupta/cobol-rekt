@@ -186,6 +186,11 @@ public class CobolFlowNode implements FlowNode {
     }
 
     @Override
+    public List<FlowNode> getIncomingNodes() {
+        return incomingNodes;
+    }
+
+    @Override
     public String label() {
         return name();
     }

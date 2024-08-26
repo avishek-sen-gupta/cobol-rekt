@@ -2,27 +2,27 @@ package org.smojol.toolkit.analysis.defined;
 
 import com.google.gson.annotations.Expose;
 import lombok.Getter;
-import org.smojol.common.ast.CallTarget;
-import org.smojol.common.ast.ControlFlowNode;
-import org.smojol.common.ast.FlowNode;
+import org.smojol.common.ast.*;
 import org.smojol.common.flowchart.ConsoleColors;
-import org.smojol.common.program.StaticCallTarget;
 import org.smojol.common.program.TransferControlCollectorVisitor;
+import org.smojol.common.pseudocode.PseudocodeInstruction;
+import org.smojol.toolkit.task.AnalysisTaskResultOK;
 import org.smojol.toolkit.task.CommandLineAnalysisTask;
 import org.smojol.toolkit.task.AnalysisTask;
 import org.smojol.toolkit.task.AnalysisTaskResult;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProgramDependenciesTask implements AnalysisTask {
     private final FlowNode root;
-    @Expose private final String programName;
-    @Expose @Getter private final List<CallTarget> dependencies;
+    @Expose
+    private final String programName;
+    @Expose @Getter private final List<CallTarget> dependencies = new ArrayList<>();
 
     public ProgramDependenciesTask(FlowNode root, String programName) {
         this.root = root;
         this.programName = programName;
-        dependencies = transfersOfControl().stream().map(ControlFlowNode::callTarget).toList();
     }
 
     private List<ControlFlowNode> transfersOfControl() {
@@ -40,12 +40,15 @@ public class ProgramDependenciesTask implements AnalysisTask {
         return dependencies.isEmpty();
     }
 
-    public List<CallTarget> staticDependencies() {
-        return dependencies.stream().filter(dep -> dep.getClass() == StaticCallTarget.class).toList();
-    }
-
     @Override
     public AnalysisTaskResult run() {
+        AnalysisTaskResult pseudocodeBuildTask = new BuildPseudocodeTask(root).run();
+        if (!pseudocodeBuildTask.isSuccess()) return pseudocodeBuildTask;
+        List<PseudocodeInstruction> instructions = (List<PseudocodeInstruction>) ((AnalysisTaskResultOK) pseudocodeBuildTask).getDetail();
+        List<PseudocodeInstruction> allTransfers = instructions.stream().filter(ins -> ins.isBody() && ins.getNode() instanceof ControlFlowNode).toList();
+        List<CallTarget> resolvedCallTargets = allTransfers.stream().map(t -> ((ControlFlowNode) t.getNode()).callTarget().resolve(t, instructions)).toList();
+        dependencies.addAll(resolvedCallTargets);
+
         return AnalysisTaskResult.OK(CommandLineAnalysisTask.BUILD_PROGRAM_DEPENDENCIES, dependencies);
     }
 }
