@@ -1,0 +1,15 @@
+langchain
+langchain-openai
+langchain-community
+langsmith
+neo4j
+numpy
+gensim
+scipy
+matplotlib
+tqdm
+mypy
+sentence-transformers
+python-dotenv
+networkx
+pygraphviz
