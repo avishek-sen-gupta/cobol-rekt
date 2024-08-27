@@ -1,6 +1,7 @@
 import argparse
 import json
 from functools import reduce
+from typing import Callable, Any
 
 from jsonpath_ng.ext import parse
 
@@ -12,59 +13,61 @@ from src.llm.common.parameter_constants import ParameterConstants
 load_dotenv("env/.env", override=True)
 c = ConsoleColors()
 
-
-class NullNode:
-    def __init__(self):
-        self.dict = {"children": [], "nodeType": "NULL"}
-
-
-def __getitem__(self, item):
-    return self.dict[item]
+ASTNode = dict[str, Any]
+SearchPath = Callable[[ASTNode], ASTNode]
+Criterion = Callable[[ASTNode], bool]
 
 
-def lol(final, c):
-    if not isinstance(final, NullNode):
+def null_node() -> ASTNode:
+    return {"children": [], "nodeType": "NULL"}
+
+
+def is_null_node(node: ASTNode) -> bool:
+    return node["nodeType"] == "NULL"
+
+
+def at_least_one(final: ASTNode, c: ASTNode) -> ASTNode:
+    if not is_null_node(final):
         return final
-    if not isinstance(c, NullNode):
+    if not is_null_node(c):
         return c
-    return NullNode()
+    return null_node()
 
 
-def direct(criterion):
-    def apply(node):
+def direct(criterion: Criterion) -> SearchPath:
+    def apply(node) -> dict[str, Any]:
         found_children = list(filter(lambda n: criterion(n), node["children"]))
-        return reduce(lol, found_children, NullNode())
+        return reduce(at_least_one, found_children, null_node())
 
     return apply
 
 
-def recursive(criterion):
-    def apply(node):
+def recursive(criterion: Criterion) -> SearchPath:
+    def apply(node: ASTNode) -> ASTNode:
         print(f"Checking node of type: {node['nodeType']}")
         if criterion(node):
             return node
-        return reduce(lol, list(map(apply, node["children"])), NullNode())
+        return reduce(at_least_one, list(map(apply, node["children"])), null_node())
 
     return apply
 
 
-def recurse_operand(criterion, tree):
-    matching = []
+def recurse_operand(criterion: Criterion, tree: ASTNode) -> list[ASTNode]:
     if criterion(tree):
         return [tree]
-    # map(lambda n: recurse_operand(criterion, node), tree["children"])
-    for node in tree["children"]:
-        matching += recurse_operand(criterion, node)
-    return matching
+    if len(tree["children"]) == 0:
+        return []
+    return reduce(lambda prev, curr: prev + curr, map(lambda n: recurse_operand(criterion, n), tree["children"]), [])
 
 
-def flter(tree, node_type, conditions):
-    matching_nodes = recurse_operand(node_type, tree)
-    return list(filter(lambda node: not isinstance(reduce(lambda prev, search: search(prev), conditions, node), NullNode), matching_nodes))
+def find_where(tree: ASTNode, criterion: Criterion, conditions: list[SearchPath]) -> list[ASTNode]:
+    matching_nodes = recurse_operand(criterion, tree)
+    return list(filter(lambda node: not is_null_node(reduce(lambda prev, path: path(prev), conditions, node)),
+                       matching_nodes))
 
 
-def node_type(ntype):
-    def apply(node):
+def node_type(ntype: str) -> Callable[[ASTNode], bool]:
+    def apply(node: dict[str, Any]) -> bool:
         return node["nodeType"] == ntype
 
     return apply
@@ -80,9 +83,9 @@ if __name__ == "__main__":
 
     with open(input_path, 'r') as file:
         ast = json.load(file)
-        final_nodes = flter(ast, node_type("AddStatementContext"),
-                            [recursive(node_type("AddFromContext")),
-                                       recursive(node_type("GeneralIdentifierContext"))])
+        final_nodes = find_where(ast, node_type("AddStatementContext"),
+                                 [recursive(node_type("AddFromContext")),
+                                  recursive(node_type("GeneralIdentifierContext"))])
         # jp = parse("$..*[?(@.nodeType == 'VariableUsageNameContext' & @.children[0].nodeType == 'CobolWordContext')]")
         # jp = parse(
         #     "$..*[?(@.nodeType == 'VariableUsageNameContext' & @.`parent`.nodeType == 'MoveToStatementContext')]")
