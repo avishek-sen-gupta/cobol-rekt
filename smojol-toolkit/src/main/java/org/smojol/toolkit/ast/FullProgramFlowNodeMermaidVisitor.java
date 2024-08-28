@@ -1,36 +1,17 @@
 package org.smojol.toolkit.ast;
 
 import lombok.Getter;
-import org.antlr.v4.runtime.ParserRuleContext;
 import org.apache.commons.text.StringEscapeUtils;
 import org.smojol.common.ast.*;
-import org.smojol.common.navigation.CobolEntityNavigator;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static guru.nidi.graphviz.model.Factory.mutGraph;
-import static guru.nidi.graphviz.model.Factory.mutNode;
-
-public class PerSectionFlowNodeMermaidVisitor implements FlowNodeVisitor {
+public class FullProgramFlowNodeMermaidVisitor implements FlowNodeVisitor {
     @Getter
     private final ArrayList<String> lines = new ArrayList<>();
-    private final FlowNode root;
-    private final CobolEntityNavigator navigator;
-
-    public PerSectionFlowNodeMermaidVisitor(FlowNode root) {
-        this.root = root;
-        navigator = new CobolEntityNavigator((ParserRuleContext) root.getExecutionContext());
-    }
 
     public void visit(FlowNode node, List<FlowNode> outgoingNodes, List<FlowNode> incomingNodes, VisitContext visitContext, FlowNodeService nodeService) {
-        if (node.type() == FlowNodeType.SECTION && node != root) return;
-        if (node.type() == FlowNodeType.SECTION && node == root) {
-            lines.add(node(node));
-            return;
-        }
-
-        if (!contains(node)) return;
         lines.addAll(outgoingNodes.stream().map(o -> directedPeerEdge(node, o)).toList());
     }
 
@@ -57,14 +38,9 @@ public class PerSectionFlowNodeMermaidVisitor implements FlowNodeVisitor {
 
     @Override
     public void visitParentChildLink(FlowNode parent, FlowNode child, VisitContext visitContext, FlowNodeService nodeService, FlowNodeCondition hideStrategy) {
-        if (!contains(parent)) return;
         if (parent.type() == FlowNodeType.IF_BRANCH)
             lines.add(directedLabelledParentChildEdge(parent, child, child.type() == FlowNodeType.IF_YES ? "YES" : "NO"));
         else lines.add(directedParentChildEdge(parent, child));
-    }
-
-    private boolean contains(FlowNode node) {
-        return navigator.findByCondition(n -> n == node.getExecutionContext()) != null;
     }
 
     private String directedLabelledParentChildEdge(FlowNode parent, FlowNode child, String label) {
@@ -73,7 +49,6 @@ public class PerSectionFlowNodeMermaidVisitor implements FlowNodeVisitor {
 
     @Override
     public void visitControlTransfer(FlowNode from, FlowNode to, VisitContext visitContext) {
-        if (!contains(from)) return;
         lines.add(directedJumpEdge(from, to));
     }
 

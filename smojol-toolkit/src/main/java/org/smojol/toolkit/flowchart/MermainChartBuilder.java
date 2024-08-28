@@ -9,6 +9,7 @@ public class MermainChartBuilder {
     public ArrayList<String> build(FlowNode graphRoot) {
         FlowNode rootFlowNode = graphRoot;
         PerSectionFlowNodeMermaidVisitor chartVisitor = new PerSectionFlowNodeMermaidVisitor(graphRoot);
+//        FullProgramFlowNodeMermaidVisitor chartVisitor = new FullProgramFlowNodeMermaidVisitor();
         rootFlowNode.accept(chartVisitor, 1);
         return chartVisitor.getLines();
     }

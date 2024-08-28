@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
@@ -30,29 +29,29 @@ public class ExportMermaidTask implements AnalysisTask {
     public AnalysisTaskResult run() {
         List<FlowNode> sections = new FlowNodeNavigator(flowRoot).findAllByCondition(fn -> fn.type() == FlowNodeType.SECTION);
         try {
-            writeSections(sections);
+            Files.createDirectories(mermaidOutputConfig.outputDir());
+//            writeCodeBlock(flowRoot);
+            sections.forEach(this::writeCodeBlock);
             return AnalysisTaskResult.OK(CommandLineAnalysisTask.EXPORT_MERMAID);
         } catch (Exception e) {
             return AnalysisTaskResult.ERROR(e, CommandLineAnalysisTask.EXPORT_MERMAID);
         }
     }
 
-    private void writeSections(List<FlowNode> sections) throws IOException {
-        Files.createDirectories(mermaidOutputConfig.outputDir());
-        sections.forEach(s -> {
-            List<String> mermaidGraph = new MermainChartBuilder().build(s);
-            String sectionOutputPath = Paths.get(mermaidOutputConfig.outputDir().toString(), s.name() + ".md").toString();
-            try (PrintWriter writer = new PrintWriter(sectionOutputPath, StandardCharsets.UTF_8)){
-                writer.println("---");
-                writer.println("title: Section " + s.name());
-                writer.println("---");
-                writer.println("```mermaid");
-                writer.println("flowchart TD");
-                mermaidGraph.forEach(writer::println);
-                writer.println("```");
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
+    private void writeCodeBlock(FlowNode s) {
+        String filename = s.type() == FlowNodeType.PROCEDURE_DIVISION_BODY ? s.id() : s.name();
+        List<String> mermaidGraph = new MermainChartBuilder().build(s);
+        String sectionOutputPath = Paths.get(mermaidOutputConfig.outputDir().toString(), filename + ".md").toString();
+        try (PrintWriter writer = new PrintWriter(sectionOutputPath, StandardCharsets.UTF_8)){
+            writer.println("---");
+            writer.println("title: Section " + s.name());
+            writer.println("---");
+            writer.println("```mermaid");
+            writer.println("flowchart TD");
+            mermaidGraph.forEach(writer::println);
+            writer.println("```");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

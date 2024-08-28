@@ -110,7 +110,8 @@ public class CobolEntityNavigator {
 
     private ParseTree findByConditionRecursive(ParseTree currentNode, ParseTreeSearchCondition c, int level, int maxLevel) {
         if (c.apply(currentNode)) return currentNode;
-        if (maxLevel != -1 && level > maxLevel) return null;
+        if (maxLevel != -1 && level > maxLevel)
+            return null;
         for (int i = 0; i <= currentNode.getChildCount() - 1; i++) {
             ParseTree searchResult = findByConditionRecursive(currentNode.getChild(i), c, level + 1, maxLevel);
             if (searchResult != null) return searchResult;

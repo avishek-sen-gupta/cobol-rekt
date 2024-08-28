@@ -5,6 +5,7 @@
 This is an evolving toolkit of capabilities helpful for reverse engineering legacy Cobol code. As of now, the following capabilities are available:
 
 - Program / section / paragraph level flowchart generation based on AST (SVG or PNG)
+- Section-wise generation of Mermaid flowcharts
 - Parse Tree generation (with export to JSON)
 - Control Flow Tree generation (with export to JSON)
 - Allows embedding code comments as comment nodes in the graph
@@ -80,6 +81,10 @@ This capability allows the engineer to transform Cobol source (or part of it) in
 ### Interpreting the Flowchart
 
 The dotted lines indicate things that are inside a node. So, in the above example, after the first beige "Processing" block, there is a node which leads to an IF statement through the dotted line. What happens inside the IF statement can be understood by "stepping into" this dotted line. The normal flow after the IF statement finishes can be continued by returning to the node where the dotted line originates.
+
+You can also generate Mermaid flowcharts for embedding in other Markdown files. You can use the ```EXPORT_MERMAID``` task for this. Currently, this supports only section-wise generation of Mermaid charts.
+
+![Mermaid Flowcharts](documentation/mermaid-sectionwise.png)
 
 ## Parse Tree Generation
 
@@ -344,6 +349,7 @@ This command encapsulates almost all the tasks that you are likely to run. The d
 - ```EXPORT_TO_GRAPHML```: This exports the unified model to GraphML. Exposing more fine-grained options is in progress.
 - ```WRITE_RAW_AST```: This writes the original parse tree to JSON. Useful for downstream code to build their own AST representations.
 - ```DRAW_FLOWCHART```: This outputs flowcharts for the whole program or section-by-section of the program in PNG format.
+- ```EXPORT_MERMAID```: This outputs section-wise (one file per section) flowcharts for the program in the Mermaid format.
 - ```WRITE_CFG```: This outputs the control flow graph of the program as JSON.
 - ```WRITE_DATA_STRUCTURES```: This exports the data structure hierarchy of the program as JSON.
 - ```BUILD_PROGRAM_DEPENDENCIES``` (ALPHA): Builds direct program dependencies from ```CALL``` and IDMS ```TRANSFER CONTROL``` statements. Indirect dependencies are not traced. For tracing the full dependency graph, see the ```dependency``` task.
@@ -374,7 +380,7 @@ Implements various operations useful for reverse engineering Cobol code
                                DRAW_FLOWCHART, WRITE_FLOW_AST, WRITE_CFG,
                                ATTACH_COMMENTS, WRITE_DATA_STRUCTURES,
                                BUILD_PROGRAM_DEPENDENCIES, COMPARE_CODE,
-                               EXPORT_UNIFIED_TO_JSON)
+                               EXPORT_UNIFIED_TO_JSON, EXPORT_MERMAID)
       -cp, --copyBooksDir=<copyBookDirs>[,<copyBookDirs>...]
                              Copybook directories (repeatable)
   -d, --dialect=<dialect>    The COBOL dialect (COBOL, IDMS)
@@ -384,7 +390,7 @@ Implements various operations useful for reverse engineering Cobol code
                              Format of the flowchart output (PNG, SVG)
   -g, --generation=<flowchartGenerationStrategy>
                              The flowchart generation strategy. Valid values
-                               are SECTION, PROGRAM, PARAGRAPH, and NODRAW
+                               are SECTION, PROGRAM, and NODRAW
   -h, --help                 Show this help message and exit.
   -p, --permissiveSearch     Match filename using looser criteria
   -r, --reportDir=<reportRootDir>
