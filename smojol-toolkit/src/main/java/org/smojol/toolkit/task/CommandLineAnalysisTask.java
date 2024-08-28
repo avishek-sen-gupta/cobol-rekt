@@ -6,6 +6,7 @@ public enum CommandLineAnalysisTask {
     WRITE_RAW_AST,
     WRITE_FLOW_AST,
     DRAW_FLOWCHART,
+    EXPORT_MERMAID,
     WRITE_CFG,
     ATTACH_COMMENTS,
     WRITE_DATA_STRUCTURES,

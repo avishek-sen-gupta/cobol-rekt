@@ -39,6 +39,7 @@ public class CodeTaskRunner {
     private static final String CFG_DIR = "cfg";
     private static final String SIMILARITY_DIR = "similarity";
     private static final String UNIFIED_MODEL_DIR = "unified_model";
+    private static final String MERMAID_DIR = "mermaid";
     private final String sourceDir;
     private final List<File> copyBookPaths;
     private final String dialectJarPath;
@@ -121,6 +122,7 @@ public class CodeTaskRunner {
 
         FlowchartOutputWriter flowchartOutputWriter = new FlowchartOutputWriter(flowchartGenerationStrategy, dotFileOutputDir, imageOutputDir);
         RawASTOutputConfig rawAstOutputConfig = new RawASTOutputConfig(astOutputDir, cobolParseTreeOutputPath, new CobolTreeVisualiser());
+        OutputArtifactConfig mermaidOutputConfig = new OutputArtifactConfig(Paths.get(reportRootDir, programReportDir, MERMAID_DIR).toAbsolutePath().normalize(), "");
         FlowASTOutputConfig flowASTOutputConfig = new FlowASTOutputConfig(flowASTOutputDir, flowASTOutputPath);
         GraphMLExportConfig graphMLOutputConfig = new GraphMLExportConfig(graphMLExportOutputDir, graphMLExportOutputPath);
         CFGOutputConfig cfgOutputConfig = new CFGOutputConfig(cfgOutputDir, cfgOutputPath);
@@ -137,6 +139,7 @@ public class CodeTaskRunner {
                 rawAstOutputConfig, graphMLOutputConfig,
                 flowASTOutputConfig, cfgOutputConfig,
                 graphBuildConfig, dataStructuresOutputConfig, unifiedModelOutputConfig, similarityOutputConfig,
+                mermaidOutputConfig,
                 idProvider, new Neo4JDriverBuilder()).build();
         return pipelineTasks.run(tasks);
     }

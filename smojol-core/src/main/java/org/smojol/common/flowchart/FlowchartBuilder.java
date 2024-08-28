@@ -9,10 +9,10 @@ import java.io.IOException;
 import java.util.function.Function;
 
 public interface FlowchartBuilder {
-    FlowchartBuilder buildDotStructure(Function<VisitContext, Boolean> stopCondition);
-    FlowchartBuilder buildDotStructure();
+    FlowchartBuilder buildDotStructure(Function<VisitContext, Boolean> stopCondition, FlowchartOutputFormat flowchartOutputFormat);
+    FlowchartBuilder buildDotStructure(FlowchartOutputFormat flowchartOutputFormat);
     FlowchartBuilder buildFlowAST(ParseTree node);
-    FlowchartBuilder write(String dotFilePath);
+    FlowchartBuilder write(String dotFilePath, FlowchartOutputFormat outputFormat);
     FlowchartBuilder outline(ParseTree groupRoot, String clusterLabel);
     FlowchartBuilder connectToComment(String explanation, ParseTree symbol);
     FlowchartBuilder createComment(String comment);

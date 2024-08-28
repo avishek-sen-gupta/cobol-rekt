@@ -28,6 +28,7 @@ public class SmojolTasks {
     private final FlowASTOutputConfig flowASTOutputConfig;
     private final CFGOutputConfig cfgOutputConfig;
     private final OutputArtifactConfig dataStructuresOutputConfig;
+    private final OutputArtifactConfig mermaidOutputConfig;
     private final IdProvider idProvider;
     private final GraphBuildConfig graphBuildConfig;
     private final Neo4JDriverBuilder neo4JDriverBuilder;
@@ -38,7 +39,7 @@ public class SmojolTasks {
     private FlowNode flowRoot;
     private ParserRuleContext rawAST;
 
-    public SmojolTasks(ParsePipeline pipeline, SourceConfig sourceConfig, FlowchartOutputWriter flowchartOutputWriter, RawASTOutputConfig rawAstOutputConfig, GraphMLExportConfig graphMLOutputConfig, FlowASTOutputConfig flowASTOutputConfig, CFGOutputConfig cfgOutputConfig, GraphBuildConfig graphBuildConfig, OutputArtifactConfig dataStructuresOutputConfig, OutputArtifactConfig unifiedModelOutputConfig, OutputArtifactConfig similarityOutputConfig, IdProvider idProvider, Neo4JDriverBuilder neo4JDriverBuilder) {
+    public SmojolTasks(ParsePipeline pipeline, SourceConfig sourceConfig, FlowchartOutputWriter flowchartOutputWriter, RawASTOutputConfig rawAstOutputConfig, GraphMLExportConfig graphMLOutputConfig, FlowASTOutputConfig flowASTOutputConfig, CFGOutputConfig cfgOutputConfig, GraphBuildConfig graphBuildConfig, OutputArtifactConfig dataStructuresOutputConfig, OutputArtifactConfig unifiedModelOutputConfig, OutputArtifactConfig similarityOutputConfig, OutputArtifactConfig mermaidOutputConfig, IdProvider idProvider, Neo4JDriverBuilder neo4JDriverBuilder) {
         this.pipeline = pipeline;
         this.sourceConfig = sourceConfig;
         this.flowchartOutputWriter = flowchartOutputWriter;
@@ -49,6 +50,7 @@ public class SmojolTasks {
         this.graphMLOutputConfig = graphMLOutputConfig;
         this.flowASTOutputConfig = flowASTOutputConfig;
         this.cfgOutputConfig = cfgOutputConfig;
+        this.mermaidOutputConfig = mermaidOutputConfig;
         this.idProvider = idProvider;
         this.graphBuildConfig = graphBuildConfig;
         this.neo4JDriverBuilder = neo4JDriverBuilder;
@@ -129,6 +131,13 @@ public class SmojolTasks {
         }
     };
 
+    public AnalysisTask EXPORT_MERMAID = new AnalysisTask() {
+        @Override
+        public AnalysisTaskResult run() {
+            return new ExportMermaidTask(flowRoot, mermaidOutputConfig).run();
+        }
+    };
+
     public AnalysisTask WRITE_CFG = new AnalysisTask() {
         @Override
         public AnalysisTaskResult run() {
@@ -166,6 +175,7 @@ public class SmojolTasks {
             case EXPORT_TO_GRAPHML -> EXPORT_TO_GRAPHML;
             case WRITE_RAW_AST -> WRITE_RAW_AST;
             case DRAW_FLOWCHART -> DRAW_FLOWCHART;
+            case EXPORT_MERMAID -> EXPORT_MERMAID;
             case WRITE_FLOW_AST -> WRITE_FLOW_AST;
             case WRITE_CFG -> WRITE_CFG;
             case ATTACH_COMMENTS -> ATTACH_COMMENTS;
