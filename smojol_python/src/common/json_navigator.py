@@ -40,18 +40,22 @@ def recursive(criterion: Criterion) -> SearchPath:
     return apply
 
 
-def recurse_operand(criterion: Criterion, tree: ASTNode) -> list[ASTNode]:
+def initial_candidates(criterion: Criterion, tree: ASTNode) -> list[ASTNode]:
     if criterion(tree):
         return [tree]
     if len(tree["children"]) == 0:
         return []
-    return reduce(lambda prev, curr: prev + curr, map(lambda n: recurse_operand(criterion, n), tree["children"]), [])
+    return reduce(lambda prev, curr: prev + curr, map(lambda n: initial_candidates(criterion, n), tree["children"]), [])
 
 
 def find_where(tree: ASTNode, criterion: Criterion, conditions: list[SearchPath]) -> list[ASTNode]:
-    matching_nodes = recurse_operand(criterion, tree)
+    candidate_nodes = initial_candidates(criterion, tree)
     return list(filter(lambda node: not is_null_node(reduce(lambda prev, path: path(prev), conditions, node)),
-                       matching_nodes))
+                       candidate_nodes))
+
+
+def path(search_root: ASTNode, conditions: list[SearchPath]) -> ASTNode:
+    return reduce(lambda prev, search_path: search_path(prev), conditions, search_root)
 
 
 def node_type(ntype: str) -> Callable[[ASTNode], bool]:

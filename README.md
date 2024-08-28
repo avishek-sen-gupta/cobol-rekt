@@ -16,6 +16,7 @@ This is an evolving toolkit of capabilities helpful for reverse engineering lega
 - Perform actions on graphs using depth first traversals in Neo4J (AST nodes or Data Structure nodes). Use cases can include aggregating lower-level summaries (using an LLM) into more abstract descriptions of functionality, a la GraphRAG.
 - Exposes a unified model (AST, CFG, Data Structures with appropriate interconnections) which can be analysed through [JGraphT](https://jgrapht.org/), together with export to GraphML format and JSON.
 - Support for namespaces to allow unique addressing of (possibly same) graphs
+- Analysing static value assignments to variables
 - **ALPHA:** Support for building Glossary of Variables from data structures using LLMs
 - **ALPHA:** Support for extracting Capability Graph from paragraphs of a program using LLMs
 - **ALPHA:** Injecting inter-program dependencies into Neo4J (with export to JSON)
@@ -219,6 +220,24 @@ The file will be in the ```import``` directory inside the directory where the cu
 In addition to writing to Neo4J and leveraging its data science capabilities to analyse the graph(s), the library also embeds [JGraphT](https://jgrapht.org/), a powerful library of graph algorithms. The ```JGraphTBuilder``` class converts the unified model (AST, CFG, Data Structures) into a DirectedPseudograph (because there can be both loops and parallel edges between two nodes), for consequent analysis through the JGraphT API.
 
 Custom analyses are a work in progress. The ```COMPARE_CODE``` task, for example, uses the JGraphT library.
+
+## Useful Analyses through plain Python
+
+### 1) Analyse static value assignments to variables
+
+This is useful for when you are looking for the range of values which are assigned to a record in a program. You will need to execute the ```WRITE_RAW_AST``` task first, like so:
+
+```
+java -jar smojol-cli/target/smojol-cli.jar run test-exp.cbl hello.cbl --commands="WRITE_RAW_AST" --srcDir /Users/asgupta/code/smojol/smojol-test-code --copyBooksDir /Users/asgupta/code/smojol/smojol-test-code --dialectJarPath ./che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar --reportDir out/report --generation=PROGRAM
+```
+
+Once you have the AST file, you can run the analysis like so (making sure first that you are in the ```smojol_python``` directory):
+
+```
+python -m src.analysis.variable_static_values /path/to/ast/json --output=/path/to/output
+```
+
+If you omit the ```--output``` flag, it will simply print out the results.
 
 ## Analysis through NetworkX
 

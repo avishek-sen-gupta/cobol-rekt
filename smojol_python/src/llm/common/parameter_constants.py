@@ -8,3 +8,4 @@ class ParameterConstants:
     PARAGRAPH_CAPABILITIES_OUTPUT_PATH = "paragraph_capabilities_output_path"
     PARAGRAPH_VARIABLES_EXPLANATIONS_OUTPUT_PATH = "paragraph_variables_explanations_output_path"
     RAW_AST_PATH = "raw_ast_path"
+    VARIABLE_STATIC_VALUES_OUTPUT_PATH = "output"
