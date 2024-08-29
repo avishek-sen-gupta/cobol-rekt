@@ -1,5 +1,5 @@
 package org.smojol.common.pseudocode;
 
-public enum PseudocodeMetatype {
+public enum CodeSentinelType {
     ENTER, EXIT, BODY, MARKER, NO_OP
 }

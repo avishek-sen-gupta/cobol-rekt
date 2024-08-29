@@ -6,13 +6,13 @@ public final class AnalysisTaskResultOK implements AnalysisTaskResult {
     @Getter private final String task;
     private final Object detail;
 
-    public AnalysisTaskResultOK(Object detail) {
-        this("<UNKNOWN_TASK>", detail);
-    }
-
     public AnalysisTaskResultOK(String task, Object detail) {
         this.task = task;
         this.detail = detail;
+    }
+
+    public AnalysisTaskResultOK(String task) {
+        this(task, new Object());
     }
 
     public <T> T getDetail() {

@@ -1,5 +1,7 @@
 package org.smojol.common.ast;
 
+import org.smojol.common.pseudocode.CodeSentinelType;
+
 import java.util.List;
 
 public interface FlowNodeLike {
@@ -9,4 +11,5 @@ public interface FlowNodeLike {
     String originalText();
     FlowNodeType type();
     List<FlowNodeCategory> categories();
+    CodeSentinelType codeSentinelType();
 }

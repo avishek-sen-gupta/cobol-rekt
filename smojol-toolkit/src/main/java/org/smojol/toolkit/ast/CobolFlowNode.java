@@ -8,6 +8,7 @@ import org.antlr.v4.runtime.tree.TerminalNodeImpl;
 import org.eclipse.lsp.cobol.dialects.idms.IdmsParser;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.ast.*;
+import org.smojol.common.pseudocode.CodeSentinelType;
 import org.smojol.common.vm.interpreter.CobolInterpreter;
 import org.smojol.common.vm.interpreter.CobolVmSignal;
 import org.smojol.common.vm.interpreter.FlowControl;
@@ -121,6 +122,11 @@ public class CobolFlowNode implements FlowNode {
     @Override
     public List<FlowNodeCategory> categories() {
         return ImmutableList.of(FlowNodeCategory.GENERIC_CODE);
+    }
+
+    @Override
+    public CodeSentinelType codeSentinelType() {
+        return CodeSentinelType.BODY;
     }
 
     protected String defaultName() {

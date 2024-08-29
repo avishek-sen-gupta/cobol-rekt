@@ -5,6 +5,7 @@ import lombok.Getter;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolDataDivisionParser;
 import org.smojol.common.ast.*;
+import org.smojol.common.pseudocode.CodeSentinelType;
 import org.smojol.common.vm.interpreter.CobolInterpreter;
 import org.smojol.common.vm.interpreter.CobolVmSignal;
 import org.smojol.common.vm.interpreter.FlowControl;
@@ -69,6 +70,11 @@ public class GenericProcessingFlowNode implements FlowNode {
     @Override
     public List<FlowNodeCategory> categories() {
         return ImmutableList.of(FlowNodeCategory.CODE_BLOCK);
+    }
+
+    @Override
+    public CodeSentinelType codeSentinelType() {
+        return CodeSentinelType.BODY;
     }
 
     @Override

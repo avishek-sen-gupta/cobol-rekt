@@ -1,7 +1,9 @@
 package org.smojol.common.ast;
 
+import lombok.Getter;
 import org.smojol.common.pseudocode.PseudocodeInstruction;
 
+@Getter
 public class InstructionEdge {
     private final PseudocodeInstruction from;
     private final PseudocodeInstruction to;

@@ -3,6 +3,7 @@ package org.smojol.toolkit.analysis.graph;
 import com.google.common.collect.ImmutableList;
 import com.mojo.woof.NodeSpec;
 import org.smojol.common.ast.FlowNodeLike;
+import org.smojol.common.pseudocode.CodeSentinelType;
 import org.smojol.toolkit.analysis.graph.graphml.TypedCodeVertex;
 import org.smojol.toolkit.analysis.graph.graphml.TypedDataStructureVertex;
 import org.smojol.toolkit.analysis.graph.graphml.TypedGraphEdge;
@@ -68,21 +69,13 @@ public class NodeSpecBuilder {
                         TYPE, node.type().toString(),
                         ENTITY_TYPE, nodeType,
                         ENTITY_CATEGORIES, node.categories().stream().map(Enum::name).toList(),
+                        CODE_SENTINEL_TYPE, node.codeSentinelType().name(),
                         NAMESPACE, namespaceQualifier.getNamespace()
                 ));
     }
 
     public NodeSpec newTraceNode(FlowNodeLike node) {
-        return new NodeSpec(ImmutableList.of(CFG_TRACE, node.type().toString()),
-                Map.of(ID, idProvider.next(),
-                        INTERNAL_ID, node.id(),
-                        NAME, node.name(),
-                        TEXT, node.originalText(),
-                        TYPE, node.type().toString(),
-                        ENTITY_TYPE, CFG_TRACE,
-                        ENTITY_CATEGORIES, node.categories().stream().map(Enum::name).toList(),
-                        NAMESPACE, namespaceQualifier.getNamespace()
-                ));
+        return labelledCodeNode(node, CFG_TRACE);
     }
 
     public NodeSpec dataNodeSearchSpec(CobolDataStructure structure) {
@@ -140,6 +133,7 @@ public class NodeSpecBuilder {
                         TYPE, COMMENT_NODE,
                         ENTITY_TYPE, COMMENT_NODE,
                         ENTITY_CATEGORIES, ImmutableList.of(METADATA.name()),
+                        CODE_SENTINEL_TYPE, CodeSentinelType.BODY,
                         NAMESPACE, namespaceQualifier.getNamespace()
                 ));
     }

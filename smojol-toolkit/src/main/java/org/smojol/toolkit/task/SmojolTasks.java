@@ -2,6 +2,7 @@ package org.smojol.toolkit.task;
 
 import com.mojo.woof.Neo4JDriverBuilder;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.smojol.common.id.UUIDProvider;
 import org.smojol.toolkit.analysis.defined.*;
 import org.smojol.toolkit.analysis.pipeline.ParsePipeline;
 import org.smojol.toolkit.analysis.graph.NamespaceQualifier;
@@ -127,7 +128,7 @@ public class SmojolTasks {
     public AnalysisTask FLATTEN_FLOW_AST = new AnalysisTask() {
         @Override
         public AnalysisTaskResult run() {
-            return new FlattenFlowASTTask(flowRoot, flowASTOutputConfig).run();
+            return new FlattenFlowASTTask(flowRoot, flowASTOutputConfig, neo4JDriverBuilder).run();
         }
     };
 

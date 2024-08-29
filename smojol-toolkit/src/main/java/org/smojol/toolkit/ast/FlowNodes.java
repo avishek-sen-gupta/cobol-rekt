@@ -2,11 +2,11 @@ package org.smojol.toolkit.ast;
 
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.FlowNodeService;
+import org.smojol.common.ast.NullFlowNode;
 
 import java.util.List;
 
 public class FlowNodes {
-
     private final List<FlowNode> nodes;
     private final FlowNodeService nodeService;
 

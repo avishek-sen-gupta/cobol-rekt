@@ -14,7 +14,7 @@ public class NodeToWoof {
         return sdk.newOrExisting(qualifier.cfgNodeSearchSpec(node), toWoofNode(node, qualifier));
     }
 
-    private static WoofNode toWoofNode(FlowNodeLike node, NodeSpecBuilder qualifier) {
+    public static WoofNode toWoofNode(FlowNodeLike node, NodeSpecBuilder qualifier) {
         return new WoofNode(qualifier.newCFGNode(node));
     }
 

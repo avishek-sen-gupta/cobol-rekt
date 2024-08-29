@@ -4,7 +4,7 @@ import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.FlowNodeType;
 import org.smojol.common.id.IdProvider;
 
-import static org.smojol.common.pseudocode.PseudocodeMetatype.*;
+import static org.smojol.common.pseudocode.CodeSentinelType.*;
 
 public class PseudocodeInstructionGenerator {
     public static PseudocodeInstruction visiting(FlowNode node, IdProvider uuidProvider) {

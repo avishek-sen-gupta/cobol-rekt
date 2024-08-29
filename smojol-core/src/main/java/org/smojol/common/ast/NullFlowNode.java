@@ -1,8 +1,8 @@
-package org.smojol.toolkit.ast;
+package org.smojol.common.ast;
 
 import com.google.common.collect.ImmutableList;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.smojol.common.ast.*;
+import org.smojol.common.pseudocode.CodeSentinelType;
 import org.smojol.common.vm.interpreter.CobolInterpreter;
 import org.smojol.common.vm.interpreter.CobolVmSignal;
 import org.smojol.common.vm.interpreter.FlowControl;
@@ -15,6 +15,10 @@ public class NullFlowNode implements FlowNode {
 
     public NullFlowNode(FlowNodeService nodeService) {
         uuid = nodeService.nextID();
+    }
+
+    public NullFlowNode() {
+        uuid = "-999";
     }
 
     @Override
@@ -144,12 +148,17 @@ public class NullFlowNode implements FlowNode {
 
     @Override
     public FlowNodeType type() {
-        return null;
+        return FlowNodeType.DUMMY;
     }
 
     @Override
     public List<FlowNodeCategory> categories() {
         return ImmutableList.of(FlowNodeCategory.UNKNOWN);
+    }
+
+    @Override
+    public CodeSentinelType codeSentinelType() {
+        return CodeSentinelType.BODY;
     }
 
     @Override

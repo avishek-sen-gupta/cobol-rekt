@@ -2,11 +2,12 @@ package org.smojol.common.navigation;
 
 import com.google.common.collect.ImmutableList;
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.FlowNodeType;
 import org.smojol.common.ast.InternalControlFlowNode;
 import org.smojol.common.pseudocode.PseudocodeInstruction;
-import org.smojol.common.pseudocode.PseudocodeMetatype;
+import org.smojol.common.pseudocode.CodeSentinelType;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -29,22 +30,22 @@ public class PseudocodeNavigator {
         return !mathing.isEmpty() ? mathing.getFirst() : PseudocodeInstruction.NULL;
     }
 
-    public List<ImmutablePair<PseudocodeInstruction, PseudocodeInstruction>> findCallTargets(PseudocodeInstruction from, int iptr, List<PseudocodeInstruction> instructions) {
+    public List<Pair<PseudocodeInstruction, PseudocodeInstruction>> findCallTargets(PseudocodeInstruction from, int iptr, List<PseudocodeInstruction> instructions) {
         System.out.println("Finding call targets of " + from.toString());
         if (from.getNode().type() == FlowNodeType.NEXT_SENTENCE) {
             int searchIndex = iptr;
             while (searchIndex < instructions.size()) {
                 PseudocodeInstruction searchedInstruction = instructions.get(searchIndex);
-                if (searchedInstruction.getNode().type() == FlowNodeType.SENTENCE && searchedInstruction.getMetatype() == PseudocodeMetatype.ENTER)
+                if (searchedInstruction.getNode().type() == FlowNodeType.SENTENCE && searchedInstruction.getSentinelType() == CodeSentinelType.ENTER)
                     return ImmutableList.of(ImmutablePair.of(searchedInstruction, PseudocodeInstruction.NULL));
                 searchIndex++;
             }
             return ImmutableList.of();
         } else if (from.getNode().type() == FlowNodeType.PERFORM || from.getNode().type() == FlowNodeType.GOTO) {
             List<FlowNode> callTargets = ((InternalControlFlowNode) from.getNode()).callTargets();
-            List<PseudocodeInstruction> targetInstructionEntries = findAllByCondition(i -> callTargets.contains(i.getNode()) && i.getMetatype() == PseudocodeMetatype.ENTER, instructions);
-            List<PseudocodeInstruction> targetInstructionExits = from.getNode().type() == FlowNodeType.GOTO ? ImmutableList.of() : findAllByCondition(i -> callTargets.contains(i.getNode()) && i.getMetatype() == PseudocodeMetatype.EXIT, instructions);
-            return zip(targetInstructionEntries.stream(), targetInstructionExits.stream(), (entry, exit) -> ImmutablePair.of(entry, exit)).toList();
+            List<PseudocodeInstruction> targetInstructionEntries = findAllByCondition(i -> callTargets.contains(i.getNode()) && i.getSentinelType() == CodeSentinelType.ENTER, instructions);
+            List<PseudocodeInstruction> targetInstructionExits = from.getNode().type() == FlowNodeType.GOTO ? ImmutableList.of() : findAllByCondition(i -> callTargets.contains(i.getNode()) && i.getSentinelType() == CodeSentinelType.EXIT, instructions);
+            return zip(targetInstructionEntries.stream(), targetInstructionExits.stream(), (entry, exit) -> (Pair<PseudocodeInstruction, PseudocodeInstruction>) ImmutablePair.of(entry, exit)).toList();
         }
 
         return ImmutableList.of();

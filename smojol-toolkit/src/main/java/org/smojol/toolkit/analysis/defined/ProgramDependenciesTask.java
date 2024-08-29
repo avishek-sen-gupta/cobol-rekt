@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import lombok.Getter;
 import org.smojol.common.ast.*;
 import org.smojol.common.flowchart.ConsoleColors;
+import org.smojol.common.id.UUIDProvider;
 import org.smojol.common.program.TransferControlCollectorVisitor;
 import org.smojol.common.pseudocode.PseudocodeInstruction;
 import org.smojol.toolkit.task.AnalysisTaskResultOK;

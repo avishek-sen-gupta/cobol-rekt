@@ -23,7 +23,7 @@ public class SerialisableCFGFlowNode {
         this.categories = categories;
     }
 
-    public SerialisableCFGFlowNode(FlowNode current) {
+    public SerialisableCFGFlowNode(FlowNodeLike current) {
         this(current.id(), current.label(), current.name(), current.originalText(), current.type(), current.categories());
     }
 }
