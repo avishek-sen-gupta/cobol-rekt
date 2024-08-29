@@ -9,7 +9,7 @@ import org.smojol.common.vm.stack.StackFrames;
 
 import java.util.List;
 
-public class CallFlowNode extends CobolFlowNode implements ControlFlowNode {
+public class CallFlowNode extends CobolFlowNode implements ExternalControlFlowNode {
     @Getter
     private final CallTarget callTarget;
 

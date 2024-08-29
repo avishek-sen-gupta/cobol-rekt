@@ -26,7 +26,7 @@ public class DynamicCallTarget extends CallTarget {
     @Override
     public CallTarget resolve(PseudocodeInstruction instruction, List<PseudocodeInstruction> instructions) {
         int transferIndex = instructions.indexOf(instruction);
-        String variableName = ((ControlFlowNode) instruction.getNode()).callTarget().getName();
+        String variableName = ((ExternalControlFlowNode) instruction.getNode()).callTarget().getName();
         int searchIndex = transferIndex - 1;
         while (searchIndex >= 0 && transferIndex - searchIndex <= 5) {
             PseudocodeInstruction candidateInstruction = instructions.get(searchIndex);

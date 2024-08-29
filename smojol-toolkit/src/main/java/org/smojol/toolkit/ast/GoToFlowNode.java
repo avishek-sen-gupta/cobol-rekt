@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 import static guru.nidi.graphviz.model.Factory.mutNode;
 
-public class GoToFlowNode extends CobolFlowNode {
+public class GoToFlowNode extends CobolFlowNode implements InternalControlFlowNode {
 
     private List<FlowNode> destinationNodes;
 
@@ -59,5 +59,10 @@ public class GoToFlowNode extends CobolFlowNode {
     @Override
     public List<FlowNodeCategory> categories() {
         return ImmutableList.of(FlowNodeCategory.CONTROL_FLOW);
+    }
+
+    @Override
+    public List<FlowNode> callTargets() {
+        return destinationNodes;
     }
 }

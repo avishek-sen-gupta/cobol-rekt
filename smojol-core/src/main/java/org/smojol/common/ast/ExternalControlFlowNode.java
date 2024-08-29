@@ -1,5 +1,5 @@
 package org.smojol.common.ast;
 
-public interface ControlFlowNode {
+public interface ExternalControlFlowNode {
     CallTarget callTarget();
 }

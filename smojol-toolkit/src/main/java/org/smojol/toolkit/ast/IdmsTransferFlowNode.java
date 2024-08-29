@@ -9,7 +9,7 @@ import org.smojol.common.vm.stack.StackFrames;
 
 import java.util.List;
 
-public class IdmsTransferFlowNode extends CobolFlowNode implements ControlFlowNode {
+public class IdmsTransferFlowNode extends CobolFlowNode implements ExternalControlFlowNode {
     private CallTarget callTarget;
 
     public IdmsTransferFlowNode(ParseTree parseTree, FlowNode scope, FlowNodeService nodeService, StackFrames staticFrameContext) {

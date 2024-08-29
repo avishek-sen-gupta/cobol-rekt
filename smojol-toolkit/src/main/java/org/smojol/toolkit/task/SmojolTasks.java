@@ -124,6 +124,13 @@ public class SmojolTasks {
         }
     };
 
+    public AnalysisTask FLATTEN_FLOW_AST = new AnalysisTask() {
+        @Override
+        public AnalysisTaskResult run() {
+            return new FlattenFlowASTTask(flowRoot, flowASTOutputConfig).run();
+        }
+    };
+
     public AnalysisTask DRAW_FLOWCHART = new AnalysisTask() {
         @Override
         public AnalysisTaskResult run() {
@@ -160,8 +167,8 @@ public class SmojolTasks {
     };
 
     public SmojolTasks build() throws IOException {
-        rawAST = (ParserRuleContext) pipeline.parse().procedureBodyRoot();
         navigator = pipeline.parse();
+        rawAST = (ParserRuleContext) navigator.procedureBodyRoot();
         dataStructures = pipeline.getDataStructures();
         FlowchartBuilder flowcharter = pipeline.flowcharter();
         flowcharter.buildFlowAST(rawAST).buildControlFlow().buildOverlay();
@@ -185,6 +192,7 @@ public class SmojolTasks {
             case COMPARE_CODE -> COMPARE_CODE;
             case SUMMARISE_THROUGH_LLM -> SUMMARISE_THROUGH_LLM;
             case BUILD_PSEUDOCODE -> BUILD_PSEUDOCODE;
+            case FLATTEN_FLOW_AST -> FLATTEN_FLOW_AST;
         });
     }
 }

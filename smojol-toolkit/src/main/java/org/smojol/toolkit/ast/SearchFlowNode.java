@@ -10,6 +10,7 @@ import org.smojol.common.vm.interpreter.CobolVmSignal;
 import org.smojol.common.vm.interpreter.FlowControl;
 import org.smojol.common.vm.stack.StackFrames;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SearchFlowNode extends CobolFlowNode {
@@ -84,5 +85,13 @@ public class SearchFlowNode extends CobolFlowNode {
     @Override
     public List<FlowNodeCategory> categories() {
         return ImmutableList.of(FlowNodeCategory.SEARCH);
+    }
+
+    @Override
+    public List<FlowNode> astChildren() {
+        List<FlowNode> children = new ArrayList<>();
+        if (endPhraseExists()) children.add(atEndBlock);
+        children.addAll(whenPhrases);
+        return children;
     }
 }

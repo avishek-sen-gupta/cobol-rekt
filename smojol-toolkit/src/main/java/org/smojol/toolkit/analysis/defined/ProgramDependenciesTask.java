@@ -25,10 +25,10 @@ public class ProgramDependenciesTask implements AnalysisTask {
         this.programName = programName;
     }
 
-    private List<ControlFlowNode> transfersOfControl() {
+    private List<ExternalControlFlowNode> transfersOfControl() {
         TransferControlCollectorVisitor visitor = new TransferControlCollectorVisitor();
         root.accept(visitor, -1);
-        List<ControlFlowNode> transfers = visitor.getTransfers();
+        List<ExternalControlFlowNode> transfers = visitor.getTransfers();
         if (transfers.isEmpty()) {
             System.out.println(ConsoleColors.green("No transfers found!"));
             return transfers;
@@ -45,8 +45,8 @@ public class ProgramDependenciesTask implements AnalysisTask {
         AnalysisTaskResult pseudocodeBuildTask = new BuildPseudocodeTask(root).run();
         if (!pseudocodeBuildTask.isSuccess()) return pseudocodeBuildTask;
         List<PseudocodeInstruction> instructions = ((AnalysisTaskResultOK) pseudocodeBuildTask).getDetail();
-        List<PseudocodeInstruction> allTransfers = instructions.stream().filter(ins -> ins.isBody() && ins.getNode() instanceof ControlFlowNode).toList();
-        List<CallTarget> resolvedCallTargets = allTransfers.stream().map(t -> ((ControlFlowNode) t.getNode()).callTarget().resolve(t, instructions)).toList();
+        List<PseudocodeInstruction> allTransfers = instructions.stream().filter(ins -> ins.isBody() && ins.getNode() instanceof ExternalControlFlowNode).toList();
+        List<CallTarget> resolvedCallTargets = allTransfers.stream().map(t -> ((ExternalControlFlowNode) t.getNode()).callTarget().resolve(t, instructions)).toList();
         dependencies.addAll(resolvedCallTargets);
 
         return AnalysisTaskResult.OK(CommandLineAnalysisTask.BUILD_PROGRAM_DEPENDENCIES, dependencies);

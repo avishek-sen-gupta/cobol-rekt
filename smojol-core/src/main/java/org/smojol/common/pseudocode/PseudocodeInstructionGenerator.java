@@ -11,11 +11,11 @@ public class PseudocodeInstructionGenerator {
     }
 
     public static PseudocodeInstruction entering(FlowNode node) {
-        return isMarker(node) ? new PseudocodeInstruction(node, NO_OP) : new PseudocodeInstruction(node, ENTER);
+        return new PseudocodeInstruction(node, ENTER);
     }
 
     public static PseudocodeInstruction exiting(FlowNode node) {
-        return isMarker(node) ? new PseudocodeInstruction(node, NO_OP) : new PseudocodeInstruction(node, EXIT);
+        return new PseudocodeInstruction(node, EXIT);
     }
 
     private static boolean isMarker(FlowNode node) {

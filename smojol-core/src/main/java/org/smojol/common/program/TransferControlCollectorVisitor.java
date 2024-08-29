@@ -7,11 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TransferControlCollectorVisitor implements FlowNodeVisitor {
-    @Getter private final List<ControlFlowNode> transfers = new ArrayList<>();
+    @Getter private final List<ExternalControlFlowNode> transfers = new ArrayList<>();
 
     @Override
     public void visit(FlowNode node, List<FlowNode> outgoingNodes, List<FlowNode> incomingNodes, VisitContext context, FlowNodeService nodeService) {
-        if (node instanceof ControlFlowNode) transfers.add((ControlFlowNode) node);
+        if (node instanceof ExternalControlFlowNode) transfers.add((ExternalControlFlowNode) node);
     }
 
     @Override

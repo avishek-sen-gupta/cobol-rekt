@@ -14,8 +14,7 @@ import java.util.List;
 
 import static guru.nidi.graphviz.model.Factory.mutNode;
 
-public class PerformProcedureFlowNode extends CobolFlowNode {
-
+public class PerformProcedureFlowNode extends CobolFlowNode implements InternalControlFlowNode {
     private FlowNode inlineStatementContext;
     private List<FlowNode> procedures = new ArrayList<>();
     private FlowNode condition;
@@ -114,5 +113,15 @@ public class PerformProcedureFlowNode extends CobolFlowNode {
     @Override
     public List<FlowNodeCategory> categories() {
         return ImmutableList.of(FlowNodeCategory.CONTROL_FLOW);
+    }
+
+    @Override
+    public List<FlowNode> astChildren() {
+        return inlineStatementContext != null ? ImmutableList.of(inlineStatementContext) : ImmutableList.of();
+    }
+
+    @Override
+    public List<FlowNode> callTargets() {
+        return procedures;
     }
 }

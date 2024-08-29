@@ -25,6 +25,6 @@ public class CicsBlockFlowNode extends CobolFlowNode {
 
     @Override
     public List<FlowNodeCategory> categories() {
-        return ImmutableList.of(FlowNodeCategory.CONTROL_FLOW);
+        return ImmutableList.of(FlowNodeCategory.TRANSACTION);
     }
 }
