@@ -4,21 +4,21 @@ import com.mojo.woof.GraphSDK;
 import com.mojo.woof.NodeSpec;
 import com.mojo.woof.WoofNode;
 import org.neo4j.driver.Record;
+import org.smojol.common.ast.FlowNodeLike;
 import org.smojol.common.program.CobolProgram;
 import org.smojol.common.ast.CommentBlock;
-import org.smojol.common.ast.FlowNode;
 import org.smojol.common.vm.structure.CobolDataStructure;
 
 public class NodeToWoof {
-    public static Record newOrExistingCFGNode(FlowNode node, GraphSDK sdk, NodeSpecBuilder qualifier) {
+    public static Record newOrExistingCFGNode(FlowNodeLike node, GraphSDK sdk, NodeSpecBuilder qualifier) {
         return sdk.newOrExisting(qualifier.cfgNodeSearchSpec(node), toWoofNode(node, qualifier));
     }
 
-    private static WoofNode toWoofNode(FlowNode node, NodeSpecBuilder qualifier) {
+    private static WoofNode toWoofNode(FlowNodeLike node, NodeSpecBuilder qualifier) {
         return new WoofNode(qualifier.newCFGNode(node));
     }
 
-    public static WoofNode toWoofTraceNode(FlowNode node, NodeSpecBuilder qualifier) {
+    public static WoofNode toWoofTraceNode(FlowNodeLike node, NodeSpecBuilder qualifier) {
         return new WoofNode(qualifier.newTraceNode(node));
     }
 

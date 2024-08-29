@@ -43,7 +43,7 @@ public class PseudocodeNavigator {
         } else if (from.getNode().type() == FlowNodeType.PERFORM || from.getNode().type() == FlowNodeType.GOTO) {
             List<FlowNode> callTargets = ((InternalControlFlowNode) from.getNode()).callTargets();
             List<PseudocodeInstruction> targetInstructionEntries = findAllByCondition(i -> callTargets.contains(i.getNode()) && i.getMetatype() == PseudocodeMetatype.ENTER, instructions);
-            List<PseudocodeInstruction> targetInstructionExits = findAllByCondition(i -> callTargets.contains(i.getNode()) && i.getMetatype() == PseudocodeMetatype.EXIT, instructions);
+            List<PseudocodeInstruction> targetInstructionExits = from.getNode().type() == FlowNodeType.GOTO ? ImmutableList.of() : findAllByCondition(i -> callTargets.contains(i.getNode()) && i.getMetatype() == PseudocodeMetatype.EXIT, instructions);
             return zip(targetInstructionEntries.stream(), targetInstructionExits.stream(), (entry, exit) -> ImmutablePair.of(entry, exit)).toList();
         }
 

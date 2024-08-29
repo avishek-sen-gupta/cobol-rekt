@@ -2,20 +2,21 @@ package org.smojol.common.pseudocode;
 
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.FlowNodeType;
+import org.smojol.common.id.IdProvider;
 
 import static org.smojol.common.pseudocode.PseudocodeMetatype.*;
 
 public class PseudocodeInstructionGenerator {
-    public static PseudocodeInstruction visiting(FlowNode node) {
-        return isMarker(node) ? new PseudocodeInstruction(node, NO_OP) : new PseudocodeInstruction(node, BODY);
+    public static PseudocodeInstruction visiting(FlowNode node, IdProvider uuidProvider) {
+        return isMarker(node) ? new PseudocodeInstruction(node, NO_OP, uuidProvider.next()) : new PseudocodeInstruction(node, BODY, uuidProvider.next());
     }
 
-    public static PseudocodeInstruction entering(FlowNode node) {
-        return new PseudocodeInstruction(node, ENTER);
+    public static PseudocodeInstruction entering(FlowNode node, IdProvider uuidProvider) {
+        return new PseudocodeInstruction(node, ENTER, uuidProvider.next());
     }
 
-    public static PseudocodeInstruction exiting(FlowNode node) {
-        return new PseudocodeInstruction(node, EXIT);
+    public static PseudocodeInstruction exiting(FlowNode node, IdProvider uuidProvider) {
+        return new PseudocodeInstruction(node, EXIT, uuidProvider.next());
     }
 
     private static boolean isMarker(FlowNode node) {

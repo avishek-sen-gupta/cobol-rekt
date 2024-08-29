@@ -7,7 +7,7 @@ import org.smojol.common.vm.interpreter.FlowControl;
 
 import java.util.List;
 
-public interface FlowNode {
+public interface FlowNode extends FlowNodeLike {
     void buildFlow();
     void buildOutgoingFlow();
     void buildInternalFlow();
@@ -39,13 +39,13 @@ public interface FlowNode {
     boolean isMergeable();
     boolean contains(FlowNode node);
 
-    String id();
-    String label();
-    String name();
-    String originalText();
+//    String id();
+//    String label();
+//    String name();
+//    String originalText();
     ParseTree getExecutionContext();
-    FlowNodeType type();
-    List<FlowNodeCategory> categories();
+//    FlowNodeType type();
+//    List<FlowNodeCategory> categories();
 
     FlowNode passthrough();
 

@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonWriter;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.SerialisableASTFlowNode;
+import org.smojol.common.id.UUIDProvider;
 import org.smojol.toolkit.analysis.pipeline.config.FlowASTOutputConfig;
 import org.smojol.toolkit.interpreter.navigation.FlowNodeASTTraversal;
 import org.smojol.toolkit.task.AnalysisTask;
@@ -26,7 +27,7 @@ public class FlattenFlowASTTask implements AnalysisTask {
 
     @Override
     public AnalysisTaskResult run() {
-        new BuildPseudocodeTask(astRoot).run();
+        new BuildPseudocodeTask(astRoot, new UUIDProvider()).run();
         SerialisableASTFlowNode serialisableASTFlowRoot = new SerialiseFlowASTTask().serialisedFlowAST(astRoot);
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         try {

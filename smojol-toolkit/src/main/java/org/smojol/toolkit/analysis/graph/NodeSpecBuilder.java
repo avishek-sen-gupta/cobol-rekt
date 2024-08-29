@@ -2,14 +2,13 @@ package org.smojol.toolkit.analysis.graph;
 
 import com.google.common.collect.ImmutableList;
 import com.mojo.woof.NodeSpec;
-import org.smojol.common.structure.DataStructureContext;
+import org.smojol.common.ast.FlowNodeLike;
 import org.smojol.toolkit.analysis.graph.graphml.TypedCodeVertex;
 import org.smojol.toolkit.analysis.graph.graphml.TypedDataStructureVertex;
 import org.smojol.toolkit.analysis.graph.graphml.TypedGraphEdge;
 import org.smojol.toolkit.analysis.graph.graphml.TypedGraphVertex;
 import org.smojol.common.program.CobolProgram;
 import org.smojol.common.ast.CommentBlock;
-import org.smojol.common.ast.FlowNode;
 import org.smojol.common.id.IdProvider;
 import org.smojol.common.id.UUIDProvider;
 import org.smojol.common.vm.structure.CobolDataStructure;
@@ -23,6 +22,7 @@ import static com.mojo.woof.NodeProperties.LEVEL;
 import static org.smojol.common.ast.FlowNodeCategory.METADATA;
 import static org.smojol.common.ast.FlowNodeCategory.PROGRAM;
 
+// TODO: Move to common
 public class NodeSpecBuilder {
     private final NamespaceQualifier namespaceQualifier;
     private final IdProvider idProvider;
@@ -51,15 +51,15 @@ public class NodeSpecBuilder {
                 ));
     }
 
-    public NodeSpec newASTNode(FlowNode node) {
+    public NodeSpec newASTNode(FlowNodeLike node) {
         return labelledCodeNode(node, AST_NODE);
     }
 
-    public NodeSpec newCFGNode(FlowNode node) {
+    public NodeSpec newCFGNode(FlowNodeLike node) {
         return labelledCodeNode(node, CFG_NODE);
     }
 
-    public NodeSpec labelledCodeNode(FlowNode node, String nodeType) {
+    public NodeSpec labelledCodeNode(FlowNodeLike node, String nodeType) {
         return new NodeSpec(ImmutableList.of(nodeType, node.type().toString()),
                 Map.of(ID, idProvider.next(),
                         INTERNAL_ID, node.id(),
@@ -72,12 +72,12 @@ public class NodeSpecBuilder {
                 ));
     }
 
-    public NodeSpec newTraceNode(FlowNode node) {
+    public NodeSpec newTraceNode(FlowNodeLike node) {
         return new NodeSpec(ImmutableList.of(CFG_TRACE, node.type().toString()),
                 Map.of(ID, idProvider.next(),
                         INTERNAL_ID, node.id(),
                         NAME, node.name(),
-                        TEXT, node.getExecutionContext().getText(),
+                        TEXT, node.originalText(),
                         TYPE, node.type().toString(),
                         ENTITY_TYPE, CFG_TRACE,
                         ENTITY_CATEGORIES, node.categories().stream().map(Enum::name).toList(),
@@ -92,15 +92,15 @@ public class NodeSpecBuilder {
                 NAMESPACE, namespaceQualifier.getNamespace()));
     }
 
-    public NodeSpec cfgNodeSearchSpec(FlowNode node) {
+    public NodeSpec cfgNodeSearchSpec(FlowNodeLike node) {
         return labelledNodeSearchSpec(node, CFG_NODE);
     }
 
-    public NodeSpec astNodeSearchSpec(FlowNode node) {
+    public NodeSpec astNodeSearchSpec(FlowNodeLike node) {
         return labelledNodeSearchSpec(node, AST_NODE);
     }
 
-    public NodeSpec labelledNodeSearchSpec(FlowNode node, String nodeType) {
+    public NodeSpec labelledNodeSearchSpec(FlowNodeLike node, String nodeType) {
         return new NodeSpec(ImmutableList.of(nodeType), Map.of(INTERNAL_ID, node.id(), ENTITY_TYPE, nodeType, NAMESPACE, namespaceQualifier.getNamespace()));
     }
 
@@ -118,7 +118,7 @@ public class NodeSpecBuilder {
         return new NodeSpec(ImmutableList.of(AST_NODE), finalCriteria);
     }
 
-    public TypedGraphVertex newCodeVertex(FlowNode node) {
+    public TypedGraphVertex newCodeVertex(FlowNodeLike node) {
         return new TypedCodeVertex(node, namespaceQualifier.getNamespace());
     }
 

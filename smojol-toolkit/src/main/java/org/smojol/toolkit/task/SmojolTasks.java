@@ -85,7 +85,7 @@ public class SmojolTasks {
     public AnalysisTask BUILD_PSEUDOCODE = new AnalysisTask() {
         @Override
         public AnalysisTaskResult run() {
-            return new BuildPseudocodeTask(flowRoot).run();
+            return new BuildPseudocodeTask(flowRoot, new UUIDProvider()).run();
         }
     };
 

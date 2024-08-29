@@ -1,16 +1,16 @@
 package org.smojol.toolkit.analysis.graph.graphml;
 
 import lombok.Getter;
-import org.smojol.common.ast.FlowNode;
+import org.smojol.common.ast.FlowNodeLike;
 
 import java.util.Objects;
 
 @Getter
 public class TypedCodeVertex implements TypedGraphVertex {
-    private final FlowNode node;
+    private final FlowNodeLike node;
     private final String namespace;
 
-    public TypedCodeVertex(FlowNode node, String namespace) {
+    public TypedCodeVertex(FlowNodeLike node, String namespace) {
         this.node = node;
         this.namespace = namespace;
     }

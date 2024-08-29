@@ -2,6 +2,8 @@ package org.smojol.toolkit.analysis.defined;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.smojol.common.ast.*;
+import org.smojol.common.id.IdProvider;
+import org.smojol.common.id.UUIDProvider;
 import org.smojol.common.navigation.PseudocodeNavigator;
 import org.smojol.common.pseudocode.PseudocodeGeneratorVisitor;
 import org.smojol.common.pseudocode.PseudocodeInstruction;
@@ -16,14 +18,16 @@ import java.util.List;
 
 public class BuildPseudocodeTask implements AnalysisTask {
     private final FlowNode flowRoot;
+    private final IdProvider uuidProvider;
 
-    public BuildPseudocodeTask(FlowNode flowRoot) {
+    public BuildPseudocodeTask(FlowNode flowRoot, IdProvider uuidProvider) {
         this.flowRoot = flowRoot;
+        this.uuidProvider = uuidProvider;
     }
 
     @Override
     public AnalysisTaskResult run() {
-        AggregatingFlowNodeASTVisitor<List<PseudocodeInstruction>> visitor = new PseudocodeGeneratorVisitor(null);
+        AggregatingFlowNodeASTVisitor<List<PseudocodeInstruction>> visitor = new PseudocodeGeneratorVisitor(null, uuidProvider);
         new AggregatingFlowNodeASTTraversal<List<PseudocodeInstruction>>().accept(flowRoot, visitor);
         List<PseudocodeInstruction> instructions = visitor.result();
         PseudocodeNavigator navigator = new PseudocodeNavigator(flowRoot);
