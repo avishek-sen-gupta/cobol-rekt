@@ -38,7 +38,6 @@ if __name__ == "__main__":
     parser.add_argument("--" + ParameterConstants.VARIABLE_STATIC_VALUES_OUTPUT_PATH, required=False)
     args = parser.parse_args()
 
-    # input_path = "/Users/asgupta/code/smojol/out/report/test-exp.cbl.report/ast/cobol-test-exp.cbl.json"
     input_path = getattr(args, ParameterConstants.RAW_AST_PATH)
     output_path = getattr(args, ParameterConstants.VARIABLE_STATIC_VALUES_OUTPUT_PATH)
 
@@ -51,4 +50,4 @@ if __name__ == "__main__":
         serialisable_assignments: list[tuple[str, list[str]]] = [(key, list(values)) for key, values in
                                                                  static_assignments.items()]
         with open(output_path, "w") as outfile:
-            json.dump(serialisable_assignments, outfile)
+            json.dump(serialisable_assignments, outfile, indent=4, sort_keys=True)
