@@ -1,5 +1,6 @@
 package org.smojol.common.navigation;
 
+import lombok.Getter;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolParser;
@@ -17,7 +18,7 @@ import java.util.regex.Pattern;
 
 public class CobolEntityNavigator {
     private final CobolParser.ProcedureDivisionBodyContext procedureBodyRoot;
-    private final ParserRuleContext fullProgramTree;
+    @Getter private final ParserRuleContext fullProgramTree;
     private final CobolParser.DataDivisionContext dataDivisionBody;
     private List<ParseTree> dialectNodes;
     private Map<String, String> symbolText;

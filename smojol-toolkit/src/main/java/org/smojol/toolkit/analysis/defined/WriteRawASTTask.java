@@ -16,8 +16,8 @@ public class WriteRawASTTask implements AnalysisTask {
     private final CobolEntityNavigator navigator;
     private final RawASTOutputConfig rawAstOutputConfig;
 
-    public WriteRawASTTask(ParserRuleContext tree, CobolEntityNavigator navigator, RawASTOutputConfig rawAstOutputConfig) {
-        this.tree = tree;
+    public WriteRawASTTask(CobolEntityNavigator navigator, RawASTOutputConfig rawAstOutputConfig) {
+        this.tree = navigator.getFullProgramTree();
         this.navigator = navigator;
         this.rawAstOutputConfig = rawAstOutputConfig;
     }

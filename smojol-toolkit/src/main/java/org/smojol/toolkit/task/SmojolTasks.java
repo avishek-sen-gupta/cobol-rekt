@@ -114,7 +114,7 @@ public class SmojolTasks {
     public AnalysisTask WRITE_RAW_AST = new AnalysisTask() {
         @Override
         public AnalysisTaskResult run() {
-            return new WriteRawASTTask(rawAST, navigator, rawAstOutputConfig).run();
+            return new WriteRawASTTask(navigator, rawAstOutputConfig).run();
         }
     };
 
