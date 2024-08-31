@@ -8,7 +8,7 @@ import static org.smojol.common.pseudocode.CodeSentinelType.*;
 
 public class PseudocodeInstructionGenerator {
     public static PseudocodeInstruction visiting(FlowNode node, IdProvider uuidProvider) {
-        return isMarker(node) ? new PseudocodeInstruction(node, NO_OP, uuidProvider.next()) : new PseudocodeInstruction(node, BODY, uuidProvider.next());
+        return new PseudocodeInstruction(node, BODY, uuidProvider.next());
     }
 
     public static PseudocodeInstruction entering(FlowNode node, IdProvider uuidProvider) {

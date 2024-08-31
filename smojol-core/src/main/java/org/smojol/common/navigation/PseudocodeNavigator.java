@@ -13,19 +13,13 @@ import java.util.List;
 import java.util.function.Predicate;
 
 public class PseudocodeNavigator {
-    private final FlowNode root;
-
-    public PseudocodeNavigator(FlowNode root) {
-        this.root = root;
-    }
-
     public List<PseudocodeInstruction> findAllByCondition(Predicate<PseudocodeInstruction> condition, List<PseudocodeInstruction> instructions) {
         return instructions.stream().filter(condition).toList();
     }
 
     public PseudocodeInstruction findSingleByCondition(Predicate<PseudocodeInstruction> condition, List<PseudocodeInstruction> instructions) {
-        List<PseudocodeInstruction> mathing = findAllByCondition(condition, instructions);
-        return !mathing.isEmpty() ? mathing.getFirst() : PseudocodeInstruction.NULL;
+        List<PseudocodeInstruction> matching = findAllByCondition(condition, instructions);
+        return !matching.isEmpty() ? matching.getFirst() : PseudocodeInstruction.NULL;
     }
 
     public Pair<List<PseudocodeInstruction>, List<PseudocodeInstruction>> findCallTargets(PseudocodeInstruction from, int iptr, List<PseudocodeInstruction> instructions) {

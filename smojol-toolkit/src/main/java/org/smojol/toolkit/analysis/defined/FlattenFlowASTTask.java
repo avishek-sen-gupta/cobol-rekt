@@ -40,7 +40,7 @@ public class FlattenFlowASTTask implements AnalysisTask {
     }
 
     private AnalysisTaskResult updateGraph(List<PseudocodeInstruction> instructions) {
-        PseudocodeNavigator navigator = new PseudocodeNavigator(astRoot);
+        PseudocodeNavigator navigator = new PseudocodeNavigator();
         List<InstructionEdge> edges = new ArrayList<>();
         List<FlowNodeLike> nodes = new ArrayList<>(instructions);
 
