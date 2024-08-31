@@ -18,6 +18,10 @@ public class FlowNodeNavigator {
         return searchRecursively(root, c);
     }
 
+    public <T extends FlowNode> T findByType(Class<T> type) {
+        return (T) findByCondition(fn -> fn.getClass() == type);
+    }
+
     private FlowNode searchRecursively(FlowNode current, FlowNodeCondition c) {
         if (c.apply(current)) return current;
         for (FlowNode child : current.astChildren()) {

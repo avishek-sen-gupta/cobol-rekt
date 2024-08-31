@@ -6,7 +6,9 @@ import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.FlowNodeType;
 import org.smojol.common.id.IdProvider;
 import org.smojol.common.vm.expression.ArithmeticExpressionVisitor;
+import org.smojol.common.vm.expression.CobolExpression;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.smojol.common.pseudocode.CodeSentinelType.*;
@@ -17,7 +19,13 @@ public class PseudocodeInstructionGenerator {
             String variableName = generalIdentifierContext.qualifiedDataName().variableUsageName().getText();
             if (generalIdentifierContext.qualifiedDataName().tableCall() != null) {
                 List<CobolParser.ArithmeticExpressionContext> expressions = generalIdentifierContext.qualifiedDataName().tableCall().arithmeticExpression();
-                expressions.stream().map(expr -> new ArithmeticExpressionVisitor());
+                ArithmeticExpressionVisitor arithmeticExpressionVisitor = new ArithmeticExpressionVisitor();
+                List<CobolExpression> cobolExpressions = expressions.stream().map(arithmeticExpressionVisitor::visitArithmeticExpression).toList();
+                CobolExpression xx = cobolExpressions.getFirst();
+                QuadrupleGeneratorVisitor visitor = new QuadrupleGeneratorVisitor(new IncrementingIdProvider());
+                xx.acceptDepthFirst(visitor);
+                List<InstructionQuad> quads = visitor.getQuads();
+                quads.forEach(System.out::println);
             }
         }
 

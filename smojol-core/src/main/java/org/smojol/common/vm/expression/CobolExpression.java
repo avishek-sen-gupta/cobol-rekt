@@ -1,17 +1,23 @@
 package org.smojol.common.vm.expression;
 
+import com.google.common.collect.ImmutableList;
+import lombok.Getter;
 import org.smojol.common.vm.structure.CobolDataStructure;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public abstract class CobolExpression {
-    protected final List<CobolExpression> children = new ArrayList<CobolExpression>();
+    protected final List<CobolExpression> children = new ArrayList<>();
+    @Getter private final String id;
 
     public CobolExpression() {
+        this(ImmutableList.of());
     }
 
     public CobolExpression(List<CobolExpression> children) {
+        this.id = UUID.randomUUID().toString();
         this.children.addAll(children);
     }
 
@@ -86,5 +92,10 @@ public abstract class CobolExpression {
     public void accept(CobolExpressionVisitor visitor) {
         visitor.visit(this);
         children.forEach(child -> child.accept(visitor));
+    }
+
+    public void acceptDepthFirst(CobolExpressionVisitor visitor) {
+        children.forEach(child -> child.acceptDepthFirst(visitor));
+        visitor.visit(this);
     }
 }

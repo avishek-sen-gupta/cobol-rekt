@@ -38,7 +38,7 @@ public class ConditionVisitor extends AntlrCobolExpressionVisitor {
             LogicOperation operator = additionalConditionVisitor.operator();
             modifiedExpression = graft(operator, modifiedExpression, additionalExpression);
         }
-        expression = new NestedCondition(modifiedExpression);
+        expression = new NestedConditionExpression(modifiedExpression);
         if (ctx.NOT() != null) expression = new NotExpression(expression);
         return expression;
     }

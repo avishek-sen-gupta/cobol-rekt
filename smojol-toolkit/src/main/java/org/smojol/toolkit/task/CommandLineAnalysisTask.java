@@ -15,5 +15,6 @@ public enum CommandLineAnalysisTask {
     COMPARE_CODE,
     SUMMARISE_THROUGH_LLM,
     BUILD_PSEUDOCODE,
-    FLATTEN_FLOW_AST
+    FLATTEN_FLOW_AST,
+    GENERATE_IR
 }

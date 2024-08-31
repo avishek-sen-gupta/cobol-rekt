@@ -1,8 +1,10 @@
 package org.smojol.common.vm.expression;
 
 import com.google.common.collect.ImmutableList;
+import lombok.Getter;
 import org.smojol.common.vm.structure.CobolDataStructure;
 
+@Getter
 public class ExponentExpression extends CobolExpression {
     private final CobolExpression basis;
     private final CobolExpression exponent;

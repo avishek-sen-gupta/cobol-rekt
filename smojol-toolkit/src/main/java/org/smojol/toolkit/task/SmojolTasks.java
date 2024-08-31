@@ -132,6 +132,13 @@ public class SmojolTasks {
         }
     };
 
+    public AnalysisTask GENERATE_IR = new AnalysisTask() {
+        @Override
+        public AnalysisTaskResult run() {
+            return new GenerateIRTask(flowRoot, flowASTOutputConfig).run();
+        }
+    };
+
     public AnalysisTask DRAW_FLOWCHART = new AnalysisTask() {
         @Override
         public AnalysisTaskResult run() {
@@ -194,6 +201,7 @@ public class SmojolTasks {
             case SUMMARISE_THROUGH_LLM -> SUMMARISE_THROUGH_LLM;
             case BUILD_PSEUDOCODE -> BUILD_PSEUDOCODE;
             case FLATTEN_FLOW_AST -> FLATTEN_FLOW_AST;
+            case GENERATE_IR -> GENERATE_IR;
         });
     }
 }

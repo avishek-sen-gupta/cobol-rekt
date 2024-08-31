@@ -31,6 +31,6 @@ public class ExpressionComparisonVisitor extends AntlrCobolExpressionVisitor {
             }
             expression = new RelationExpression(relationalOperation, expression);
         }
-        return new NestedCondition(expression);
+        return new NestedConditionExpression(expression);
     }
 }
