@@ -12,8 +12,6 @@ import org.smojol.common.pseudocode.CodeSentinelType;
 import java.util.List;
 import java.util.function.Predicate;
 
-import static com.google.common.collect.Streams.zip;
-
 public class PseudocodeNavigator {
     private final FlowNode root;
 
