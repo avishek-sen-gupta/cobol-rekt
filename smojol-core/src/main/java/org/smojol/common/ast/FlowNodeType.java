@@ -41,5 +41,5 @@ public enum FlowNodeType {
     DIALECT_CONTAINER,
     BIND_RUN_UNIT,
     FINISH,
-    DIALECT
+    ON_CLAUSE_ACTION, DIALECT
 }

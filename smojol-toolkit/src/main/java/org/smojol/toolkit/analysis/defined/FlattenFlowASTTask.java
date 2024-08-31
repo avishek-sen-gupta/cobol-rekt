@@ -3,7 +3,6 @@ package org.smojol.toolkit.analysis.defined;
 import com.mojo.woof.EdgeType;
 import com.mojo.woof.GraphSDK;
 import com.mojo.woof.Neo4JDriverBuilder;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.neo4j.driver.Record;
 import org.smojol.common.ast.*;
@@ -49,20 +48,23 @@ public class FlattenFlowASTTask implements AnalysisTask {
             PseudocodeInstruction current = instructions.get(i);
             PseudocodeInstruction next = instructions.get(i + 1);
             if (current.isJump() && current.codeSentinelType() == CodeSentinelType.BODY) {
-                List<Pair<PseudocodeInstruction, PseudocodeInstruction>> callTargets = navigator.findCallTargets(current, i, instructions);
-                PseudocodeInstruction convergencePoint = navigator.findSingleByCondition(instruction -> instruction.getNode() == current.getNode() && instruction.getSentinelType() == CodeSentinelType.EXIT, instructions);
-                callTargets.forEach(ct -> edges.add(new InstructionEdge(current, ct.getLeft(), InstructionEdgeType.JUMP)));
-                callTargets.forEach(ct -> edges.add(new InstructionEdge(ct.getRight(), convergencePoint, InstructionEdgeType.RETURN)));
-                // TODO: Change in case of GOTO
-                int convergencePointIndex = instructions.indexOf(convergencePoint);
-                if (convergencePointIndex + 1 < instructions.size()) edges.add(new InstructionEdge(convergencePoint, instructions.get(convergencePointIndex + 1), InstructionEdgeType.FOLLOWED_BY));
+                Pair<List<PseudocodeInstruction>, List<PseudocodeInstruction>> callTargets = navigator.findCallTargets(current, i, instructions);
+                PseudocodeInstruction returnJoinPoint = navigator.findSingleByCondition(instruction -> instruction.getNode() == current.getNode() && instruction.getSentinelType() == CodeSentinelType.EXIT, instructions);
+                List<PseudocodeInstruction> entries = callTargets.getLeft();
+                List<PseudocodeInstruction> exits = callTargets.getRight();
+                entries.forEach(ct -> edges.add(new InstructionEdge(current, ct, InstructionEdgeType.JUMP)));
+                exits.forEach(ct -> edges.add(new InstructionEdge(ct, returnJoinPoint, InstructionEdgeType.RETURN)));
+                edges.add(new InstructionEdge(current, next, InstructionEdgeType.SYNTANTICALLY_FOLLOWED_BY));
+                int returnJoinPointIndex = instructions.indexOf(returnJoinPoint);
+                if (returnJoinPointIndex + 1 < instructions.size()) edges.add(new InstructionEdge(returnJoinPoint, instructions.get(returnJoinPointIndex + 1), InstructionEdgeType.FOLLOWED_BY));
             } else if (current.isCondition() && current.codeSentinelType() == CodeSentinelType.BODY) {
-                List<PseudocodeInstruction> childInstructionEntries = current.getNode().astChildren().stream().map(ins -> navigator.findSingleByCondition(in -> in.getNode() == ins && in.codeSentinelType() == CodeSentinelType.ENTER, instructions)).toList();
-                List<PseudocodeInstruction> childInstructionExits = current.getNode().astChildren().stream().map(ins -> navigator.findSingleByCondition(in -> in.getNode() == ins && in.codeSentinelType() == CodeSentinelType.EXIT, instructions)).toList();
+                List<PseudocodeInstruction> branchEntries = current.getNode().astChildren().stream().map(ins -> navigator.findSingleByCondition(in -> in.getNode() == ins && in.codeSentinelType() == CodeSentinelType.ENTER, instructions)).toList();
+                List<PseudocodeInstruction> branchExits = current.getNode().astChildren().stream().map(ins -> navigator.findSingleByCondition(in -> in.getNode() == ins && in.codeSentinelType() == CodeSentinelType.EXIT, instructions)).toList();
                 PseudocodeInstruction convergencePoint = navigator.findSingleByCondition(instruction -> instruction.getNode() == current.getNode() && instruction.getSentinelType() == CodeSentinelType.EXIT, instructions);
-                childInstructionEntries.forEach(c -> edges.add(new InstructionEdge(current, c, InstructionEdgeType.FOLLOWED_BY)));
-                childInstructionExits.forEach(c -> edges.add(new InstructionEdge(c, convergencePoint, InstructionEdgeType.FOLLOWED_BY)));
+                branchEntries.forEach(c -> edges.add(new InstructionEdge(current, c, InstructionEdgeType.BRANCHES_TO)));
+                branchExits.forEach(c -> edges.add(new InstructionEdge(c, convergencePoint, InstructionEdgeType.FOLLOWED_BY)));
                 int convergencePointIndex = instructions.indexOf(convergencePoint);
+                if (branchEntries.size() == 1) edges.add(new InstructionEdge(current, convergencePoint, InstructionEdgeType.BRANCHES_TO));
                 if (convergencePointIndex + 1 < instructions.size()) edges.add(new InstructionEdge(convergencePoint, instructions.get(convergencePointIndex + 1), InstructionEdgeType.FOLLOWED_BY));
             } else {
                 edges.add(new InstructionEdge(current, next, InstructionEdgeType.FOLLOWED_BY));
@@ -75,8 +77,8 @@ public class FlattenFlowASTTask implements AnalysisTask {
         edges.forEach(e -> {
             PseudocodeInstruction from = e.getFrom();
             PseudocodeInstruction to = e.getTo();
-            Record recordFrom = NodeToWoof.newOrExistingCFGNode(from, graphSDK, specBuilder);
-            Record recordTo = NodeToWoof.newOrExistingCFGNode(to, graphSDK, specBuilder);
+            Record recordFrom = NodeToWoof.existingCFGNode(from, specBuilder, graphSDK);
+            Record recordTo = NodeToWoof.existingCFGNode(to, specBuilder, graphSDK);
             graphSDK.connect(recordFrom, recordTo, e.getEdgeType().name(), EdgeType.FLOW);
         });
 

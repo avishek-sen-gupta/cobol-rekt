@@ -49,6 +49,7 @@ public class FlowchartStylePreferences {
         schemes.put(FlowNodeType.BIND_RUN_UNIT, new GraphvizStyleScheme(Color.GREEN, Color.WHITE, Shape.L_ARROW));
         schemes.put(FlowNodeType.FINISH, new GraphvizStyleScheme(Color.RED, Color.WHITE, Shape.L_ARROW));
         schemes.put(FlowNodeType.DIALECT_CONTAINER, new GraphvizStyleScheme(Color.PURPLE4, Color.WHITE, Shape.PARALLELOGRAM));
+        schemes.put(FlowNodeType.ON_CLAUSE_ACTION, new GraphvizStyleScheme(Color.PURPLE4, Color.WHITE, Shape.BOX));
         schemes.put(FlowNodeType.DUMMY, new GraphvizStyleScheme(Color.DARKSLATEGRAY4, Color.WHITE));
     }
 

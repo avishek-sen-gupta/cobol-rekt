@@ -53,7 +53,7 @@ public class GoToFlowNode extends CobolFlowNode implements InternalControlFlowNo
 
     @Override
     public FlowNodeType type() {
-        return FlowNodeType.CONTROL_FLOW;
+        return FlowNodeType.GOTO;
     }
 
     @Override

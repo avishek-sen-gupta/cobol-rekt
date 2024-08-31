@@ -14,6 +14,10 @@ public class NodeToWoof {
         return sdk.newOrExisting(qualifier.cfgNodeSearchSpec(node), toWoofNode(node, qualifier));
     }
 
+    public static Record existingCFGNode(FlowNodeLike node, NodeSpecBuilder qualifier, GraphSDK sdk) {
+        return sdk.existing(qualifier.cfgNodeSearchSpec(node));
+    }
+
     public static WoofNode toWoofNode(FlowNodeLike node, NodeSpecBuilder qualifier) {
         return new WoofNode(qualifier.newCFGNode(node));
     }

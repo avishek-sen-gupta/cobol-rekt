@@ -254,7 +254,7 @@ public class SmojolInterpreter implements CobolInterpreter {
             listeners.notify("Executing ON clause " + formatted(onClauseNode.getCondition().originalText()), node, nodeService);
             boolean trueOrFalse = conditionResolver.resolveOn(onClauseNode, nodeService);
             if (!trueOrFalse) return CobolVmSignal.CONTINUE;
-            return onClauseNode.acceptInterpreterForCompositeExecution(this, FlowControl::CONTINUE);
+            return onClauseNode.getOnClauseBlock().acceptInterpreterForCompositeExecution(this, FlowControl::CONTINUE);
         }, new ExecutionContext(node, runtimeStackFrames, nodeService));
     }
 
