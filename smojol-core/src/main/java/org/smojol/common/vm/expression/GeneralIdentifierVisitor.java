@@ -2,7 +2,7 @@ package org.smojol.common.vm.expression;
 
 import org.eclipse.lsp.cobol.core.CobolParser;
 
-public class GeneralIdentifierVisitor extends CobolExpressionVisitor {
+public class GeneralIdentifierVisitor extends AntlrCobolExpressionVisitor {
     @Override
     public CobolExpression visitGeneralIdentifier(CobolParser.GeneralIdentifierContext ctx) {
         if (ctx.qualifiedDataName() != null)

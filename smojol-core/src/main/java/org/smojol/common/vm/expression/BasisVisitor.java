@@ -4,7 +4,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.navigation.CobolEntityNavigator;
 
-public class BasisVisitor extends CobolExpressionVisitor {
+public class BasisVisitor extends AntlrCobolExpressionVisitor {
     @Override
     public CobolExpression visitBasis(CobolParser.BasisContext ctx) {
         if (ctx.generalIdentifier() != null) {

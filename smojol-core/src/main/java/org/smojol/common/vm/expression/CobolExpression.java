@@ -83,7 +83,7 @@ public abstract class CobolExpression {
         return evaluate(dataStructures).not(dataStructures);
     }
 
-    public void accept(CobolExpressionChildVisitor visitor) {
+    public void accept(CobolExpressionVisitor visitor) {
         visitor.visit(this);
         children.forEach(child -> child.accept(visitor));
     }

@@ -3,7 +3,7 @@ package org.smojol.common.vm.expression;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.vm.structure.CobolDataStructure;
 
-public class NestedConditionVisitor extends CobolExpressionVisitor {
+public class NestedConditionVisitor extends AntlrCobolExpressionVisitor {
     private final CobolDataStructure dataRoot;
 
     public NestedConditionVisitor(CobolDataStructure dataRoot) {

@@ -8,7 +8,7 @@ import org.smojol.common.vm.structure.NullDataStructure;
 import org.smojol.common.vm.reference.CobolReference;
 import org.smojol.common.vm.reference.DeepReferenceBuilder;
 
-public class SimpleConditionVisitor extends CobolExpressionVisitor {
+public class SimpleConditionVisitor extends AntlrCobolExpressionVisitor {
     private final CobolExpression mostRecentLhs;
     private final ComparisonOperator mostRecentRelationalOperation;
     private final CobolDataStructure dataRoot;

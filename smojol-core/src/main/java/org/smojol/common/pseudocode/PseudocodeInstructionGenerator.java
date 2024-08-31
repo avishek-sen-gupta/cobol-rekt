@@ -1,14 +1,31 @@
 package org.smojol.common.pseudocode;
 
+import com.google.common.collect.ImmutableList;
+import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.FlowNodeType;
 import org.smojol.common.id.IdProvider;
+import org.smojol.common.vm.expression.ArithmeticExpressionVisitor;
+
+import java.util.List;
 
 import static org.smojol.common.pseudocode.CodeSentinelType.*;
 
 public class PseudocodeInstructionGenerator {
-    public static PseudocodeInstruction visiting(FlowNode node, IdProvider uuidProvider) {
-        return new PseudocodeInstruction(node, BODY, uuidProvider.next());
+    public static List<PseudocodeInstruction> generalIdentifier(CobolParser.GeneralIdentifierContext generalIdentifierContext) {
+        if (generalIdentifierContext.qualifiedDataName() != null) {
+            String variableName = generalIdentifierContext.qualifiedDataName().variableUsageName().getText();
+            if (generalIdentifierContext.qualifiedDataName().tableCall() != null) {
+                List<CobolParser.ArithmeticExpressionContext> expressions = generalIdentifierContext.qualifiedDataName().tableCall().arithmeticExpression();
+                expressions.stream().map(expr -> new ArithmeticExpressionVisitor());
+            }
+        }
+
+        return ImmutableList.of();
+    }
+
+    public static List<PseudocodeInstruction> visiting(FlowNode node, IdProvider uuidProvider) {
+        return ImmutableList.of(new PseudocodeInstruction(node, BODY, uuidProvider.next()));
     }
 
     public static PseudocodeInstruction entering(FlowNode node, IdProvider uuidProvider) {

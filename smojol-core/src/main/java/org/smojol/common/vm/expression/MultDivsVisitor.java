@@ -2,7 +2,7 @@ package org.smojol.common.vm.expression;
 
 import org.eclipse.lsp.cobol.core.CobolParser;
 
-public class MultDivsVisitor extends CobolExpressionVisitor {
+public class MultDivsVisitor extends AntlrCobolExpressionVisitor {
     @Override
     public CobolExpression visitMultDivs(CobolParser.MultDivsContext ctx) {
         CobolParser.PowersContext firstTerm = ctx.powers();

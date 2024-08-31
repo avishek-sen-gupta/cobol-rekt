@@ -3,7 +3,7 @@ package org.smojol.common.vm.expression;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolParser;
 
-public class PowersVisitor extends CobolExpressionVisitor {
+public class PowersVisitor extends AntlrCobolExpressionVisitor {
     @Override
     public CobolExpression visitPowers(CobolParser.PowersContext ctx) {
         BasisVisitor basisVisitor = new BasisVisitor();

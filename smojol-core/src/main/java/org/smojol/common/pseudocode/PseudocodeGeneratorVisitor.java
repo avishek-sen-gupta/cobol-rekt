@@ -19,7 +19,7 @@ public class PseudocodeGeneratorVisitor extends AggregatingFlowNodeASTVisitor<Li
 
     @Override
     public void visit(FlowNode node) {
-        instructions.add(PseudocodeInstructionGenerator.visiting(node, uuidProvider));
+        instructions.addAll(PseudocodeInstructionGenerator.visiting(node, uuidProvider));
     }
 
     @Override

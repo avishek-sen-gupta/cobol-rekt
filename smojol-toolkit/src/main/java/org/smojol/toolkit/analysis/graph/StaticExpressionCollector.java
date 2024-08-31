@@ -1,7 +1,7 @@
 package org.smojol.toolkit.analysis.graph;
 
 import org.smojol.common.vm.expression.CobolExpression;
-import org.smojol.common.vm.expression.CobolExpressionChildVisitor;
+import org.smojol.common.vm.expression.CobolExpressionVisitor;
 import org.smojol.common.vm.expression.PrimitiveCobolExpression;
 import org.smojol.common.vm.expression.VariableExpression;
 import org.smojol.common.vm.reference.CobolReference;
@@ -11,7 +11,7 @@ import org.smojol.common.vm.structure.CobolDataStructure;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StaticExpressionCollector implements CobolExpressionChildVisitor {
+public class StaticExpressionCollector implements CobolExpressionVisitor {
     private final CobolDataStructure data;
     List<CobolDataStructure> structures = new ArrayList<>();
 

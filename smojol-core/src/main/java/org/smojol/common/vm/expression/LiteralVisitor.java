@@ -6,7 +6,7 @@ import org.smojol.common.vm.type.LiteralResolver;
 import org.smojol.common.vm.type.TypedRecord;
 
 // TODO: Merge this to use LiteralResolver
-public class LiteralVisitor extends CobolExpressionVisitor {
+public class LiteralVisitor extends AntlrCobolExpressionVisitor {
     @Override
     public CobolExpression visitLiteral(CobolParser.LiteralContext ctx) {
         String s = new LiteralResolver().resolvedLiteral(ctx);

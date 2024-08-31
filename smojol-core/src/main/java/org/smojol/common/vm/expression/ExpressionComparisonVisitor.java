@@ -4,7 +4,7 @@ import org.eclipse.lsp.cobol.core.CobolParser;
 
 import java.util.List;
 
-public class ExpressionComparisonVisitor extends CobolExpressionVisitor {
+public class ExpressionComparisonVisitor extends AntlrCobolExpressionVisitor {
     @Override
     public CobolExpression visitRelationCombinedComparison(CobolParser.RelationCombinedComparisonContext ctx) {
         ComparisonOperator relationalOperation = RelationalOperations.create(ctx.relationalOperator());

@@ -3,7 +3,7 @@ package org.smojol.common.vm.expression;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.vm.structure.CobolDataStructure;
 
-public class AdditionalConditionVisitor extends CobolExpressionVisitor {
+public class AdditionalConditionVisitor extends AntlrCobolExpressionVisitor {
     private final ComparisonOperator mostRecentRelationalOperation;
     private final CobolDataStructure dataRoot;
     private LogicOperation logicOperation;
