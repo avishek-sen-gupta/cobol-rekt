@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 public abstract class CobolExpression {
-    protected final List<CobolExpression> children = new ArrayList<>();
+    @Getter protected final List<CobolExpression> children = new ArrayList<>();
     @Getter private final String id;
 
     public CobolExpression() {
@@ -90,12 +90,12 @@ public abstract class CobolExpression {
     }
 
     public void accept(CobolExpressionVisitor visitor) {
-        visitor.visit(this);
-        children.forEach(child -> child.accept(visitor));
+        CobolExpressionVisitor scopedVisitor = visitor.visit(this);
+        children.forEach(child -> child.accept(scopedVisitor));
     }
 
     public void acceptDepthFirst(CobolExpressionVisitor visitor) {
-        children.forEach(child -> child.acceptDepthFirst(visitor));
-        visitor.visit(this);
+        CobolExpressionVisitor scopedVisitor = visitor.visit(this);
+        children.forEach(child -> child.acceptDepthFirst(scopedVisitor));
     }
 }

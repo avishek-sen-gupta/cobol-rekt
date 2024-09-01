@@ -20,7 +20,7 @@ public class StaticExpressionCollector implements CobolExpressionVisitor {
     }
 
     @Override
-    public void visit(CobolExpression expression) {
+    public CobolExpressionVisitor visit(CobolExpression expression) {
         DeepReferenceBuilder referenceBuilder = new DeepReferenceBuilder();
         if (expression.getClass() == PrimitiveCobolExpression.class) {
             CobolReference reference = referenceBuilder.getReference((PrimitiveCobolExpression) expression);
@@ -29,9 +29,10 @@ public class StaticExpressionCollector implements CobolExpressionVisitor {
             CobolReference reference = referenceBuilder.getShallowReference(((VariableExpression) expression).getQualifiedDataNameContext(), data);
 
             // TODO: Dirty hack to ignore indexed elements
-            if (reference.resolve().name().contains("$")) return;
+            if (reference.resolve().name().contains("$")) return null;
             structures.add(reference.resolve());
         }
+        return this;
     }
 
     public List<CobolDataStructure> structures() {

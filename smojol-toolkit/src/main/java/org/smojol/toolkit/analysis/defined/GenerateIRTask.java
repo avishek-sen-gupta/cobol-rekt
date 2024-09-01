@@ -38,10 +38,10 @@ public class GenerateIRTask implements AnalysisTask {
         MoveFlowNode move = new FlowNodeNavigator(astRoot).findByType(MoveFlowNode.class);
         QuadSequence quads = new QuadSequence(symbolTable);
         InstructionQuadGenerator quadGenerator = new InstructionQuadGenerator(symbolReferenceBuilder, symbolTable);
-        for (PseudocodeInstruction instruction : instructions) {
-            quadGenerator.quad(instruction);
-        }
-//        List<PseudocodeInstruction> instructions = InstructionQuadGenerator.generalIdentifier(move.getTos().getFirst(), symbolTable, symbolReferenceBuilder);
+//        for (PseudocodeInstruction instruction : instructions) {
+//            quadGenerator.quad(instruction);
+//        }
+        quadGenerator.generalIdentifier(move.getTos().getFirst());
 
         return new AnalysisTaskResultOK(CommandLineAnalysisTask.FLATTEN_FLOW_AST.name());
     }

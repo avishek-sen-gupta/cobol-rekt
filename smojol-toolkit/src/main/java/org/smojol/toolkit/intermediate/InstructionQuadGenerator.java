@@ -5,8 +5,7 @@ import lombok.Getter;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.pseudocode.*;
-import org.smojol.common.vm.expression.ArithmeticExpressionVisitor;
-import org.smojol.common.vm.expression.CobolExpression;
+import org.smojol.common.vm.expression.*;
 import org.smojol.toolkit.ast.MoveFlowNode;
 
 import java.util.ArrayList;
@@ -35,7 +34,7 @@ public class InstructionQuadGenerator {
         }
     }
 
-    public static List<PseudocodeInstruction> generalIdentifier(CobolParser.GeneralIdentifierContext generalIdentifierContext, SmojolSymbolTable symbolTable, SymbolReferenceBuilder symbolReferenceBuilder) {
+    public QuadSequence generalIdentifier(CobolParser.GeneralIdentifierContext generalIdentifierContext) {
         if (generalIdentifierContext.qualifiedDataName() != null) {
             String variableName = generalIdentifierContext.qualifiedDataName().variableUsageName().getText();
             SymbolReference reference = symbolTable.reference(variableName);
@@ -44,15 +43,34 @@ public class InstructionQuadGenerator {
                 ArithmeticExpressionVisitor arithmeticExpressionVisitor = new ArithmeticExpressionVisitor();
                 List<CobolExpression> indexExpressions = expressions.stream().map(arithmeticExpressionVisitor::visitArithmeticExpression).toList();
                 List<QuadSequence> sequences = indexExpressions.stream().map(expr -> {
-                    ExpressionQuadrupleGeneratorVisitor visitor = new ExpressionQuadrupleGeneratorVisitor(new IncrementingIdProvider(), symbolTable, symbolReferenceBuilder);
-                    expr.acceptDepthFirst(visitor);
+                    ExpressionQuadGenerator visitor = new ExpressionQuadGenerator(symbolTable, symbolReferenceBuilder);
+                    visitor.build(expr);
                     QuadSequence quads = visitor.getQuads();
                     return quads;
                 }).toList();
+
                 List<SymbolReference> indexReferences = sequences.stream().map(QuadSequence::lastResult).toList();
+                List<InstructionQuad> indexingQuads = recursivelyIndex(indexReferences, reference);
+                QuadSequence allQuads = new QuadSequence(symbolTable);
+                sequences.forEach(allQuads::add);
+                indexingQuads.forEach(allQuads::add);
+                System.out.println("DONE");
+                return allQuads;
+            } else {
+                return new QuadSequence(symbolTable);
             }
         }
 
-        return ImmutableList.of();
+        throw new UnsupportedOperationException("specialRegister and functionCall variants are not supported yet");
+    }
+
+    private List<InstructionQuad> recursivelyIndex(List<SymbolReference> indexReferences, SymbolReference currentIndexee) {
+        if (indexReferences.isEmpty()) return ImmutableList.of();
+        SymbolReference index = indexReferences.getFirst();
+        List<InstructionQuad> q = new ArrayList<>();
+        SymbolReference nextIndexee = symbolReferenceBuilder.intermediateSymbolReference();
+        q.add(new InstructionQuad(nextIndexee, AbstractOperator.INDEX, currentIndexee, index));
+        q.addAll(recursivelyIndex(indexReferences.subList(1, indexReferences.size()), nextIndexee));
+        return q;
     }
 }

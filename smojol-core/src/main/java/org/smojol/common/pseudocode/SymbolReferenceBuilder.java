@@ -16,8 +16,8 @@ public class SymbolReferenceBuilder {
         return new RecordSymbolReference(record, record.name());
     }
 
-    public SymbolReference intermediateSymbolReference(CobolExpression expression) {
-        return new IntermediateSymbolReference(expression, idProvider.next());
+    public SymbolReference expressionSymbolReference(CobolExpression expression) {
+        return new ExpressionSymbolReference(expression, idProvider.next());
     }
 
     public SymbolReference nullReference() {
@@ -26,5 +26,9 @@ public class SymbolReferenceBuilder {
 
     public SymbolReference staticReference(TypedRecord data) {
         return new StaticSymbolReference(data, idProvider.next());
+    }
+
+    public SymbolReference intermediateSymbolReference() {
+        return new IntermediateSymbolReference(idProvider.next());
     }
 }
