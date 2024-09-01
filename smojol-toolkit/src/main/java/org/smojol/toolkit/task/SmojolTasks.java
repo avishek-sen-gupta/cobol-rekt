@@ -135,7 +135,7 @@ public class SmojolTasks {
     public AnalysisTask GENERATE_IR = new AnalysisTask() {
         @Override
         public AnalysisTaskResult run() {
-            return new GenerateIRTask(flowRoot, flowASTOutputConfig).run();
+            return new GenerateIRTask(flowRoot, dataStructures, flowASTOutputConfig).run();
         }
     };
 

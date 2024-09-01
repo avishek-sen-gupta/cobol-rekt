@@ -1,4 +1,7 @@
 package org.smojol.common.pseudocode;
 
-public class NullSymbolReference implements SymbolReference {
+public class NullSymbolReference extends SymbolReference {
+    public NullSymbolReference() {
+        super("-42");
+    }
 }

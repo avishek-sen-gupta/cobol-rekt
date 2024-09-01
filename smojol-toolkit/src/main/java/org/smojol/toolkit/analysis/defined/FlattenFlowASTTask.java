@@ -8,8 +8,7 @@ import org.neo4j.driver.Record;
 import org.smojol.common.ast.*;
 import org.smojol.common.id.UUIDProvider;
 import org.smojol.common.navigation.PseudocodeNavigator;
-import org.smojol.common.pseudocode.CodeSentinelType;
-import org.smojol.common.pseudocode.PseudocodeInstruction;
+import org.smojol.common.pseudocode.*;
 import org.smojol.toolkit.analysis.graph.NamespaceQualifier;
 import org.smojol.toolkit.analysis.graph.NodeSpecBuilder;
 import org.smojol.toolkit.analysis.graph.NodeToWoof;
@@ -71,6 +70,12 @@ public class FlattenFlowASTTask implements AnalysisTask {
             }
         }
 
+        injectIntoNeo4J(nodes, edges);
+
+        return new AnalysisTaskResultOK(CommandLineAnalysisTask.FLATTEN_FLOW_AST.name());
+    }
+
+    private void injectIntoNeo4J(List<FlowNodeLike> nodes, List<InstructionEdge> edges) {
         GraphSDK graphSDK = new GraphSDK(neo4JDriverBuilder.fromEnv());
         NodeSpecBuilder specBuilder = new NodeSpecBuilder(new NamespaceQualifier("SOME"));
         nodes.forEach(n -> graphSDK.createNode(NodeToWoof.toWoofNode(n, specBuilder)));
@@ -81,7 +86,5 @@ public class FlattenFlowASTTask implements AnalysisTask {
             Record recordTo = NodeToWoof.existingCFGNode(to, specBuilder, graphSDK);
             graphSDK.connect(recordFrom, recordTo, e.getEdgeType().name(), EdgeType.FLOW);
         });
-
-        return new AnalysisTaskResultOK(CommandLineAnalysisTask.FLATTEN_FLOW_AST.name());
     }
 }

@@ -5,13 +5,12 @@ import org.smojol.common.vm.expression.CobolExpression;
 import java.util.Objects;
 import java.util.UUID;
 
-public class VariableSymbolReference implements SymbolReference {
-    private String id;
+public class IntermediateSymbolReference extends SymbolReference {
     private final CobolExpression expression;
 
-    public VariableSymbolReference(CobolExpression expression, String id) {
+    public IntermediateSymbolReference(CobolExpression expression, String id) {
+        super(id);
         this.expression = expression;
-        this.id = id;
     }
 
     @Override
@@ -19,8 +18,8 @@ public class VariableSymbolReference implements SymbolReference {
         return id;
     }
 
-    public VariableSymbolReference() {
-        id = UUID.randomUUID().toString();
+    public IntermediateSymbolReference() {
+        super(UUID.randomUUID().toString());
         this.expression = null;
     }
 
@@ -28,7 +27,7 @@ public class VariableSymbolReference implements SymbolReference {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        VariableSymbolReference that = (VariableSymbolReference) o;
+        IntermediateSymbolReference that = (IntermediateSymbolReference) o;
         return this.expression == that.expression;
     }
 

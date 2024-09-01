@@ -38,6 +38,7 @@
        SECTION-0 SECTION.
         P1.
             MOVE 10 TO LEVEL-10-A((10 + 4) / 2).
+            MOVE SCALED TO RESULT.
        SECTION-A SECTION.
         P2.
            STOP RUN.

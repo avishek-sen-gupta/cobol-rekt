@@ -4,10 +4,11 @@ import org.smojol.common.vm.type.TypedRecord;
 
 import java.util.Objects;
 
-public class StaticSymbolReference implements SymbolReference {
+public class StaticSymbolReference extends SymbolReference {
     private final TypedRecord data;
 
-    public StaticSymbolReference(TypedRecord data) {
+    public StaticSymbolReference(TypedRecord data, String id) {
+        super(id);
         this.data = data;
     }
 
