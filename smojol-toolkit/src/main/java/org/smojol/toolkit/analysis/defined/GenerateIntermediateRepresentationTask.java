@@ -42,7 +42,7 @@ public class GenerateIntermediateRepresentationTask implements AnalysisTask {
         InstructionQuadGenerator quadGenerator = new InstructionQuadGenerator(symbolReferenceBuilder, symbolTable);
 
         for (PseudocodeInstruction instruction : graph.instructions()) {
-            quadGenerator.quad(instruction);
+            quadGenerator.quad(instruction, graph);
         }
         quadGenerator.generalIdentifier(move.getTos().getFirst());
 

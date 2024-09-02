@@ -23,7 +23,7 @@ public class InstructionQuadGenerator {
         this.symbolTable = symbolTable;
     }
 
-    public QuadSequence quad(PseudocodeInstruction instruction) {
+    public QuadSequence quad(PseudocodeInstruction instruction, PseudocodeGraph graph) {
         FlowNode node = instruction.getNode();
         return switch (node) {
             case MoveFlowNode n -> new MoveQuadGeneration(n).run();
@@ -36,6 +36,9 @@ public class InstructionQuadGenerator {
             case IfThenFlowNode n -> new IfThenQuadGeneration(n).run();
             case IfElseFlowNode n -> new IfElseQuadGeneration(n).run();
             case GoToFlowNode n -> new GoToQuadGeneration(n).run();
+            case PerformProcedureFlowNode n -> new PerformProcedureQuadGeneration(n).run();
+            case PerformInlineFlowNode n -> new PerformInlineQuadGeneration(n).run();
+            case PerformTestFlowNode n -> new PerformTestQuadGeneration(n).run();
             case NextSentenceFlowNode n -> new NextSentenceQuadGeneration(n).run();
             default -> new QuadSequence(symbolTable, ImmutableList.of(InstructionQuad.noOp()));
         };
