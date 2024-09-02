@@ -2,7 +2,6 @@ package org.smojol.toolkit.task;
 
 import com.mojo.woof.Neo4JDriverBuilder;
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.smojol.common.id.UUIDProvider;
 import org.smojol.toolkit.analysis.defined.*;
 import org.smojol.toolkit.analysis.pipeline.ParsePipeline;
 import org.smojol.toolkit.analysis.graph.NamespaceQualifier;
@@ -83,13 +82,6 @@ public class SmojolTasks {
         }
     };
 
-    public AnalysisTask BUILD_PSEUDOCODE = new AnalysisTask() {
-        @Override
-        public AnalysisTaskResult run() {
-            return new BuildPseudocodeTask(flowRoot, new UUIDProvider()).run();
-        }
-    };
-
     public AnalysisTask EXPORT_TO_GRAPHML = new AnalysisTask() {
         @Override
         public AnalysisTaskResult run() {
@@ -125,17 +117,24 @@ public class SmojolTasks {
         }
     };
 
-    public AnalysisTask FLATTEN_FLOW_AST = new AnalysisTask() {
+    public AnalysisTask BUILD_PSEUDOCODE_GRAPH = new AnalysisTask() {
         @Override
         public AnalysisTaskResult run() {
-            return new FlattenFlowASTTask(flowRoot, flowASTOutputConfig, neo4JDriverBuilder).run();
+            return new BuildPseudocodeGraphTask(flowRoot, neo4JDriverBuilder, idProvider).run();
+        }
+    };
+
+    public AnalysisTask NULL_TASK = new AnalysisTask() {
+        @Override
+        public AnalysisTaskResult run() {
+            return new AnalysisTaskResultOK("<NULL TASK>");
         }
     };
 
     public AnalysisTask GENERATE_IR = new AnalysisTask() {
         @Override
         public AnalysisTaskResult run() {
-            return new GenerateIRTask(flowRoot, dataStructures, flowASTOutputConfig).run();
+            return new GenerateIntermediateRepresentationTask(flowRoot, dataStructures, idProvider, neo4JDriverBuilder).run();
         }
     };
 
@@ -199,8 +198,8 @@ public class SmojolTasks {
             case EXPORT_UNIFIED_TO_JSON -> EXPORT_UNIFIED_TO_JSON;
             case COMPARE_CODE -> COMPARE_CODE;
             case SUMMARISE_THROUGH_LLM -> SUMMARISE_THROUGH_LLM;
-            case BUILD_PSEUDOCODE -> BUILD_PSEUDOCODE;
-            case FLATTEN_FLOW_AST -> FLATTEN_FLOW_AST;
+            case BUILD_PSEUDOCODE_GRAPH -> BUILD_PSEUDOCODE_GRAPH;
+            case BUILD_PSEUDOCODE -> NULL_TASK;
             case GENERATE_IR -> GENERATE_IR;
         });
     }
