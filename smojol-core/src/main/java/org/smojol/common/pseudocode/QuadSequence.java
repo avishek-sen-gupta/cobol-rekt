@@ -1,5 +1,6 @@
 package org.smojol.common.pseudocode;
 
+import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 import org.smojol.common.vm.expression.CobolExpression;
 
@@ -12,7 +13,12 @@ public class QuadSequence {
     private final SmojolSymbolTable symbolTable;
 
     public QuadSequence(SmojolSymbolTable symbolTable) {
+        this(symbolTable, ImmutableList.of());
+    }
+
+    public QuadSequence(SmojolSymbolTable symbolTable, List<InstructionQuad> instructions) {
         this.symbolTable = symbolTable;
+        quads.addAll(instructions);
     }
 
     private SymbolReference existingSymbol(CobolExpression expr) {

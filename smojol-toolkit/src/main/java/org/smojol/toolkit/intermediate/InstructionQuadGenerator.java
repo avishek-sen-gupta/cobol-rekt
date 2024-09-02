@@ -37,7 +37,7 @@ public class InstructionQuadGenerator {
             case IfElseFlowNode n -> new IfElseQuadGeneration(n).run();
             case GoToFlowNode n -> new GoToQuadGeneration(n).run();
             case NextSentenceFlowNode n -> new NextSentenceQuadGeneration(n).run();
-            default -> throw new UnsupportedOperationException("Unsupported node type: " + node.getClass());
+            default -> new QuadSequence(symbolTable, ImmutableList.of(InstructionQuad.noOp()));
         };
     }
 

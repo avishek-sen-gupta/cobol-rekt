@@ -42,7 +42,6 @@ public class BuildPseudocodeGraphTask implements AnalysisTask {
     private AnalysisTaskResult updateGraph(List<PseudocodeInstruction> instructions) {
         PseudocodeNavigator navigator = new PseudocodeNavigator();
         List<InstructionEdge> edges = new ArrayList<>();
-        List<FlowNodeLike> nodes = new ArrayList<>(instructions);
 
         for (int i = 0; i < instructions.size() - 1; i++) {
             PseudocodeInstruction current = instructions.get(i);
