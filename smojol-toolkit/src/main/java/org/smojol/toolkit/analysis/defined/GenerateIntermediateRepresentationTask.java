@@ -32,7 +32,8 @@ public class GenerateIntermediateRepresentationTask implements AnalysisTask {
         AnalysisTaskResult result = new BuildPseudocodeGraphTask(astRoot, neo4JDriverBuilder, idProvider).run();
         return switch (result) {
             case AnalysisTaskResultOK o -> quads(o.getDetail(), symbolTable, symbolReferenceBuilder);
-            case AnalysisTaskResultError e -> new AnalysisTaskResultError(e.getException(), CommandLineAnalysisTask.BUILD_PSEUDOCODE_GRAPH);
+            case AnalysisTaskResultError e ->
+                    new AnalysisTaskResultError(e.getException(), CommandLineAnalysisTask.BUILD_PSEUDOCODE_GRAPH);
         };
     }
 
@@ -42,7 +43,7 @@ public class GenerateIntermediateRepresentationTask implements AnalysisTask {
         InstructionQuadGenerator quadGenerator = new InstructionQuadGenerator(symbolReferenceBuilder, symbolTable);
 
         for (PseudocodeInstruction instruction : graph.instructions()) {
-            quadGenerator.quad(instruction, graph);
+            System.out.println(quadGenerator.quad(instruction, graph));
         }
         quadGenerator.generalIdentifier(move.getTos().getFirst());
 

@@ -39,6 +39,10 @@
         P1.
             MOVE 10 TO LEVEL-10-A((10 + 4) / 2, 5, 6).
             MOVE SCALED TO RESULT.
+            IF SCALED = 10
+                DISPLAY "SCALED WAS 10"
+            ELSE
+                DISPLAY "SCALED WAS NOT 10!!".
        SECTION-A SECTION.
         P2.
            STOP RUN.

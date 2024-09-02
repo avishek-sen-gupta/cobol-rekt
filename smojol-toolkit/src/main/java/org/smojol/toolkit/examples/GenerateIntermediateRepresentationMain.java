@@ -10,16 +10,13 @@ import org.smojol.toolkit.interpreter.FullProgram;
 import org.smojol.toolkit.interpreter.structure.OccursIgnoringFormat1DataStructureBuilder;
 import org.smojol.toolkit.task.AnalysisTaskResult;
 import org.smojol.toolkit.task.CommandLineAnalysisTask;
-import org.smojol.toolkit.task.TaskRunnerMode;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import static org.smojol.common.flowchart.FlowchartOutputFormat.PNG;
-
-public class GeneratePseudocodeMain {
+public class GenerateIntermediateRepresentationMain {
     public static void main(String[] args) throws IOException, InterruptedException {
         Map<String, List<AnalysisTaskResult>> result = new CodeTaskRunner("/Users/asgupta/code/smojol/smojol-test-code",
                 "/Users/asgupta/code/smojol/out/report",
