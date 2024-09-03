@@ -45,7 +45,6 @@ public class GenerateIntermediateRepresentationTask implements AnalysisTask {
         for (PseudocodeInstruction instruction : graph.instructions()) {
             System.out.println(quadGenerator.quad(instruction, graph));
         }
-        quadGenerator.generalIdentifier(move.getTos().getFirst());
 
         return new AnalysisTaskResultOK(CommandLineAnalysisTask.BUILD_PSEUDOCODE_GRAPH.name());
     }
