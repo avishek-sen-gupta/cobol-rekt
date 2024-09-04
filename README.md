@@ -66,8 +66,8 @@ Some reverse engineering use cases are listed below. Descriptions of the capabil
 ## Planned Capabilities
 
 - Integrating Domain Knowledge
-- IDMS Transaction Lists and Participants (```BIND RUN-UNIT```, ```BIND RECORD```, ...)
 - IDMS Identify UI interactions and participants (```INSPECT```, ```MAP IN```, ```INQUIRE MAP```, Panel Definition parsing)
+- Quad Generation (WIP): This is a WIP experiment to generate Instruction Quads (a sort of language-independent Intermediate Representation described in the Dragon Book (Compilers: Principles, Techniques, and Tools by Aho, Sethi, Ullman).
 
 ## Flowchart Generation
 
