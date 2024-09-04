@@ -1,13 +1,15 @@
 package org.smojol.toolkit.intermediate;
 
-import org.smojol.common.pseudocode.QuadSequence;
-import org.smojol.toolkit.ast.SubtractFlowNode;
+import org.smojol.common.pseudocode.*;
+import org.smojol.toolkit.intermediate.generators.QuadGeneration;
 
-public class SubtractQuadGeneration {
-    public SubtractQuadGeneration(SubtractFlowNode n) {
+public class SubtractQuadGeneration extends QuadGeneration {
+    public SubtractQuadGeneration(PseudocodeGraph graph, SmojolSymbolTable symbolTable, SymbolReferenceBuilder symbolReferenceBuilder) {
+        super(graph, symbolTable, symbolReferenceBuilder);
     }
 
-    public QuadSequence run() {
-        return null;
+    @Override
+    public QuadSequence body(PseudocodeInstruction instruction) {
+        return new QuadSequence();
     }
 }

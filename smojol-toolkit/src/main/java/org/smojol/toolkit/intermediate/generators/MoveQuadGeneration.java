@@ -6,18 +6,15 @@ import org.smojol.toolkit.ast.MoveFlowNode;
 
 import java.util.List;
 
-public class MoveQuadGeneration {
-    private final PseudocodeGraph graph;
-    private final SmojolSymbolTable symbolTable;
-    private final SymbolReferenceBuilder symbolReferenceBuilder;
 
+public class MoveQuadGeneration extends QuadGeneration {
     public MoveQuadGeneration(PseudocodeGraph graph, SmojolSymbolTable symbolTable, SymbolReferenceBuilder symbolReferenceBuilder) {
-        this.graph = graph;
-        this.symbolTable = symbolTable;
-        this.symbolReferenceBuilder = symbolReferenceBuilder;
+        super(graph, symbolTable, symbolReferenceBuilder);
     }
 
-    public QuadSequence run(MoveFlowNode n) {
+    @Override
+    public QuadSequence body(PseudocodeInstruction instruction) {
+        MoveFlowNode n = instruction.typedNode(MoveFlowNode.class);
         GeneralIdentifierQuadGeneration generalIdentifierQuadGeneration = new GeneralIdentifierQuadGeneration(graph, symbolTable, symbolReferenceBuilder);
         QuadSequence fromSequence = buildFromSequence(n);
         List<QuadSequence> toSequences = n.getTos().stream().map(generalIdentifierQuadGeneration::run).toList();
@@ -30,7 +27,8 @@ public class MoveQuadGeneration {
     }
 
     private QuadSequence buildFromSequence(MoveFlowNode n) {
-        if (n.getFrom().literal() != null) return new QuadSequence(symbolTable, ImmutableList.of(new InstructionQuad(symbolReferenceBuilder.intermediateSymbolReference(), AbstractOperator.ASSIGNMENT, symbolReferenceBuilder.literalReference(n.getFrom().literal()))));
+        if (n.getFrom().literal() != null)
+            return new QuadSequence(symbolTable, ImmutableList.of(new InstructionQuad(symbolReferenceBuilder.intermediateSymbolReference(), AbstractOperator.ASSIGNMENT, symbolReferenceBuilder.literalReference(n.getFrom().literal()))));
         GeneralIdentifierQuadGeneration generalIdentifierQuadGeneration = new GeneralIdentifierQuadGeneration(graph, symbolTable, symbolReferenceBuilder);
         return generalIdentifierQuadGeneration.run(n.getFrom().generalIdentifier());
     }

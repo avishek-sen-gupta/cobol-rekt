@@ -1,6 +1,5 @@
 package org.smojol.toolkit.intermediate;
 
-import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.pseudocode.*;
@@ -11,39 +10,55 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InstructionQuadGenerator {
+    private final PseudocodeGraph graph;
     private final SymbolReferenceBuilder symbolReferenceBuilder;
     private final SmojolSymbolTable symbolTable;
     @Getter
     private final List<InstructionQuad> quads = new ArrayList<>();
 
-    public InstructionQuadGenerator(SymbolReferenceBuilder symbolReferenceBuilder, SmojolSymbolTable symbolTable) {
+    public InstructionQuadGenerator(PseudocodeGraph graph, SymbolReferenceBuilder symbolReferenceBuilder, SmojolSymbolTable symbolTable) {
+        this.graph = graph;
         this.symbolReferenceBuilder = symbolReferenceBuilder;
         this.symbolTable = symbolTable;
     }
 
-    public QuadSequence quad(PseudocodeInstruction instruction, PseudocodeGraph graph) {
+    public QuadSequence quad(PseudocodeInstruction instruction) {
         FlowNode node = instruction.getNode();
+        QuadGeneration quadGeneration = quadGenerator(graph, node);
+        return switch (instruction.codeSentinelType()) {
+            case ENTER -> quadGeneration.enter(instruction);
+            case EXIT -> quadGeneration.exit(instruction);
+            case BODY -> quadGeneration.body(instruction);
+        };
+    }
+
+    private QuadGeneration quadGenerator(PseudocodeGraph graph, FlowNode node) {
         return switch (node) {
-            case MoveFlowNode n -> new MoveQuadGeneration(graph, symbolTable, symbolReferenceBuilder).run(n);
-            case ComputeFlowNode n -> new ComputeQuadGeneration(n).run();
-            case MultiplyFlowNode n -> new MultiplyQuadGeneration(n).run();
-            case AddFlowNode n -> new AddQuadGeneration(n).run();
-            case SubtractFlowNode n -> new SubtractQuadGeneration(n).run();
-            case DivideFlowNode n -> new DivideQuadGeneration(n).run();
-            case IfFlowNode n -> new IfQuadGeneration(n).run();
-            case IfThenFlowNode n -> new IfThenQuadGeneration(n).run();
-            case IfElseFlowNode n -> new IfElseQuadGeneration(n).run();
-            case GoToFlowNode n -> new GoToQuadGeneration(n).run();
-            case PerformProcedureFlowNode n -> new PerformProcedureQuadGeneration(n).run();
-            case PerformInlineFlowNode n -> new PerformInlineQuadGeneration(n).run();
-            case PerformTestFlowNode n -> new PerformTestQuadGeneration(n).run();
-            case NextSentenceFlowNode n -> new NextSentenceQuadGeneration(n).run();
-            case SentenceFlowNode n -> new SentenceQuadGeneration(n).run();
-            case SectionFlowNode n -> new SectionQuadGeneration(n).run();
-            case ProcedureDivisionBodyFlowNode n -> new ProcedureDivisioneQuadGeneration(n).run();
-            case ParagraphFlowNode n -> new ParagraphQuadGeneration(n).run();
-            case ParagraphsFlowNode n -> new ParagraphsQuadGeneration(n).run();
-            default -> new QuadSequence(symbolTable, ImmutableList.of(InstructionQuad.noOp()));
+            case MoveFlowNode n -> new MoveQuadGeneration(graph, symbolTable, symbolReferenceBuilder);
+            case ComputeFlowNode n -> new ComputeQuadGeneration(graph, symbolTable, symbolReferenceBuilder);
+            case MultiplyFlowNode n -> new MultiplyQuadGeneration(graph, symbolTable, symbolReferenceBuilder);
+            case AddFlowNode n -> new AddQuadGeneration(graph, symbolTable, symbolReferenceBuilder);
+            case SubtractFlowNode n -> new SubtractQuadGeneration(graph, symbolTable, symbolReferenceBuilder);
+            case DivideFlowNode n -> new DivideQuadGeneration(graph, symbolTable, symbolReferenceBuilder);
+            case IfFlowNode n -> new IfQuadGeneration(graph, symbolTable, symbolReferenceBuilder);
+            case IfThenFlowNode n -> new IfThenQuadGeneration(graph, symbolTable, symbolReferenceBuilder);
+            case IfElseFlowNode n -> new IfElseQuadGeneration(graph, symbolTable, symbolReferenceBuilder);
+            case GoToFlowNode n -> new GoToQuadGeneration(graph, symbolTable, symbolReferenceBuilder);
+            case PerformProcedureFlowNode n ->
+                    new PerformProcedureQuadGeneration(graph, symbolTable, symbolReferenceBuilder);
+            case PerformInlineFlowNode n ->
+                    new PerformInlineQuadGeneration(graph, symbolTable, symbolReferenceBuilder);
+            case PerformTestFlowNode n ->
+                    new PerformTestQuadGeneration(graph, symbolTable, symbolReferenceBuilder);
+            case NextSentenceFlowNode n ->
+                    new NextSentenceQuadGeneration(graph, symbolTable, symbolReferenceBuilder);
+            case SentenceFlowNode n -> new SentenceQuadGeneration(graph, symbolTable, symbolReferenceBuilder);
+            case SectionFlowNode n -> new SectionQuadGeneration(graph, symbolTable, symbolReferenceBuilder);
+            case ProcedureDivisionBodyFlowNode n ->
+                    new ProcedureDivisioneQuadGeneration(graph, symbolTable, symbolReferenceBuilder);
+            case ParagraphFlowNode n -> new ParagraphQuadGeneration(graph, symbolTable, symbolReferenceBuilder);
+            case ParagraphsFlowNode n -> new ParagraphsQuadGeneration(graph, symbolTable, symbolReferenceBuilder);
+            default -> new NoOpQuadGeneration(graph, symbolTable, symbolReferenceBuilder);
         };
     }
 }

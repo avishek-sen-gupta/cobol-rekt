@@ -39,12 +39,13 @@ public class GenerateIntermediateRepresentationTask implements AnalysisTask {
 
     private AnalysisTaskResult quads(PseudocodeGraph graph, SmojolSymbolTable symbolTable, SymbolReferenceBuilder symbolReferenceBuilder) {
         MoveFlowNode move = new FlowNodeNavigator(astRoot).findByType(MoveFlowNode.class);
-        QuadSequence quads = new QuadSequence(symbolTable);
-        InstructionQuadGenerator quadGenerator = new InstructionQuadGenerator(symbolReferenceBuilder, symbolTable);
+//        QuadSequence quads = new QuadSequence(symbolTable);
+        InstructionQuadGenerator quadGenerator = new InstructionQuadGenerator(graph, symbolReferenceBuilder, symbolTable);
 
-        for (PseudocodeInstruction instruction : graph.instructions()) {
-            System.out.println(quadGenerator.quad(instruction, graph));
-        }
+        List<InstructionQuad> quads = graph.instructions().stream().flatMap(ins -> quadGenerator.quad(ins).getQuads().stream()).toList();
+//        for (PseudocodeInstruction instruction : graph.instructions()) {
+//            System.out.println();
+//        }
 
         return new AnalysisTaskResultOK(CommandLineAnalysisTask.BUILD_PSEUDOCODE_GRAPH.name());
     }

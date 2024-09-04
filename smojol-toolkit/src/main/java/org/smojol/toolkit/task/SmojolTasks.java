@@ -193,7 +193,7 @@ public class SmojolTasks {
             case SUMMARISE_THROUGH_LLM -> SUMMARISE_THROUGH_LLM;
             case BUILD_PSEUDOCODE_GRAPH -> nullTask(CommandLineAnalysisTask.BUILD_PSEUDOCODE_GRAPH);
             case BUILD_PSEUDOCODE -> nullTask(CommandLineAnalysisTask.BUILD_PSEUDOCODE);
-            case GENERATE_IR -> nullTask(CommandLineAnalysisTask.GENERATE_IR);
+            case GENERATE_IR -> GENERATE_IR;
         });
     }
 

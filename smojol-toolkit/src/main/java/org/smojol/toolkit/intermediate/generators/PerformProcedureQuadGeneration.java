@@ -1,14 +1,14 @@
 package org.smojol.toolkit.intermediate.generators;
 
-import org.smojol.common.pseudocode.QuadSequence;
-import org.smojol.toolkit.ast.PerformProcedureFlowNode;
+import org.smojol.common.pseudocode.*;
 
-public class PerformProcedureQuadGeneration {
-    public PerformProcedureQuadGeneration(PerformProcedureFlowNode n) {
-
+public class PerformProcedureQuadGeneration extends QuadGeneration {
+    public PerformProcedureQuadGeneration(PseudocodeGraph graph, SmojolSymbolTable symbolTable, SymbolReferenceBuilder symbolReferenceBuilder) {
+        super(graph, symbolTable, symbolReferenceBuilder);
     }
 
-    public QuadSequence run() {
-        return null;
+    @Override
+    public QuadSequence body(PseudocodeInstruction instruction) {
+        return new QuadSequence();
     }
 }

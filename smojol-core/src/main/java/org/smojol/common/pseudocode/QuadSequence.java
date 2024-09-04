@@ -9,7 +9,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class QuadSequence {
-    @Getter private final List<InstructionQuad> quads = new ArrayList<>();
+    @Getter
+    private final List<InstructionQuad> quads = new ArrayList<>();
     private final SmojolSymbolTable symbolTable;
 
     public QuadSequence(SmojolSymbolTable symbolTable) {
@@ -18,7 +19,11 @@ public class QuadSequence {
 
     public QuadSequence(SmojolSymbolTable symbolTable, List<InstructionQuad> instructions) {
         this.symbolTable = symbolTable;
-        quads.addAll(instructions);
+        instructions.forEach(this::add);
+    }
+
+    public QuadSequence() {
+        symbolTable = null;
     }
 
     private SymbolReference existingSymbol(CobolExpression expr) {
@@ -32,7 +37,18 @@ public class QuadSequence {
     }
 
     public void add(InstructionQuad quad) {
-        if (quad.result() instanceof ExpressionSymbolReference) symbolTable.add(quad.result());
+        switch (quad.result()) {
+            case ExpressionSymbolReference r:
+                symbolTable.add(r);
+                break;
+            case AddressSymbolReference r:
+                symbolTable.add(r);
+                break;
+            default:
+                break;
+        }
+//        if (quad.result() instanceof ExpressionSymbolReference ||
+//        ) symbolTable.add(quad.result());
         quads.add(quad);
     }
 

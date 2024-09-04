@@ -7,16 +7,22 @@ import org.smojol.common.ast.*;
 import java.util.List;
 
 public class PseudocodeInstruction implements FlowNodeLike {
-    public static final PseudocodeInstruction NULL = new PseudocodeInstruction(new NullFlowNode(), CodeSentinelType.NO_OP, "42");
-    @Getter private final FlowNode node;
+    public static final PseudocodeInstruction NULL = new PseudocodeInstruction(new NullFlowNode(), CodeSentinelType.BODY, "42");
+    @Getter
+    private final FlowNode node;
     private final String id;
-    @Getter private final CodeSentinelType sentinelType;
+    @Getter
+    private final CodeSentinelType sentinelType;
     private Pair<Integer, Integer> range;
 
     public PseudocodeInstruction(FlowNode node, CodeSentinelType sentinelType, String uuid) {
         this.sentinelType = sentinelType;
         this.node = node;
         this.id = uuid;
+    }
+
+    public <T> T typedNode(Class<T> nodeType) {
+        return nodeType.cast(node);
     }
 
     @Override
