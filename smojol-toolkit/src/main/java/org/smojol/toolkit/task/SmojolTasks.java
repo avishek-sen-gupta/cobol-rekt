@@ -124,13 +124,6 @@ public class SmojolTasks {
         }
     };
 
-    public AnalysisTask NULL_TASK = new AnalysisTask() {
-        @Override
-        public AnalysisTaskResult run() {
-            return new AnalysisTaskResultOK("<NULL TASK>");
-        }
-    };
-
     public AnalysisTask GENERATE_IR = new AnalysisTask() {
         @Override
         public AnalysisTaskResult run() {
@@ -198,9 +191,13 @@ public class SmojolTasks {
             case EXPORT_UNIFIED_TO_JSON -> EXPORT_UNIFIED_TO_JSON;
             case COMPARE_CODE -> COMPARE_CODE;
             case SUMMARISE_THROUGH_LLM -> SUMMARISE_THROUGH_LLM;
-            case BUILD_PSEUDOCODE_GRAPH -> BUILD_PSEUDOCODE_GRAPH;
-            case BUILD_PSEUDOCODE -> NULL_TASK;
-            case GENERATE_IR -> GENERATE_IR;
+            case BUILD_PSEUDOCODE_GRAPH -> nullTask(CommandLineAnalysisTask.BUILD_PSEUDOCODE_GRAPH);
+            case BUILD_PSEUDOCODE -> nullTask(CommandLineAnalysisTask.BUILD_PSEUDOCODE);
+            case GENERATE_IR -> nullTask(CommandLineAnalysisTask.GENERATE_IR);
         });
+    }
+
+    private AnalysisTask nullTask(CommandLineAnalysisTask task) {
+        return () -> new AnalysisTaskResultOK(task.name(), task + " is not live yet.");
     }
 }
