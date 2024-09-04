@@ -22,10 +22,6 @@ public class QuadSequence {
         instructions.forEach(this::add);
     }
 
-    public QuadSequence() {
-        symbolTable = null;
-    }
-
     private SymbolReference existingSymbol(CobolExpression expr) {
         Optional<InstructionQuad> any = quads.stream().filter(q -> q.result().equals(variableSymbolReferenceSearchSpec(expr))).findAny();
         if (any.isEmpty()) throw new UnresolvedSymbolReferenceException(expr);

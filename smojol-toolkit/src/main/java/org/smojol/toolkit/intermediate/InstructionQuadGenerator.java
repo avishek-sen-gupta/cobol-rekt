@@ -22,7 +22,7 @@ public class InstructionQuadGenerator {
         this.symbolTable = symbolTable;
     }
 
-    public QuadSequence quad(PseudocodeInstruction instruction) {
+    public QuadSequence quadSequence(PseudocodeInstruction instruction) {
         FlowNode node = instruction.getNode();
         QuadGeneration quadGeneration = quadGenerator(graph, node);
         return switch (instruction.codeSentinelType()) {

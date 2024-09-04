@@ -10,6 +10,6 @@ public class ProcedureDivisioneQuadGeneration extends QuadGeneration {
 
     @Override
     public QuadSequence body(PseudocodeInstruction instruction) {
-        return new QuadSequence();
+        return new QuadSequence(symbolTable);
     }
 }

@@ -9,6 +9,6 @@ public class IfQuadGeneration extends QuadGeneration {
 
     @Override
     public QuadSequence body(PseudocodeInstruction instruction) {
-        return new QuadSequence();
+        return new QuadSequence(symbolTable);
     }
 }
