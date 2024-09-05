@@ -38,6 +38,7 @@ import org.smojol.common.dialect.LanguageDialect;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.toolkit.analysis.error.ParseDiagnosticRuntimeError;
 import org.smojol.toolkit.analysis.pipeline.config.SourceConfig;
+import org.smojol.toolkit.analysis.validation.DataStructureValidation;
 
 import java.io.File;
 import java.io.IOException;
@@ -73,12 +74,15 @@ public class ParsePipeline {
         this.dialectJarPath = sourceConfig.dialectJarPath();
     }
 
+    public CobolEntityNavigator parse() throws IOException {
+        return parse(DataStructureValidation.BUILD);
+    }
     /**
      * Parses and returns a navigator to navigate the tree with
      * @return CobolEntityNavigator
      * @throws IOException
      */
-    public CobolEntityNavigator parse() throws IOException {
+    public CobolEntityNavigator parse(DataStructureValidation dataStructureValidation) throws IOException {
         Injector diCtx = Guice.createInjector(new CliModule());
         Pipeline pipeline = setupPipeline(diCtx);
 
@@ -145,7 +149,7 @@ public class ParsePipeline {
 
         // TODO: The navigator itself can probably determine these things,
         navigator = navigatorBuilder.navigator(tree);
-        dataStructures = ops.getDataStructureBuilder(navigator).build();
+        dataStructures = dataStructureValidation.run(ops.getDataStructureBuilder(navigator));
         System.out.println(gson.toJson(timingResult));
         return navigator;
     }

@@ -1,6 +1,7 @@
 package org.smojol.cli;
 
 import org.smojol.toolkit.analysis.defined.CodeTaskRunner;
+import org.smojol.toolkit.analysis.validation.DataStructureValidation;
 import org.smojol.toolkit.task.AnalysisTaskResult;
 import org.smojol.common.validation.ProgramValidationErrors;
 import org.smojol.toolkit.analysis.pipeline.*;
@@ -90,7 +91,7 @@ public class MultiCommand implements Callable<Integer> {
         ProgramSearch programSearch = ProgramSearch.searchStrategy(isPermissiveSearch);
         if (isValidate) {
             System.out.println("Only validating, all other tasks were ignored");
-            boolean validationResult = new ValidateTaskRunner(programSearch).processPrograms(programNames, sourceDir, LanguageDialect.dialect(dialect), copyBookPaths, dialectJarPath, null, ProgramValidationErrors::IS_PARTIAL_SUCCESS);
+            boolean validationResult = new ValidateTaskRunner(programSearch).processPrograms(programNames, sourceDir, LanguageDialect.dialect(dialect), copyBookPaths, dialectJarPath, null, ProgramValidationErrors::IS_PARTIAL_SUCCESS, DataStructureValidation.BUILD);
             return validationResult ? 0 : 1;
         }
 

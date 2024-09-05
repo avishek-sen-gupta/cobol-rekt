@@ -2,6 +2,7 @@ package org.smojol.cli;
 
 import org.smojol.common.validation.ProgramValidationErrors;
 import org.smojol.toolkit.analysis.pipeline.ProgramSearch;
+import org.smojol.toolkit.analysis.validation.DataStructureValidation;
 import org.smojol.toolkit.analysis.validation.ValidateTaskRunner;
 import org.smojol.common.dialect.LanguageDialect;
 import picocli.CommandLine;
@@ -58,6 +59,6 @@ public class ValidateCommand implements Callable<Integer> {
         ProgramSearch programSearch = ProgramSearch.searchStrategy(isPermissiveSearch);
         System.out.printf("Running validation in %s mode...%n", isStrict ? "STRICT" : "PERMISSIVE");
         return new ValidateTaskRunner(programSearch).processPrograms(programNames, sourceDir,
-                LanguageDialect.valueOf(dialect), copyBookPaths, dialectJarPath, outputPath, isStrict ? ProgramValidationErrors::IS_COMPLETE_SUCCESS : ProgramValidationErrors::IS_PARTIAL_SUCCESS) ? 0 : 1;
+                LanguageDialect.valueOf(dialect), copyBookPaths, dialectJarPath, outputPath, isStrict ? ProgramValidationErrors::IS_COMPLETE_SUCCESS : ProgramValidationErrors::IS_PARTIAL_SUCCESS, DataStructureValidation.NO_BUILD) ? 0 : 1;
     }
 }
