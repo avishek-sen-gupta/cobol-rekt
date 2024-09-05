@@ -63,7 +63,7 @@ Some reverse engineering use cases are listed below. Descriptions of the capabil
 - Common Pattern Detection with Configurable Code Patterns
 - CICS support
 
-## Planned Capabilities
+## Planned Capabilities and/or Experiments
 
 - Integrating Domain Knowledge
 - IDMS Identify UI interactions and participants (```INSPECT```, ```MAP IN```, ```INQUIRE MAP```, Panel Definition parsing)
@@ -568,3 +568,10 @@ These are some other commands tried on larger graphs:
 ### This prints out all levels
 
 ```dot -Kdot -v5 -Gsize=200,200\! -Goverlap=scale -Tpng -Gnslimit=4 -Gnslimit1=4 -Gmaxiter=2000 -Gsplines=line dotfile.dot -oflowchart-level5.png```
+
+## References and Inspirations
+
+- [Structured Program Theorem](https://en.wikipedia.org/wiki/Structured_program_theorem)
+- [Advanced Compiler Design and Implementation by Steven Muchnik](https://www.amazon.in/Advanced-Compiler-Design-Implementation-Muchnick/dp/1558603204)
+- [Solving the structured control flow problem once and for all](https://medium.com/leaningtech/solving-the-structured-control-flow-problem-once-and-for-all-5123117b1ee2)
+- [Compilers: Principles, Techniques, and Tools by Aho, Sethi, Ullman](https://www.amazon.in/Compilers-Principles-Techniques-Tools-Updated/dp/9357054111/)

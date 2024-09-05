@@ -28,8 +28,8 @@ public class GeneralIdentifierQuadGeneration {
                 List<CobolParser.ArithmeticExpressionContext> expressions = generalIdentifierContext.qualifiedDataName().tableCall().arithmeticExpression();
                 ArithmeticExpressionVisitor arithmeticExpressionVisitor = new ArithmeticExpressionVisitor();
                 List<CobolExpression> indexExpressions = expressions.stream().map(arithmeticExpressionVisitor::visitArithmeticExpression).toList();
+                ExpressionQuadGenerator generator = new ExpressionQuadGenerator(symbolTable, symbolReferenceBuilder);
                 List<QuadSequence> sequences = indexExpressions.stream().map(expr -> {
-                    ExpressionQuadGenerator generator = new ExpressionQuadGenerator(symbolTable, symbolReferenceBuilder);
                     generator.build(expr);
                     return generator.getQuads();
                 }).toList();

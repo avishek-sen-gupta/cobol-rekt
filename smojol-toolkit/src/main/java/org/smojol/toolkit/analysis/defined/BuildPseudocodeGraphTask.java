@@ -31,15 +31,7 @@ public class BuildPseudocodeGraphTask implements AnalysisTask {
 
     @Override
     public AnalysisTaskResult run() {
-        AnalysisTaskResult result = new BuildPseudocodeTask(astRoot, new UUIDProvider()).run();
-        return switch (result) {
-            case AnalysisTaskResultOK o -> updateGraph(o.getDetail());
-            case AnalysisTaskResultError e ->
-                    new AnalysisTaskResultError(e.getException(), CommandLineAnalysisTask.BUILD_PSEUDOCODE_GRAPH);
-        };
-    }
-
-    private AnalysisTaskResult updateGraph(List<PseudocodeInstruction> instructions) {
+        List<PseudocodeInstruction> instructions = new BuildPseudocodeTask(astRoot, new UUIDProvider()).run();
         PseudocodeNavigator navigator = new PseudocodeNavigator();
         List<InstructionEdge> edges = new ArrayList<>();
 
@@ -75,7 +67,8 @@ public class BuildPseudocodeGraphTask implements AnalysisTask {
 
 //        injectIntoNeo4J(nodes, edges);
 
-        return new AnalysisTaskResultOK(CommandLineAnalysisTask.BUILD_PSEUDOCODE_GRAPH.name(), new PseudocodeGraph(instructions, edges));
+        PseudocodeGraph graph = new PseudocodeGraph(instructions, edges);
+        return new AnalysisTaskResultOK(CommandLineAnalysisTask.BUILD_PSEUDOCODE_GRAPH.name(), graph);
     }
 
     private void injectIntoNeo4J(List<FlowNodeLike> nodes, List<InstructionEdge> edges) {

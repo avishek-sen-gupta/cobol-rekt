@@ -14,8 +14,8 @@ import java.util.List;
 
 @Getter
 public class ComputeFlowNode extends CobolFlowNode {
-    private List<CobolParser.ComputeStoreContext> destinations;
-    private CobolParser.ArithmeticExpressionContext rhs;
+    @Getter private List<CobolParser.ComputeStoreContext> destinations;
+    @Getter private CobolParser.ArithmeticExpressionContext rhs;
 
     public ComputeFlowNode(ParseTree parseTree, FlowNode scope, FlowNodeService nodeService, StackFrames stackFrames) {
         super(parseTree, scope, nodeService, stackFrames);

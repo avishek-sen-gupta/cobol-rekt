@@ -124,6 +124,13 @@ public class SmojolTasks {
         }
     };
 
+    public AnalysisTask ANALYSE_CONTROL_FLOW = new AnalysisTask() {
+        @Override
+        public AnalysisTaskResult run() {
+            return new AnalyseControlFlowTask(flowRoot, neo4JDriverBuilder, idProvider).run();
+        }
+    };
+
     public AnalysisTask GENERATE_IR = new AnalysisTask() {
         @Override
         public AnalysisTaskResult run() {
@@ -191,9 +198,9 @@ public class SmojolTasks {
             case EXPORT_UNIFIED_TO_JSON -> EXPORT_UNIFIED_TO_JSON;
             case COMPARE_CODE -> COMPARE_CODE;
             case SUMMARISE_THROUGH_LLM -> SUMMARISE_THROUGH_LLM;
-            case BUILD_PSEUDOCODE_GRAPH -> nullTask(CommandLineAnalysisTask.BUILD_PSEUDOCODE_GRAPH);
-            case BUILD_PSEUDOCODE -> nullTask(CommandLineAnalysisTask.BUILD_PSEUDOCODE);
-            case GENERATE_IR -> GENERATE_IR;
+            case BUILD_PSEUDOCODE_GRAPH -> BUILD_PSEUDOCODE_GRAPH;
+            case ANALYSE_CONTROL_FLOW -> ANALYSE_CONTROL_FLOW;
+            case GENERATE_IR -> nullTask(CommandLineAnalysisTask.GENERATE_IR);
         });
     }
 

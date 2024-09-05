@@ -7,7 +7,6 @@ import org.smojol.common.flowchart.ConsoleColors;
 import org.smojol.common.id.UUIDProvider;
 import org.smojol.common.program.TransferControlCollectorVisitor;
 import org.smojol.common.pseudocode.PseudocodeInstruction;
-import org.smojol.toolkit.task.AnalysisTaskResultOK;
 import org.smojol.toolkit.task.CommandLineAnalysisTask;
 import org.smojol.toolkit.task.AnalysisTask;
 import org.smojol.toolkit.task.AnalysisTaskResult;
@@ -43,9 +42,7 @@ public class ProgramDependenciesTask implements AnalysisTask {
 
     @Override
     public AnalysisTaskResult run() {
-        AnalysisTaskResult pseudocodeBuildTask = new BuildPseudocodeTask(root, new UUIDProvider()).run();
-        if (!pseudocodeBuildTask.isSuccess()) return pseudocodeBuildTask;
-        List<PseudocodeInstruction> instructions = ((AnalysisTaskResultOK) pseudocodeBuildTask).getDetail();
+        List<PseudocodeInstruction> instructions = new BuildPseudocodeTask(root, new UUIDProvider()).run();
         List<PseudocodeInstruction> allTransfers = instructions.stream().filter(ins -> ins.isBody() && ins.getNode() instanceof ExternalControlFlowNode).toList();
         List<CallTarget> resolvedCallTargets = allTransfers.stream().map(t -> ((ExternalControlFlowNode) t.getNode()).callTarget().resolve(t, instructions)).toList();
         dependencies.addAll(resolvedCallTargets);

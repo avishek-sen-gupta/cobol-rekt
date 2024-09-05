@@ -23,7 +23,7 @@ public class GenerateIntermediateRepresentationMain {
                 ImmutableList.of(new File("/Users/asgupta/code/smojol/smojol-test-code")),
                 "/Users/asgupta/code/smojol/che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar",
                 LanguageDialect.IDMS, new FullProgram(FlowchartOutputFormat.MERMAID), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder(), new ProgramSearch())
-                .runForPrograms(ImmutableList.of(CommandLineAnalysisTask.GENERATE_IR), ImmutableList.of("pseudocode-gen-test.cbl"));
+                .runForPrograms(ImmutableList.of(CommandLineAnalysisTask.BUILD_PSEUDOCODE_GRAPH), ImmutableList.of("pseudocode-gen-test.cbl"));
         System.out.println("DONE");
     }
 }
