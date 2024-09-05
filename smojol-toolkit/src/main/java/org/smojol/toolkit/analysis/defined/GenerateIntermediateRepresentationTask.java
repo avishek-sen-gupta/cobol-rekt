@@ -6,7 +6,7 @@ import org.smojol.common.id.IdProvider;
 import org.smojol.common.navigation.FlowNodeNavigator;
 import org.smojol.common.pseudocode.*;
 import org.smojol.common.vm.structure.CobolDataStructure;
-import org.smojol.toolkit.intermediate.InstructionQuadGenerator;
+import org.smojol.toolkit.intermediate.QuadSequenceGenerator;
 import org.smojol.toolkit.ast.MoveFlowNode;
 import org.smojol.toolkit.task.*;
 
@@ -39,7 +39,7 @@ public class GenerateIntermediateRepresentationTask implements AnalysisTask {
 
     private AnalysisTaskResult quads(PseudocodeGraph graph, SmojolSymbolTable symbolTable, SymbolReferenceBuilder symbolReferenceBuilder) {
         MoveFlowNode move = new FlowNodeNavigator(astRoot).findByType(MoveFlowNode.class);
-        InstructionQuadGenerator quadGenerator = new InstructionQuadGenerator(graph, symbolReferenceBuilder, symbolTable);
+        QuadSequenceGenerator quadGenerator = new QuadSequenceGenerator(graph, symbolReferenceBuilder, symbolTable);
 
         List<InstructionQuad> quads = graph.instructions().stream().flatMap(ins -> quadGenerator.quadSequence(ins).getQuads().stream()).toList();
         return new AnalysisTaskResultOK(CommandLineAnalysisTask.BUILD_PSEUDOCODE_GRAPH.name());

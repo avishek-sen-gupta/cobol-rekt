@@ -29,9 +29,9 @@ public class GeneralIdentifierQuadGeneration {
                 ArithmeticExpressionVisitor arithmeticExpressionVisitor = new ArithmeticExpressionVisitor();
                 List<CobolExpression> indexExpressions = expressions.stream().map(arithmeticExpressionVisitor::visitArithmeticExpression).toList();
                 List<QuadSequence> sequences = indexExpressions.stream().map(expr -> {
-                    ExpressionQuadGenerator visitor = new ExpressionQuadGenerator(symbolTable, symbolReferenceBuilder);
-                    visitor.build(expr);
-                    return visitor.getQuads();
+                    ExpressionQuadGenerator generator = new ExpressionQuadGenerator(symbolTable, symbolReferenceBuilder);
+                    generator.build(expr);
+                    return generator.getQuads();
                 }).toList();
 
                 List<SymbolReference> indexReferences = sequences.stream().map(QuadSequence::lastResult).toList();

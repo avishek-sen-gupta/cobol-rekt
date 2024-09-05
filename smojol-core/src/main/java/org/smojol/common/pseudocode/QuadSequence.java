@@ -43,8 +43,6 @@ public class QuadSequence {
             default:
                 break;
         }
-//        if (quad.result() instanceof ExpressionSymbolReference ||
-//        ) symbolTable.add(quad.result());
         quads.add(quad);
     }
 

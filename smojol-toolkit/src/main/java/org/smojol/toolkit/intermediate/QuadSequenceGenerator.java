@@ -9,14 +9,14 @@ import org.smojol.toolkit.intermediate.generators.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InstructionQuadGenerator {
+public class QuadSequenceGenerator {
     private final PseudocodeGraph graph;
     private final SymbolReferenceBuilder symbolReferenceBuilder;
     private final SmojolSymbolTable symbolTable;
     @Getter
     private final List<InstructionQuad> quads = new ArrayList<>();
 
-    public InstructionQuadGenerator(PseudocodeGraph graph, SymbolReferenceBuilder symbolReferenceBuilder, SmojolSymbolTable symbolTable) {
+    public QuadSequenceGenerator(PseudocodeGraph graph, SymbolReferenceBuilder symbolReferenceBuilder, SmojolSymbolTable symbolTable) {
         this.graph = graph;
         this.symbolReferenceBuilder = symbolReferenceBuilder;
         this.symbolTable = symbolTable;
