@@ -6,10 +6,8 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.eclipse.lsp.cobol.core.CobolDataTypes;
 import org.eclipse.lsp.cobol.core.CobolDataTypesLexer;
-import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.vm.type.SignType;
 import org.smojol.common.vm.type.AlphanumericDataTypeSpec;
-import org.smojol.common.vm.type.CobolDataType;
 import org.smojol.common.vm.type.DataTypeSpec;
 import org.smojol.common.vm.type.ZonedDecimalDataTypeSpec;
 
@@ -96,7 +94,7 @@ public class DataLayoutBuilder {
         return alphanumericIndicator.charTypeIndicator() != null ? 1 : Integer.parseInt(alphanumericIndicator.nchars().numberOf().getText().replace("(", "").replace(")", ""));
     }
 
-    private static CobolDataTypes.StartRuleContext parseSpec(String spec) {
+    public static CobolDataTypes.StartRuleContext parseSpec(String spec) {
         CobolDataTypesLexer antlrLexer = new CobolDataTypesLexer(CharStreams.fromString(spec));
         antlrLexer.removeErrorListeners();
         CommonTokenStream tokenStream = new CommonTokenStream(antlrLexer);

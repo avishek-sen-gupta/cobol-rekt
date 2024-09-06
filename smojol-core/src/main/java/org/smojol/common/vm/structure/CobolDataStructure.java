@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
 
+import static org.smojol.common.vm.memory.DataLayoutBuilder.parseSpec;
+
 public abstract class CobolDataStructure extends SimpleTreeNode {
     @Getter protected final CobolDataType dataType;
     protected final String name;

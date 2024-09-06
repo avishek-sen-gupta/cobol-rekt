@@ -28,34 +28,35 @@ public class TableDataStructure extends Format1DataStructure {
     }
 
     // Copy constructor
-    public TableDataStructure(Function<CobolParser.DataDescriptionEntryFormat1Context, String> namingScheme, CobolParser.DataDescriptionEntryFormat1Context dataDescription, List<CobolDataStructure> childStructures, int level, CobolDataStructure parent, boolean isComposite, UnresolvedReferenceStrategy unresolvedReferenceStrategy, List<ConditionalDataStructure> conditions, int numElements, SourceSection sourceSection) {
-        super(namingScheme, dataDescription, childStructures, level, parent, isComposite, unresolvedReferenceStrategy, conditions, CobolDataType.TABLE, sourceSection);
-        this.numElements = numElements;
+//    public TableDataStructure(Function<CobolParser.DataDescriptionEntryFormat1Context, String> namingScheme, CobolParser.DataDescriptionEntryFormat1Context dataDescription, List<CobolDataStructure> childStructures, int level, CobolDataStructure parent, boolean isComposite, UnresolvedReferenceStrategy unresolvedReferenceStrategy, List<ConditionalDataStructure> conditions, int numElements, SourceSection sourceSection) {
+//        super(namingScheme, dataDescription, childStructures, level, parent, isComposite, unresolvedReferenceStrategy, conditions, CobolDataType.TABLE, sourceSection);
+//        this.numElements = numElements;
+//    }
+
+    // Copy constructor
+    public TableDataStructure(TableDataStructure that, Function<CobolParser.DataDescriptionEntryFormat1Context, String> namingScheme) {
+        super(that, namingScheme);
+        this.numElements = that.numElements;
     }
 
     @Override
     public void expandTables() {
         if (!isComposite) {
-            structures = IntStream.range(0, numElements).mapToObj(i -> (CobolDataStructure) new Format1DataStructure(NamingScheme.INDEXED.apply(i), dataDescription, copy(structures), level(), this, isComposite, unresolvedReferenceStrategy, conditions, elementType, sourceSection)).toList();
-//            structures = IntStream.range(0, numElements).mapToObj(i ->
-//            {
-//                Format1DataStructure format1DataStructure = new Format1DataStructure(NamingScheme.INDEXED.apply(i), dataDescription, copy(structures), level(), this, isComposite, unresolvedReferenceStrategy, conditions, elementType);
-//                return (CobolDataStructure) format1DataStructure;
-////                return (CobolDataStructure) new TableDataStructure(NamingScheme.INDEXED.apply(i), dataDescription, ImmutableList.of(format1DataStructure), level(), this, isComposite, unresolvedReferenceStrategy, conditions, numElements);
-//            }).toList();
+//            structures = IntStream.range(0, numElements).mapToObj(i -> (CobolDataStructure) new Format1DataStructure(NamingScheme.INDEXED.apply(i), dataDescription, copy(structures), level(), this, isComposite, unresolvedReferenceStrategy, conditions, elementType, sourceSection)).toList();
+            structures = IntStream.range(0, numElements).mapToObj(i -> (CobolDataStructure) new Format1DataStructure(this, NamingScheme.INDEXED.apply(i))).toList();
         } else {
             structures.forEach(CobolDataStructure::expandTables);
-//            structures = IntStream.range(0, numElements).mapToObj(i -> copy(NamingScheme.INDEXED.apply(i))).toList();
             structures = IntStream.range(0, numElements).mapToObj(i -> {
                 List<CobolDataStructure> copiedStructures = structures.stream().map(s -> s.copy(NamingScheme.IDENTITY)).toList();
-                return (CobolDataStructure) new Format1DataStructure(NamingScheme.IDENTITY, dataDescription, copiedStructures, level(), this, isComposite, unresolvedReferenceStrategy, conditions, elementType, sourceSection);
+                return (CobolDataStructure) new Format1DataStructure(this, copiedStructures, NamingScheme.IDENTITY);
             }).toList();
         }
     }
 
     @Override
     public CobolDataStructure copy(Function<CobolParser.DataDescriptionEntryFormat1Context, String> namingScheme) {
-        return new TableDataStructure(namingScheme, dataDescription, copy(structures), level(), this, isComposite, unresolvedReferenceStrategy, conditions, numElements, sourceSection);
+        return new TableDataStructure(this, namingScheme);
+//        return new TableDataStructure(namingScheme, dataDescription, copy(structures), level(), this, isComposite, unresolvedReferenceStrategy, conditions, numElements, sourceSection);
 //        return new Format1DataStructure(namingScheme, dataDescription, copy(structures), level(), this, isComposite, unresolvedReferenceStrategy, conditions, elementType);
     }
 
