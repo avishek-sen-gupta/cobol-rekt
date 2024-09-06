@@ -73,6 +73,7 @@ public class DataLayoutBuilder {
             return new ImmutablePair<>(leftSide, rightSide);
         }
     }
+
     private Integer numChars(List<CobolDataTypes.DigitIndicatorContext> indicators) {
         return indicators.stream().map(this::numChars).reduce(0, Integer::sum);
     }
@@ -108,12 +109,5 @@ public class DataLayoutBuilder {
         CobolDataTypes.StartRuleContext root = parseSpec(spec);
         Pair<DataTypeSpec, Integer> typeSpec = typeSpec(root.dataTypeSpec());
         return typeSpec;
-    }
-
-    public CobolDataType type(CobolParser.DataDescriptionEntryFormat1Context dataDescription) {
-        if (dataDescription.dataPictureClause().isEmpty()) return CobolDataType.GROUP;
-        String input = dataDescription.dataPictureClause().getFirst().pictureString().getFirst().getText();
-        CobolDataTypes.StartRuleContext root = parseSpec(input);
-        return root.dataTypeSpec().fraction() != null ? CobolDataType.NUMBER : CobolDataType.STRING;
     }
 }

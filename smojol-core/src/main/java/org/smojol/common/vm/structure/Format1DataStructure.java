@@ -57,17 +57,7 @@ public class Format1DataStructure extends CobolDataStructure {
     }
 
     public Format1DataStructure(CobolParser.DataDescriptionEntryFormat1Context dataDescription, UnresolvedReferenceStrategy unresolvedReferenceStrategy, SourceSection sourceSection) {
-        this(dataDescription, unresolvedReferenceStrategy, cobolDataType(dataDescription), sourceSection);
-    }
-
-    @Override
-    public void accept(DataStructureVisitor visitor, CobolDataStructure parent, Function<CobolDataStructure, Boolean> stopRecurseCondition, CobolDataStructure root) {
-        super.accept(visitor, parent, stopRecurseCondition, root);
-        this.conditions.forEach(c -> c.accept(visitor, this, stopRecurseCondition, root));
-    }
-
-    public Format1DataStructure(CobolParser.DataDescriptionEntryFormat1Context dataDescription, UnresolvedReferenceStrategy unresolvedReferenceStrategy, CobolDataType dataType, SourceSection sourceSection) {
-        super(NamingScheme.IDENTITY.apply(dataDescription), Integer.parseInt(dataDescription.levelNumber().getText()), dataType, NodeText.originalText(dataDescription), sourceSection);
+        super(NamingScheme.IDENTITY.apply(dataDescription), Integer.parseInt(dataDescription.levelNumber().getText()), cobolDataType(dataDescription), NodeText.originalText(dataDescription), sourceSection);
         this.namingScheme = NamingScheme.IDENTITY;
         this.dataDescription = dataDescription;
         System.out.println("Setting value for " + dataDescription.getText());
@@ -317,6 +307,12 @@ public class Format1DataStructure extends CobolDataStructure {
 //        if (dataType == CobolDataType.ROOT) return "[ROOT]";
 //        return dataDescription != null ? dataDescription.entryName().getText() + " " + layout.toString() : "[ROOT]";
         return namingScheme.apply(dataDescription) + " " + layout.toString();
+    }
+
+    @Override
+    public void accept(DataStructureVisitor visitor, CobolDataStructure parent, Function<CobolDataStructure, Boolean> stopRecurseCondition, CobolDataStructure root) {
+        super.accept(visitor, parent, stopRecurseCondition, root);
+        this.conditions.forEach(c -> c.accept(visitor, this, stopRecurseCondition, root));
     }
 
     private Optional<ConditionalDataStructure> condition(String subRecordID) {

@@ -5,12 +5,12 @@ import hu.webarticum.treeprinter.SimpleTreeNode;
 import hu.webarticum.treeprinter.TreeNode;
 import hu.webarticum.treeprinter.printer.listing.ListingTreePrinter;
 import lombok.Getter;
+import org.eclipse.lsp.cobol.core.CobolDataTypes;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.ast.CommentBlock;
 import org.smojol.common.flowchart.DataStructureVisitor;
 import org.smojol.common.structure.DataStructureContext;
 import org.smojol.common.structure.SourceSection;
-import org.smojol.common.vm.memory.DataLayoutBuilder;
 import org.smojol.common.vm.memory.MemoryLayout;
 import org.smojol.common.vm.memory.MemoryRegion;
 import org.smojol.common.vm.reference.CobolReference;
@@ -193,7 +193,11 @@ public abstract class CobolDataStructure extends SimpleTreeNode {
     protected abstract AccessChain typeSpecificChain(String subRecordID, AccessChain chain);
 
     protected static CobolDataType cobolDataType(CobolParser.DataDescriptionEntryFormat1Context dataDescription) {
-        return new DataLayoutBuilder().type(dataDescription);
+        if (dataDescription.dataOccursClause() != null) return CobolDataType.TABLE;
+        if (dataDescription.dataPictureClause().isEmpty()) return CobolDataType.GROUP;
+        String input = dataDescription.dataPictureClause().getFirst().pictureString().getFirst().getText();
+        CobolDataTypes.StartRuleContext root = parseSpec(input);
+        return root.dataTypeSpec().fraction() != null ? CobolDataType.NUMBER : CobolDataType.STRING;
     }
 
     protected TypedRecord typed(Object v) {

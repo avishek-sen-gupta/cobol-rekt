@@ -22,7 +22,7 @@ public class TableDataStructure extends Format1DataStructure {
     private CobolDataType elementType;
 
     public TableDataStructure(CobolParser.DataDescriptionEntryFormat1Context structure, int numElements, UnresolvedReferenceStrategy strategy, SourceSection sourceSection) {
-        super(structure, strategy, CobolDataType.TABLE, sourceSection);
+        super(structure, strategy, sourceSection);
         elementType = cobolDataType(structure);
         this.numElements = numElements;
     }
