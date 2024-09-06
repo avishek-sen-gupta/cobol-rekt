@@ -29,7 +29,7 @@ public class GenerateIntermediateRepresentationTask implements AnalysisTask {
     public AnalysisTaskResult run() {
         SymbolReferenceBuilder symbolReferenceBuilder = new SymbolReferenceBuilder(new IncrementingIdProvider());
         SmojolSymbolTable symbolTable = new SmojolSymbolTable(dataStructures, symbolReferenceBuilder);
-        AnalysisTaskResult result = new BuildPseudocodeGraphTask(astRoot, neo4JDriverBuilder, idProvider).run();
+        AnalysisTaskResult result = new BuildPseudocodeGraphTask(astRoot, neo4JDriverBuilder).run();
         return switch (result) {
             case AnalysisTaskResultOK o -> quads(o.getDetail(), symbolTable, symbolReferenceBuilder);
             case AnalysisTaskResultError e ->

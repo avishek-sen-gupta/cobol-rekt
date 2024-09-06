@@ -120,14 +120,14 @@ public class SmojolTasks {
     public AnalysisTask BUILD_PSEUDOCODE_GRAPH = new AnalysisTask() {
         @Override
         public AnalysisTaskResult run() {
-            return new BuildPseudocodeGraphTask(flowRoot, neo4JDriverBuilder, idProvider).run();
+            return new BuildPseudocodeGraphTask(flowRoot, neo4JDriverBuilder).run();
         }
     };
 
     public AnalysisTask ANALYSE_CONTROL_FLOW = new AnalysisTask() {
         @Override
         public AnalysisTaskResult run() {
-            return new AnalyseControlFlowTask(flowRoot, neo4JDriverBuilder, idProvider).run();
+            return new AnalyseControlFlowTask(flowRoot, new BasicBlockFactory(idProvider), neo4JDriverBuilder).run();
         }
     };
 

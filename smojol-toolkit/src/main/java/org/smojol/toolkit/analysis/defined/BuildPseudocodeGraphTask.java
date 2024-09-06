@@ -6,7 +6,6 @@ import com.mojo.woof.Neo4JDriverBuilder;
 import org.apache.commons.lang3.tuple.Pair;
 import org.neo4j.driver.Record;
 import org.smojol.common.ast.*;
-import org.smojol.common.id.IdProvider;
 import org.smojol.common.id.UUIDProvider;
 import org.smojol.common.navigation.PseudocodeNavigator;
 import org.smojol.common.pseudocode.*;
@@ -21,12 +20,10 @@ import java.util.List;
 public class BuildPseudocodeGraphTask implements AnalysisTask {
     private final FlowNode astRoot;
     private final Neo4JDriverBuilder neo4JDriverBuilder;
-    private final IdProvider idProvider;
 
-    public BuildPseudocodeGraphTask(FlowNode astRoot, Neo4JDriverBuilder neo4JDriverBuilder, IdProvider idProvider) {
+    public BuildPseudocodeGraphTask(FlowNode astRoot, Neo4JDriverBuilder neo4JDriverBuilder) {
         this.astRoot = astRoot;
         this.neo4JDriverBuilder = neo4JDriverBuilder;
-        this.idProvider = idProvider;
     }
 
     @Override
