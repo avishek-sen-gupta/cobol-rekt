@@ -55,7 +55,5 @@ public class FlowchartStylePreferences {
 
     public static GraphvizStyleScheme scheme(FlowNode node) {
         return schemes.get(node.type());
-//        if (node.getNotes().isEmpty()) return schemes.get(node.type());
-//        return new GraphvizStyleScheme(Color.AZURE4, Color.BLACK, Shape.NOTE, node.getNotes());
     }
 }

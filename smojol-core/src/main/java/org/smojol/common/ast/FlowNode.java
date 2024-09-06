@@ -33,20 +33,11 @@ public interface FlowNode extends FlowNodeLike {
     FlowNode tail();
     List<FlowNode> astChildren();
 
-    DomainDocument getNotes();
-
     boolean accessesDatabase();
     boolean isMergeable();
     boolean contains(FlowNode node);
 
-//    String id();
-//    String label();
-//    String name();
-//    String originalText();
     ParseTree getExecutionContext();
-//    FlowNodeType type();
-//    List<FlowNodeCategory> categories();
-
     FlowNode passthrough();
 
     // TODO: Might just be data instead of inheritance

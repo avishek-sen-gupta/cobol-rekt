@@ -112,11 +112,6 @@ public class NullFlowNode implements FlowNode {
     }
 
     @Override
-    public DomainDocument getNotes() {
-        return null;
-    }
-
-    @Override
     public boolean accessesDatabase() {
         return false;
     }

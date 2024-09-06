@@ -23,7 +23,6 @@ public class CobolFlowNode implements FlowNode {
     @Getter
     protected final ParseTree executionContext;
     protected FlowNodeService nodeService;
-    private DomainDocument document = new DomainDocument();
     private boolean databaseAccess;
     protected FlowNode scope;
     protected final StackFrames staticFrameContext;
@@ -164,11 +163,6 @@ public class CobolFlowNode implements FlowNode {
     @Override
     public void addIncomingNode(FlowNode flowNode) {
         incomingNodes.add(flowNode);
-    }
-
-    @Override
-    public DomainDocument getNotes() {
-        return document;
     }
 
     @Override

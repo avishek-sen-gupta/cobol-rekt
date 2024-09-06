@@ -122,11 +122,6 @@ public class GenericProcessingFlowNode implements FlowNode {
     }
 
     @Override
-    public DomainDocument getNotes() {
-        return new DomainDocument();
-    }
-
-    @Override
     public boolean accessesDatabase() {
         return false;
     }

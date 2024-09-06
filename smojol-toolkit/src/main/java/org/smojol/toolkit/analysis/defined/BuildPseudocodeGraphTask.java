@@ -67,17 +67,4 @@ public class BuildPseudocodeGraphTask implements AnalysisTask {
         PseudocodeGraph graph = new PseudocodeGraph(instructions, edges);
         return new AnalysisTaskResultOK(CommandLineAnalysisTask.BUILD_PSEUDOCODE_GRAPH.name(), graph);
     }
-
-    private void injectIntoNeo4J(List<FlowNodeLike> nodes, List<InstructionEdge> edges) {
-        GraphSDK graphSDK = new GraphSDK(neo4JDriverBuilder.fromEnv());
-        NodeSpecBuilder specBuilder = new NodeSpecBuilder(new NamespaceQualifier("SOME"));
-        nodes.forEach(n -> graphSDK.createNode(NodeToWoof.toWoofNode(n, specBuilder)));
-        edges.forEach(e -> {
-            PseudocodeInstruction from = e.getFrom();
-            PseudocodeInstruction to = e.getTo();
-            Record recordFrom = NodeToWoof.existingCFGNode(from, specBuilder, graphSDK);
-            Record recordTo = NodeToWoof.existingCFGNode(to, specBuilder, graphSDK);
-            graphSDK.connect(recordFrom, recordTo, e.getEdgeType().name(), EdgeType.FLOW);
-        });
-    }
 }

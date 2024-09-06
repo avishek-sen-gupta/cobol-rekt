@@ -1,10 +1,18 @@
 package org.smojol.toolkit.analysis.defined;
 
+import com.mojo.woof.EdgeType;
+import com.mojo.woof.GraphSDK;
 import com.mojo.woof.Neo4JDriverBuilder;
+import org.neo4j.driver.Record;
 import org.smojol.common.ast.FlowNode;
+import org.smojol.common.ast.FlowNodeLike;
+import org.smojol.common.ast.InstructionEdge;
 import org.smojol.common.pseudocode.CodeSentinelType;
 import org.smojol.common.pseudocode.PseudocodeGraph;
 import org.smojol.common.pseudocode.PseudocodeInstruction;
+import org.smojol.toolkit.analysis.graph.NamespaceQualifier;
+import org.smojol.toolkit.analysis.graph.NodeSpecBuilder;
+import org.smojol.toolkit.analysis.graph.NodeToWoof;
 import org.smojol.toolkit.task.*;
 
 import java.util.ArrayList;
@@ -31,7 +39,8 @@ public class AnalyseControlFlowTask implements AnalysisTask {
     }
 
     private AnalysisTaskResult analyse(PseudocodeGraph graph) {
-        return new AnalysisTaskResultOK(CommandLineAnalysisTask.ANALYSE_CONTROL_FLOW.name(), basicBlocks(graph));
+        List<BasicBlock> nasicBlocks = basicBlocks(graph);
+        return new AnalysisTaskResultOK(CommandLineAnalysisTask.ANALYSE_CONTROL_FLOW.name(), nasicBlocks);
     }
 
     private List<BasicBlock> basicBlocks(PseudocodeGraph graph) {
@@ -40,9 +49,8 @@ public class AnalyseControlFlowTask implements AnalysisTask {
         for (int i = 0; i < graph.instructions().size(); i++) {
             PseudocodeInstruction instruction = graph.instructions().get(i);
             if (isJoinPoint(instruction, graph)) {
-                if (currentBlock.isEmpty()) {
-                    currentBlock.add(instruction);
-                } else {
+                if (currentBlock.isEmpty()) currentBlock.add(instruction);
+                else {
                     stack.add(currentBlock);
                     currentBlock = basicBlockFactory.block();
                     currentBlock.add(instruction);
@@ -71,5 +79,18 @@ public class AnalyseControlFlowTask implements AnalysisTask {
 
     private boolean isJoinPoint(PseudocodeInstruction instruction, PseudocodeGraph graph) {
         return graph.edges().stream().filter(e -> e.getTo() == instruction).count() > 1;
+    }
+
+    private void injectIntoNeo4J(List<FlowNodeLike> nodes, List<InstructionEdge> edges) {
+        GraphSDK graphSDK = new GraphSDK(neo4JDriverBuilder.fromEnv());
+        NodeSpecBuilder specBuilder = new NodeSpecBuilder(new NamespaceQualifier("SOME"));
+        nodes.forEach(n -> graphSDK.createNode(NodeToWoof.toWoofNode(n, specBuilder)));
+        edges.forEach(e -> {
+            PseudocodeInstruction from = e.getFrom();
+            PseudocodeInstruction to = e.getTo();
+            Record recordFrom = NodeToWoof.existingCFGNode(from, specBuilder, graphSDK);
+            Record recordTo = NodeToWoof.existingCFGNode(to, specBuilder, graphSDK);
+            graphSDK.connect(recordFrom, recordTo, e.getEdgeType().name(), EdgeType.FLOW);
+        });
     }
 }
