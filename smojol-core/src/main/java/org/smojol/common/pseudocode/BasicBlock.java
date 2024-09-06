@@ -1,6 +1,4 @@
-package org.smojol.toolkit.analysis.defined;
-
-import org.smojol.common.pseudocode.PseudocodeInstruction;
+package org.smojol.common.pseudocode;
 
 import java.util.ArrayList;
 import java.util.List;

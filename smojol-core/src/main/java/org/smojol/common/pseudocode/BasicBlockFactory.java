@@ -1,10 +1,6 @@
-package org.smojol.toolkit.analysis.defined;
+package org.smojol.common.pseudocode;
 
 import org.smojol.common.id.IdProvider;
-import org.smojol.common.pseudocode.PseudocodeInstruction;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class BasicBlockFactory {
     private final IdProvider idProvider;
