@@ -31,6 +31,8 @@ The toolkit consists of Java components, most of which are around parsing, inges
 
 **If you are trying out Cobol-REKT in your project, I'd love to know and feature it in the README (simply open a PR, and we can go from there)! I'm also welcoming contributors, and/or feature requests for your use cases.**
 
+You can see the current backlog [here](https://github.com/users/avishek-sen-gupta/projects/1.).
+
 ## Major Dependencies
 
 - The toolkit uses the grammar available in the [Eclipse Che4z Cobol Support project](https://github.com/eclipse-che4z/che-che4z-lsp-for-cobol) to create the parse tree.
