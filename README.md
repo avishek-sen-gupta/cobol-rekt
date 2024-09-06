@@ -2,7 +2,7 @@
 
 [![Maven Package](https://github.com/avishek-sen-gupta/cobol-rekt/actions/workflows/maven-publish.yml/badge.svg)](https://github.com/avishek-sen-gupta/cobol-rekt/actions/workflows/maven-publish.yml)
 
-You can see the current backlog [here](https://github.com/users/avishek-sen-gupta/projects/1.).
+You can see the current backlog [here](https://github.com/users/avishek-sen-gupta/projects/1).
 
 This is an evolving toolkit of capabilities helpful for reverse engineering legacy Cobol code. As of now, the following capabilities are available:
 
