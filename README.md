@@ -58,17 +58,11 @@ Some reverse engineering use cases are listed below. Descriptions of the capabil
 - Try out new rules?
 - Identify different flows in the report - use cases for forward engineering
 
-## Work in Progress
-
-- Graph Edit distance between paragraphs through NetworkX
-- Clone Detection
-- Common Pattern Detection with Configurable Code Patterns
-- CICS support
-
 ## Planned Capabilities and/or Experiments
 
 - Integrating Domain Knowledge
 - IDMS Identify UI interactions and participants (```INSPECT```, ```MAP IN```, ```INQUIRE MAP```, Panel Definition parsing)
+- Exposing Basic Blocks which are a useful first step in raw transpilation
 - Quad Generation (WIP): This is a WIP experiment to generate Instruction Quads (a sort of language-independent Intermediate Representation described in the Dragon Book (Compilers: Principles, Techniques, and Tools by Aho, Sethi, Ullman).
 
 ## Flowchart Generation
