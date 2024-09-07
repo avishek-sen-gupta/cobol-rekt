@@ -5,7 +5,6 @@ import lombok.Getter;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.eclipse.lsp.cobol.core.CobolParser;
-import org.smojol.common.ast.AggregatingFlowNodeASTVisitor;
 import org.smojol.common.ast.NodeText;
 import org.smojol.common.flowchart.DataStructureVisitor;
 import org.smojol.common.structure.SourceSection;
@@ -22,7 +21,7 @@ import java.util.function.Function;
 import java.util.logging.Logger;
 
 public class Format1DataStructure extends CobolDataStructure {
-    private static final Logger LOGGER = Logger.getLogger(AggregatingFlowNodeASTVisitor.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(Format1DataStructure.class.getName());
     protected final UnresolvedReferenceStrategy unresolvedReferenceStrategy;
     private final Function<CobolParser.DataDescriptionEntryFormat1Context, String> namingScheme;
     @Getter

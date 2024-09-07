@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public class PerformProcedureFlowNode extends CobolFlowNode implements InternalControlFlowNode {
-    private static final Logger logger = Logger.getLogger(AggregatingFlowNodeASTVisitor.class.getName());
+    private static final Logger logger = Logger.getLogger(PerformProcedureFlowNode.class.getName());
     private FlowNode inlineStatementContext;
     private List<FlowNode> procedures = new ArrayList<>();
     private FlowNode condition;

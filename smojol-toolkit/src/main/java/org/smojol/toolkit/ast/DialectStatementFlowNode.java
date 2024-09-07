@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public class DialectStatementFlowNode extends CobolFlowNode {
-    private static final Logger logger = Logger.getLogger(AggregatingFlowNodeASTVisitor.class.getName());
+    private static final Logger logger = Logger.getLogger(DialectStatementFlowNode.class.getName());
     private FlowNode dialectChildNode;
     private boolean databaseAccess = false;
 

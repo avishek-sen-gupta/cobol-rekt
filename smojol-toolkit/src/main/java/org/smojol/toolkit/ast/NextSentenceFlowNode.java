@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public class NextSentenceFlowNode extends CobolFlowNode {
-    private static final Logger logger = Logger.getLogger(AggregatingFlowNodeASTVisitor.class.getName());
+    private static final Logger logger = Logger.getLogger(NextSentenceFlowNode.class.getName());
     private FlowNode destinationSentenceNode;
 
     public NextSentenceFlowNode(ParseTree parseTree, FlowNode scope, FlowNodeService nodeService, StackFrames stackFrames) {

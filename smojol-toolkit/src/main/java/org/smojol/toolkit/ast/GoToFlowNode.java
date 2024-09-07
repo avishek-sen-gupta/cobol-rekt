@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 import static guru.nidi.graphviz.model.Factory.mutNode;
 
 public class GoToFlowNode extends CobolFlowNode implements InternalControlFlowNode {
-    private static final Logger logger = Logger.getLogger(AggregatingFlowNodeASTVisitor.class.getName());
+    private static final Logger logger = Logger.getLogger(GoToFlowNode.class.getName());
 
     private List<FlowNode> destinationNodes;
 

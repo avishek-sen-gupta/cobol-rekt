@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public class FlowNodeOverlayVisitor implements FlowNodeVisitor {
-    private static final Logger logger = Logger.getLogger(AggregatingFlowNodeASTVisitor.class.getName());
+    private static final Logger logger = Logger.getLogger(FlowNodeOverlayVisitor.class.getName());
     private final FlowNode enclosingScope;
     private GenericProcessingFlowNode head;
     private List<GenericProcessingFlowNode> groups;

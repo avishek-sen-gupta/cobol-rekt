@@ -1,6 +1,7 @@
 package org.smojol.toolkit.analysis.graph.graphml;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.FlowNodeASTVisitor;
 import org.smojol.common.vm.structure.CobolDataStructure;
@@ -8,7 +9,6 @@ import org.smojol.toolkit.analysis.graph.DataDependencyPairComputer;
 import org.smojol.toolkit.analysis.graph.jgrapht.JGraphTDataOperations;
 
 import java.util.List;
-import java.util.Map;
 
 import static com.mojo.woof.NodeRelations.*;
 import static com.mojo.woof.NodeRelations.FLOWS_INTO;
@@ -29,13 +29,13 @@ public class JGraphTDataDependencyBuilderVisitor extends FlowNodeASTVisitor<Cobo
 
     @Override
     public CobolDataStructure visit(FlowNode node) {
-        Map.Entry<List<CobolDataStructure>, List<CobolDataStructure>> pairs = DataDependencyPairComputer.dependencyPairs(node, dataRoot);
+        Pair<List<CobolDataStructure>, List<CobolDataStructure>> pairs = DataDependencyPairComputer.dependencyPairs(node, dataRoot);
         if (ImmutablePair.nullPair().equals(pairs)) return dataRoot;
         if (pairs.getValue().isEmpty()) {
             accesses(node, pairs.getKey());
             return dataRoot;
         }
-        connect(pairs.getKey(), pairs.getValue(), node);
+        connect(pairs.getLeft(), pairs.getRight(), node);
         return dataRoot;
     }
 
@@ -53,6 +53,7 @@ public class JGraphTDataDependencyBuilderVisitor extends FlowNodeASTVisitor<Cobo
 
     private void connect(List<CobolDataStructure> froms, List<CobolDataStructure> tos, FlowNode node) {
         tos.forEach(to -> {
+            if (!dataGraphOperations.containsVertex(to)) dataGraphOperations.addNode(to);
             dataGraphOperations.connect(node, to, MODIFIES);
             froms.forEach(from -> {
                 if (!dataGraphOperations.containsVertex(from)) dataGraphOperations.addNode(from);

@@ -3,7 +3,6 @@ package org.smojol.common.navigation;
 import com.google.common.collect.ImmutableList;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.smojol.common.ast.AggregatingFlowNodeASTVisitor;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.FlowNodeType;
 import org.smojol.common.ast.InternalControlFlowNode;
@@ -15,7 +14,7 @@ import java.util.function.Predicate;
 import java.util.logging.Logger;
 
 public class PseudocodeNavigator {
-    private static final Logger LOGGER = Logger.getLogger(AggregatingFlowNodeASTVisitor.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(PseudocodeNavigator.class.getName());
     public List<PseudocodeInstruction> findAllByCondition(Predicate<PseudocodeInstruction> condition, List<PseudocodeInstruction> instructions) {
         return instructions.stream().filter(condition).toList();
     }
