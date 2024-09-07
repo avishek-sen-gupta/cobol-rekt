@@ -5,6 +5,7 @@ import org.smojol.common.pseudocode.SmojolSymbolTable;
 import org.smojol.common.vm.interpreter.CobolInterpreter;
 import org.smojol.common.vm.interpreter.CobolVmSignal;
 import org.smojol.common.vm.interpreter.FlowControl;
+import org.smojol.common.vm.structure.CobolDataStructure;
 
 import java.util.List;
 
@@ -27,7 +28,7 @@ public interface FlowNode extends FlowNodeLike {
     void accept(FlowNodeVisitor visitor, int level);
     void accept(FlowNodeVisitor visitor, FlowNodeCondition stopCondition, int level);
     void acceptUnvisited(FlowNodeVisitor visitor, int level);
-    void resolve(SmojolSymbolTable symbolTable);
+    void resolve(SmojolSymbolTable symbolTable, CobolDataStructure dataStructures);
 
     List<? extends ParseTree> getChildren();
 

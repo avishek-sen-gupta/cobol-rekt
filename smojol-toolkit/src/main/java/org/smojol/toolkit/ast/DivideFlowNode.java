@@ -12,6 +12,7 @@ import org.smojol.common.vm.interpreter.CobolInterpreter;
 import org.smojol.common.vm.interpreter.CobolVmSignal;
 import org.smojol.common.vm.interpreter.FlowControl;
 import org.smojol.common.vm.stack.StackFrames;
+import org.smojol.common.vm.structure.CobolDataStructure;
 
 import java.util.List;
 
@@ -68,7 +69,7 @@ public class DivideFlowNode extends CobolFlowNode {
     }
 
     @Override
-    public void resolve(SmojolSymbolTable symbolTable) {
+    public void resolve(SmojolSymbolTable symbolTable, CobolDataStructure dataStructures) {
         CobolExpressionBuilder builder = new CobolExpressionBuilder();
         divisorExpression = builder.literalOrIdentifier(intoDivisor.literal(), intoDivisor.generalIdentifier());
         dividendExpressions = dividends != null ? dividends.stream().map(dividend -> builder.identifier(dividend.generalIdentifier())).toList()

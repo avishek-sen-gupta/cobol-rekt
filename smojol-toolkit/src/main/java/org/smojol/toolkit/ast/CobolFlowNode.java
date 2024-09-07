@@ -14,6 +14,7 @@ import org.smojol.common.vm.interpreter.CobolInterpreter;
 import org.smojol.common.vm.interpreter.CobolVmSignal;
 import org.smojol.common.vm.interpreter.FlowControl;
 import org.smojol.common.vm.stack.StackFrames;
+import org.smojol.common.vm.structure.CobolDataStructure;
 
 import java.util.*;
 
@@ -158,7 +159,7 @@ public class CobolFlowNode implements FlowNode {
     }
 
     @Override
-    public void resolve(SmojolSymbolTable symbolTable) {
+    public void resolve(SmojolSymbolTable symbolTable, CobolDataStructure dataStructures) {
 
     }
 

@@ -4,17 +4,21 @@ import com.google.common.collect.ImmutableList;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.ast.*;
+import org.smojol.common.pseudocode.SmojolSymbolTable;
+import org.smojol.common.vm.expression.CobolExpression;
+import org.smojol.common.vm.expression.CobolExpressionBuilder;
 import org.smojol.common.vm.interpreter.CobolInterpreter;
 import org.smojol.common.vm.interpreter.CobolVmSignal;
 import org.smojol.common.vm.interpreter.FlowControl;
 import org.smojol.common.vm.stack.StackFrames;
+import org.smojol.common.vm.structure.CobolDataStructure;
 
 import java.util.List;
 
 public class DisplayFlowNode extends CobolFlowNode {
-
     private String message;
     private List<CobolParser.DisplayOperandContext> operands;
+    private List<CobolExpression> operandExpressions;
 
     public DisplayFlowNode(ParseTree parseTree, FlowNode scope, FlowNodeService nodeService, StackFrames stackFrames) {
         super(parseTree, scope, nodeService, stackFrames);
@@ -46,5 +50,11 @@ public class DisplayFlowNode extends CobolFlowNode {
     @Override
     public List<FlowNodeCategory> categories() {
         return ImmutableList.of(FlowNodeCategory.IO);
+    }
+
+    @Override
+    public void resolve(SmojolSymbolTable symbolTable, CobolDataStructure dataStructures) {
+        CobolExpressionBuilder builder = new CobolExpressionBuilder();
+        operandExpressions = operands.stream().map(op -> builder.literalOrIdentifier(op.literal(), op.generalIdentifier())).toList();
     }
 }

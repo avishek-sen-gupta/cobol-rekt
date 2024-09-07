@@ -192,7 +192,7 @@ public class SmojolTasks {
     }
 
     private void buildSymbolTable() {
-        new FlowNodeASTTraversal<FlowNode>().accept(flowRoot, new FlowNodeSymbolExtractorVisitor(flowRoot, symbolTable));
+        new FlowNodeASTTraversal<FlowNode>().accept(flowRoot, new FlowNodeSymbolExtractorVisitor(flowRoot, symbolTable, dataStructures));
     }
 
     private Stream<AnalysisTask> tasks(List<CommandLineAnalysisTask> commandLineAnalysisTasks) {

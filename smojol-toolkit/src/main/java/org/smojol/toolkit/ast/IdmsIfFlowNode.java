@@ -6,7 +6,9 @@ import org.eclipse.lsp.cobol.core.CobolParser;
 import org.eclipse.lsp.cobol.dialects.idms.IdmsParser;
 import org.smojol.common.ast.*;
 import org.smojol.common.navigation.CobolEntityNavigator;
+import org.smojol.common.pseudocode.SmojolSymbolTable;
 import org.smojol.common.vm.stack.StackFrames;
+import org.smojol.common.vm.structure.CobolDataStructure;
 
 import java.util.List;
 
@@ -78,5 +80,12 @@ public class IdmsIfFlowNode extends CobolFlowNode {
     @Override
     public List<FlowNode> astChildren() {
         return ifElseBlock != null ? ImmutableList.of(ifThenBlock, ifElseBlock) : ImmutableList.of(ifThenBlock);
+    }
+
+    @Override
+    public void resolve(SmojolSymbolTable symbolTable, CobolDataStructure dataStructures) {
+        condition.resolve(symbolTable, dataStructures);
+        ifThenBlock.resolve(symbolTable, dataStructures);
+        if (ifElseBlock != null) ifElseBlock.resolve(symbolTable, dataStructures);
     }
 }

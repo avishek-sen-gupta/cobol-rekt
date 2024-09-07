@@ -1,6 +1,7 @@
 package org.smojol.common.vm.expression;
 
 import org.eclipse.lsp.cobol.core.CobolParser;
+import org.smojol.common.vm.structure.CobolDataStructure;
 
 public class CobolExpressionBuilder {
     public CobolExpression identifier(CobolParser.GeneralIdentifierContext ctx) {
@@ -23,5 +24,11 @@ public class CobolExpressionBuilder {
         ArithmeticExpressionVisitor arithmeticExpressionVisitor = new ArithmeticExpressionVisitor();
         ctx.accept(arithmeticExpressionVisitor);
         return arithmeticExpressionVisitor.getExpression();
+    }
+
+    public CobolExpression condition(CobolParser.ConditionContext condition, CobolDataStructure dataStructures) {
+        ConditionVisitor visitor = new ConditionVisitor(dataStructures);
+        condition.accept(visitor);
+        return visitor.getExpression();
     }
 }

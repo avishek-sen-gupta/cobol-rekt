@@ -12,6 +12,7 @@ import org.smojol.common.vm.interpreter.CobolInterpreter;
 import org.smojol.common.vm.interpreter.CobolVmSignal;
 import org.smojol.common.vm.interpreter.FlowControl;
 import org.smojol.common.vm.stack.StackFrames;
+import org.smojol.common.vm.structure.CobolDataStructure;
 
 import java.util.List;
 
@@ -73,7 +74,7 @@ public class SubtractFlowNode extends CobolFlowNode {
     }
 
     @Override
-    public void resolve(SmojolSymbolTable symbolTable) {
+    public void resolve(SmojolSymbolTable symbolTable, CobolDataStructure dataStructures) {
         CobolExpressionBuilder builder = new CobolExpressionBuilder();
         lhsExpressions = lhses.stream().map(lhs -> builder.identifier(lhs.generalIdentifier())).toList();
         rhsExpressions = rhses.stream().map(rhs -> builder.literalOrIdentifier(rhs.literal(), rhs.generalIdentifier())).toList();

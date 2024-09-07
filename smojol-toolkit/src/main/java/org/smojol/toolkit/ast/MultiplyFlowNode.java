@@ -12,6 +12,7 @@ import org.smojol.common.vm.interpreter.CobolInterpreter;
 import org.smojol.common.vm.interpreter.CobolVmSignal;
 import org.smojol.common.vm.interpreter.FlowControl;
 import org.smojol.common.vm.stack.StackFrames;
+import org.smojol.common.vm.structure.CobolDataStructure;
 
 import java.util.List;
 
@@ -68,7 +69,7 @@ public class MultiplyFlowNode extends CobolFlowNode {
     }
 
     @Override
-    public void resolve(SmojolSymbolTable symbolTable) {
+    public void resolve(SmojolSymbolTable symbolTable, CobolDataStructure dataStructures) {
         CobolExpressionBuilder builder = new CobolExpressionBuilder();
         lhsExpression = builder.literalOrIdentifier(lhs.literal(), lhs.generalIdentifier());
         rhsExpressions = rhses.stream().map(rhs -> builder.identifier(rhs.generalIdentifier())).toList();

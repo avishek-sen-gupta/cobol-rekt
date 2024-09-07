@@ -5,17 +5,19 @@ import lombok.Getter;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.ast.*;
+import org.smojol.common.pseudocode.SmojolSymbolTable;
 import org.smojol.common.vm.interpreter.CobolInterpreter;
 import org.smojol.common.vm.interpreter.CobolVmSignal;
 import org.smojol.common.vm.interpreter.FlowControl;
 import org.smojol.common.vm.stack.StackFrames;
+import org.smojol.common.vm.structure.CobolDataStructure;
 
 import java.util.List;
 
 @Getter
 public class GenericOnClauseFlowNode extends CobolFlowNode {
     private FlowNode condition;
-    private OnClauseActionFlowNode onClauseBlock;
+    private OnClauseActionsFlowNode onClauseBlock;
 
     public GenericOnClauseFlowNode(ParseTree parseTree, FlowNode scope, FlowNodeService nodeService, StackFrames stackFrames) {
         super(parseTree, scope, nodeService, stackFrames);
@@ -25,7 +27,7 @@ public class GenericOnClauseFlowNode extends CobolFlowNode {
     public void buildInternalFlow() {
         CobolParser.GenericOnClauseStatementContext onClause = new SyntaxIdentity<CobolParser.GenericOnClauseStatementContext>(executionContext).get();
         condition = nodeService.node(onClause.generalIdentifier(), this, staticFrameContext);
-        onClauseBlock = new OnClauseActionFlowNode(onClause.onClauseBlock(), this, nodeService, staticFrameContext);
+        onClauseBlock = new OnClauseActionsFlowNode(onClause.onClauseBlock(), this, nodeService, staticFrameContext);
         super.buildInternalFlow();
     }
 
@@ -64,5 +66,10 @@ public class GenericOnClauseFlowNode extends CobolFlowNode {
     @Override
     public List<FlowNode> astChildren() {
         return ImmutableList.of(onClauseBlock);
+    }
+
+    @Override
+    public void resolve(SmojolSymbolTable symbolTable, CobolDataStructure dataStructures) {
+        condition.resolve(symbolTable, dataStructures);
     }
 }

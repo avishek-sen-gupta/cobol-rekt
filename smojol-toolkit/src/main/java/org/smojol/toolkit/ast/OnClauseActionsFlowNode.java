@@ -7,13 +7,13 @@ import org.smojol.common.vm.stack.StackFrames;
 
 import java.util.List;
 
-public class OnClauseActionFlowNode extends CompositeCobolFlowNode {
+public class OnClauseActionsFlowNode extends CompositeCobolFlowNode {
     @Override
     public String label() {
         return "No";
     }
 
-    public OnClauseActionFlowNode(ParseTree parseTree, FlowNode scope, FlowNodeService nodeService, StackFrames stackFrames) {
+    public OnClauseActionsFlowNode(ParseTree parseTree, FlowNode scope, FlowNodeService nodeService, StackFrames stackFrames) {
         super(parseTree, scope, nodeService, stackFrames);
     }
 
