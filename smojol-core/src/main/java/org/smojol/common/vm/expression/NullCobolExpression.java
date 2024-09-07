@@ -5,7 +5,10 @@ import org.smojol.common.flowchart.ConsoleColors;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.common.vm.type.TypedRecord;
 
+import java.util.logging.Logger;
+
 public class NullCobolExpression extends CobolExpression {
+    private static final java.util.logging.Logger LOGGER = Logger.getLogger(NullCobolExpression.class.getName());
     private final String EMPTY_STRING = "";
     private final String referenceID;
 
@@ -110,7 +113,7 @@ public class NullCobolExpression extends CobolExpression {
     }
 
     private static <T> T withWarning2(T v, String message, String referenceID) {
-        System.out.println(ConsoleColors.red(message + ". Original Reference ID: " + referenceID));
+        LOGGER.fine(ConsoleColors.red(message + ". Original Reference ID: " + referenceID));
         return v;
     }
 }

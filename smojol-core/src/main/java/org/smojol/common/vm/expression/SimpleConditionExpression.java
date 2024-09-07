@@ -4,7 +4,10 @@ import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 import org.smojol.common.vm.structure.CobolDataStructure;
 
+import java.util.logging.Logger;
+
 public class SimpleConditionExpression extends CobolExpression {
+    private static final java.util.logging.Logger LOGGER = Logger.getLogger(SimpleConditionExpression.class.getName());
     @Getter private final CobolExpression lhs;
     @Getter private final RelationExpression comparison;
     @Getter private boolean isStandalone = false;
@@ -24,7 +27,7 @@ public class SimpleConditionExpression extends CobolExpression {
     @Override
     public CobolExpression evaluate(CobolDataStructure data) {
         if (comparison != null) return comparison.evaluate(lhs, data);
-        System.out.println("Comparison clause not present. Will check for level 88 condition...");
+        LOGGER.warning("Comparison clause not present. Will check for level 88 condition...");
 
         // Level 88 variable condition
         return PrimitiveCobolExpression.primitive(lhs.evaluate(data));

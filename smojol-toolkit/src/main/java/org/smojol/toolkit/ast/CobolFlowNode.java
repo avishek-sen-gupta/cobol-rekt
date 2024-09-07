@@ -20,7 +20,7 @@ import java.util.*;
 import java.util.logging.Logger;
 
 public class CobolFlowNode implements FlowNode {
-    private static final Logger logger = Logger.getLogger(CobolFlowNode.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(CobolFlowNode.class.getName());
     protected final String uuid;
     protected List<FlowNode> outgoingNodes = new ArrayList<>();
     protected List<FlowNode> incomingNodes = new ArrayList<>();
@@ -42,7 +42,7 @@ public class CobolFlowNode implements FlowNode {
 
     @Override
     public void buildFlow() {
-        logger.fine("Building flow for " + name());
+        LOGGER.fine("Building flow for " + name());
         buildInternalFlow();
         buildOutgoingFlow();
     }
@@ -242,7 +242,7 @@ public class CobolFlowNode implements FlowNode {
 
     protected CobolVmSignal next(CobolVmSignal signal, CobolInterpreter interpreter, FlowNodeService nodeService) {
         if (outgoingNodes.size() > 1) {
-            System.out.println("WARNING: ROGUE NODE " + this.label());
+            LOGGER.warning("ROGUE NODE " + this.label());
         }
         if (outgoingNodes.isEmpty()) return signal;
         return outgoingNodes.getFirst().acceptInterpreter(interpreter, FlowControl::CONTINUE);
@@ -257,7 +257,7 @@ public class CobolFlowNode implements FlowNode {
     @Override
     public FlowNode next(FlowNodeCondition nodeCondition, FlowNode startingNode, boolean isComplete) {
         if (this != startingNode && nodeCondition.apply(this)) return this;
-        System.out.println("Num outgoing nodes: " + outgoingNodes.size());
+        LOGGER.finest("Num outgoing nodes: " + outgoingNodes.size());
         if (outgoingNodes.isEmpty()) return scope.next(nodeCondition, startingNode, true);
         for (FlowNode o : outgoingNodes) {
             FlowNode next = o.next(nodeCondition, startingNode, true);

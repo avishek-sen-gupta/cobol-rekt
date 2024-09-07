@@ -11,6 +11,7 @@ import org.smojol.common.flowchart.ConsoleColors;
 import org.smojol.common.flowchart.FlowchartOutputFormat;
 import org.smojol.common.id.UUIDProvider;
 import org.smojol.common.dialect.LanguageDialect;
+import org.smojol.common.vm.type.SignType;
 import org.smojol.toolkit.task.CommandLineAnalysisTask;
 import org.smojol.toolkit.analysis.pipeline.ProgramSearch;
 import org.smojol.toolkit.task.AnalysisTaskResult;
@@ -23,8 +24,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class AnalyseProgramDependenciesTask {
+    java.util.logging.Logger LOGGER = Logger.getLogger(AnalyseProgramDependenciesTask.class.getName());
     private final String sourceDir;
     private final List<File> copyBookPaths;
     private final String reportRootDir;
@@ -46,7 +49,7 @@ public class AnalyseProgramDependenciesTask {
         if (searchResult == ProgramSearch.NO_PATH) return;
         File foundFile = searchResult.getLeft();
         String srcDir = searchResult.getRight();
-        System.out.println("Found " + foundFile.getName() + " in " + srcDir);
+        LOGGER.info("Found " + foundFile.getName() + " in " + srcDir);
         try {
             Map<String, List<AnalysisTaskResult>> results = new CodeTaskRunner(srcDir,
                     reportRootDir, copyBookPaths, dialectJarPath,
@@ -62,7 +65,7 @@ public class AnalyseProgramDependenciesTask {
             for (CobolProgram childDependency : program.staticDependencies())
                 recurse(childDependency, copyBookPaths);
         } catch (IOException | RuntimeException e) {
-            System.out.println(ConsoleColors.red("Error, terminating recursion down this path. Error: " + ExceptionUtils.getStackTrace(e)));
+            LOGGER.severe(ConsoleColors.red("Error, terminating recursion down this path. Error: " + ExceptionUtils.getStackTrace(e)));
         }
     }
 

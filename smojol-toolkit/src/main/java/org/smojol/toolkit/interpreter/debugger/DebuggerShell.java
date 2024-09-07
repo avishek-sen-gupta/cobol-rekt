@@ -5,25 +5,28 @@ import org.jline.reader.LineReaderBuilder;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 import org.smojol.common.vm.stack.ExecutionContext;
+import org.smojol.toolkit.analysis.defined.ProgramDependenciesTask;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import static org.smojol.common.flowchart.ConsoleColors.cyan;
 import static org.smojol.common.flowchart.ConsoleColors.red;
 
 public class DebuggerShell {
+    java.util.logging.Logger LOGGER = Logger.getLogger(DebuggerShell.class.getName());
     public boolean interpret(String line, ExecutionContext executionContext) {
         if (line.contains("stack")) {
-            System.out.println(cyan("STACK TRACE\n-------------------------\n"));
-            System.out.println(cyan(executionContext.runtimeStackFrames().stackTrace()));
+            LOGGER.info(cyan("STACK TRACE\n-------------------------\n"));
+            LOGGER.info(cyan(executionContext.runtimeStackFrames().stackTrace()));
             return true;
         } else if ("c".equals(line.trim())) return false;
         else if ("q".equals(line.trim())) {
-            System.out.println(red("Terminating program early..."));
+            LOGGER.info(red("Terminating program early..."));
             System.exit(0);
         } else if (line.trim().isEmpty()) return true;
         else {
-            System.out.printf("%s=%s%n", line.trim(), executionContext.runtimeStackFrames().currentData().value(line.trim()));
+            LOGGER.info(String.format("%s=%s", line.trim(), executionContext.runtimeStackFrames().currentData().value(line.trim())));
         }
         return true;
     }
@@ -36,7 +39,7 @@ public class DebuggerShell {
             while(interpret(reader.readLine(prompt), executionContext)) {
             }
         } catch (IOException e) {
-            System.out.printf(e.getMessage());
+            LOGGER.severe(e.getMessage());
         }
     }
 }

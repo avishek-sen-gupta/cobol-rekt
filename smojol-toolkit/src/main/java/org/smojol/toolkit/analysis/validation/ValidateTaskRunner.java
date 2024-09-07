@@ -8,6 +8,7 @@ import org.smojol.common.flowchart.ConsoleColors;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.validation.ProgramValidationErrorReporter;
 import org.smojol.common.validation.ProgramValidationErrors;
+import org.smojol.toolkit.analysis.defined.ProgramDependenciesTask;
 import org.smojol.toolkit.analysis.pipeline.*;
 import org.smojol.toolkit.analysis.error.ParseDiagnosticRuntimeError;
 import org.smojol.toolkit.analysis.pipeline.config.SourceConfig;
@@ -23,8 +24,10 @@ import java.io.*;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.function.Function;
+import java.util.logging.Logger;
 
 public class ValidateTaskRunner {
+    java.util.logging.Logger LOGGER = Logger.getLogger(ValidateTaskRunner.class.getName());
     private final ProgramSearch programSearch;
 
     public ValidateTaskRunner() {
@@ -51,12 +54,12 @@ public class ValidateTaskRunner {
     private void writeToFile(List<ProgramValidationErrors> validationErrors, String outputPath) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String json = gson.toJson(validationErrors);
-        System.out.println("Writing to: " + outputPath);
+        LOGGER.info("Writing to: " + outputPath);
         try (PrintWriter out = new PrintWriter(outputPath)) {
             out.println(json);
-            System.out.println("Wrote to: " + outputPath);
+            LOGGER.info("Wrote to: " + outputPath);
         } catch (FileNotFoundException e) {
-            System.out.println(ConsoleColors.red("Error writing to file: " + e.getMessage()));
+            LOGGER.severe(ConsoleColors.red("Error writing to file: " + e.getMessage()));
         }
     }
 
@@ -67,7 +70,6 @@ public class ValidateTaskRunner {
 
         Pair<File, String> programPath = programSearch.run(programFilename, sourceDir);
         if (programPath == ProgramSearch.NO_PATH) {
-//            System.out.printf("No program found for '%s' anywhere in path %s \n", programFilename, sourceDir);
             return ProgramValidationErrors.sourceNotFound(programFilename);
         }
 

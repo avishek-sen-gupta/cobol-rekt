@@ -1,6 +1,7 @@
 package org.smojol.toolkit.analysis.defined;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.smojol.common.ast.AggregatingFlowNodeASTVisitor;
 import org.smojol.common.flowchart.ConsoleColors;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.toolkit.task.CommandLineAnalysisTask;
@@ -10,8 +11,10 @@ import org.smojol.toolkit.analysis.pipeline.config.RawASTOutputConfig;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.logging.Logger;
 
 public class WriteRawASTTask implements AnalysisTask {
+    private static final Logger LOGGER = Logger.getLogger(WriteRawASTTask.class.getName());
     private final ParserRuleContext tree;
     private final CobolEntityNavigator navigator;
     private final RawASTOutputConfig rawAstOutputConfig;
@@ -25,8 +28,8 @@ public class WriteRawASTTask implements AnalysisTask {
     @Override
     public AnalysisTaskResult run() {
         try {
-            System.out.println(ConsoleColors.green(String.format("Memory usage: %s", Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())));
-            System.out.printf("AST Output Dir is: %s%n", rawAstOutputConfig.astOutputDir());
+            LOGGER.info(ConsoleColors.green(String.format("Memory usage: %s", Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())));
+            LOGGER.info(String.format("AST Output Dir is: %s", rawAstOutputConfig.astOutputDir()));
             Files.createDirectories(rawAstOutputConfig.astOutputDir());
             rawAstOutputConfig.visualiser().writeCobolAST(tree, rawAstOutputConfig.cobolParseTreeOutputPath(), false, navigator);
             return AnalysisTaskResult.OK(CommandLineAnalysisTask.WRITE_RAW_AST);

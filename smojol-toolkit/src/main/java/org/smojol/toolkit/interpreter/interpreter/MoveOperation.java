@@ -6,7 +6,10 @@ import org.smojol.common.vm.reference.CobolReference;
 import org.smojol.common.vm.reference.DeepReferenceBuilder;
 import org.smojol.common.vm.structure.CobolOperation;
 
+import java.util.logging.Logger;
+
 public class MoveOperation implements CobolOperation {
+    java.util.logging.Logger LOGGER = Logger.getLogger(MoveOperation.class.getName());
     private final MoveFlowNode move;
 
     public MoveOperation(MoveFlowNode move) {
@@ -14,7 +17,7 @@ public class MoveOperation implements CobolOperation {
     }
 
     public void run(CobolDataStructure cobolDataStructure) {
-        System.out.println("From is " + move.getFrom().getText());
+        LOGGER.finer("From is " + move.getFrom().getText());
         DeepReferenceBuilder referenceBuilder = new DeepReferenceBuilder();
         CobolReference fromReference = referenceBuilder.getReference(move.getFrom(), cobolDataStructure);
 

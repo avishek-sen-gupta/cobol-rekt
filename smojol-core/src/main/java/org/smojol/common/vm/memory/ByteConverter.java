@@ -302,20 +302,3 @@ public class ByteConverter {
         return EBCDIC2ASCII[ebcdic & 0xFF];
     }
 }
-
-//    public static void main(String args[]) {
-//        CharFormatConverter cfc = new CharFormatConverter();
-//        byte[] ebcdicBytes = { (byte) 0xE3, (byte) 0x88, (byte) 0x89,
-//                (byte) 0xA2, (byte) 0x40, (byte) 0x89, (byte) 0xa2,
-//                (byte) 0x40, (byte) 0xc5, (byte) 0xc2, (byte) 0xc3,
-//                (byte) 0xc4, (byte) 0xc9, (byte) 0xc3, (byte) 0x7a,
-//                (byte) 0x40, (byte) 0xf3, (byte) 0x4b, (byte) 0xf1,
-//                (byte) 0xf4, (byte) 0xf2 };
-//        String asciiString = "This is an ASCII String: 1.1618";
-//        byte[] asciiByte = asciiString.getBytes();
-//        // byte[] fromEDCDIC = cfc.convertStrToASCII(ebcdicBytes);
-//        byte[] fromASCII = cfc.convertStrToEBCDIC(asciiByte);
-//        System.out.println("ASCII: " + asciiString + "\nIn EBCDIC: "
-//                + cfc.toHex(fromASCII));
-//
-//    }

@@ -11,7 +11,11 @@ import org.smojol.common.vm.interpreter.CobolVmSignal;
 import org.smojol.common.vm.interpreter.FlowControl;
 import org.smojol.common.vm.stack.StackFrames;
 
+import java.util.logging.Logger;
+
 public class ProcedureDivisionBodyFlowNode extends CompositeCobolFlowNode {
+    java.util.logging.Logger LOGGER = Logger.getLogger(ProcedureDivisionBodyFlowNode.class.getName());
+
     @Override
     public FlowNodeType type() {
         return FlowNodeType.PROCEDURE_DIVISION_BODY;
@@ -30,7 +34,7 @@ public class ProcedureDivisionBodyFlowNode extends CompositeCobolFlowNode {
     public CobolVmSignal acceptInterpreterForCompositeExecution(CobolInterpreter interpreter, FlowControl flowControl) {
         CobolVmSignal signal = super.acceptInterpreterForCompositeExecution(interpreter, flowControl);
         interpreter.signalTermination();
-        System.out.println(ConsoleColors.red("Program has exited"));
+        LOGGER.info(ConsoleColors.red("Program has exited"));
         return signal;
     }
 }

@@ -14,12 +14,14 @@ import org.smojol.common.vm.structure.CobolOperations;
 import org.smojol.toolkit.ast.*;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import static org.smojol.common.flowchart.ConsoleColors.*;
 import static org.smojol.common.ast.NodeText.formatted;
 
 // TODO: Notify listeners of visit() in a more consistent manner
 public class SmojolInterpreter implements CobolInterpreter {
+    java.util.logging.Logger LOGGER = Logger.getLogger(SmojolInterpreter.class.getName());
 
     @Getter private final StackFrames runtimeStackFrames;
     private final ExecuteCondition condition;
@@ -73,22 +75,22 @@ public class SmojolInterpreter implements CobolInterpreter {
     public CobolVmSignal executeIf(FlowNode node, FlowNodeService nodeService) {
         return interceptors.run(() -> {
             listeners.visit(node, nodeService);
-            System.out.println("Executing an IF condition");
+            LOGGER.finer("Executing an IF condition");
             IfFlowNode ifNode = (IfFlowNode) node;
             boolean trueOrFalse = conditionResolver.resolveIf(node, nodeService);
             if (trueOrFalse) {
                 listeners.notify(green(ifNode.getCondition().getText() + " was resolved to TRUE"), node, nodeService);
-                System.out.println("ROUTING TO IF-THEN");
+                LOGGER.finer("ROUTING TO IF-THEN");
                 FlowNode ifThenBlock = ifNode.getIfThenBlock();
                 return ifThenBlock.acceptInterpreter(this, FlowControl::CONTINUE);
             } else if (ifNode.getIfElseBlock() != null) {
                 listeners.notify(green(ifNode.getCondition().getText() + " was resolved to FALSE"), node, nodeService);
-                System.out.println("ROUTING TO IF-ELSE");
+                LOGGER.finer("ROUTING TO IF-ELSE");
                 FlowNode ifElseBlock = ifNode.getIfElseBlock();
                 return ifElseBlock.acceptInterpreter(this, FlowControl::CONTINUE);
             }
             listeners.notify(green(ifNode.getCondition().getText() + " was resolved to FALSE, but no ELSE clause was found"), node, nodeService);
-            System.out.println("IF-ELSE BLOCK NOT PRESENT, TERMINATING IF STATEMENT...");
+            LOGGER.finer("IF-ELSE BLOCK NOT PRESENT, TERMINATING IF STATEMENT...");
             return CobolVmSignal.CONTINUE;
         }, new ExecutionContext(node, runtimeStackFrames, nodeService));
     }
@@ -130,7 +132,7 @@ public class SmojolInterpreter implements CobolInterpreter {
     public CobolVmSignal executeExit(FlowNode node, FlowNodeService nodeService) {
         return interceptors.run(() -> {
             listeners.visit(node, nodeService);
-            System.out.println(red("Processing EXIT"));
+            LOGGER.finer(red("Processing EXIT"));
             CobolVmSignal signal = runtimeStackFrames.callSite();
             listeners.notify("EXIT instruction is " + coloured(signal.name(), 207), node, nodeService);
             return signal;

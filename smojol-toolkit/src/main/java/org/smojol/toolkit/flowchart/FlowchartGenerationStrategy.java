@@ -9,16 +9,18 @@ import org.smojol.toolkit.interpreter.FullProgram;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.logging.Logger;
 
 import static org.smojol.common.flowchart.FlowchartOutputFormat.PNG;
 import static org.smojol.common.flowchart.FlowchartOutputFormat.SVG;
 
 public abstract class FlowchartGenerationStrategy {
+    java.util.logging.Logger LOGGER = Logger.getLogger(FlowchartGenerationStrategy.class.getName());
     protected final FlowchartOutputFormat outputFormat;
     public static final FlowchartGenerationStrategy DONT_DRAW = new FlowchartGenerationStrategy(null) {
         @Override
         public void draw(CobolEntityNavigator navigator, ParseTree root, FlowchartBuilder flowcharter, Path dotFileOutputDir, Path imageOutputDir, String programName) {
-            System.out.println("Not Drawing Flowchart...");
+            LOGGER.info("Not Drawing Flowchart...");
         }
     };
 

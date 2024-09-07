@@ -9,6 +9,7 @@ import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.navigation.EntityNavigatorBuilder;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 public enum LanguageDialect {
     COBOL {
@@ -35,7 +36,8 @@ public enum LanguageDialect {
                     && ((CobolParser.DialectStatementContext) n).dialectNodeFiller().whatever() != null, tree);
             nullDialectStatements.forEach(n -> {
                 boolean removed = ((ParserRuleContext) n.getParent()).children.remove(n);
-                System.out.println(removed ? "removed" : "not removed");
+                java.util.logging.Logger LOGGER = Logger.getLogger(LanguageDialect.class.getName());
+                LOGGER.finest(removed ? "removed" : "not removed");
             });
             List<ParseTree> nullIdmsNodes = navigator.findAllByCondition(n -> n.getClass() == CobolParser.DialectNodeFillerContext.class
                     && ((CobolParser.DialectNodeFillerContext) n).whatever() != null, tree);

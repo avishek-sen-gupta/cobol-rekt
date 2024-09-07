@@ -7,8 +7,10 @@ import org.smojol.common.program.StaticCallTarget;
 import org.smojol.common.pseudocode.PseudocodeInstruction;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 public class DynamicCallTarget extends CallTarget {
+    private static final Logger LOGGER = Logger.getLogger(DynamicCallTarget.class.getName());
     private CobolParser.GeneralIdentifierContext cobolIdentifier;
     private IdmsParser.GeneralIdentifierContext idmsIdentifier;
 
@@ -53,7 +55,7 @@ public class DynamicCallTarget extends CallTarget {
             }
 
             String resolvedTarget = froms.literal().getText();
-            System.out.printf("Resolved a target: %s to %s %n", variableName, resolvedTarget);
+            LOGGER.finest(String.format("Resolved a target: %s to %s", variableName, resolvedTarget));
             return new StaticCallTarget(resolvedTarget);
         }
 

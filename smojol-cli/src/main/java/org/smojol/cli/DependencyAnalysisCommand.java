@@ -22,10 +22,12 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.logging.Logger;
 
 @Command(name = "dependency", mixinStandardHelpOptions = true, version = "graph 0.1",
         description = "Implements various operations useful for reverse engineering Cobol code")
 public class DependencyAnalysisCommand implements Callable<Integer> {
+    private static final java.util.logging.Logger LOGGER = Logger.getLogger(DependencyAnalysisCommand.class.getName());
     @Option(names = {"-dp", "--dialectJarPath"},
             defaultValue = "che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar",
             description = "Path to dialect .JAR")
@@ -65,7 +67,7 @@ public class DependencyAnalysisCommand implements Callable<Integer> {
     @Override
     public Integer call() throws IOException {
         List<File> copyBookPaths = copyBookDirs.stream().map(c -> Paths.get(c).toAbsolutePath().toFile()).toList();
-        copyBookPaths.forEach(cbp -> System.out.println(cbp.getAbsolutePath()));
+        copyBookPaths.forEach(cbp -> LOGGER.info(cbp.getAbsolutePath()));
         ProgramSearch programSearch = ProgramSearch.searchStrategy(isPermissiveSearch);
         AnalysisTaskResult result = new AnalyseProgramDependenciesTask(sourceDir, copyBookPaths, "dummy", dialectJarPath, LanguageDialect.dialect(dialect), programSearch).run(programName);
         CobolProgram root = switch (result) {

@@ -109,7 +109,7 @@ public class CobolDataStructureBuilder implements DataStructureBuilder {
                 int entryLevel = Integer.parseInt(format1.levelNumber().LEVEL_NUMBER().getSymbol().getText());
                 if (currentLevel == 0) {
                     if (entryLevel != 1) {
-                        System.out.println("WARNING: Top level variable is not level 01");
+                        LOGGER.warning("Top level variable is not level 01");
                         // TODO: Should we be strict or lax regarding top level variables not being level 01???
 //                        throw new RuntimeException("Top Level entry must be 01");
                     }
@@ -124,7 +124,7 @@ public class CobolDataStructureBuilder implements DataStructureBuilder {
                     continue;
                 } else if (entryLevel == 66) {
                     // TODO: Support RENAME's at some point
-                    System.out.println("Level 66 RENAMEs are not supported yet, skipping...");
+                    LOGGER.warning("Level 66 RENAMEs are not supported yet, skipping...");
                     continue;
                 } else {
                     // This is for adding a structure at a lower level than the current level's parent.

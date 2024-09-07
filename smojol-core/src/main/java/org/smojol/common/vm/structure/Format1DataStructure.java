@@ -278,7 +278,7 @@ public class Format1DataStructure extends CobolDataStructure {
 
         CobolDataStructure redefinedRecord = root.reference(dataDescription.dataRedefinesClause().getFirst().dataName().getText());
         if (redefinedRecord.layout() == null) {
-            System.out.println(String.format("WARNING: %s does not seem to have a layout defined. Have you declared this variable?", redefinedRecord.name()));
+            LOGGER.warning(String.format("%s does not seem to have a layout defined. Have you declared this variable?", redefinedRecord.name()));
             layout = new NullMemoryLayout();
             return false;
         }

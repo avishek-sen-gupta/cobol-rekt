@@ -6,8 +6,10 @@ import org.smojol.common.ast.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class GraphPatternMatcher implements FlowNodeVisitor {
+    private static final Logger LOGGER = Logger.getLogger(GraphPatternMatcher.class.getName());
     private final GraphSDK sdk;
     @Getter
     private final List<List<FlowNode>> matches = new ArrayList<>();
@@ -19,7 +21,7 @@ public class GraphPatternMatcher implements FlowNodeVisitor {
 
     @Override
     public void visit(FlowNode node, List<FlowNode> outgoingNodes, List<FlowNode> incomingNodes, VisitContext context, FlowNodeService nodeService) {
-        System.out.printf("Visiting %s%n", node);
+        LOGGER.finest(String.format("Visiting %s", node));
         if (node.type() == FlowNodeType.SENTENCE && node.astChildren().size() == 1 && node.astChildren().getFirst().type() == FlowNodeType.MOVE) {
             registerMove(node);
             return;

@@ -28,8 +28,10 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.logging.Logger;
 
 public class CodeTaskRunner {
+    private static final Logger LOGGER = Logger.getLogger(CodeTaskRunner.class.getName());
     private static final String AST_DIR = "ast";
     private static final String DATA_STRUCTURES_DIR = "data_structures";
     private static final String FLOW_AST_DIR = "flow_ast";
@@ -66,23 +68,23 @@ public class CodeTaskRunner {
     }
 
     private void reportParameters() {
-        System.out.println("Parameters passed in \n--------------------");
-        System.out.println("srcDir = " + sourceDir);
-        System.out.println("reportRootDir = " + reportRootDir);
-        System.out.println("dialectJarPath = " + dialectJarPath);
-        System.out.println("copyBookPaths = " + String.join(",", copyBookPaths.stream().map(cp -> cp.toString() + "\n").toList()));
+        LOGGER.info("Parameters passed in \n--------------------");
+        LOGGER.info("srcDir = " + sourceDir);
+        LOGGER.info("reportRootDir = " + reportRootDir);
+        LOGGER.info("dialectJarPath = " + dialectJarPath);
+        LOGGER.info("copyBookPaths = " + String.join(",", copyBookPaths.stream().map(cp -> cp.toString() + "\n").toList()));
     }
 
     public Map<String, List<AnalysisTaskResult>> runForPrograms(List<CommandLineAnalysisTask> tasks, List<String> programFilenames, TaskRunnerMode runnerMode) throws IOException {
         Map<String, List<AnalysisTaskResult>> results = new HashMap<>();
         for (String programFilename : programFilenames) {
-            System.out.printf("Running tasks: %s for program '%s' in %s mode...%n",
+            LOGGER.info(String.format("Running tasks: %s for program '%s' in %s mode...%n",
                     tasks.stream().map(CommandLineAnalysisTask::name).toList(),
-                    programFilename, runnerMode.toString());
+                    programFilename, runnerMode.toString()));
             try {
                 Pair<File, String> programPath = programSearch.run(programFilename, sourceDir);
                 if (programPath == ProgramSearch.NO_PATH) {
-                    System.out.printf("No program found for '%s' anywhere in path %s \n", programFilename, sourceDir);
+                    LOGGER.severe(String.format("No program found for '%s' anywhere in path %s \n", programFilename, sourceDir));
                     continue;
                 }
                 List<AnalysisTaskResult> analysisTaskResults = runForProgram(programFilename, programPath.getRight(), reportRootDir, this.dialect, runnerMode.tasks(tasks));

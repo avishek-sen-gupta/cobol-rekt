@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public class DialectStatementFlowNode extends CobolFlowNode {
-    private static final Logger logger = Logger.getLogger(DialectStatementFlowNode.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(DialectStatementFlowNode.class.getName());
     private FlowNode dialectChildNode;
     private boolean databaseAccess = false;
 
@@ -55,7 +55,7 @@ public class DialectStatementFlowNode extends CobolFlowNode {
 
     private void buildIdmsFlow(CobolEntityNavigator navigator) {
         ParseTree containerChild = executionContext.getChild(0);
-        System.out.println("IDMS DATA: " + containerChild.getText());
+        LOGGER.finer("IDMS DATA: " + containerChild.getText());
         // TODO: Replace with proper type checking
         ParseTree possibleDbAccessStatement = navigator.findByCondition(containerChild, n -> n.getClass() == IdmsParser.ObtainStatementContext.class ||
                 n.getClass() == IdmsParser.PutStatementContext.class ||
@@ -63,14 +63,14 @@ public class DialectStatementFlowNode extends CobolFlowNode {
                 n.getClass() == IdmsParser.GetStatementContext.class);
 
         if (possibleDbAccessStatement != null) {
-            System.out.println("FOUND DB ACCESS");
+            LOGGER.finer("FOUND DB ACCESS");
             databaseAccess = true;
         }
 
         if (navigator.findByCondition(containerChild, n -> n.getClass() == IdmsParser.TransferStatementContext.class) != null) {
             dialectChildNode = new IdmsTransferFlowNode(containerChild, this, nodeService, staticFrameContext);
             nodeService.register(dialectChildNode);
-            logger.finest("Found a TRANSFER statement");
+            LOGGER.finest("Found a TRANSFER statement");
         } else if (containerChild.getClass() == CobolParser.DialectIfStatmentContext.class) {
             dialectChildNode = new IdmsIfFlowNode(containerChild, this, nodeService, staticFrameContext);
             nodeService.register(dialectChildNode);

@@ -4,6 +4,7 @@ import org.smojol.common.ast.FlowNode;
 import org.smojol.common.vm.stack.ExecutionContext;
 
 import java.util.function.Supplier;
+import java.util.logging.Logger;
 
 /**
  * This is specifically used to skip over statements when navigating to a GO TO target
@@ -12,6 +13,7 @@ import java.util.function.Supplier;
  * When the target is encountered, the internal switch is flipped to true, and stays true thereafter.
  */
 public class ExecuteAtTargetFlipCondition implements ExecuteCondition {
+    private static final java.util.logging.Logger LOGGER = Logger.getLogger(ExecuteAtTargetFlipCondition.class.getName());
     private final FlowNode specificLocation;
     private boolean isInterpreting = false;
 
@@ -23,7 +25,7 @@ public class ExecuteAtTargetFlipCondition implements ExecuteCondition {
     public boolean evaluate(FlowNode flowNode) {
         if (flowNode == specificLocation && !isInterpreting) {
             isInterpreting = true;
-            System.out.println("FLIPPED TO TRUE");
+            LOGGER.finest("FLIPPED TO TRUE");
         }
         return isInterpreting;
     }

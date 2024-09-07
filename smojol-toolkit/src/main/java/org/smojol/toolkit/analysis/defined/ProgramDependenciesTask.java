@@ -7,14 +7,17 @@ import org.smojol.common.flowchart.ConsoleColors;
 import org.smojol.common.id.UUIDProvider;
 import org.smojol.common.program.TransferControlCollectorVisitor;
 import org.smojol.common.pseudocode.PseudocodeInstruction;
+import org.smojol.common.vm.type.SignType;
 import org.smojol.toolkit.task.CommandLineAnalysisTask;
 import org.smojol.toolkit.task.AnalysisTask;
 import org.smojol.toolkit.task.AnalysisTaskResult;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class ProgramDependenciesTask implements AnalysisTask {
+    java.util.logging.Logger LOGGER = Logger.getLogger(ProgramDependenciesTask.class.getName());
     private final FlowNode root;
     @Expose
     private final String programName;
@@ -30,7 +33,7 @@ public class ProgramDependenciesTask implements AnalysisTask {
         root.accept(visitor, -1);
         List<ExternalControlFlowNode> transfers = visitor.getTransfers();
         if (transfers.isEmpty()) {
-            System.out.println(ConsoleColors.green("No transfers found!"));
+            LOGGER.warning(ConsoleColors.green("No transfers found!"));
             return transfers;
         }
         return transfers;

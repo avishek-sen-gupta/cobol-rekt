@@ -128,6 +128,5 @@ public class JGraphTGraphBuilder {
         cliqueFinder.forEach(cliques::add);
         KSpanningTreeClustering<TypedGraphVertex, TypedGraphEdge> clusterer = new KSpanningTreeClustering<>(undirected, 50);
         ClusteringAlgorithm.Clustering<TypedGraphVertex> clustering = clusterer.getClustering();
-        System.out.println("BOOM");
     }
 }

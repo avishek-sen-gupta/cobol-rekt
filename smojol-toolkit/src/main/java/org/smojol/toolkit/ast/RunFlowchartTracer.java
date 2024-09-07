@@ -3,7 +3,6 @@ package org.smojol.toolkit.ast;
 import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.model.MutableGraph;
 import guru.nidi.graphviz.model.MutableNode;
-import org.smojol.common.ast.AggregatingFlowNodeASTVisitor;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.FlowNodeService;
 import org.smojol.common.flowchart.ChartOverlay;
@@ -16,7 +15,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 public class RunFlowchartTracer implements ExecutionListener, GraphWriter {
-    private static final Logger logger = Logger.getLogger(RunFlowchartTracer.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(RunFlowchartTracer.class.getName());
     private Set<FlowNode> nodes = new HashSet<>();
 
     @Override
@@ -39,10 +38,10 @@ public class RunFlowchartTracer implements ExecutionListener, GraphWriter {
 
     @Override
     public void process(MutableGraph g, ChartOverlay overlay) {
-        System.out.println("Collected " + nodes.size() + " nodes");
+        LOGGER.info("Collected " + nodes.size() + " nodes");
         final int[] i = {1};
         nodes.stream().filter(n -> !n.isPassthrough()).forEach(n -> {
-            logger.finest(String.valueOf(i[0]));
+            LOGGER.finest(String.valueOf(i[0]));
             i[0]++;
 //            System.out.println("Processing node: " + n.getClass().getSimpleName() + "/" + n.id());
             FlowNode block = overlay.block(n);

@@ -29,6 +29,7 @@ import org.eclipse.lsp.cobol.core.engine.pipeline.StageResult;
 import org.eclipse.lsp.cobol.core.engine.pipeline.stages.*;
 import org.eclipse.lsp.cobol.core.preprocessor.TextPreprocessor;
 import org.eclipse.lsp.cobol.core.preprocessor.delegates.GrammarPreprocessor;
+import org.smojol.common.ast.AggregatingFlowNodeASTVisitor;
 import org.smojol.common.dependency.ComponentsBuilder;
 import org.smojol.common.flowchart.FlowchartBuilder;
 import org.smojol.common.idms.DialectIntegratorListener;
@@ -46,6 +47,7 @@ import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 /**
  * The parse pipeline extracts out the functionality of the parse pipeline into an independent
@@ -53,6 +55,7 @@ import java.util.Optional;
  */
 @Slf4j
 public class ParsePipeline {
+    private static final Logger LOGGER = Logger.getLogger(ParsePipeline.class.getName());
     private final File src;
     private final List<File> cpyPaths;
     private final String[] cpyExt;
@@ -133,7 +136,7 @@ public class ParsePipeline {
         errorFinalizerService.processLateErrors(ctx, ctx.getCopybooksRepository());
 
         if (!ctx.getAccumulatedErrors().isEmpty()) {
-            ctx.getAccumulatedErrors().forEach(System.out::println);
+            ctx.getAccumulatedErrors().forEach(e -> LOGGER.info(e.toString()));
             throw new ParseDiagnosticRuntimeError("There were parsing errors!", ctx.getAccumulatedErrors());
         }
 
@@ -143,14 +146,14 @@ public class ParsePipeline {
         dialect.verifyNoNullDialectStatements(tree, navigatorBuilder);
         DialectIntegratorListener dialectIntegrationListener = new DialectIntegratorListener();
         walker.walk(dialectIntegrationListener, tree);
-        System.out.println("[INFO] Restored " + dialectIntegrationListener.getRestores() + " nodes.");
-        System.out.println("Building tree...");
-        System.out.println("Built tree");
+        LOGGER.info("Restored " + dialectIntegrationListener.getRestores() + " nodes.");
+        LOGGER.info("Building tree...");
+        LOGGER.info("Built tree");
 
         // TODO: The navigator itself can probably determine these things,
         navigator = navigatorBuilder.navigator(tree);
         dataStructures = dataStructureValidation.run(ops.getDataStructureBuilder(navigator));
-        System.out.println(gson.toJson(timingResult));
+        LOGGER.info(gson.toJson(timingResult));
         return navigator;
     }
 

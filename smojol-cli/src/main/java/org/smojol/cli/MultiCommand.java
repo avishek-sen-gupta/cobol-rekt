@@ -23,10 +23,12 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.logging.Logger;
 
 @Command(name = "run", mixinStandardHelpOptions = true, version = "graph 0.1",
         description = "Implements various operations useful for reverse engineering Cobol code")
 public class MultiCommand implements Callable<Integer> {
+    private static final Logger LOGGER = Logger.getLogger(MultiCommand.class.getName());
     @Option(names = {"-dp", "--dialectJarPath"},
             defaultValue = "che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar",
             description = "Path to dialect .JAR")
@@ -83,6 +85,8 @@ public class MultiCommand implements Callable<Integer> {
 
     @Override
     public Integer call() throws IOException {
+//        LOGGER.finest("TESTING LOGGING");
+//        return 0;
         List<File> copyBookPaths = copyBookDirs.stream().map(c -> Paths.get(c).toAbsolutePath().toFile()).toList();
         return processPrograms(copyBookPaths);
     }
@@ -90,13 +94,13 @@ public class MultiCommand implements Callable<Integer> {
     private Integer processPrograms(List<File> copyBookPaths) throws IOException {
         ProgramSearch programSearch = ProgramSearch.searchStrategy(isPermissiveSearch);
         if (isValidate) {
-            System.out.println("Only validating, all other tasks were ignored");
+            LOGGER.info("Only validating, all other tasks were ignored");
             boolean validationResult = new ValidateTaskRunner(programSearch).processPrograms(programNames, sourceDir, LanguageDialect.dialect(dialect), copyBookPaths, dialectJarPath, null, ProgramValidationErrors::IS_PARTIAL_SUCCESS, DataStructureValidation.BUILD);
             return validationResult ? 0 : 1;
         }
 
         CodeTaskRunner taskRunner = new CodeTaskRunner(sourceDir, reportRootDir, copyBookPaths, dialectJarPath, LanguageDialect.dialect(dialect), FlowchartGenerationStrategy.strategy(flowchartGenerationStrategy, flowchartOutputFormat), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder(), programSearch);
-        copyBookPaths.forEach(cpp -> System.out.println(cpp.getAbsolutePath()));
+        copyBookPaths.forEach(cpp -> LOGGER.info(cpp.getAbsolutePath()));
         Map<String, List<AnalysisTaskResult>> runResults = taskRunner.runForPrograms(toGraphTasks(commands), programNames, TaskRunnerMode.PRODUCTION_MODE);
         return processResults(runResults);
     }
@@ -107,7 +111,7 @@ public class MultiCommand implements Callable<Integer> {
                         rs.stream().map(AnalysisTaskResult::isSuccess)
                                 .reduce(true, (innerAll, x) -> innerAll && x))
                 .reduce((a, b) -> a && b).get();
-        resultMessages.forEach(System.out::println);
+        resultMessages.forEach(LOGGER::info);
         return allSucceeded ? 0 : 1;
     }
 

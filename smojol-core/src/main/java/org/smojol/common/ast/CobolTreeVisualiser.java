@@ -11,8 +11,10 @@ import org.smojol.common.navigation.CobolEntityNavigator;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 public class CobolTreeVisualiser {
+    private static final java.util.logging.Logger LOGGER = Logger.getLogger(CobolTreeVisualiser.class.getName());
     public void writeCobolAST(ParserRuleContext tree, String cobolParseTreeOutputPath, CobolEntityNavigator navigator) {
         writeCobolAST(tree, cobolParseTreeOutputPath, true, navigator);
     }
@@ -29,7 +31,7 @@ public class CobolTreeVisualiser {
         CobolContextAugmentedTreeNode graphRoot = new CobolContextAugmentedTreeNode(tree, navigator);
         buildContextGraph(tree, graphRoot, navigator);
         if (outputTree) new ListingTreePrinter().print(graphRoot);
-        System.out.println(ConsoleColors.green(String.format("Memory usage: %s", Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())));
+        LOGGER.info(ConsoleColors.green(String.format("Memory usage: %s", Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())));
         try (JsonWriter writer = new JsonWriter(new FileWriter(cobolParseTreeOutputPath))) {
             writer.setIndent("  ");
             gson.toJson(graphRoot, CobolContextAugmentedTreeNode.class, writer);

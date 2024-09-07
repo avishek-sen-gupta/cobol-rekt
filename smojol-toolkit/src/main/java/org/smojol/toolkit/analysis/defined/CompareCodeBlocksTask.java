@@ -6,6 +6,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;
 import org.jgrapht.alg.similarity.ZhangShashaTreeEditDistance;
 import org.jgrapht.graph.DefaultUndirectedGraph;
+import org.smojol.common.ast.AggregatingFlowNodeASTVisitor;
 import org.smojol.toolkit.task.CommandLineAnalysisTask;
 import org.smojol.toolkit.analysis.pipeline.NodeOperationCostFunctions;
 import org.smojol.toolkit.task.AnalysisTaskResult;
@@ -22,8 +23,10 @@ import org.smojol.common.vm.structure.CobolDataStructure;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class CompareCodeBlocksTask {
+    private static final Logger LOGGER = Logger.getLogger(CompareCodeBlocksTask.class.getName());
     private final CobolDataStructure dataStructures;
     private final NodeSpecBuilder qualifier;
 
@@ -58,10 +61,10 @@ public class CompareCodeBlocksTask {
             return new SimilarityResult(p, editDistance.getDistance(), editDistance.getEditOperationLists());
         }).toList();
         allDistances.forEach(d -> {
-            System.out.printf("Distance between %s and %s is %s%n",
+            LOGGER.info(String.format("Distance between %s and %s is %s%n",
                     d.nodes().getLeft(),
                     d.nodes().getRight(),
-                    d.distance());
+                    d.distance()));
         });
         return AnalysisTaskResult.OK(CommandLineAnalysisTask.COMPARE_CODE, allDistances);
     }
