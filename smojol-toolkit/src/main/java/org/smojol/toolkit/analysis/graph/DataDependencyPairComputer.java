@@ -25,7 +25,7 @@ public class DataDependencyPairComputer {
                 && node.type() != FlowNodeType.MULTIPLY
                 && node.type() != FlowNodeType.DIVIDE
                 && node.type() != FlowNodeType.IF_BRANCH
-        ) return ImmutablePair.nullPair();
+        ) return ImmutablePair.of(ImmutableList.of(), ImmutableList.of());
 
         if (node.type() == FlowNodeType.IF_BRANCH) {
             IfFlowNode ifNode = (IfFlowNode) node;
