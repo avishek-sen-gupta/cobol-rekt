@@ -1,7 +1,6 @@
 package org.smojol.common.validation;
 
 import org.eclipse.lsp.cobol.common.error.SyntaxError;
-import org.smojol.common.ast.AggregatingFlowNodeASTVisitor;
 import org.smojol.common.flowchart.ConsoleColors;
 
 import java.util.List;

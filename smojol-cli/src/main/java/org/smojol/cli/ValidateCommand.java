@@ -1,6 +1,5 @@
 package org.smojol.cli;
 
-import org.smojol.common.ast.AggregatingFlowNodeASTVisitor;
 import org.smojol.common.validation.ProgramValidationErrors;
 import org.smojol.toolkit.analysis.pipeline.ProgramSearch;
 import org.smojol.toolkit.analysis.validation.DataStructureValidation;
