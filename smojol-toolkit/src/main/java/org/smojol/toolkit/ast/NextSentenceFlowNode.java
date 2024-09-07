@@ -25,7 +25,7 @@ public class NextSentenceFlowNode extends CobolFlowNode {
         FlowNodeCondition isSentence = n -> n.getClass() == SentenceFlowNode.class;
         FlowNode containingSentence = scope.findUpwards(isSentence, null);
         destinationSentenceNode = containingSentence.next(isSentence, containingSentence, true);
-        logger.finest("Next sentence is " + destinationSentenceNode);
+        logger.finer("Next sentence is " + destinationSentenceNode);
     }
 
     @Override

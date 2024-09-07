@@ -35,7 +35,7 @@ public class RunLogger implements ExecutionListener {
                 node.getClass() == AddFlowNode.class ||
                 node.getClass() == IfFlowNode.class)
             sb.append(message + "\n");
-        logger.finest(message);
+        logger.finer(message);
     }
 
     @Override

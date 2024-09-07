@@ -35,7 +35,7 @@ public class CobolConditionResolver implements ConditionResolver {
     public boolean resolveIf(FlowNode node, FlowNodeService nodeService) {
         IfFlowNode ifNode = (IfFlowNode) node;
         boolean result = ifResolver.resolve(node, ifNode.getCondition(), nodeService);
-        LOGGER.finest(ConsoleColors.green("Resolved " + formatted(node.label()) + " condition to " + result + "..."));
+        LOGGER.finer(ConsoleColors.green("Resolved " + formatted(node.label()) + " condition to " + result + "..."));
         return result;
     }
 
@@ -43,7 +43,7 @@ public class CobolConditionResolver implements ConditionResolver {
     public boolean resolveWhen(FlowNode whenPhrase, FlowNodeService nodeService) {
         SearchWhenFlowNode whenNode = (SearchWhenFlowNode) whenPhrase;
         boolean result = whenResolver.resolve(whenPhrase, (CobolParser.ConditionContext) whenNode.getCondition().getExecutionContext(), nodeService);
-        LOGGER.finest(ConsoleColors.green("Resolved WHEN condition: " + formatted(whenPhrase.label()) + " to " + result + "..."));
+        LOGGER.finer(ConsoleColors.green("Resolved WHEN condition: " + formatted(whenPhrase.label()) + " to " + result + "..."));
         return result;
     }
 
@@ -51,7 +51,7 @@ public class CobolConditionResolver implements ConditionResolver {
     public boolean resolveOn(FlowNode node, FlowNodeService nodeService) {
         GenericOnClauseFlowNode onNode = (GenericOnClauseFlowNode) node;
         boolean result = onResolver.resolve(node, null, nodeService);
-        LOGGER.finest(ConsoleColors.green("Resolved " + formatted(node.label()) + " condition to " + result + "..."));
+        LOGGER.finer(ConsoleColors.green("Resolved " + formatted(node.label()) + " condition to " + result + "..."));
         return result;
     }
 }

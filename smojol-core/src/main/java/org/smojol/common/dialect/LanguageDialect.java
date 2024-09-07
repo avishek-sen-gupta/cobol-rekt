@@ -37,7 +37,7 @@ public enum LanguageDialect {
             nullDialectStatements.forEach(n -> {
                 boolean removed = ((ParserRuleContext) n.getParent()).children.remove(n);
                 java.util.logging.Logger logger = Logger.getLogger(LanguageDialect.class.getName());
-                logger.finest(removed ? "removed" : "not removed");
+                logger.finer(removed ? "removed" : "not removed");
             });
             List<ParseTree> nullIdmsNodes = navigator.findAllByCondition(n -> n.getClass() == CobolParser.DialectNodeFillerContext.class
                     && ((CobolParser.DialectNodeFillerContext) n).whatever() != null, tree);

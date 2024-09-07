@@ -60,7 +60,7 @@ public class Format1DataStructure extends CobolDataStructure {
         super(NamingScheme.IDENTITY.apply(dataDescription), Integer.parseInt(dataDescription.levelNumber().getText()), cobolDataType(dataDescription), NodeText.originalText(dataDescription), sourceSection);
         this.namingScheme = NamingScheme.IDENTITY;
         this.dataDescription = dataDescription;
-        LOGGER.finest("Setting value for " + dataDescription.getText());
+        LOGGER.finer("Setting value for " + dataDescription.getText());
         this.unresolvedReferenceStrategy = unresolvedReferenceStrategy;
     }
 

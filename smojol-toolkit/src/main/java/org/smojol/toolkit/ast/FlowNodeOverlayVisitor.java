@@ -31,7 +31,7 @@ public class FlowNodeOverlayVisitor implements FlowNodeVisitor {
                 node.getClass() == ConditionalStatementFlowNode.class ||
                 (MergingChartOverlay.isAtomic(node) && !contained(node)) // This condition is a little sus because technically, statements inside sentences could also get their own groups which would show up in addition to their parent sentence groups. It's working now, need to investigate with a small test program.
         ) && node.isMergeable()) {
-            logger.finest("MERGEABLE : " + node);
+            logger.finer("MERGEABLE : " + node);
             if (head == null) {
                 head = new GenericProcessingFlowNode(node, enclosingScope, nodeService);
                 groups.add(head);
@@ -73,7 +73,7 @@ public class FlowNodeOverlayVisitor implements FlowNodeVisitor {
     }
 
     public void report() {
-        groups.forEach(g -> logger.finest(g.toString()));
+        groups.forEach(g -> logger.finer(g.toString()));
     }
 
     public ChartOverlay overlay() {

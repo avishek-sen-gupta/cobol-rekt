@@ -78,7 +78,7 @@ public class CodeTaskRunner {
     public Map<String, List<AnalysisTaskResult>> runForPrograms(List<CommandLineAnalysisTask> tasks, List<String> programFilenames, TaskRunnerMode runnerMode) throws IOException {
         Map<String, List<AnalysisTaskResult>> results = new HashMap<>();
         for (String programFilename : programFilenames) {
-            LOGGER.info(String.format("Running tasks: %s for program '%s' in %s mode...%n",
+            LOGGER.info(String.format("Running tasks: %s for program '%s' in %s mode...",
                     tasks.stream().map(CommandLineAnalysisTask::name).toList(),
                     programFilename, runnerMode.toString()));
             try {

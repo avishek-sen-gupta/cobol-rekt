@@ -25,7 +25,7 @@ public class PseudocodeNavigator {
     }
 
     public Pair<List<PseudocodeInstruction>, List<PseudocodeInstruction>> findCallTargets(PseudocodeInstruction from, int iptr, List<PseudocodeInstruction> instructions) {
-        LOGGER.finest("Finding call targets of " + from.toString());
+        LOGGER.finer("Finding call targets of " + from.toString());
         if (from.getNode().type() == FlowNodeType.NEXT_SENTENCE) {
             int searchIndex = iptr;
             while (searchIndex < instructions.size()) {

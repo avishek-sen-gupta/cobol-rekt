@@ -29,7 +29,7 @@ public class ProgramValidationErrorReporter {
     private void reportReferenceErrors(ProgramValidationErrors errors) {
         LOGGER.info(String.format("Reference Errors: Program %s%n--------------------------------------------------------------%n", errors.getProgramFileName()));
         if (!errors.hasReferenceErrors()) {
-            LOGGER.info(ConsoleColors.green(String.format("No Syntax Errors for %s%n",
+            LOGGER.info(ConsoleColors.green(String.format("No Syntax Errors for %s",
                     errors.getProgramFileName())));
             return;
         }
@@ -40,7 +40,7 @@ public class ProgramValidationErrorReporter {
     private void reportSyntaxErrors(ProgramValidationErrors singleProgramValidationErrors, Function<SyntaxError, String> format) {
         LOGGER.info(String.format("Validation Details: Program %s%n--------------------------------------------------------------%n", singleProgramValidationErrors.getProgramFileName()));
         if (!singleProgramValidationErrors.hasSyntaxErrors()) {
-            LOGGER.info(ConsoleColors.green(String.format("No Syntax Errors for %s%n",
+            LOGGER.info(ConsoleColors.green(String.format("No Syntax Errors for %s",
                     singleProgramValidationErrors.getProgramFileName())));
             return;
         }

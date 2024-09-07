@@ -36,7 +36,7 @@ public class AttachCommentsTask implements AnalysisTask {
         try {
             List<CommentBlock> commentBlocks = new CommentExtraction().run(sourceConfig.sourcePath(), navigator);
             commentBlocks.forEach(cb -> {
-                LOGGER.finest("Attaching comments");
+                LOGGER.finer("Attaching comments");
                 FlowNode node = new FlowNodeNavigator(astRoot).findNarrowestByCondition(n -> n.originalText().contains(cb.getCodeContextLine()));
                 if (node != null) node.addComment(cb);
                 else {

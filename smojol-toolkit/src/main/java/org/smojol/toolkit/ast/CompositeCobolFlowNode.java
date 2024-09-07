@@ -81,11 +81,11 @@ public class CompositeCobolFlowNode extends CobolFlowNode {
 
     @Override
     public FlowNode next(FlowNodeCondition nodeCondition, FlowNode startingNode, boolean isComplete) {
-        logger.finest("Moved up to " + executionContext.getClass() + executionContext.getText());
+        logger.finer("Moved up to " + executionContext.getClass() + executionContext.getText());
         CobolEntityNavigator navigator = nodeService.getNavigator();
 //        boolean shouldSearch = navigator.findByCondition(executionContext, n -> n == startingNode.getExecutionContext()) == null;
         if (!isComplete) {
-            logger.finest("ITR is " + internalTreeRoot.getClass() + " " + internalTreeRoot);
+            logger.finer("ITR is " + internalTreeRoot.getClass() + " " + internalTreeRoot);
             FlowNode searchResult = internalTreeRoot.next(nodeCondition, startingNode, false);
             if (searchResult != null) return searchResult;
         }

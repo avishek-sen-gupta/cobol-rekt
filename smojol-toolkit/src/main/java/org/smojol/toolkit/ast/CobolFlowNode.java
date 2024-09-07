@@ -257,7 +257,7 @@ public class CobolFlowNode implements FlowNode {
     @Override
     public FlowNode next(FlowNodeCondition nodeCondition, FlowNode startingNode, boolean isComplete) {
         if (this != startingNode && nodeCondition.apply(this)) return this;
-        LOGGER.finest("Num outgoing nodes: " + outgoingNodes.size());
+        LOGGER.finer("Num outgoing nodes: " + outgoingNodes.size());
         if (outgoingNodes.isEmpty()) return scope.next(nodeCondition, startingNode, true);
         for (FlowNode o : outgoingNodes) {
             FlowNode next = o.next(nodeCondition, startingNode, true);

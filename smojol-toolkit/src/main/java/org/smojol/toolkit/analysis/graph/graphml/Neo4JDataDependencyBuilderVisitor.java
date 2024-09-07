@@ -54,7 +54,7 @@ public class Neo4JDataDependencyBuilderVisitor extends FlowNodeASTVisitor<Record
     }
 
     private void accesses(FlowNode attachmentNode, List<CobolDataStructure> dataNodes) {
-        LOGGER.finest("Attaching IF??? " + attachmentNode.type() + " " + dataNodes.size());
+        LOGGER.finer("Attaching IF??? " + attachmentNode.type() + " " + dataNodes.size());
         Record attachmentNodeRecord = dependencyAttachmentStrategy.reference(attachmentNode, sdk, qualifier);
         dataNodes.forEach(n -> {
             Record n4jFrom = sdk.newOrExisting(qualifier.dataNodeSearchSpec(n), NodeToWoof.dataStructureToWoof(n, qualifier));
@@ -65,7 +65,7 @@ public class Neo4JDataDependencyBuilderVisitor extends FlowNodeASTVisitor<Record
     private void connect(List<CobolDataStructure> froms, List<CobolDataStructure> tos, FlowNode attachmentNode) {
         Record attachmentNodeRecord = dependencyAttachmentStrategy.reference(attachmentNode, sdk, qualifier);
         tos.forEach(to -> {
-            froms.forEach(f -> LOGGER.finest(f.name()));
+            froms.forEach(f -> LOGGER.finer(f.name()));
             List<Record> nodes = sdk.findNodes(qualifier.dataNodeSearchSpec(to));
             Record n4jTo = !nodes.isEmpty() ? nodes.getFirst() : sdk.createNode(NodeToWoof.dataStructureToWoof(to, qualifier));
             sdk.modifies(attachmentNodeRecord, n4jTo);

@@ -21,7 +21,7 @@ public class GraphPatternMatcher implements FlowNodeVisitor {
 
     @Override
     public void visit(FlowNode node, List<FlowNode> outgoingNodes, List<FlowNode> incomingNodes, VisitContext context, FlowNodeService nodeService) {
-        LOGGER.finest(String.format("Visiting %s", node));
+        LOGGER.finer(String.format("Visiting %s", node));
         if (node.type() == FlowNodeType.SENTENCE && node.astChildren().size() == 1 && node.astChildren().getFirst().type() == FlowNodeType.MOVE) {
             registerMove(node);
             return;

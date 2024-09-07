@@ -31,7 +31,7 @@ public class DataDependencyPairComputer {
         if (node.type() == FlowNodeType.IF_BRANCH) {
             IfFlowNode ifNode = (IfFlowNode) node;
             CobolParser.ConditionContext condition = ifNode.getCondition();
-            logger.finest("Condition is " + condition.getText());
+            logger.finer("Condition is " + condition.getText());
             ConditionVisitor visitor = new ConditionVisitor(dataRoot);
             condition.accept(visitor);
             CobolExpression expression = visitor.getExpression();

@@ -85,7 +85,7 @@ public class MultiCommand implements Callable<Integer> {
 
     @Override
     public Integer call() throws IOException {
-//        LOGGER.finest("TESTING LOGGING");
+//        LOGGER.finer("TESTING LOGGING");
 //        return 0;
         List<File> copyBookPaths = copyBookDirs.stream().map(c -> Paths.get(c).toAbsolutePath().toFile()).toList();
         return processPrograms(copyBookPaths);

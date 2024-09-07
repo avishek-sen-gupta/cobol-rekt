@@ -38,7 +38,7 @@ public class GoToFlowNode extends CobolFlowNode implements InternalControlFlowNo
     public void buildControlFlow() {
         CobolParser.GoToStatementContext goToStatement = new SyntaxIdentity<CobolParser.GoToStatementContext>(getExecutionContext()).get();
         List<CobolParser.ProcedureNameContext> procedureNames = goToStatement.procedureName();
-        logger.finest("Found a GO TO, routing to " + procedureNames);
+        logger.finer("Found a GO TO, routing to " + procedureNames);
         destinationNodes = procedureNames.stream().map(p -> nodeService.sectionOrParaWithName(p.paragraphName().getText())).collect(Collectors.toList());
     }
 

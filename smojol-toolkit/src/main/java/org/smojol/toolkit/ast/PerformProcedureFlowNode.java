@@ -54,7 +54,7 @@ public class PerformProcedureFlowNode extends CobolFlowNode implements InternalC
         CobolParser.PerformProcedureStatementContext performProcedureStatementContext = performStatement.performProcedureStatement();
         CobolParser.ProcedureNameContext procedureNameContext = performProcedureStatementContext.procedureName();
         String procedureName = procedureNameContext.getText();
-        logger.finest("Found a PERFORM, routing to " + procedureName);
+        logger.finer("Found a PERFORM, routing to " + procedureName);
         FlowNode startNode = nodeService.sectionOrParaWithName(procedureName);
         if (performStatement.performProcedureStatement().through() == null) {
             procedures.add(startNode);

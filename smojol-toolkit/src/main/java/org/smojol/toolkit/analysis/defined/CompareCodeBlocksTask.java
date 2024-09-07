@@ -61,7 +61,7 @@ public class CompareCodeBlocksTask {
             return new SimilarityResult(p, editDistance.getDistance(), editDistance.getEditOperationLists());
         }).toList();
         allDistances.forEach(d -> {
-            LOGGER.info(String.format("Distance between %s and %s is %s%n",
+            LOGGER.info(String.format("Distance between %s and %s is %s",
                     d.nodes().getLeft(),
                     d.nodes().getRight(),
                     d.distance()));

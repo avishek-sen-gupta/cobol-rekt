@@ -55,7 +55,7 @@ public class DynamicCallTarget extends CallTarget {
             }
 
             String resolvedTarget = froms.literal().getText();
-            LOGGER.finest(String.format("Resolved a target: %s to %s", variableName, resolvedTarget));
+            LOGGER.finer(String.format("Resolved a target: %s to %s", variableName, resolvedTarget));
             return new StaticCallTarget(resolvedTarget);
         }
 

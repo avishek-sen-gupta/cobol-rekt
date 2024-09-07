@@ -30,13 +30,13 @@ public class FlowNodeGraphvizVisitor implements FlowNodeVisitor {
     public void visit(FlowNode node, List<FlowNode> outgoingNodes, List<FlowNode> incomingNodes, VisitContext visitContext, FlowNodeService nodeService) {
         if (!visitCondition.apply(visitContext)) return;
         if (node.isPassthrough()) return;
-        logger.finest("Visiting : " + node);
+        logger.finer("Visiting : " + node);
         FlowNode source = overlay.block(node);
         List<FlowNode> targets = outgoingNodes.stream().map(FlowNode::passthrough).map(overlay::block).toList();
 
         MutableNode flowchartSource = existingOrNew(source.id());
         targets.forEach(t -> {
-            logger.finest("Linking " + node + " to " + t);
+            logger.finer("Linking " + node + " to " + t);
             if (source == t) return;
             MutableNode graphSource = styled(source, flowchartSource.add("label", source.label()));
             MutableNode flowchartTarget = existingOrNew(t.id());

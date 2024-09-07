@@ -25,7 +25,7 @@ public class ExecuteAtTargetFlipCondition implements ExecuteCondition {
     public boolean evaluate(FlowNode flowNode) {
         if (flowNode == specificLocation && !isInterpreting) {
             isInterpreting = true;
-            LOGGER.finest("FLIPPED TO TRUE");
+            LOGGER.finer("FLIPPED TO TRUE");
         }
         return isInterpreting;
     }

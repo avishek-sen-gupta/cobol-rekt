@@ -39,7 +39,6 @@ public class GeneralIdentifierQuadGeneration {
                 QuadSequence allQuads = new QuadSequence(symbolTable);
                 sequences.forEach(allQuads::add);
                 indexingQuads.forEach(allQuads::add);
-                System.out.println("DONE");
                 return allQuads;
             } else {
                 return new QuadSequence(symbolTable, ImmutableList.of(new InstructionQuad(reference, AbstractOperator.NO_OP)));

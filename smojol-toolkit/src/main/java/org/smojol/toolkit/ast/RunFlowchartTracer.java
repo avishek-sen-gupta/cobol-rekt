@@ -41,7 +41,7 @@ public class RunFlowchartTracer implements ExecutionListener, GraphWriter {
         LOGGER.info("Collected " + nodes.size() + " nodes");
         final int[] i = {1};
         nodes.stream().filter(n -> !n.isPassthrough()).forEach(n -> {
-            LOGGER.finest(String.valueOf(i[0]));
+            LOGGER.finer(String.valueOf(i[0]));
             i[0]++;
 //            System.out.println("Processing node: " + n.getClass().getSimpleName() + "/" + n.id());
             FlowNode block = overlay.block(n);

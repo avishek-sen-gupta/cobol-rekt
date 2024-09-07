@@ -22,7 +22,7 @@ public class ParagraphNameFlowNode extends CobolFlowNode {
 
     @Override
     public FlowNode passthrough() {
-        LOGGER.finest(String.format("%s has %s outgoing nodes", executionContext.getText(), outgoingNodes.size()));
+        LOGGER.finer(String.format("%s has %s outgoing nodes", executionContext.getText(), outgoingNodes.size()));
         // In case of an empty paragraph, there is nothing to terminate with, so we return this
         // TODO: But check why IDMS copy book MAP-BINDS is missing
         if (outgoingNodes.isEmpty()) return this;

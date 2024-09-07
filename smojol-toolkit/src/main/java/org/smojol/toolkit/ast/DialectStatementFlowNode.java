@@ -70,7 +70,7 @@ public class DialectStatementFlowNode extends CobolFlowNode {
         if (navigator.findByCondition(containerChild, n -> n.getClass() == IdmsParser.TransferStatementContext.class) != null) {
             dialectChildNode = new IdmsTransferFlowNode(containerChild, this, nodeService, staticFrameContext);
             nodeService.register(dialectChildNode);
-            LOGGER.finest("Found a TRANSFER statement");
+            LOGGER.finer("Found a TRANSFER statement");
         } else if (containerChild.getClass() == CobolParser.DialectIfStatmentContext.class) {
             dialectChildNode = new IdmsIfFlowNode(containerChild, this, nodeService, staticFrameContext);
             nodeService.register(dialectChildNode);
