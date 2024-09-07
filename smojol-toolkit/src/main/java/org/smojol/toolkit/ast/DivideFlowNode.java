@@ -5,6 +5,7 @@ import lombok.Getter;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.ast.*;
+import org.smojol.common.pseudocode.SmojolSymbolTable;
 import org.smojol.common.vm.expression.CobolExpression;
 import org.smojol.common.vm.expression.CobolExpressionBuilder;
 import org.smojol.common.vm.interpreter.CobolInterpreter;
@@ -19,7 +20,8 @@ public class DivideFlowNode extends CobolFlowNode {
     private CobolParser.DivisorContext intoDivisor;
     private List<CobolParser.DivideIntoContext> dividends;
     private CobolParser.DivisorContext givingDividend;
-    private List<CobolExpression> primitiveDividends;
+    private CobolExpression divisorExpression;
+    private List<CobolExpression> dividendExpressions;
 
     public DivideFlowNode(ParseTree parseTree, FlowNode scope, FlowNodeService nodeService, StackFrames stackFrames) {
         super(parseTree, scope, nodeService, stackFrames);
@@ -32,16 +34,9 @@ public class DivideFlowNode extends CobolFlowNode {
         if (divideStatement.divideIntoStatement() != null) {
             intoDivisor = divideStatement.divisor();
             dividends = divideStatement.divideIntoStatement().divideInto();
-//            expressionBuilder.expression(dividends.getFirst().generalIdentifier());
-            primitiveDividends = dividends.stream().map(d -> expressionBuilder.identifier(d.generalIdentifier())).toList();
         }
         else if (divideStatement.divideByGivingStatement() != null) {
             intoDivisor = divideStatement.divideByGivingStatement().divisor();
-            if (divideStatement.divisor().generalIdentifier() != null) {
-                primitiveDividends = ImmutableList.of(expressionBuilder.identifier(givingDividend.generalIdentifier()));
-            } else {
-                primitiveDividends = ImmutableList.of(expressionBuilder.literal(givingDividend.literal()));
-            }
             givingDividend = divideStatement.divisor();
         }
         if (dividends == null) {
@@ -70,5 +65,13 @@ public class DivideFlowNode extends CobolFlowNode {
     @Override
     public List<FlowNodeCategory> categories() {
         return ImmutableList.of(FlowNodeCategory.COMPUTATIONAL, FlowNodeCategory.DATA_FLOW);
+    }
+
+    @Override
+    public void resolve(SmojolSymbolTable symbolTable) {
+        CobolExpressionBuilder builder = new CobolExpressionBuilder();
+        divisorExpression = builder.literalOrIdentifier(intoDivisor.literal(), intoDivisor.generalIdentifier());
+        dividendExpressions = dividends != null ? dividends.stream().map(dividend -> builder.identifier(dividend.generalIdentifier())).toList()
+                : ImmutableList.of(builder.literalOrIdentifier(givingDividend.literal(), givingDividend.generalIdentifier()));
     }
 }

@@ -5,6 +5,9 @@ import lombok.Getter;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.ast.*;
+import org.smojol.common.pseudocode.SmojolSymbolTable;
+import org.smojol.common.vm.expression.CobolExpression;
+import org.smojol.common.vm.expression.CobolExpressionBuilder;
 import org.smojol.common.vm.interpreter.CobolInterpreter;
 import org.smojol.common.vm.interpreter.CobolVmSignal;
 import org.smojol.common.vm.interpreter.FlowControl;
@@ -15,9 +18,13 @@ import java.util.List;
 @Getter
 public class MultiplyFlowNode extends CobolFlowNode {
     private CobolParser.MultiplyLhsContext lhs;
-    private List<CobolParser.MultiplyRegularOperandContext> rhs;
+    private List<CobolParser.MultiplyRegularOperandContext> rhses;
     private CobolParser.MultiplyGivingOperandContext givingRhs;
     private List<CobolParser.MultiplyGivingResultContext> givingDestinations;
+    private CobolExpression lhsExpression;
+    private List<CobolExpression> rhsExpressions;
+    private CobolExpression givingRhsExpression;
+    private List<CobolExpression> givingDestinationExpressions;
 
     public MultiplyFlowNode(ParseTree parseTree, FlowNode scope, FlowNodeService nodeService, StackFrames stackFrames) {
         super(parseTree, scope, nodeService, stackFrames);
@@ -28,11 +35,11 @@ public class MultiplyFlowNode extends CobolFlowNode {
         CobolParser.MultiplyStatementContext multiplyStatement = new SyntaxIdentity<CobolParser.MultiplyStatementContext>(executionContext).get();
         lhs = multiplyStatement.multiplyLhs();
         if (multiplyStatement.multiplyRegular() != null) {
-            rhs = multiplyStatement.multiplyRegular().multiplyRegularOperand();
+            rhses = multiplyStatement.multiplyRegular().multiplyRegularOperand();
             givingRhs = null;
             givingDestinations = ImmutableList.of();
         } else if (multiplyStatement.multiplyGiving() != null) {
-            rhs = ImmutableList.of();
+            rhses = ImmutableList.of();
             givingRhs = multiplyStatement.multiplyGiving().multiplyGivingOperand();
             givingDestinations = multiplyStatement.multiplyGiving().multiplyGivingResult();
         }
@@ -58,5 +65,14 @@ public class MultiplyFlowNode extends CobolFlowNode {
     @Override
     public List<FlowNodeCategory> categories() {
         return ImmutableList.of(FlowNodeCategory.COMPUTATIONAL, FlowNodeCategory.DATA_FLOW);
+    }
+
+    @Override
+    public void resolve(SmojolSymbolTable symbolTable) {
+        CobolExpressionBuilder builder = new CobolExpressionBuilder();
+        lhsExpression = builder.literalOrIdentifier(lhs.literal(), lhs.generalIdentifier());
+        rhsExpressions = rhses.stream().map(rhs -> builder.identifier(rhs.generalIdentifier())).toList();
+        givingRhsExpression = builder.literalOrIdentifier(givingRhs.literal(), givingRhs.generalIdentifier());
+        givingDestinationExpressions = givingDestinations.stream().map(rhs -> builder.identifier(rhs.generalIdentifier())).toList();
     }
 }

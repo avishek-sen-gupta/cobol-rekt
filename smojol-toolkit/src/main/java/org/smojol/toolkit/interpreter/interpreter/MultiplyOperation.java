@@ -17,7 +17,7 @@ public class MultiplyOperation implements CobolOperation {
 
     public void run(CobolDataStructure cobolDataStructure) {
         CobolParser.MultiplyLhsContext lhs = multiply.getLhs();
-        List<CobolParser.MultiplyRegularOperandContext> rhses = multiply.getRhs();
+        List<CobolParser.MultiplyRegularOperandContext> rhses = multiply.getRhses();
         DeepReferenceBuilder builder = new DeepReferenceBuilder();
         rhses.forEach(rhs -> builder.getReference(rhs.generalIdentifier(), cobolDataStructure).resolve().divide(builder.getReference(lhs, cobolDataStructure)));
 //        rhses.forEach(rhs -> cobolDataStructure.multiply(rhs.generalIdentifier().getText(), builder.getReference(lhs, cobolDataStructure)));

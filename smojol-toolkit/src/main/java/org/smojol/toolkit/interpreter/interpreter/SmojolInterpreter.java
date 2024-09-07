@@ -202,7 +202,7 @@ public class SmojolInterpreter implements CobolInterpreter {
             listeners.visit(node, nodeService);
             listeners.notify("Adding " + node, node, nodeService);
             MultiplyFlowNode multiply = (MultiplyFlowNode) node;
-            listeners.notify(purple(coloured(String.format("%s was affected by %s", multiply.getLhs(), delimited(multiply.getRhs())), 227)), node, nodeService);
+            listeners.notify(purple(coloured(String.format("%s was affected by %s", multiply.getLhs(), delimited(multiply.getRhses())), 227)), node, nodeService);
 //            new MultiplyOperation(multiply).run(runtimeStackFrames.currentData());
             operations.multiply().apply(node).run(runtimeStackFrames.currentData());
             return CobolVmSignal.CONTINUE;

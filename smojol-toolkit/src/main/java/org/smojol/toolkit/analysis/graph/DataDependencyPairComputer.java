@@ -70,7 +70,7 @@ public class DataDependencyPairComputer {
         } else if (node.type() == FlowNodeType.MULTIPLY) {
             MultiplyFlowNode multiply = (MultiplyFlowNode) node;
             List<CobolDataStructure> lhses = ImmutableList.of(referenceBuilder.getShallowReference(multiply.getLhs(), dataRoot).resolve());
-            List<CobolDataStructure> rhses = multiply.getRhs().stream().map(t -> referenceBuilder.getShallowReference(t.generalIdentifier(), dataRoot).resolve()).toList();
+            List<CobolDataStructure> rhses = multiply.getRhses().stream().map(t -> referenceBuilder.getShallowReference(t.generalIdentifier(), dataRoot).resolve()).toList();
             return ImmutablePair.of(lhses, rhses);
         } else if (node.type() == FlowNodeType.DIVIDE) {
             DivideFlowNode divide = (DivideFlowNode) node;
