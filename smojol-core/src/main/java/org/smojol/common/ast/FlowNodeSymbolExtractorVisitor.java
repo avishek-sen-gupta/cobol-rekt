@@ -20,6 +20,6 @@ public class FlowNodeSymbolExtractorVisitor extends FlowNodeASTVisitor<FlowNode>
 
     @Override
     public FlowNodeASTVisitor<FlowNode> scope(FlowNode n, FlowNode visitResult) {
-        return null;
+        return this;
     }
 }
