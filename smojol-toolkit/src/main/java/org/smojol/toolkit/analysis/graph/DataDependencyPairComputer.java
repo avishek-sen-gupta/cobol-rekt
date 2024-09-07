@@ -27,7 +27,6 @@ public class DataDependencyPairComputer {
                 && node.type() != FlowNodeType.IF_BRANCH
         ) return ImmutablePair.nullPair();
 
-//        ShallowReferenceBuilder referenceBuilder = new ShallowReferenceBuilder();
         if (node.type() == FlowNodeType.IF_BRANCH) {
             IfFlowNode ifNode = (IfFlowNode) node;
             CobolParser.ConditionContext condition = ifNode.getCondition();
@@ -40,36 +39,26 @@ public class DataDependencyPairComputer {
         }
         if (node.type() == FlowNodeType.MOVE) {
             MoveFlowNode move = (MoveFlowNode) node;
-//            List<CobolDataStructure> froms = ImmutableList.of(referenceBuilder.getShallowReference(move.getFrom(), dataRoot).resolve());
-//            List<CobolDataStructure> tos = move.getTos().stream().map(t -> referenceBuilder.getShallowReference(t, dataRoot).resolve()).toList();
             List<CobolDataStructure> froms = staticExpressionsFromSingle(move.getFromExpression(), dataRoot);
             List<CobolDataStructure> tos = staticExpressionsFromMany(move.getToExpressions(), dataRoot);
             return ImmutablePair.of(froms, tos);
         } else if (node.type() == FlowNodeType.COMPUTE) {
             ComputeFlowNode compute = (ComputeFlowNode) node;
             List<CobolDataStructure> froms = staticExpressionsFromSingle(compute.getRhsExpression(), dataRoot);
-//            List<CobolDataStructure> tos = compute.getDestinations().stream().map(d -> referenceBuilder.getShallowReference(d.generalIdentifier(), dataRoot).resolve()).toList();
             List<CobolDataStructure> tos = staticExpressionsFromMany(compute.getDestinationExpressions(), dataRoot);
             return ImmutablePair.of(froms, tos);
         } else if (node.type() == FlowNodeType.ADD) {
             AddFlowNode add = (AddFlowNode) node;
-//            List<CobolDataStructure> froms = add.getFroms().stream().map(f -> referenceBuilder.getShallowReference(f, dataRoot).resolve()).toList();
-//            List<CobolDataStructure> tos = add.getTos().stream().map(t -> referenceBuilder.getShallowReference(t, dataRoot).resolve()).toList();
             List<CobolDataStructure> froms = staticExpressionsFromMany(add.getToExpressions(), dataRoot);
             List<CobolDataStructure> tos = staticExpressionsFromMany(add.getFromExpressions(), dataRoot);
             return ImmutablePair.of(froms, tos);
-//            connect(froms, tos);
         } else if (node.type() == FlowNodeType.SUBTRACT) {
             SubtractFlowNode subtract = (SubtractFlowNode) node;
-//            List<CobolDataStructure> minuends = subtract.getLhses().stream().map(f -> referenceBuilder.getShallowReference(f, dataRoot).resolve()).toList();
-//            List<CobolDataStructure> subtrahends = subtract.getRhses().stream().map(t -> referenceBuilder.getShallowReference(t, dataRoot).resolve()).toList();
             List<CobolDataStructure> minuends = staticExpressionsFromMany(subtract.getLhsExpressions(), dataRoot);
             List<CobolDataStructure> subtrahends = staticExpressionsFromMany(subtract.getRhsExpressions(), dataRoot);
             return ImmutablePair.of(subtrahends, minuends);
         } else if (node.type() == FlowNodeType.MULTIPLY) {
             MultiplyFlowNode multiply = (MultiplyFlowNode) node;
-//            List<CobolDataStructure> lhses = ImmutableList.of(referenceBuilder.getShallowReference(multiply.getLhs(), dataRoot).resolve());
-//            List<CobolDataStructure> rhses = multiply.getRhses().stream().map(t -> referenceBuilder.getShallowReference(t.generalIdentifier(), dataRoot).resolve()).toList();
             List<CobolDataStructure> lhses = staticExpressionsFromSingle(multiply.getLhsExpression(), dataRoot);
             List<CobolDataStructure> rhses = staticExpressionsFromMany(multiply.getRhsExpressions(), dataRoot);
             return ImmutablePair.of(lhses, rhses);
