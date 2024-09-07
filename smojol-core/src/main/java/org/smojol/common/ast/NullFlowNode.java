@@ -3,6 +3,7 @@ package org.smojol.common.ast;
 import com.google.common.collect.ImmutableList;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.smojol.common.pseudocode.CodeSentinelType;
+import org.smojol.common.pseudocode.SmojolSymbolTable;
 import org.smojol.common.vm.interpreter.CobolInterpreter;
 import org.smojol.common.vm.interpreter.CobolVmSignal;
 import org.smojol.common.vm.interpreter.FlowControl;
@@ -88,6 +89,11 @@ public class NullFlowNode implements FlowNode {
 
     @Override
     public void acceptUnvisited(FlowNodeVisitor visitor, int level) {
+
+    }
+
+    @Override
+    public void resolve(SmojolSymbolTable symbolTable) {
 
     }
 

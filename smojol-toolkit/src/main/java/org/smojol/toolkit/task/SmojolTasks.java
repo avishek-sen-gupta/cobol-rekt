@@ -3,6 +3,9 @@ package org.smojol.toolkit.task;
 import com.mojo.woof.Neo4JDriverBuilder;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.smojol.common.pseudocode.BasicBlockFactory;
+import org.smojol.common.pseudocode.SmojolSymbolTable;
+import org.smojol.common.pseudocode.SymbolReferenceBuilder;
+import org.smojol.common.vm.expression.CobolExpressionBuilder;
 import org.smojol.toolkit.analysis.defined.*;
 import org.smojol.toolkit.analysis.pipeline.ParsePipeline;
 import org.smojol.toolkit.analysis.graph.NamespaceQualifier;
@@ -14,6 +17,7 @@ import org.smojol.common.id.IdProvider;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.toolkit.flowchart.FlowchartOutputWriter;
+import org.smojol.toolkit.interpreter.navigation.FlowNodeASTTraversal;
 
 import java.io.IOException;
 import java.util.List;
@@ -39,6 +43,7 @@ public class SmojolTasks {
     private final NodeSpecBuilder qualifier;
     private FlowNode flowRoot;
     private ParserRuleContext rawAST;
+    private SmojolSymbolTable symbolTable;
 
     public SmojolTasks(ParsePipeline pipeline, SourceConfig sourceConfig, FlowchartOutputWriter flowchartOutputWriter, RawASTOutputConfig rawAstOutputConfig, GraphMLExportConfig graphMLOutputConfig, FlowASTOutputConfig flowASTOutputConfig, CFGOutputConfig cfgOutputConfig, GraphBuildConfig graphBuildConfig, OutputArtifactConfig dataStructuresOutputConfig, OutputArtifactConfig unifiedModelOutputConfig, OutputArtifactConfig similarityOutputConfig, OutputArtifactConfig mermaidOutputConfig, IdProvider idProvider, Neo4JDriverBuilder neo4JDriverBuilder) {
         this.pipeline = pipeline;
@@ -179,9 +184,15 @@ public class SmojolTasks {
         rawAST = (ParserRuleContext) navigator.procedureBodyRoot();
         dataStructures = pipeline.getDataStructures();
         FlowchartBuilder flowcharter = pipeline.flowcharter();
+        symbolTable = new SmojolSymbolTable(dataStructures, new SymbolReferenceBuilder(idProvider));
         flowcharter.buildFlowAST(rawAST).buildControlFlow().buildOverlay();
         flowRoot = flowcharter.getRoot();
+        buildSymbolTable();
         return this;
+    }
+
+    private void buildSymbolTable() {
+        new FlowNodeASTTraversal<FlowNode>().accept(flowRoot, new FlowNodeSymbolExtractorVisitor(flowRoot, symbolTable));
     }
 
     private Stream<AnalysisTask> tasks(List<CommandLineAnalysisTask> commandLineAnalysisTasks) {

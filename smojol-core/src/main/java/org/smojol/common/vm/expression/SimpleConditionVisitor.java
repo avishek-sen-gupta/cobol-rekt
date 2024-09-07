@@ -26,7 +26,7 @@ public class SimpleConditionVisitor extends AntlrCobolExpressionVisitor {
     public CobolExpression visitSimpleCondition(CobolParser.SimpleConditionContext ctx) {
         lhs = new CobolExpressionBuilder().arithmetic(ctx.arithmeticExpression());
         if (lhs.getClass() == VariableExpression.class) {
-            CobolParser.QualifiedDataNameContext qualifiedDataNameContext = ((VariableExpression) lhs).getQualifiedDataNameContext();
+            CobolParser.VariableUsageNameContext qualifiedDataNameContext = ((VariableExpression) lhs).getUsageName();
             CobolReference reference = new DeepReferenceBuilder().getReference(qualifiedDataNameContext, dataRoot);
             String variableName = qualifiedDataNameContext.getText();
             CobolDataStructure resolved = reference.resolve();

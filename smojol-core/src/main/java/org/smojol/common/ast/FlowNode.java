@@ -1,6 +1,7 @@
 package org.smojol.common.ast;
 
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.smojol.common.pseudocode.SmojolSymbolTable;
 import org.smojol.common.vm.interpreter.CobolInterpreter;
 import org.smojol.common.vm.interpreter.CobolVmSignal;
 import org.smojol.common.vm.interpreter.FlowControl;
@@ -26,6 +27,7 @@ public interface FlowNode extends FlowNodeLike {
     void accept(FlowNodeVisitor visitor, int level);
     void accept(FlowNodeVisitor visitor, FlowNodeCondition stopCondition, int level);
     void acceptUnvisited(FlowNodeVisitor visitor, int level);
+    void resolve(SmojolSymbolTable symbolTable);
 
     List<? extends ParseTree> getChildren();
 

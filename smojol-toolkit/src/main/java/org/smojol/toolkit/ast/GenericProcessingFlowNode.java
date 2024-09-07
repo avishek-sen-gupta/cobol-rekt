@@ -6,6 +6,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolDataDivisionParser;
 import org.smojol.common.ast.*;
 import org.smojol.common.pseudocode.CodeSentinelType;
+import org.smojol.common.pseudocode.SmojolSymbolTable;
 import org.smojol.common.vm.interpreter.CobolInterpreter;
 import org.smojol.common.vm.interpreter.CobolVmSignal;
 import org.smojol.common.vm.interpreter.FlowControl;
@@ -94,6 +95,11 @@ public class GenericProcessingFlowNode implements FlowNode {
 
     @Override
     public void acceptUnvisited(FlowNodeVisitor visitor, int level) {
+
+    }
+
+    @Override
+    public void resolve(SmojolSymbolTable symbolTable) {
 
     }
 

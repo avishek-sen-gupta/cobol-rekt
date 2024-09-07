@@ -1,5 +1,6 @@
 package org.smojol.common.pseudocode;
 
+import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.common.vm.structure.ScopedDataStructureVisitor;
 
@@ -20,5 +21,9 @@ public class SmojolSymbolTable {
 
     public void add(SymbolReference reference) {
         symbols.put(reference.id(), reference);
+    }
+
+    public SymbolReference reference(CobolParser.GeneralIdentifierContext generalIdentifierContext) {
+        return null;
     }
 }

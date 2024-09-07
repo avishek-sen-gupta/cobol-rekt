@@ -9,6 +9,7 @@ import org.eclipse.lsp.cobol.dialects.idms.IdmsParser;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.ast.*;
 import org.smojol.common.pseudocode.CodeSentinelType;
+import org.smojol.common.pseudocode.SmojolSymbolTable;
 import org.smojol.common.vm.interpreter.CobolInterpreter;
 import org.smojol.common.vm.interpreter.CobolVmSignal;
 import org.smojol.common.vm.interpreter.FlowControl;
@@ -154,6 +155,11 @@ public class CobolFlowNode implements FlowNode {
     public void acceptUnvisited(FlowNodeVisitor visitor, int level) {
         visitor.visit(this, outgoingNodes, incomingNodes, new VisitContext(level), nodeService);
         outgoingNodes.forEach(c -> c.accept(visitor, level));
+    }
+
+    @Override
+    public void resolve(SmojolSymbolTable symbolTable) {
+
     }
 
     public void acceptUnvisited(FlowNodeVisitor visitor, FlowNodeCondition stopCondition, int level) {

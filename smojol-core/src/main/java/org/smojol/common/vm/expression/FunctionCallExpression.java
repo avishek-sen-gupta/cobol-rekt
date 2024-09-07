@@ -14,15 +14,23 @@ public class FunctionCallExpression extends CobolExpression {
     private final List<CobolExpression> arguments;
 
     public FunctionCallExpression(CobolParser.FunctionCallContext functionCallContext) {
+        this(functionCallContext.functionName().getText(), args(functionCallContext));
+    }
+
+    public FunctionCallExpression(String functionName, List<CobolExpression> arguments) {
         super(ImmutableList.of());
-        functionName = functionCallContext.functionName().getText();
-        CobolExpressionBuilder expressionBuilder = new CobolExpressionBuilder();
-        arguments = functionCallContext.argument().stream().map(arg -> expressionBuilder.arithmetic(arg.arithmeticExpression())).toList();
+        this.functionName = functionName;
+        this.arguments = arguments;
         proxyReturnValue = new DetachedDataStructure(TypedRecord.typedNumber(1));
     }
 
     @Override
     public CobolExpression evaluate(CobolDataStructure data) {
         return new PrimitiveCobolExpression(proxyReturnValue.getValue());
+    }
+
+    private static List<CobolExpression> args(CobolParser.FunctionCallContext functionCallContext) {
+        CobolExpressionBuilder expressionBuilder = new CobolExpressionBuilder();
+        return functionCallContext.argument().stream().map(arg -> expressionBuilder.arithmetic(arg.arithmeticExpression())).toList();
     }
 }

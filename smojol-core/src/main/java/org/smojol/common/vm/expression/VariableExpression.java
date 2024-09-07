@@ -9,17 +9,21 @@ import org.smojol.common.vm.reference.CobolReference;
 import org.smojol.common.vm.reference.DeepReferenceBuilder;
 
 public class VariableExpression extends CobolExpression {
-    @Getter private final CobolParser.QualifiedDataNameContext qualifiedDataNameContext;
+    @Getter private final CobolParser.VariableUsageNameContext usageName;
 
-    public VariableExpression(CobolParser.QualifiedDataNameContext qualifiedDataNameContext) {
+    public VariableExpression(CobolParser.VariableUsageNameContext usageName) {
         super(ImmutableList.of());
-        this.qualifiedDataNameContext = qualifiedDataNameContext;
+        this.usageName = usageName;
     }
 
     @Override
     public CobolExpression evaluate(CobolDataStructure data) {
-        CobolReference ref = new DeepReferenceBuilder().getReference(qualifiedDataNameContext, data);
+        CobolReference ref = new DeepReferenceBuilder().getReference(usageName, data);
         TypedRecord value = ref.resolve().getValue();
-        return value == TypedRecord.NULL ? new NullCobolExpression(qualifiedDataNameContext.getText()) : new PrimitiveCobolExpression(value);
+        return value == TypedRecord.NULL ? new NullCobolExpression(usageName.getText()) : new PrimitiveCobolExpression(value);
+    }
+
+    public String name() {
+        return usageName.getText();
     }
 }

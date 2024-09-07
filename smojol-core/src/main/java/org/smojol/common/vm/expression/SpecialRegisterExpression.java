@@ -1,15 +1,14 @@
 package org.smojol.common.vm.expression;
 
+import com.google.common.collect.ImmutableList;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.common.vm.type.TypedRecord;
 
 public class SpecialRegisterExpression extends CobolExpression {
-    private final CobolExpression expression;
-
     public SpecialRegisterExpression(CobolParser.SpecialRegisterContext specialRegisterContext) {
-        expression = new CobolExpressionBuilder().identifier(specialRegisterContext.generalIdentifier());
-        children.add(expression);
+        CobolExpression argument = new CobolExpressionBuilder().identifier(specialRegisterContext.generalIdentifier());
+        children.add(new FunctionCallExpression(specialRegisterContext.ADDRESS() != null ? "ADDRESS" : "LENGTH", ImmutableList.of(argument)));
     }
 
     @Override

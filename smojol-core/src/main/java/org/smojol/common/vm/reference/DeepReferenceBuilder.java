@@ -54,17 +54,17 @@ public class DeepReferenceBuilder {
         return getReference(lhs.generalIdentifier(), data);
     }
 
-    public CobolReference getReference(CobolParser.QualifiedDataNameContext nameContext, CobolDataStructure data) {
-        return new VariableCobolReference(resolve(nameContext, data));
-    }
+//    public CobolReference getReference(CobolParser.QualifiedDataNameContext nameContext, CobolDataStructure data) {
+//        return new VariableCobolReference(resolve(nameContext, data));
+//    }
 
     public CobolDataStructure resolve(CobolParser.GeneralIdentifierContext to, CobolDataStructure data) {
         CobolParser.QualifiedDataNameContext qualifiedDataNameContext = to.qualifiedDataName();
         return resolve(qualifiedDataNameContext, data);
     }
 
-    public CobolReference getShallowReference(CobolParser.QualifiedDataNameContext nameContext, CobolDataStructure data) {
-        return new VariableCobolReference(data.reference(nameContext.variableUsageName().getText()));
+    public CobolReference getShallowReference(CobolParser.VariableUsageNameContext variableUsage, CobolDataStructure data) {
+        return new VariableCobolReference(data.reference(variableUsage.getText()));
     }
 
     private static CobolDataStructure resolve(CobolParser.QualifiedDataNameContext qualifiedDataNameContext, CobolDataStructure data) {
@@ -89,5 +89,9 @@ public class DeepReferenceBuilder {
 
     public CobolReference getReference(PrimitiveCobolExpression value) {
         return new PrimitiveReference(value.data());
+    }
+
+    public CobolReference getReference(CobolParser.VariableUsageNameContext usageName, CobolDataStructure data) {
+        return new VariableCobolReference(data.reference(usageName.getText()));
     }
 }
