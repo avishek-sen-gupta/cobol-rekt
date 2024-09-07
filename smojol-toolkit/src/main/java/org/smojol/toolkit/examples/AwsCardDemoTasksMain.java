@@ -24,7 +24,7 @@ public class AwsCardDemoTasksMain {
                         new File("/Users/asgupta/code/aws-mainframe-modernization-carddemo/app/cpy-bms")),
                 "/Users/asgupta/code/smojol/che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar",
                 LanguageDialect.COBOL, new FullProgram(FlowchartOutputFormat.SVG), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder(), new ProgramSearch())
-                .runForPrograms(ImmutableList.of(CommandLineAnalysisTask.ANALYSE_CONTROL_FLOW), ImmutableList.of("COCRDSLC.cbl"));
+                .runForPrograms(ImmutableList.of(CommandLineAnalysisTask.ANALYSE_CONTROL_FLOW), ImmutableList.of("COACTUPC.cbl"));
         System.out.println("DONE");
     }
 }

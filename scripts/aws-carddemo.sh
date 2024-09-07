@@ -1,7 +1,7 @@
 set -e
-myArray=("CBACT01C.cbl" "CBACT04C.cbl" "CBTRN03C.cbl" "CBACT03C.cbl" "CBSTM03B.CBL" "COADM01C.cbl" "COCRDSLC.cbl" "CORPT00C.cbl" "COTRN01C.cbl" "COUSR01C.cbl"  "CBACT02C.cbl" "CSUTLDTC.cbl" "CBCUS01C.cbl" "CBTRN01C.cbl" "COACTUPC.cbl" "COBIL00C.cbl" "COCRDUPC.cbl" "COSGN00C.cbl" "COTRN02C.cbl" "COUSR02C.cbl" "CBACT03C.cbl" "CBTRN02C.cbl" "COACTVWC.cbl" "COCRDLIC.cbl" "COMEN01C.cbl" "COTRN00C.cbl" "COUSR00C.cbl" "COUSR03C.cbl")
+myArray=("CBACT01C.cbl" "CBSTM03A.CBL " "CBACT04C.cbl" "CBTRN03C.cbl" "CBACT03C.cbl" "CBSTM03B.CBL" "COADM01C.cbl" "COCRDSLC.cbl" "CORPT00C.cbl" "COTRN01C.cbl" "COUSR01C.cbl"  "CBACT02C.cbl" "CSUTLDTC.cbl" "CBCUS01C.cbl" "CBTRN01C.cbl" "COACTUPC.cbl" "COBIL00C.cbl" "COCRDUPC.cbl" "COSGN00C.cbl" "COTRN02C.cbl" "COUSR02C.cbl" "CBACT03C.cbl" "CBTRN02C.cbl" "COACTVWC.cbl" "COCRDLIC.cbl" "COMEN01C.cbl" "COTRN00C.cbl" "COUSR00C.cbl" "COUSR03C.cbl")
 
-myArray=("CBACT01C.cbl")
+myArray=("COACTUPC.cbl")
 . config-local/local.env.sh
 
 

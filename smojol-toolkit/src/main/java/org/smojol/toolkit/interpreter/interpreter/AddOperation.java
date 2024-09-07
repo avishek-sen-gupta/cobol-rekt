@@ -2,7 +2,6 @@ package org.smojol.toolkit.interpreter.interpreter;
 
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.toolkit.ast.AddFlowNode;
-import org.smojol.common.vm.expression.ArithmeticExpressionVisitor;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.common.vm.reference.DeepReferenceBuilder;
 import org.smojol.common.vm.structure.CobolOperation;
@@ -17,7 +16,6 @@ public class AddOperation implements CobolOperation {
     }
 
     public void run(CobolDataStructure cobolDataStructure) {
-        ArithmeticExpressionVisitor visitor = new ArithmeticExpressionVisitor();
         List<CobolParser.AddFromContext> froms = add.getFroms();
         List<CobolParser.AddToContext> tos = add.getTos();
         DeepReferenceBuilder builder = new DeepReferenceBuilder();

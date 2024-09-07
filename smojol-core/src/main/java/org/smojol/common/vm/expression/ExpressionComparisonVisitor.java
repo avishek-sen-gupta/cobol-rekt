@@ -9,25 +9,18 @@ public class ExpressionComparisonVisitor extends AntlrCobolExpressionVisitor {
     public CobolExpression visitRelationCombinedComparison(CobolParser.RelationCombinedComparisonContext ctx) {
         ComparisonOperator relationalOperation = RelationalOperations.create(ctx.relationalOperator());
         if (ctx.arithmeticExpression() != null) {
-            ArithmeticExpressionVisitor arithmeticExpressionVisitor = new ArithmeticExpressionVisitor();
-            ctx.arithmeticExpression().accept(arithmeticExpressionVisitor);
-            expression = new RelationExpression(relationalOperation, arithmeticExpressionVisitor.getExpression());
+            expression = new RelationExpression(relationalOperation, new CobolExpressionBuilder().arithmetic(ctx.arithmeticExpression()));
         } else if (ctx.multipleArithmeticExpressions() != null) {
             CobolParser.ArithmeticExpressionContext firstTerm = ctx.multipleArithmeticExpressions().arithmeticExpression();
-            ArithmeticExpressionVisitor firstTermVisitor = new ArithmeticExpressionVisitor();
-            firstTerm.accept(firstTermVisitor);
-            expression = firstTermVisitor.getExpression();
+            expression = new CobolExpressionBuilder().arithmetic(firstTerm);
 
             List<CobolParser.AdditionalArithmeticExpressionContext> additionalExpressions = ctx.multipleArithmeticExpressions().additionalArithmeticExpression();
 
             for (CobolParser.AdditionalArithmeticExpressionContext c : additionalExpressions) {
                 CobolParser.ArithmeticExpressionContext additionalTerm = c.arithmeticExpression();
-
-                ArithmeticExpressionVisitor additionalTermVisitor = new ArithmeticExpressionVisitor();
-                additionalTerm.accept(additionalTermVisitor);
-
+                CobolExpression arithmeticExpression = new CobolExpressionBuilder().arithmetic(additionalTerm);
                 LogicOperation operator = c.AND() != null ? LogicOperation.AND : LogicOperation.OR;
-                expression = graft(operator, expression, additionalTermVisitor.getExpression());
+                expression = graft(operator, expression, arithmeticExpression);
             }
             expression = new RelationExpression(relationalOperation, expression);
         }

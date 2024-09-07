@@ -1,8 +1,8 @@
 package org.smojol.toolkit.intermediate.generators;
 
 import org.smojol.common.pseudocode.*;
-import org.smojol.common.vm.expression.ArithmeticExpressionVisitor;
 import org.smojol.common.vm.expression.CobolExpression;
+import org.smojol.common.vm.expression.CobolExpressionBuilder;
 import org.smojol.toolkit.ast.ComputeFlowNode;
 
 import java.util.List;
@@ -15,9 +15,7 @@ public class ComputeQuadGeneration extends QuadGeneration {
     @Override
     public QuadSequence body(PseudocodeInstruction instruction) {
         ComputeFlowNode n = instruction.typedNode(ComputeFlowNode.class);
-        ArithmeticExpressionVisitor arithmeticExpressionVisitor = new ArithmeticExpressionVisitor();
-        n.getRhs().accept(arithmeticExpressionVisitor);
-        CobolExpression expression = arithmeticExpressionVisitor.getExpression();
+        CobolExpression expression = new CobolExpressionBuilder().arithmetic(n.getRhs());
         ExpressionQuadGenerator generator = new ExpressionQuadGenerator(symbolTable, symbolReferenceBuilder);
         SymbolReference rhsReference = generator.build(expression);
         QuadSequence fromSequence = generator.getQuads();

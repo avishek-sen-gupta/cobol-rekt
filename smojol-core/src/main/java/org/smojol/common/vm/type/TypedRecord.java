@@ -38,6 +38,10 @@ public final class TypedRecord {
         return new TypedRecord(text, CobolDataType.STRING);
     }
 
+    public static TypedRecord pointer(long address) {
+        return new TypedRecord(address, CobolDataType.POINTER);
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;

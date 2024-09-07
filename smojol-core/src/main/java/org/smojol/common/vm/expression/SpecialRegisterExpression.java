@@ -8,9 +8,7 @@ public class SpecialRegisterExpression extends CobolExpression {
     private final CobolExpression expression;
 
     public SpecialRegisterExpression(CobolParser.SpecialRegisterContext specialRegisterContext) {
-        GeneralIdentifierVisitor generalIdentifierVisitor = new GeneralIdentifierVisitor();
-        specialRegisterContext.generalIdentifier().accept(generalIdentifierVisitor);
-        expression = generalIdentifierVisitor.getExpression();
+        expression = new CobolExpressionBuilder().identifier(specialRegisterContext.generalIdentifier());
         children.add(expression);
     }
 

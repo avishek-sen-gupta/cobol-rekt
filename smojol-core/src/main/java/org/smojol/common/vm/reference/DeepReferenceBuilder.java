@@ -1,8 +1,8 @@
 package org.smojol.common.vm.reference;
 
 import org.eclipse.lsp.cobol.core.CobolParser;
-import org.smojol.common.vm.expression.ArithmeticExpressionVisitor;
 import org.smojol.common.vm.expression.CobolExpression;
+import org.smojol.common.vm.expression.CobolExpressionBuilder;
 import org.smojol.common.vm.expression.PrimitiveCobolExpression;
 import org.smojol.common.vm.structure.AccessChain;
 import org.smojol.common.vm.structure.CobolDataStructure;
@@ -82,9 +82,7 @@ public class DeepReferenceBuilder {
     }
 
     private static int resolve(CobolDataStructure data, CobolParser.ArithmeticExpressionContext index) {
-        ArithmeticExpressionVisitor arithmeticExpressionVisitor = new ArithmeticExpressionVisitor();
-        index.accept(arithmeticExpressionVisitor);
-        CobolExpression evaluatedIndex = arithmeticExpressionVisitor.getExpression().evaluate(data);
+        CobolExpression evaluatedIndex = new CobolExpressionBuilder().arithmetic(index).evaluate(data);
         int tableIndex = (int) evaluatedIndex.evalAsNumber(data);
         return tableIndex;
     }

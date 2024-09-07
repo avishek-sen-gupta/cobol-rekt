@@ -3,8 +3,8 @@ package org.smojol.toolkit.intermediate.generators;
 import com.google.common.collect.ImmutableList;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.pseudocode.*;
-import org.smojol.common.vm.expression.ArithmeticExpressionVisitor;
 import org.smojol.common.vm.expression.CobolExpression;
+import org.smojol.common.vm.expression.CobolExpressionBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +26,8 @@ public class GeneralIdentifierQuadGeneration {
             SymbolReference reference = symbolTable.reference(variableName);
             if (generalIdentifierContext.qualifiedDataName().tableCall() != null) {
                 List<CobolParser.ArithmeticExpressionContext> expressions = generalIdentifierContext.qualifiedDataName().tableCall().arithmeticExpression();
-                ArithmeticExpressionVisitor arithmeticExpressionVisitor = new ArithmeticExpressionVisitor();
-                List<CobolExpression> indexExpressions = expressions.stream().map(arithmeticExpressionVisitor::visitArithmeticExpression).toList();
+                CobolExpressionBuilder expressionBuilder = new CobolExpressionBuilder();
+                List<CobolExpression> indexExpressions = expressions.stream().map(expressionBuilder::arithmetic).toList();
                 ExpressionQuadGenerator generator = new ExpressionQuadGenerator(symbolTable, symbolReferenceBuilder);
                 List<QuadSequence> sequences = indexExpressions.stream().map(expr -> {
                     generator.build(expr);

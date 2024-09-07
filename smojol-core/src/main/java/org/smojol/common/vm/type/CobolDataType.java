@@ -46,6 +46,11 @@ public enum CobolDataType {
         public TypedRecord defaultValue() {
             return TypedRecord.typedNumber(0);
         }
+    }, POINTER {
+        @Override
+        public TypedRecord defaultValue() {
+            return TypedRecord.pointer(0x0);
+        }
     };
 
     public abstract TypedRecord defaultValue();

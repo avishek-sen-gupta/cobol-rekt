@@ -12,10 +12,7 @@ import org.smojol.common.vm.memory.*;
 import org.smojol.common.vm.reference.CobolReference;
 import org.smojol.common.vm.reference.PrimitiveReference;
 import org.smojol.common.vm.strategy.UnresolvedReferenceStrategy;
-import org.smojol.common.vm.type.CobolDataType;
-import org.smojol.common.vm.type.DataTypeSpec;
-import org.smojol.common.vm.type.GroupDataTypeSpec;
-import org.smojol.common.vm.type.TypedRecord;
+import org.smojol.common.vm.type.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +22,8 @@ import java.util.function.Function;
 public class Format1DataStructure extends CobolDataStructure {
     protected final UnresolvedReferenceStrategy unresolvedReferenceStrategy;
     private final Function<CobolParser.DataDescriptionEntryFormat1Context, String> namingScheme;
-    @Getter protected final CobolParser.DataDescriptionEntryFormat1Context dataDescription;
+    @Getter
+    protected final CobolParser.DataDescriptionEntryFormat1Context dataDescription;
     protected final List<ConditionalDataStructure> conditions = new ArrayList<>();
     protected MemoryLayout layout;
     protected Pair<DataTypeSpec, Integer> typeSpec;
@@ -240,16 +238,18 @@ public class Format1DataStructure extends CobolDataStructure {
 
     @Override
     public void calculateMemoryRequirements() {
-        calculateForSingle();
+        typeSpec = typeSpecForSingle();
     }
 
-    private void calculateForSingle() {
-        if (!isComposite) {
-            typeSpec = new DataLayoutBuilder().size(dataDescription.dataPictureClause().getFirst().pictureString().getFirst().getText());
-        } else {
+    private Pair<DataTypeSpec, Integer> typeSpecForSingle() {
+        if (dataType == CobolDataType.POINTER)
+            return ImmutablePair.of(new ZonedDecimalDataTypeSpec(8, 0), 8);
+        else if (!isComposite)
+            return new DataLayoutBuilder().size(dataDescription.dataPictureClause().getFirst().pictureString().getFirst().getText());
+        else {
             structures.forEach(CobolDataStructure::calculateMemoryRequirements);
             Integer groupSize = primaryDefinitions().stream().map(CobolDataStructure::size).reduce(0, Integer::sum);
-            typeSpec = new ImmutablePair<>(new GroupDataTypeSpec(groupSize), groupSize);
+            return ImmutablePair.of(new GroupDataTypeSpec(groupSize), groupSize);
         }
     }
 

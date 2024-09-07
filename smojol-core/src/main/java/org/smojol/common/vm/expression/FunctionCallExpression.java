@@ -16,11 +16,8 @@ public class FunctionCallExpression extends CobolExpression {
     public FunctionCallExpression(CobolParser.FunctionCallContext functionCallContext) {
         super(ImmutableList.of());
         functionName = functionCallContext.functionName().getText();
-        arguments = functionCallContext.argument().stream().map(arg -> {
-            ArithmeticExpressionVisitor arithmeticExpressionVisitor = new ArithmeticExpressionVisitor();
-            arg.arithmeticExpression().accept(arithmeticExpressionVisitor);
-            return arithmeticExpressionVisitor.getExpression();
-        }).toList();
+        CobolExpressionBuilder expressionBuilder = new CobolExpressionBuilder();
+        arguments = functionCallContext.argument().stream().map(arg -> expressionBuilder.arithmetic(arg.arithmeticExpression())).toList();
         proxyReturnValue = new DetachedDataStructure(TypedRecord.typedNumber(1));
     }
 

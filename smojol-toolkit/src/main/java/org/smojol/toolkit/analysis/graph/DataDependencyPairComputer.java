@@ -1,13 +1,16 @@
 package org.smojol.toolkit.analysis.graph;
 
 import com.google.common.collect.ImmutableList;
+import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.FlowNodeType;
-import org.smojol.common.vm.expression.ArithmeticExpressionVisitor;
+import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.vm.expression.CobolExpression;
 import org.smojol.common.vm.expression.ConditionVisitor;
+import org.smojol.common.vm.expression.CobolExpressionBuilder;
 import org.smojol.common.vm.reference.ShallowReferenceBuilder;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.toolkit.ast.*;
@@ -47,9 +50,7 @@ public class DataDependencyPairComputer {
             return ImmutablePair.of(froms, tos);
         } else if (node.type() == FlowNodeType.COMPUTE) {
             ComputeFlowNode compute = (ComputeFlowNode) node;
-            ArithmeticExpressionVisitor visitor = new ArithmeticExpressionVisitor();
-            compute.getRhs().accept(visitor);
-            CobolExpression expression = visitor.getExpression();
+            CobolExpression expression = new CobolExpressionBuilder().arithmetic(compute.getRhs());
             StaticExpressionCollector expressionCollector = new StaticExpressionCollector(dataRoot);
             expression.accept(expressionCollector);
             List<CobolDataStructure> froms = expressionCollector.structures();
@@ -73,6 +74,9 @@ public class DataDependencyPairComputer {
             return ImmutablePair.of(lhses, rhses);
         } else if (node.type() == FlowNodeType.DIVIDE) {
             DivideFlowNode divide = (DivideFlowNode) node;
+            ParseTree executionContext = divide.getExecutionContext();
+            CobolEntityNavigator navigator = new CobolEntityNavigator((ParserRuleContext) executionContext);
+            List<ParseTree> allGeneralIdentifiers = navigator.findAllByCondition(n -> n instanceof CobolParser.GeneralIdentifierContext);
             List<CobolDataStructure> divisors = ImmutableList.of(referenceBuilder.getShallowReference(divide.getIntoDivisor(), dataRoot).resolve());
             List<CobolDataStructure> dividends = divide.getDividends().stream().map(t -> referenceBuilder.getShallowReference(t.generalIdentifier(), dataRoot).resolve()).toList();
             return ImmutablePair.of(divisors, dividends);

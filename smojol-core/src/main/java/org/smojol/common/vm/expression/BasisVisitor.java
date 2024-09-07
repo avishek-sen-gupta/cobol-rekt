@@ -8,17 +8,11 @@ public class BasisVisitor extends AntlrCobolExpressionVisitor {
     @Override
     public CobolExpression visitBasis(CobolParser.BasisContext ctx) {
         if (ctx.generalIdentifier() != null) {
-            GeneralIdentifierVisitor identifierVisitor = new GeneralIdentifierVisitor();
-            ctx.generalIdentifier().accept(identifierVisitor);
-            expression = identifierVisitor.getExpression();
+            expression = new CobolExpressionBuilder().identifier(ctx.generalIdentifier());
         } else if (ctx.arithmeticExpression() != null) {
-            ArithmeticExpressionVisitor arithmeticExpressionVisitor = new ArithmeticExpressionVisitor();
-            ctx.arithmeticExpression().accept(arithmeticExpressionVisitor);
-            expression = arithmeticExpressionVisitor.getExpression();
+            expression = new CobolExpressionBuilder().arithmetic(ctx.arithmeticExpression());
         } else if (ctx.literal() != null) {
-            LiteralVisitor literalVisitor = new LiteralVisitor();
-            ctx.literal().accept(literalVisitor);
-            expression = literalVisitor.getExpression();
+            expression = new CobolExpressionBuilder().literal(ctx.literal());
         } else if (ctx.dialectNodeFiller() != null) {
             CobolEntityNavigator navigator = new CobolEntityNavigator(ctx);
             ParseTree entity = navigator.findByCondition(ctx, n -> "Idms_db_entity_nameContext".equals(n.getClass().getSimpleName()));

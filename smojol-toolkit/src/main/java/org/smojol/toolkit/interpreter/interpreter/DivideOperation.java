@@ -2,7 +2,6 @@ package org.smojol.toolkit.interpreter.interpreter;
 
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.toolkit.ast.DivideFlowNode;
-import org.smojol.common.vm.expression.ArithmeticExpressionVisitor;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.common.vm.reference.DeepReferenceBuilder;
 import org.smojol.common.vm.structure.CobolOperation;
@@ -18,7 +17,6 @@ public class DivideOperation implements CobolOperation {
 
     // TODO: Fix this to work with DIVIDE GIVING statements too
     public void run(CobolDataStructure cobolDataStructure) {
-        ArithmeticExpressionVisitor visitor = new ArithmeticExpressionVisitor();
         CobolParser.DivisorContext divisor = divide.getIntoDivisor();
         List<CobolParser.DivideIntoContext> dividends = divide.getDividends();
         DeepReferenceBuilder builder = new DeepReferenceBuilder();
