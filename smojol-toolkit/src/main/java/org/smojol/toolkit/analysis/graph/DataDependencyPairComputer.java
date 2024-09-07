@@ -64,8 +64,8 @@ public class DataDependencyPairComputer {
 //            connect(froms, tos);
         } else if (node.type() == FlowNodeType.SUBTRACT) {
             SubtractFlowNode subtract = (SubtractFlowNode) node;
-            List<CobolDataStructure> minuends = subtract.getLhs().stream().map(f -> referenceBuilder.getShallowReference(f, dataRoot).resolve()).toList();
-            List<CobolDataStructure> subtrahends = subtract.getRhs().stream().map(t -> referenceBuilder.getShallowReference(t, dataRoot).resolve()).toList();
+            List<CobolDataStructure> minuends = subtract.getLhses().stream().map(f -> referenceBuilder.getShallowReference(f, dataRoot).resolve()).toList();
+            List<CobolDataStructure> subtrahends = subtract.getRhses().stream().map(t -> referenceBuilder.getShallowReference(t, dataRoot).resolve()).toList();
             return ImmutablePair.of(subtrahends, minuends);
         } else if (node.type() == FlowNodeType.MULTIPLY) {
             MultiplyFlowNode multiply = (MultiplyFlowNode) node;

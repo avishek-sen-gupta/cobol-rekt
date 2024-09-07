@@ -15,6 +15,10 @@ public class CobolExpressionBuilder {
         return literalVisitor.getExpression();
     }
 
+    public CobolExpression literalOrIdentifier(CobolParser.LiteralContext literalContext, CobolParser.GeneralIdentifierContext identifierContext) {
+        return literalContext != null ? literal(literalContext) : identifier(identifierContext);
+    }
+
     public CobolExpression arithmetic(CobolParser.ArithmeticExpressionContext ctx) {
         ArithmeticExpressionVisitor arithmeticExpressionVisitor = new ArithmeticExpressionVisitor();
         ctx.accept(arithmeticExpressionVisitor);

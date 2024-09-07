@@ -16,8 +16,8 @@ public class SubtractOperation implements CobolOperation {
     }
 
     public void run(CobolDataStructure cobolDataStructure) {
-        List<CobolParser.SubtractMinuendContext> lhses = subtract.getLhs();
-        List<CobolParser.SubtractSubtrahendContext> rhses = subtract.getRhs();
+        List<CobolParser.SubtractMinuendContext> lhses = subtract.getLhses();
+        List<CobolParser.SubtractSubtrahendContext> rhses = subtract.getRhses();
         DeepReferenceBuilder builder = new DeepReferenceBuilder();
         lhses.forEach(lhs -> rhses.forEach(rhs -> builder.getReference(lhs, cobolDataStructure).resolve().subtract(builder.getReference(rhs, cobolDataStructure))));
 //        lhses.forEach(lhs -> rhses.forEach(rhs -> cobolDataStructure.subtract(lhs.generalIdentifier().getText(), builder.getReference(rhs, cobolDataStructure))));
