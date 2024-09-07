@@ -17,8 +17,10 @@ import org.smojol.common.vm.stack.StackFrames;
 import org.smojol.common.vm.structure.CobolDataStructure;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 public class CobolFlowNode implements FlowNode {
+    private static final Logger logger = Logger.getLogger(CobolFlowNode.class.getName());
     protected final String uuid;
     protected List<FlowNode> outgoingNodes = new ArrayList<>();
     protected List<FlowNode> incomingNodes = new ArrayList<>();
@@ -40,7 +42,7 @@ public class CobolFlowNode implements FlowNode {
 
     @Override
     public void buildFlow() {
-        System.out.println("Building flow for " + name());
+        logger.fine("Building flow for " + name());
         buildInternalFlow();
         buildOutgoingFlow();
     }

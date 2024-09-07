@@ -9,8 +9,10 @@ import org.smojol.common.vm.interpreter.FlowControl;
 import org.smojol.common.vm.stack.StackFrames;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 public class NextSentenceFlowNode extends CobolFlowNode {
+    private static final Logger logger = Logger.getLogger(AggregatingFlowNodeASTVisitor.class.getName());
     private FlowNode destinationSentenceNode;
 
     public NextSentenceFlowNode(ParseTree parseTree, FlowNode scope, FlowNodeService nodeService, StackFrames stackFrames) {
@@ -23,7 +25,7 @@ public class NextSentenceFlowNode extends CobolFlowNode {
         FlowNodeCondition isSentence = n -> n.getClass() == SentenceFlowNode.class;
         FlowNode containingSentence = scope.findUpwards(isSentence, null);
         destinationSentenceNode = containingSentence.next(isSentence, containingSentence, true);
-        System.out.println("Next sentence is " + destinationSentenceNode);
+        logger.finest("Next sentence is " + destinationSentenceNode);
     }
 
     @Override

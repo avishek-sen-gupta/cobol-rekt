@@ -7,11 +7,14 @@ import org.eclipse.lsp.cobol.common.poc.PersistentData;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.eclipse.lsp.cobol.core.CobolParserBaseListener;
 
+import java.util.logging.Logger;
+
 /**
  * This is a visitor into the generated parse tree which re-integrates the IDMS code fragments
  * which were removed at the time of parsing standard Cobol
  */
 public class DialectIntegratorListener extends CobolParserBaseListener {
+    private static final Logger LOGGER = Logger.getLogger(DialectIntegratorListener.class.getName());
     @Getter
     private int restores = 0;
 
@@ -23,7 +26,7 @@ public class DialectIntegratorListener extends CobolParserBaseListener {
         String guid = ctx.dialectGuid().getText();
         LocalisedDialect dialect = PersistentData.dialect("IDMS-" + guid);
         ParseTree dialectNode = PersistentData.getDialectNode("IDMS-" + guid);
-        System.out.println(String.format("Restoring _DIALECT_ %s: %s", guid, dialectNode.getText()));
+        LOGGER.finer(String.format("Restoring _DIALECT_ %s: %s", guid, dialectNode.getText()));
         ctx.addChild(new IdmsContainerNode(dialectNode, ctx, dialect));
         restores++;
     }

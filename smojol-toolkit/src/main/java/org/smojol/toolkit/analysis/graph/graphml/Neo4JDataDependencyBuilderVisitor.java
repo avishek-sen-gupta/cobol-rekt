@@ -6,6 +6,7 @@ import org.neo4j.driver.Record;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.FlowNodeASTVisitor;
 import org.smojol.common.vm.structure.CobolDataStructure;
+import org.smojol.toolkit.analysis.defined.AttachCommentsTask;
 import org.smojol.toolkit.analysis.graph.DataDependencyPairComputer;
 import org.smojol.toolkit.analysis.graph.NodeSpecBuilder;
 import org.smojol.toolkit.analysis.graph.NodeToWoof;
@@ -13,8 +14,10 @@ import org.smojol.toolkit.analysis.graph.neo4j.NodeReferenceStrategy;
 
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class Neo4JDataDependencyBuilderVisitor extends FlowNodeASTVisitor<Record> {
+    private static final Logger LOGGER = Logger.getLogger(AttachCommentsTask.class.getName());
 
     private final GraphSDK sdk;
     private final NodeSpecBuilder qualifier;
@@ -51,7 +54,7 @@ public class Neo4JDataDependencyBuilderVisitor extends FlowNodeASTVisitor<Record
     }
 
     private void accesses(FlowNode attachmentNode, List<CobolDataStructure> dataNodes) {
-        System.out.println("Attaching IF??? " + attachmentNode.type() + " " + dataNodes.size());
+        LOGGER.finest("Attaching IF??? " + attachmentNode.type() + " " + dataNodes.size());
         Record attachmentNodeRecord = dependencyAttachmentStrategy.reference(attachmentNode, sdk, qualifier);
         dataNodes.forEach(n -> {
             Record n4jFrom = sdk.newOrExisting(qualifier.dataNodeSearchSpec(n), NodeToWoof.dataStructureToWoof(n, qualifier));
@@ -62,7 +65,7 @@ public class Neo4JDataDependencyBuilderVisitor extends FlowNodeASTVisitor<Record
     private void connect(List<CobolDataStructure> froms, List<CobolDataStructure> tos, FlowNode attachmentNode) {
         Record attachmentNodeRecord = dependencyAttachmentStrategy.reference(attachmentNode, sdk, qualifier);
         tos.forEach(to -> {
-            froms.forEach(f -> System.out.println(f.name()));
+            froms.forEach(f -> LOGGER.finest(f.name()));
             List<Record> nodes = sdk.findNodes(qualifier.dataNodeSearchSpec(to));
             Record n4jTo = !nodes.isEmpty() ? nodes.getFirst() : sdk.createNode(NodeToWoof.dataStructureToWoof(to, qualifier));
             sdk.modifies(attachmentNodeRecord, n4jTo);

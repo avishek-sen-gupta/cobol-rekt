@@ -1,5 +1,6 @@
 package org.smojol.toolkit.analysis.defined;
 
+import org.smojol.common.ast.AggregatingFlowNodeASTVisitor;
 import org.smojol.common.ast.CommentBlock;
 import org.smojol.common.ast.CommentExtraction;
 import org.smojol.common.ast.FlowNode;
@@ -14,8 +15,10 @@ import org.smojol.toolkit.analysis.pipeline.config.SourceConfig;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class AttachCommentsTask implements AnalysisTask {
+    private static final Logger LOGGER = Logger.getLogger(AttachCommentsTask.class.getName());
     private final FlowNode astRoot;
     private final CobolDataStructure dataStructures;
     private final CobolEntityNavigator navigator;
@@ -33,7 +36,7 @@ public class AttachCommentsTask implements AnalysisTask {
         try {
             List<CommentBlock> commentBlocks = new CommentExtraction().run(sourceConfig.sourcePath(), navigator);
             commentBlocks.forEach(cb -> {
-                System.out.println("Attaching comments");
+                LOGGER.finest("Attaching comments");
                 FlowNode node = new FlowNodeNavigator(astRoot).findNarrowestByCondition(n -> n.originalText().contains(cb.getCodeContextLine()));
                 if (node != null) node.addComment(cb);
                 else {

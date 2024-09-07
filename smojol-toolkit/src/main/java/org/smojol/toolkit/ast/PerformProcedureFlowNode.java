@@ -11,10 +11,10 @@ import org.smojol.common.vm.stack.StackFrames;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static guru.nidi.graphviz.model.Factory.mutNode;
+import java.util.logging.Logger;
 
 public class PerformProcedureFlowNode extends CobolFlowNode implements InternalControlFlowNode {
+    private static final Logger logger = Logger.getLogger(AggregatingFlowNodeASTVisitor.class.getName());
     private FlowNode inlineStatementContext;
     private List<FlowNode> procedures = new ArrayList<>();
     private FlowNode condition;
@@ -54,7 +54,7 @@ public class PerformProcedureFlowNode extends CobolFlowNode implements InternalC
         CobolParser.PerformProcedureStatementContext performProcedureStatementContext = performStatement.performProcedureStatement();
         CobolParser.ProcedureNameContext procedureNameContext = performProcedureStatementContext.procedureName();
         String procedureName = procedureNameContext.getText();
-        System.out.println("Found a PERFORM, routing to " + procedureName);
+        logger.finest("Found a PERFORM, routing to " + procedureName);
         FlowNode startNode = nodeService.sectionOrParaWithName(procedureName);
         if (performStatement.performProcedureStatement().through() == null) {
             procedures.add(startNode);

@@ -13,8 +13,10 @@ import org.smojol.common.vm.type.TypedRecord;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.logging.Logger;
 
 public class CobolDataStructureBuilder implements DataStructureBuilder {
+    private static final Logger LOGGER = Logger.getLogger(CobolDataStructureBuilder.class.getName());
     private final CobolEntityNavigator navigator;
     private final UnresolvedReferenceStrategy unresolvedReferenceStrategy;
     private CobolDataStructure zerothStructure;
@@ -40,7 +42,7 @@ public class CobolDataStructureBuilder implements DataStructureBuilder {
         zerothStructure.calculateMemoryRequirements();
         zerothStructure.allocateRecordPointers();
         while (zerothStructure.buildRedefinitions(zerothStructure)) {
-            System.out.println("Building redefinitions...");
+            LOGGER.info("Building redefinitions...");
         }
         addGlobalSystemStructures();
         addUnreferencedStructures();

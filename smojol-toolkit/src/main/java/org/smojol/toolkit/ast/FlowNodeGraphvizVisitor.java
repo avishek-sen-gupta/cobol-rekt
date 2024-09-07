@@ -10,10 +10,12 @@ import org.smojol.toolkit.flowchart.FlowchartStylePreferences;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
+import java.util.logging.Logger;
 
 import static guru.nidi.graphviz.model.Factory.*;
 
 public class FlowNodeGraphvizVisitor implements FlowNodeVisitor {
+    private static final Logger logger = Logger.getLogger(FlowNodeGraphvizVisitor.class.getName());
     int maxLevel = -1;
     private final Function<VisitContext, Boolean> visitCondition;
     private final MutableGraph g;
@@ -28,13 +30,13 @@ public class FlowNodeGraphvizVisitor implements FlowNodeVisitor {
     public void visit(FlowNode node, List<FlowNode> outgoingNodes, List<FlowNode> incomingNodes, VisitContext visitContext, FlowNodeService nodeService) {
         if (!visitCondition.apply(visitContext)) return;
         if (node.isPassthrough()) return;
-        System.out.println("Visiting : " + node);
+        logger.finest("Visiting : " + node);
         FlowNode source = overlay.block(node);
         List<FlowNode> targets = outgoingNodes.stream().map(FlowNode::passthrough).map(overlay::block).toList();
 
         MutableNode flowchartSource = existingOrNew(source.id());
         targets.forEach(t -> {
-            System.out.println("Linking " + node + " to " + t);
+            logger.finest("Linking " + node + " to " + t);
             if (source == t) return;
             MutableNode graphSource = styled(source, flowchartSource.add("label", source.label()));
             MutableNode flowchartTarget = existingOrNew(t.id());

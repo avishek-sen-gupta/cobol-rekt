@@ -10,11 +10,13 @@ import org.smojol.common.vm.interpreter.FlowControl;
 import org.smojol.common.vm.stack.StackFrames;
 
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static guru.nidi.graphviz.model.Factory.mutNode;
 
 public class GoToFlowNode extends CobolFlowNode implements InternalControlFlowNode {
+    private static final Logger logger = Logger.getLogger(AggregatingFlowNodeASTVisitor.class.getName());
 
     private List<FlowNode> destinationNodes;
 
@@ -36,7 +38,7 @@ public class GoToFlowNode extends CobolFlowNode implements InternalControlFlowNo
     public void buildControlFlow() {
         CobolParser.GoToStatementContext goToStatement = new SyntaxIdentity<CobolParser.GoToStatementContext>(getExecutionContext()).get();
         List<CobolParser.ProcedureNameContext> procedureNames = goToStatement.procedureName();
-        System.out.println("Found a GO TO, routing to " + procedureNames);
+        logger.finest("Found a GO TO, routing to " + procedureNames);
         destinationNodes = procedureNames.stream().map(p -> nodeService.sectionOrParaWithName(p.paragraphName().getText())).collect(Collectors.toList());
     }
 

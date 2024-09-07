@@ -11,8 +11,10 @@ import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.vm.stack.StackFrames;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 public class DialectStatementFlowNode extends CobolFlowNode {
+    private static final Logger logger = Logger.getLogger(AggregatingFlowNodeASTVisitor.class.getName());
     private FlowNode dialectChildNode;
     private boolean databaseAccess = false;
 
@@ -68,7 +70,7 @@ public class DialectStatementFlowNode extends CobolFlowNode {
         if (navigator.findByCondition(containerChild, n -> n.getClass() == IdmsParser.TransferStatementContext.class) != null) {
             dialectChildNode = new IdmsTransferFlowNode(containerChild, this, nodeService, staticFrameContext);
             nodeService.register(dialectChildNode);
-            System.out.println("Found a TRANSFER statement");
+            logger.finest("Found a TRANSFER statement");
         } else if (containerChild.getClass() == CobolParser.DialectIfStatmentContext.class) {
             dialectChildNode = new IdmsIfFlowNode(containerChild, this, nodeService, staticFrameContext);
             nodeService.register(dialectChildNode);

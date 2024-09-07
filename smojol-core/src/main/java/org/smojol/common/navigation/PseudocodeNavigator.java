@@ -3,6 +3,7 @@ package org.smojol.common.navigation;
 import com.google.common.collect.ImmutableList;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.smojol.common.ast.AggregatingFlowNodeASTVisitor;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.FlowNodeType;
 import org.smojol.common.ast.InternalControlFlowNode;
@@ -11,8 +12,10 @@ import org.smojol.common.pseudocode.CodeSentinelType;
 
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.logging.Logger;
 
 public class PseudocodeNavigator {
+    private static final Logger LOGGER = Logger.getLogger(AggregatingFlowNodeASTVisitor.class.getName());
     public List<PseudocodeInstruction> findAllByCondition(Predicate<PseudocodeInstruction> condition, List<PseudocodeInstruction> instructions) {
         return instructions.stream().filter(condition).toList();
     }
@@ -23,7 +26,7 @@ public class PseudocodeNavigator {
     }
 
     public Pair<List<PseudocodeInstruction>, List<PseudocodeInstruction>> findCallTargets(PseudocodeInstruction from, int iptr, List<PseudocodeInstruction> instructions) {
-        System.out.println("Finding call targets of " + from.toString());
+        LOGGER.finest("Finding call targets of " + from.toString());
         if (from.getNode().type() == FlowNodeType.NEXT_SENTENCE) {
             int searchIndex = iptr;
             while (searchIndex < instructions.size()) {

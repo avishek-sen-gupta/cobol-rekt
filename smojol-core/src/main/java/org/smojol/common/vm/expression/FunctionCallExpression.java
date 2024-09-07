@@ -21,6 +21,7 @@ public class FunctionCallExpression extends CobolExpression {
         super(ImmutableList.of());
         this.functionName = functionName;
         this.arguments = arguments;
+        children.addAll(arguments);
         proxyReturnValue = new DetachedDataStructure(TypedRecord.typedNumber(1));
     }
 

@@ -5,8 +5,10 @@ import org.smojol.common.flowchart.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class FlowNodeOverlayVisitor implements FlowNodeVisitor {
+    private static final Logger logger = Logger.getLogger(AggregatingFlowNodeASTVisitor.class.getName());
     private final FlowNode enclosingScope;
     private GenericProcessingFlowNode head;
     private List<GenericProcessingFlowNode> groups;
@@ -29,7 +31,7 @@ public class FlowNodeOverlayVisitor implements FlowNodeVisitor {
                 node.getClass() == ConditionalStatementFlowNode.class ||
                 (MergingChartOverlay.isAtomic(node) && !contained(node)) // This condition is a little sus because technically, statements inside sentences could also get their own groups which would show up in addition to their parent sentence groups. It's working now, need to investigate with a small test program.
         ) && node.isMergeable()) {
-            System.out.println("MERGEABLE : " + node);
+            logger.finest("MERGEABLE : " + node);
             if (head == null) {
                 head = new GenericProcessingFlowNode(node, enclosingScope, nodeService);
                 groups.add(head);
@@ -71,7 +73,7 @@ public class FlowNodeOverlayVisitor implements FlowNodeVisitor {
     }
 
     public void report() {
-        groups.forEach(System.out::println);
+        groups.forEach(g -> logger.finest(g.toString()));
     }
 
     public ChartOverlay overlay() {

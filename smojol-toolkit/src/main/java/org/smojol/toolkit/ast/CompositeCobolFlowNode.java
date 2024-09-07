@@ -15,8 +15,10 @@ import org.smojol.common.vm.structure.CobolDataStructure;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class CompositeCobolFlowNode extends CobolFlowNode {
+    private static final Logger logger = Logger.getLogger(CompositeCobolFlowNode.class.getName());
     List<FlowNode> astChildren = new ArrayList<>();
     public static FlowNodeCondition CHILD_IS_CONDITIONAL_STATEMENT = node -> SyntaxIdentity.isOfType(node.getExecutionContext(), CobolParser.ConditionalStatementCallContext.class);
     protected FlowNode internalTreeRoot;
@@ -27,10 +29,9 @@ public class CompositeCobolFlowNode extends CobolFlowNode {
 
     @Override
     public void buildInternalFlow() {
-        System.out.println("Building internal flow for " + name());
+        logger.fine("Building internal flow for " + name());
         List<? extends ParseTree> children = getChildren();
         if (children == null || children.isEmpty()) return;
-        System.out.println("Looking at " + name());
         internalTreeRoot = nodeService.node(children.getFirst(), this, staticFrameContext.add(this));
         FlowNode current = internalTreeRoot;
         astChildren.add(current);
@@ -80,11 +81,11 @@ public class CompositeCobolFlowNode extends CobolFlowNode {
 
     @Override
     public FlowNode next(FlowNodeCondition nodeCondition, FlowNode startingNode, boolean isComplete) {
-        System.out.println("Moved up to " + executionContext.getClass() + executionContext.getText());
+        logger.finest("Moved up to " + executionContext.getClass() + executionContext.getText());
         CobolEntityNavigator navigator = nodeService.getNavigator();
 //        boolean shouldSearch = navigator.findByCondition(executionContext, n -> n == startingNode.getExecutionContext()) == null;
         if (!isComplete) {
-            System.out.println("ITR is " + internalTreeRoot.getClass() + " " + internalTreeRoot);
+            logger.finest("ITR is " + internalTreeRoot.getClass() + " " + internalTreeRoot);
             FlowNode searchResult = internalTreeRoot.next(nodeCondition, startingNode, false);
             if (searchResult != null) return searchResult;
         }
