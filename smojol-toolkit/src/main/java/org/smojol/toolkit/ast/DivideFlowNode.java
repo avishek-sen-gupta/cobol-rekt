@@ -40,10 +40,6 @@ public class DivideFlowNode extends CobolFlowNode {
             intoDivisor = divideStatement.divideByGivingStatement().divisor();
             givingDividend = divideStatement.divisor();
         }
-        if (dividends == null) {
-            System.out.println(executionContext.getText());
-            throw new RuntimeException("STOP");
-        }
         super.buildInternalFlow();
     }
 
