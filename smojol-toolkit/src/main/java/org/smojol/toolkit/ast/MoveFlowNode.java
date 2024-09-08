@@ -58,8 +58,10 @@ public class MoveFlowNode extends CobolFlowNode {
 
     @Override
     public void resolve(SmojolSymbolTable symbolTable, CobolDataStructure dataStructures) {
+        CobolParser.MoveStatementContext moveStatement = new SyntaxIdentity<CobolParser.MoveStatementContext>(executionContext).get();
         CobolExpressionBuilder builder = new CobolExpressionBuilder();
-        toExpressions = tos.stream().map(builder::identifier).toList();
-        fromExpression = from.literal() != null ? builder.literal(from.literal()) : builder.identifier(from.generalIdentifier());
+        toExpressions = moveStatement.moveToStatement().generalIdentifier().stream().map(builder::identifier).toList();
+        CobolParser.MoveToSendingAreaContext sendingArea = moveStatement.moveToStatement().moveToSendingArea();
+        fromExpression = sendingArea.literal() != null ? builder.literal(sendingArea.literal()) : builder.identifier(sendingArea.generalIdentifier());
     }
 }

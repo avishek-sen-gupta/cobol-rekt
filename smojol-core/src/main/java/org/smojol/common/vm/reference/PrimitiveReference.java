@@ -20,4 +20,9 @@ public class PrimitiveReference implements CobolReference {
     public CobolDataStructure resolve() {
         return new DetachedDataStructure(value);
     }
+
+    @Override
+    public void set(CobolReference rhs) {
+        throw new UnsupportedOperationException("Cannot reference primitive expressions");
+    }
 }

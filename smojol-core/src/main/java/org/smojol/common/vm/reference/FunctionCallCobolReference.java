@@ -29,4 +29,9 @@ public class FunctionCallCobolReference implements CobolReference {
     public CobolDataStructure resolve() {
         return proxyReturnValue;
     }
+
+    @Override
+    public void set(CobolReference rhs) {
+        throw new UnsupportedOperationException("Cannot reference intermediate expressions");
+    }
 }

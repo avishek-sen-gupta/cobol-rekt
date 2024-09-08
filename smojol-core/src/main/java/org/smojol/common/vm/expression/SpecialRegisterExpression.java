@@ -3,7 +3,6 @@ package org.smojol.common.vm.expression;
 import com.google.common.collect.ImmutableList;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.vm.structure.CobolDataStructure;
-import org.smojol.common.vm.type.TypedRecord;
 
 public class SpecialRegisterExpression extends CobolExpression {
 

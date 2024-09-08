@@ -7,4 +7,5 @@ import org.smojol.common.vm.type.TypedRecord;
 public interface CobolReference {
     TypedRecord resolveAs(CobolDataType type);
     CobolDataStructure resolve();
+    void set(CobolReference rhs);
 }

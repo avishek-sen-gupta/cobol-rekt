@@ -21,4 +21,9 @@ public class VariableCobolReference implements CobolReference {
     public CobolDataStructure resolve() {
         return dataStructure;
     }
+
+    @Override
+    public void set(CobolReference rhs) {
+        dataStructure.set(rhs);
+    }
 }

@@ -1,9 +1,7 @@
 package org.smojol.common.vm.reference;
 
 import org.eclipse.lsp.cobol.core.CobolParser;
-import org.smojol.common.vm.expression.CobolExpression;
-import org.smojol.common.vm.expression.CobolExpressionBuilder;
-import org.smojol.common.vm.expression.PrimitiveCobolExpression;
+import org.smojol.common.vm.expression.*;
 import org.smojol.common.vm.structure.AccessChain;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.common.vm.type.LiteralResolver;
@@ -93,5 +91,14 @@ public class DeepReferenceBuilder {
 
     public CobolReference getReference(CobolParser.VariableUsageNameContext usageName, CobolDataStructure data) {
         return new VariableCobolReference(data.reference(usageName.getText()));
+    }
+
+    public CobolReference getReference(CobolExpression expression, CobolDataStructure data) {
+        return switch (expression) {
+            case VariableExpression expr -> new VariableCobolReference(expr.reference(data));
+            case TableCallExpression expr -> new VariableCobolReference(expr.reference(data));
+            case PrimitiveCobolExpression expr -> new PrimitiveReference(expr.data());
+            default -> new IntermediateExpressionReference(expression, data);
+        };
     }
 }
