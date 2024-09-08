@@ -23,6 +23,12 @@ public class VariableExpression extends CobolExpression {
         return value == TypedRecord.NULL ? new NullCobolExpression(usageName.getText()) : new PrimitiveCobolExpression(value);
     }
 
+    @Override
+    public CobolDataStructure reference(CobolDataStructure data) {
+        CobolReference ref = new DeepReferenceBuilder().getReference(usageName, data);
+        return ref.resolve();
+    }
+
     public String name() {
         return usageName.getText();
     }

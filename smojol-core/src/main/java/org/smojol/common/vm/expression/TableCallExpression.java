@@ -21,13 +21,16 @@ public class TableCallExpression extends CobolExpression {
 
     @Override
     public CobolExpression evaluate(CobolDataStructure data) {
+        return new PrimitiveCobolExpression(reference(data).getValue());
+    }
+
+    @Override
+    public CobolDataStructure reference(CobolDataStructure data) {
         String rootVariableName = variableExpression.name();
         AccessChain chain = data.chain(rootVariableName);
         List<Integer> resolvedIndices = indexes.stream().map(index -> resolve(data, index)).toList();
         List<Integer> fixedIndices = resolvedIndices.stream().map(i -> i == 0 ? 1 : i).toList();
-
-        CobolDataStructure struct = chain.run(fixedIndices);
-        return new PrimitiveCobolExpression(struct.getValue());
+        return chain.run(fixedIndices);
     }
 
     private static int resolve(CobolDataStructure data, CobolExpression index) {

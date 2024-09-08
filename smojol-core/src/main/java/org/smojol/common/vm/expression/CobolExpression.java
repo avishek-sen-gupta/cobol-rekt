@@ -22,10 +22,14 @@ public abstract class CobolExpression {
     }
 
     public abstract CobolExpression evaluate(CobolDataStructure data);
+    public CobolDataStructure reference(CobolDataStructure data) {
+        throw new UnsupportedOperationException("Cannot resolve to references of intermediate expressions");
+    }
 
     public double evalAsNumber(CobolDataStructure data) {
         return evaluate(data).evalAsNumber(data);
     }
+
     public boolean evalAsBoolean(CobolDataStructure data) {
         return evaluate(data).evalAsBoolean(data);
     }
