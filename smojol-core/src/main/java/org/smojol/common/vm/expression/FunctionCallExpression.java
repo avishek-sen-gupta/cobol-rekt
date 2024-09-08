@@ -18,7 +18,7 @@ public class FunctionCallExpression extends CobolExpression {
     }
 
     public FunctionCallExpression(String functionName, List<CobolExpression> arguments) {
-        super(ImmutableList.of());
+        super(ImmutableList.of(), functionInfo(functionName));
         this.functionName = functionName;
         this.arguments = arguments;
         children.addAll(arguments);
@@ -28,6 +28,15 @@ public class FunctionCallExpression extends CobolExpression {
     @Override
     public CobolExpression evaluate(CobolDataStructure data) {
         return new PrimitiveCobolExpression(proxyReturnValue.getValue());
+    }
+
+    @Override
+    public String description() {
+        return functionInfo(functionName);
+    }
+
+    private static String functionInfo(String fnName) {
+        return "FUNCTION_" + fnName;
     }
 
     private static List<CobolExpression> args(CobolParser.FunctionCallContext functionCallContext) {

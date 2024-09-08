@@ -9,6 +9,7 @@ public class SpecialRegisterExpression extends CobolExpression {
     private final FunctionCallExpression functionCall;
 
     public SpecialRegisterExpression(CobolParser.SpecialRegisterContext specialRegisterContext) {
+        super("FUNCTION_" + (specialRegisterContext.ADDRESS() != null ? "ADDRESS" : "LENGTH"));
         CobolExpression argument = new CobolExpressionBuilder().identifier(specialRegisterContext.generalIdentifier());
         functionCall = new FunctionCallExpression(specialRegisterContext.ADDRESS() != null ? "ADDRESS" : "LENGTH", ImmutableList.of(argument));
         children.add(functionCall);
@@ -19,5 +20,10 @@ public class SpecialRegisterExpression extends CobolExpression {
         return functionCall.evaluate(data);
         // TODO: Replace this with proper variable resolution
 //        return new PrimitiveCobolExpression(TypedRecord.typedNumber(5));
+    }
+
+    @Override
+    public String description() {
+        return functionCall.description();
     }
 }

@@ -8,12 +8,17 @@ public class NegativeExpression extends CobolExpression {
     @Getter private final CobolExpression expression;
 
     public NegativeExpression(CobolExpression expression) {
-        super(ImmutableList.of(expression));
+        super(ImmutableList.of(expression), "NEGATIVE");
         this.expression = expression;
     }
 
     @Override
     public CobolExpression evaluate(CobolDataStructure data) {
         return expression.evaluate(data).negative(data);
+    }
+
+    @Override
+    public String description() {
+        return operationMnemonic + "(" + expression.description() + ")";
     }
 }

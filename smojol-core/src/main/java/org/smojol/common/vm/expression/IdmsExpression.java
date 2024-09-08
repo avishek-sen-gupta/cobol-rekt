@@ -9,7 +9,7 @@ public class IdmsExpression extends CobolExpression {
     private final ParseTree expression;
 
     public IdmsExpression(ParseTree expression) {
-        super(ImmutableList.of());
+        super(ImmutableList.of(), "IDMS");
         this.expression = expression;
     }
 
@@ -17,5 +17,10 @@ public class IdmsExpression extends CobolExpression {
     public CobolExpression evaluate(CobolDataStructure data) {
         // TODO: Keep an eye on this. Harmless, but still...
         return new PrimitiveCobolExpression(TypedRecord.typedNumber(10));
+    }
+
+    @Override
+    public String description() {
+        return operationMnemonic + "(" + expression.getText() + ")";
     }
 }

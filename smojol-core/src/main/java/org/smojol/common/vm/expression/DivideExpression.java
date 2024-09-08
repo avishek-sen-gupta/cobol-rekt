@@ -4,7 +4,7 @@ import org.smojol.common.vm.structure.CobolDataStructure;
 
 public class DivideExpression extends BinaryCobolOperatorExpression {
     public DivideExpression(CobolExpression lhs, CobolExpression rhs) {
-        super(lhs, rhs);
+        super(lhs, rhs, "DIVIDE");
     }
 
     @Override

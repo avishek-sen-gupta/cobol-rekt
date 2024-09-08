@@ -11,7 +11,7 @@ public class VariableExpression extends CobolExpression {
     @Getter private final String name;
 
     public VariableExpression(String name) {
-        super(ImmutableList.of());
+        super(ImmutableList.of(), "VAR");
         this.name = name;
     }
 
@@ -20,6 +20,11 @@ public class VariableExpression extends CobolExpression {
         CobolDataStructure structure = data.reference(name);
         TypedRecord value = structure.getValue();
         return value == TypedRecord.NULL ? new NullCobolExpression(name) : new PrimitiveCobolExpression(value);
+    }
+
+    @Override
+    public String description() {
+        return operationMnemonic + "('" + name + "')";
     }
 
     @Override

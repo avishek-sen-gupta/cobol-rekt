@@ -13,7 +13,7 @@ public class NullCobolExpression extends CobolExpression {
     private final String referenceID;
 
     public NullCobolExpression(String referenceID) {
-        super(ImmutableList.of());
+        super(ImmutableList.of(), "NULL");
         this.referenceID = referenceID;
     }
 
@@ -45,6 +45,11 @@ public class NullCobolExpression extends CobolExpression {
     @Override
     public CobolExpression evaluate(CobolDataStructure data) {
         return withWarning2(this, "WARNING: Evaluating null cobol expression", referenceID);
+    }
+
+    @Override
+    public String description() {
+        return operationMnemonic + "()";
     }
 
     @Override

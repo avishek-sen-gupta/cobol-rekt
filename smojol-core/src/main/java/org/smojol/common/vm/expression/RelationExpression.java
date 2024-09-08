@@ -11,7 +11,7 @@ public class RelationExpression extends CobolExpression {
     private final CobolExpression rhs;
 
     public RelationExpression(ComparisonOperator relationalOperation, CobolExpression rhs) {
-        super(ImmutableList.of(rhs));
+        super(ImmutableList.of(rhs), "RELATION");
         this.relationalOperation = relationalOperation;
         this.rhs = rhs;
     }
@@ -19,6 +19,11 @@ public class RelationExpression extends CobolExpression {
     @Override
     public CobolExpression evaluate(CobolDataStructure data) {
         throw new IllegalArgumentException("Cannot call evaluate() on a relation expression");
+    }
+
+    @Override
+    public String description() {
+        return operationMnemonic + "(" + relationalOperation.mnemonic() + ", " + rhs.description() + ")";
     }
 
     public CobolExpression evaluate(CobolExpression lhs, CobolDataStructure data) {

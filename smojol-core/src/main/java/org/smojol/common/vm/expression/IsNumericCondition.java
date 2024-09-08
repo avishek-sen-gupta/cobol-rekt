@@ -10,13 +10,18 @@ public class IsNumericCondition extends ClassConditionExpression {
     private final Function<Double, Boolean> matcher;
 
     public IsNumericCondition(CobolExpression expression, Function<Double, Boolean> matcher) {
-        super(expression);
+        super(expression, "IS_NUMERIC");
         this.matcher = matcher;
     }
 
     @Override
     public CobolExpression evaluate(CobolDataStructure data) {
         return new PrimitiveCobolExpression(matches((PrimitiveCobolExpression) expression.evaluate(data)));
+    }
+
+    @Override
+    public String description() {
+        return operationMnemonic + "(" + expression.description() + ")";
     }
 
     private TypedRecord matches(PrimitiveCobolExpression expression) {

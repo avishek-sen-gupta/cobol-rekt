@@ -8,12 +8,17 @@ public class NestedConditionExpression extends CobolExpression {
     @Getter private final CobolExpression expression;
 
     public NestedConditionExpression(CobolExpression expression) {
-        super(ImmutableList.of(expression));
+        super(ImmutableList.of(expression), "NESTED");
         this.expression = expression;
     }
 
     @Override
     public CobolExpression evaluate(CobolDataStructure data) {
         return expression.evaluate(data);
+    }
+
+    @Override
+    public String description() {
+        return operationMnemonic + "(" + expression.description() + ")";
     }
 }

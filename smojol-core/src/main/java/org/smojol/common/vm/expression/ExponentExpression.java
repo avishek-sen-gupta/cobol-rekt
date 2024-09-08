@@ -10,7 +10,7 @@ public class ExponentExpression extends CobolExpression {
     private final CobolExpression exponent;
 
     public ExponentExpression(CobolExpression basis, CobolExpression exponent) {
-        super(ImmutableList.of(basis, exponent));
+        super(ImmutableList.of(basis, exponent), "EXPONENT");
         this.basis = basis;
         this.exponent = exponent;
     }
@@ -18,5 +18,10 @@ public class ExponentExpression extends CobolExpression {
     @Override
     public CobolExpression evaluate(CobolDataStructure data) {
         return basis.evaluate(data).exponent(exponent.evaluate(data), data);
+    }
+
+    @Override
+    public String description() {
+        return operationMnemonic + "(" + basis.description() + ", " + exponent.description() + ")";
     }
 }

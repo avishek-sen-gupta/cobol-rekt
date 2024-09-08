@@ -8,12 +8,17 @@ public class NotExpression extends CobolExpression {
     @Getter private final CobolExpression expression;
 
     public NotExpression(CobolExpression expression) {
-        super(ImmutableList.of(expression));
+        super(ImmutableList.of(expression), "NOT");
         this.expression = expression;
     }
 
     @Override
     public CobolExpression evaluate(CobolDataStructure data) {
         return expression.evaluate(data).not(data);
+    }
+
+    @Override
+    public String description() {
+        return operationMnemonic + "(" + expression.description() + ")";
     }
 }

@@ -4,7 +4,7 @@ import org.smojol.common.vm.structure.CobolDataStructure;
 
 public class AdditionExpression extends BinaryCobolOperatorExpression {
     public AdditionExpression(CobolExpression lhs, CobolExpression rhs) {
-        super(lhs, rhs);
+        super(lhs, rhs, "ADD");
     }
 
     @Override

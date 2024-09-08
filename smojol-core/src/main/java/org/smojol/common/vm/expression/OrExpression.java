@@ -4,7 +4,7 @@ import org.smojol.common.vm.structure.CobolDataStructure;
 
 public class OrExpression extends BinaryCobolLogicExpression {
     public OrExpression(CobolExpression lhs, CobolExpression rhs) {
-        super(lhs, rhs);
+        super(lhs, rhs, "OR");
     }
 
     @Override

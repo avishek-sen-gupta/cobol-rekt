@@ -11,17 +11,20 @@ import java.util.UUID;
 public abstract class CobolExpression {
     @Getter protected final List<CobolExpression> children = new ArrayList<>();
     @Getter private final String id;
+    protected final String operationMnemonic;
 
-    public CobolExpression() {
-        this(ImmutableList.of());
+    public CobolExpression(String operationMnemonic) {
+        this(ImmutableList.of(), operationMnemonic);
     }
 
-    public CobolExpression(List<CobolExpression> children) {
+    public CobolExpression(List<CobolExpression> children, String operationMnemonic) {
+        this.operationMnemonic = operationMnemonic;
         this.id = UUID.randomUUID().toString();
         this.children.addAll(children);
     }
 
     public abstract CobolExpression evaluate(CobolDataStructure data);
+    public abstract String description();
     public CobolDataStructure reference(CobolDataStructure data) {
         throw new UnsupportedOperationException("Cannot resolve to references of intermediate expressions");
     }
@@ -101,5 +104,10 @@ public abstract class CobolExpression {
     public void acceptDepthFirst(CobolExpressionVisitor visitor) {
         CobolExpressionVisitor scopedVisitor = visitor.visit(this);
         children.forEach(child -> child.acceptDepthFirst(scopedVisitor));
+    }
+
+    @Override
+    public String toString() {
+        return description();
     }
 }

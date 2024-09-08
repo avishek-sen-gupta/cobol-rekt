@@ -4,7 +4,7 @@ import org.smojol.common.vm.structure.CobolDataStructure;
 
 public class MultiplyExpression extends BinaryCobolOperatorExpression {
     public MultiplyExpression(CobolExpression lhs, CobolExpression rhs) {
-        super(lhs, rhs);
+        super(lhs, rhs, "MULTIPLY");
     }
 
     @Override

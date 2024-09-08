@@ -12,7 +12,7 @@ public class TableCallExpression extends CobolExpression {
     private final List<CobolExpression> indexes;
 
     public TableCallExpression(VariableExpression variableExpression, List<CobolParser.ArithmeticExpressionContext> indexContexts) {
-        super(ImmutableList.of(variableExpression));
+        super(ImmutableList.of(variableExpression), "INDEX");
         this.variableExpression = variableExpression;
         CobolExpressionBuilder expressionBuilder = new CobolExpressionBuilder();
         this.indexes = indexContexts.stream().map(expressionBuilder::arithmetic).toList();
@@ -22,6 +22,12 @@ public class TableCallExpression extends CobolExpression {
     @Override
     public CobolExpression evaluate(CobolDataStructure data) {
         return new PrimitiveCobolExpression(reference(data).getValue());
+    }
+
+    @Override
+    public String description() {
+        return operationMnemonic + "(" + variableExpression.description()
+                + String.join(", ", indexes.stream().map(CobolExpression::description).toList()) + ")";
     }
 
     @Override

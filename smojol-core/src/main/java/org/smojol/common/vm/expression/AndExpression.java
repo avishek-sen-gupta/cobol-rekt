@@ -4,7 +4,7 @@ import org.smojol.common.vm.structure.CobolDataStructure;
 
 public class AndExpression extends BinaryCobolLogicExpression {
     public AndExpression(CobolExpression lhs, CobolExpression rhs) {
-        super(lhs, rhs);
+        super(lhs, rhs, "AND");
     }
 
     @Override

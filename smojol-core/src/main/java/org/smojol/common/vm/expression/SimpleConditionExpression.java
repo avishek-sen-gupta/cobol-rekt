@@ -13,13 +13,13 @@ public class SimpleConditionExpression extends CobolExpression {
     @Getter private boolean isStandalone = false;
 
     public SimpleConditionExpression(CobolExpression lhs, CobolExpression comparison) {
-        super(ImmutableList.of(lhs, comparison));
+        super(ImmutableList.of(lhs, comparison), "SIMPLE_COND");
         this.lhs = lhs;
         this.comparison = (RelationExpression) comparison;
     }
 
     public SimpleConditionExpression(CobolExpression arithmeticExpression) {
-        super(ImmutableList.of());
+        super(ImmutableList.of(), "SIMPLE");
         this.lhs = arithmeticExpression;
         this.comparison = null;
     }
@@ -31,6 +31,11 @@ public class SimpleConditionExpression extends CobolExpression {
 
         // Level 88 variable condition
         return PrimitiveCobolExpression.primitive(lhs.evaluate(data));
+    }
+
+    @Override
+    public String description() {
+        return operationMnemonic + "(" + lhs.description() + ", " + comparison.description() + ")";
     }
 
     public CobolExpression standalone() {

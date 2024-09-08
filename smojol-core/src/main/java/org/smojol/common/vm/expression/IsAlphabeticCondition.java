@@ -9,13 +9,18 @@ public class IsAlphabeticCondition extends ClassConditionExpression {
     private final Function<Integer, Boolean> matcher;
 
     public IsAlphabeticCondition(CobolExpression expression, Function<Integer, Boolean> matcher) {
-        super(expression);
+        super(expression, "IS_ALPHABETIC");
         this.matcher = matcher;
     }
 
     @Override
     public CobolExpression evaluate(CobolDataStructure data) {
         return new PrimitiveCobolExpression(matches((PrimitiveCobolExpression) expression.evaluate(data)));
+    }
+
+    @Override
+    public String description() {
+        return operationMnemonic + "(" + expression.description() + ")";
     }
 
     private TypedRecord matches(PrimitiveCobolExpression expression) {

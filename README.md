@@ -172,7 +172,6 @@ The interpreter can run in two modes:
 
 - Support symbolic execution
 - Support EVALUATE statements
-- Handle GIVING phrases in ADD/SUBTRACT/MULTIPLY/DIVIDE
 - PERFORM VARYING
 - PERFORM INLINE...VARYING
 - Initialise values of variables from DATA DIVISION

@@ -10,7 +10,7 @@ public class PrimitiveCobolExpression extends CobolExpression {
     private final TypedRecord value;
 
     public PrimitiveCobolExpression(TypedRecord value) {
-        super(ImmutableList.of());
+        super(ImmutableList.of(), "PRIMITIVE");
         this.value = value;
     }
 
@@ -19,7 +19,7 @@ public class PrimitiveCobolExpression extends CobolExpression {
     }
 
     public PrimitiveCobolExpression(CobolExpression value) {
-        super(ImmutableList.of());
+        super(ImmutableList.of(), "PRIMITIVE");
         this.value = unwrapped(value);
     }
 
@@ -40,6 +40,11 @@ public class PrimitiveCobolExpression extends CobolExpression {
     @Override
     public CobolExpression evaluate(CobolDataStructure data) {
         return this;
+    }
+
+    @Override
+    public String description() {
+        return operationMnemonic + "(" + value.toString() + ")";
     }
 
     @Override
