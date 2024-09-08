@@ -22,8 +22,6 @@ public class DivideOperation implements CobolOperation {
     }
 
     public void run(CobolDataStructure cobolDataStructure) {
-//        CobolParser.DivisorContext divisor = divide.getIntoDivisor();
-//        List<CobolParser.DivideIntoContext> dividends = divide.getDividends();
         DeepReferenceBuilder builder = new DeepReferenceBuilder();
         List<CobolExpression> quotients = divide.getDividendExpressions().stream().map(dividend -> dividend.evaluate(cobolDataStructure).divide(divide.getDivisorExpression(), cobolDataStructure)).toList();
         List<CobolExpression> destinations = divide.getDestinationExpression();
@@ -33,7 +31,5 @@ public class DivideOperation implements CobolOperation {
             List<Pair<CobolReference, CobolReference>> srcDestPairs = zip(quotients.stream(), destinations.stream(), (src, dest) -> (Pair<CobolReference, CobolReference>) ImmutablePair.of(builder.getReference(src, cobolDataStructure), builder.getReference(dest, cobolDataStructure))).toList();
             srcDestPairs.forEach(p -> p.getRight().set(p.getLeft()));
         }
-//        dividends.forEach(dividend -> builder.getReference(dividend.generalIdentifier(), cobolDataStructure).resolve().divide(builder.getReference(divisor, cobolDataStructure)));
-//        dividends.forEach(dividend -> cobolDataStructure.divide(dividend.generalIdentifier().getText(), builder.getReference(divisor, cobolDataStructure)));
     }
 }

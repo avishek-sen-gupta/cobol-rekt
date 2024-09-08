@@ -165,7 +165,6 @@ public class SmojolInterpreter implements CobolInterpreter {
             listeners.notify("Moving " + node, node, nodeService);
             MoveFlowNode move = (MoveFlowNode) node;
             move.getTos().forEach(to -> listeners.notify(coloured(String.format("%s was affected by %s", dataDescription(to, nodeService.getDataStructures()), move.getFromExpression()), 227), node, nodeService));
-//            new MoveOperation(move).run(runtimeStackFrames.currentData());
             operations.move().apply(node).run(runtimeStackFrames.currentData());
             return CobolVmSignal.CONTINUE;
         }, new ExecutionContext(node, runtimeStackFrames, nodeService));
@@ -178,7 +177,6 @@ public class SmojolInterpreter implements CobolInterpreter {
             listeners.notify("Adding " + node, node, nodeService);
             AddFlowNode add = (AddFlowNode) node;
             add.getTos().forEach(to -> listeners.notify(purple(coloured(String.format("%s was affected by %s", dataDescription(to.generalIdentifier(), nodeService.getDataStructures()), delimited(add.getFroms())), 227)), node, nodeService));
-//            new AddOperation(add).run(runtimeStackFrames.currentData());
             operations.add().apply(node).run(runtimeStackFrames.currentData());
             return CobolVmSignal.CONTINUE;
         }, new ExecutionContext(node, runtimeStackFrames, nodeService));
@@ -193,7 +191,6 @@ public class SmojolInterpreter implements CobolInterpreter {
             String lhses = delimited(subtract.getMinuends());
             String rhses = delimited(subtract.getSubtrahends());
             listeners.notify(purple(coloured(String.format("%s was affected by %s", lhses, rhses), 227)), node, nodeService);
-//            new SubtractOperation(subtract).run(runtimeStackFrames.currentData());
             operations.subtract().apply(node).run(runtimeStackFrames.currentData());
             return CobolVmSignal.CONTINUE;
         }, new ExecutionContext(node, runtimeStackFrames, nodeService));
@@ -206,7 +203,6 @@ public class SmojolInterpreter implements CobolInterpreter {
             listeners.notify("Adding " + node, node, nodeService);
             MultiplyFlowNode multiply = (MultiplyFlowNode) node;
             listeners.notify(purple(coloured(String.format("%s was affected by %s", multiply.getLhs(), delimited(multiply.getRhses())), 227)), node, nodeService);
-//            new MultiplyOperation(multiply).run(runtimeStackFrames.currentData());
             operations.multiply().apply(node).run(runtimeStackFrames.currentData());
             return CobolVmSignal.CONTINUE;
         }, new ExecutionContext(node, runtimeStackFrames, nodeService));
@@ -219,7 +215,6 @@ public class SmojolInterpreter implements CobolInterpreter {
             listeners.notify("Adding " + node, node, nodeService);
             DivideFlowNode divide = (DivideFlowNode) node;
             listeners.notify(purple(coloured(String.format("%s was affected by %s", delimitedExpressions(divide.getDividendExpressions()), divide.getIntoDivisor()), 227)), node, nodeService);
-//            new DivideOperation(divide).run(runtimeStackFrames.currentData());
             operations.divide().apply(node).run(runtimeStackFrames.currentData());
             return CobolVmSignal.CONTINUE;
         }, new ExecutionContext(node, runtimeStackFrames, nodeService));
@@ -273,7 +268,6 @@ public class SmojolInterpreter implements CobolInterpreter {
             listeners.visit(node, nodeService);
             listeners.notify("Computing " + node, node, nodeService);
             ComputeFlowNode compute = (ComputeFlowNode) node;
-//            new ComputeOperation(compute).run(runtimeStackFrames.currentData());
             operations.compute().apply(node).run(runtimeStackFrames.currentData());
             return CobolVmSignal.CONTINUE;
         }, new ExecutionContext(node, runtimeStackFrames, nodeService));

@@ -25,10 +25,7 @@ public class SubtractOperation implements CobolOperation {
     }
 
     public void run(CobolDataStructure cobolDataStructure) {
-//        List<CobolParser.SubtractMinuendContext> lhses = subtract.getMinuends();
-//        List<CobolParser.SubtractSubtrahendContext> rhses = subtract.getSubtrahends();
         DeepReferenceBuilder builder = new DeepReferenceBuilder();
-//        lhses.forEach(lhs -> rhses.forEach(rhs -> builder.getReference(lhs, cobolDataStructure).resolve().subtract(builder.getReference(rhs, cobolDataStructure))));
         CobolExpression subtrahendSum = subtract.getSubtrahendExpressions().stream().map(srcExpr -> srcExpr.evaluate(cobolDataStructure)).reduce(new PrimitiveCobolExpression(TypedRecord.typedNumber(0)), (sum, currentExpr) -> sum.add(currentExpr, cobolDataStructure));
         List<CobolExpression> differences = subtract.getMinuendExpressions().stream().map(minuend -> minuend.evaluate(cobolDataStructure).subtract(subtrahendSum, cobolDataStructure)).toList();
         if (differences.size() == 1) {
