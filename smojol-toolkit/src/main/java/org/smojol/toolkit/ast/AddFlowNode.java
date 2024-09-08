@@ -27,8 +27,8 @@ public class AddFlowNode extends CobolFlowNode {
     private List<CobolExpression> fromExpressions;
     private List<CobolExpression> tosGivingExpressions;
     private List<CobolExpression> givingDestinationExpressions;
-    private List<CobolExpression> destinationExpressions = new ArrayList<>();
-    private List<CobolExpression> sourceExpressions = new ArrayList<>();
+    private final List<CobolExpression> destinationExpressions = new ArrayList<>();
+    private final List<CobolExpression> sourceExpressions = new ArrayList<>();
 
     public AddFlowNode(ParseTree parseTree, FlowNode scope, FlowNodeService nodeService, StackFrames stackFrames) {
         super(parseTree, scope, nodeService, stackFrames);

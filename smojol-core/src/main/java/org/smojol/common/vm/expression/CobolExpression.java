@@ -77,7 +77,7 @@ public abstract class CobolExpression {
         return evaluate(dataStructures).divide(other.evaluate(dataStructures), dataStructures);
     }
 
-    protected CobolExpression multiply(CobolExpression other, CobolDataStructure dataStructures) {
+    public CobolExpression multiply(CobolExpression other, CobolDataStructure dataStructures) {
         return evaluate(dataStructures).multiply(other.evaluate(dataStructures), dataStructures);
     }
 

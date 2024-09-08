@@ -108,7 +108,7 @@ public class PrimitiveCobolExpression extends CobolExpression {
     }
 
     @Override
-    protected CobolExpression multiply(CobolExpression other, CobolDataStructure dataStructures) {
+    public CobolExpression multiply(CobolExpression other, CobolDataStructure dataStructures) {
         return returnIf(o -> new PrimitiveCobolExpression(value.multiply(o.value)), other);
     }
 

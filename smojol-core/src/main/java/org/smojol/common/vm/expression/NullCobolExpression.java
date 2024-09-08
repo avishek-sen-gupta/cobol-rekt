@@ -93,7 +93,7 @@ public class NullCobolExpression extends CobolExpression {
     }
 
     @Override
-    protected CobolExpression multiply(CobolExpression other, CobolDataStructure dataStructures) {
+    public CobolExpression multiply(CobolExpression other, CobolDataStructure dataStructures) {
         return withWarning2(this, "WARNING: Multiply Operation requested on null cobol expression", referenceID);
     }
 
