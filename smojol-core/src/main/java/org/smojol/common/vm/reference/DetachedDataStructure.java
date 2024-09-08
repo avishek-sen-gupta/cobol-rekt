@@ -2,7 +2,6 @@ package org.smojol.common.vm.reference;
 
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.structure.SourceSection;
-import org.smojol.common.vm.expression.CobolExpression;
 import org.smojol.common.vm.memory.MemoryLayout;
 import org.smojol.common.vm.memory.MemoryRegion;
 import org.smojol.common.vm.memory.NullMemoryLayout;
