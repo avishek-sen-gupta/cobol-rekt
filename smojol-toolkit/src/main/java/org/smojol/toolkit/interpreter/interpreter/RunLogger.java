@@ -1,6 +1,5 @@
 package org.smojol.toolkit.interpreter.interpreter;
 
-import org.smojol.common.ast.AggregatingFlowNodeASTVisitor;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.FlowNodeService;
 import org.smojol.toolkit.ast.AddFlowNode;
@@ -15,7 +14,11 @@ import java.util.logging.Logger;
 public class RunLogger implements ExecutionListener {
     private static final Logger logger = Logger.getLogger(RunLogger.class.getName());
     private final StringBuilder sb = new StringBuilder();
-    private String path = "/Users/asgupta/Downloads/poc/report.md";
+    private final String path;
+
+    public RunLogger(String outputPath) {
+        this.path = outputPath;
+    }
 
     public void close() throws IOException {
         write();
