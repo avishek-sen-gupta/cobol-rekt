@@ -23,7 +23,6 @@ public class CobolExpressionBuilder {
         LiteralVisitor literalVisitor = new LiteralVisitor(expectedType);
         ctx.accept(literalVisitor);
         return literalVisitor.getExpression();
-
     }
 
     public CobolExpression arithmetic(CobolParser.ArithmeticExpressionContext ctx) {

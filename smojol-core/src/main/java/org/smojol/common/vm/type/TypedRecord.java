@@ -4,7 +4,6 @@ import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
-// TODO: Might need polymorphic types at some point, addition of two strings, for example
 public final class TypedRecord {
     private static final Logger LOGGER = Logger.getLogger(TypedRecord.class.getName());
     public static final TypedRecord NULL = new TypedRecord("NULL", CobolDataType.NULL);

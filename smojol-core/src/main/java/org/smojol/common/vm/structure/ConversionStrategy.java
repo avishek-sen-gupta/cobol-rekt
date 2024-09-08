@@ -1,7 +1,5 @@
 package org.smojol.common.vm.structure;
 
-import org.smojol.common.vm.expression.CobolExpression;
-import org.smojol.common.vm.expression.PrimitiveCobolExpression;
 import org.smojol.common.vm.reference.CobolReference;
 import org.smojol.common.vm.type.CobolDataType;
 import org.smojol.common.vm.type.TypedRecord;
@@ -11,7 +9,6 @@ public class ConversionStrategy {
         TypedRecord typedRecord = rhs.resolveAs(CobolDataType.STRING);
         lhs.internalSet(typedRecord);
     }
-
 
     public static TypedRecord convert(TypedRecord record, CobolDataType targetDataType) {
         return switch (targetDataType) {
@@ -35,9 +32,12 @@ public class ConversionStrategy {
         return s.replace("'", "");
     }
 
-    public static PrimitiveCobolExpression primitive(CobolExpression expression) {
-        if (!(expression instanceof PrimitiveCobolExpression))
-            throw new IncompatibleClassChangeError("Expression is of type " + expression.getClass() + ", not a primitive expression");
-        return (PrimitiveCobolExpression) expression;
+    public static TypedRecord cast(TypedRecord data, CobolDataType cobolDataType) {
+        return switch (cobolDataType) {
+            case STRING -> TypedRecord.typedString(data.value().toString());
+            case NUMBER -> TypedRecord.typedNumber(Double.parseDouble(data.value().toString()));
+            case BOOLEAN -> TypedRecord.typedBoolean(Boolean.parseBoolean(data.value().toString()));
+            default -> throw new ClassCastException(String.format("Cannot cast %s to requested type: %s", data, cobolDataType));
+        };
     }
 }

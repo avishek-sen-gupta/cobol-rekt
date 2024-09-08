@@ -5,6 +5,7 @@ import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.ast.NodeText;
 import org.smojol.common.flowchart.DataStructureVisitor;
 import org.smojol.common.structure.SourceSection;
+import org.smojol.common.vm.expression.PrimitiveCobolExpression;
 import org.smojol.common.vm.memory.MemoryLayout;
 import org.smojol.common.vm.memory.MemoryRegion;
 import org.smojol.common.vm.reference.CobolReference;
@@ -177,7 +178,8 @@ public class ConditionalDataStructure extends CobolDataStructure {
 
     private String resolve(CobolParser.DataValueIntervalFromContext dataValueIntervalFromContext) {
         CobolParser.LiteralContext literal = dataValueIntervalFromContext.literal();
-        return new LiteralResolver().resolvedLiteral(literal);
+        TypedRecord data = ((PrimitiveCobolExpression) new LiteralResolver().literal(literal, dataType)).data();
+        return ConversionStrategy.cast(data, CobolDataType.STRING).asString();
     }
 
     @Override
