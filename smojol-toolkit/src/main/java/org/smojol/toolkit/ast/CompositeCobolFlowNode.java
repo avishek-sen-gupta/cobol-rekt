@@ -136,9 +136,4 @@ public class CompositeCobolFlowNode extends CobolFlowNode {
     public List<FlowNodeCategory> categories() {
         return ImmutableList.of(FlowNodeCategory.CODE_BLOCK);
     }
-
-    @Override
-    public void resolve(SmojolSymbolTable symbolTable, CobolDataStructure dataStructures) {
-        astChildren.forEach(child -> child.resolve(symbolTable, dataStructures));
-    }
 }

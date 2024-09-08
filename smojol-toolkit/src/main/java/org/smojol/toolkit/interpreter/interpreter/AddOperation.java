@@ -1,12 +1,12 @@
 package org.smojol.toolkit.interpreter.interpreter;
 
-import org.eclipse.lsp.cobol.core.CobolParser;
+import org.smojol.common.vm.expression.CobolExpression;
+import org.smojol.common.vm.expression.PrimitiveCobolExpression;
+import org.smojol.common.vm.type.TypedRecord;
 import org.smojol.toolkit.ast.AddFlowNode;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.common.vm.reference.DeepReferenceBuilder;
 import org.smojol.common.vm.structure.CobolOperation;
-
-import java.util.List;
 
 public class AddOperation implements CobolOperation {
     private final AddFlowNode add;
@@ -16,9 +16,8 @@ public class AddOperation implements CobolOperation {
     }
 
     public void run(CobolDataStructure cobolDataStructure) {
-        List<CobolParser.AddFromContext> froms = add.getFroms();
-        List<CobolParser.AddToContext> tos = add.getTos();
         DeepReferenceBuilder builder = new DeepReferenceBuilder();
-        tos.forEach(to -> froms.forEach(from -> builder.getReference(to, cobolDataStructure).resolve().add(builder.getReference(from, cobolDataStructure))));
+        CobolExpression sourceSum = add.getSourceExpressions().stream().map(srcExpr -> srcExpr.evaluate(cobolDataStructure)).reduce(new PrimitiveCobolExpression(TypedRecord.typedNumber(0)), (sum, currentExpr) -> sum.add(currentExpr, cobolDataStructure));
+        add.getDestinationExpressions().forEach(to -> builder.getReference(to, cobolDataStructure).set(builder.getReference(sourceSum, cobolDataStructure)));
     }
 }

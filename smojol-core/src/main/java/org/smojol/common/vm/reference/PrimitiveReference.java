@@ -1,5 +1,7 @@
 package org.smojol.common.vm.reference;
 
+import org.smojol.common.vm.expression.CobolExpression;
+import org.smojol.common.vm.expression.PrimitiveCobolExpression;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.common.vm.structure.ConversionStrategy;
 import org.smojol.common.vm.type.CobolDataType;
@@ -19,6 +21,11 @@ public class PrimitiveReference implements CobolReference {
     @Override
     public CobolDataStructure resolve() {
         return new DetachedDataStructure(value);
+    }
+
+    @Override
+    public CobolExpression asExpression() {
+        return new PrimitiveCobolExpression(value);
     }
 
     @Override

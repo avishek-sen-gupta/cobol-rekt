@@ -61,8 +61,8 @@ public class DeepReferenceBuilder {
         return resolve(qualifiedDataNameContext, data);
     }
 
-    public CobolReference getShallowReference(CobolParser.VariableUsageNameContext variableUsage, CobolDataStructure data) {
-        return new VariableCobolReference(data.reference(variableUsage.getText()));
+    public CobolReference getShallowReference(String variableUsage, CobolDataStructure data) {
+        return new VariableCobolReference(data.reference(variableUsage));
     }
 
     private static CobolDataStructure resolve(CobolParser.QualifiedDataNameContext qualifiedDataNameContext, CobolDataStructure data) {
@@ -89,8 +89,8 @@ public class DeepReferenceBuilder {
         return new PrimitiveReference(value.data());
     }
 
-    public CobolReference getReference(CobolParser.VariableUsageNameContext usageName, CobolDataStructure data) {
-        return new VariableCobolReference(data.reference(usageName.getText()));
+    public CobolReference getReference(String usageName, CobolDataStructure data) {
+        return new VariableCobolReference(data.reference(usageName));
     }
 
     public CobolReference getReference(CobolExpression expression, CobolDataStructure data) {

@@ -26,7 +26,7 @@ public class StaticExpressionCollector implements CobolExpressionVisitor {
             CobolReference reference = referenceBuilder.getReference((PrimitiveCobolExpression) expression);
             structures.add(reference.resolve());
         } else if (expression.getClass() == VariableExpression.class) {
-            CobolReference reference = referenceBuilder.getShallowReference(((VariableExpression) expression).getUsageName(), data);
+            CobolReference reference = referenceBuilder.getShallowReference(((VariableExpression) expression).getName(), data);
 
             // TODO: Dirty hack to ignore indexed elements
             if (reference.resolve().name().contains("$")) return null;

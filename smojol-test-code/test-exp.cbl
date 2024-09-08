@@ -40,7 +40,7 @@
            GO TO SECTION-A.
        SECTION-A SECTION.
         P2.
-           MOVE "-6" TO SOMETEXT2.
+           MOVE 0 TO SOMETEXT2.
            MOVE "ABCD" TO LEVEL-10-A(1).
            MOVE "EFGH" TO LEVEL-10-A(2).
            MOVE "IJKL" TO LEVEL-10-A(3).
@@ -50,9 +50,10 @@
            MOVE "1100" TO LEVEL-20-B(2 1).
            MOVE "1111" TO LEVEL-20-B(2 2).
            DISPLAY "LEVEL-20-A = " LEVEL-20-A.
-           ADD 1 TO SOMETEXT.
+           ADD 1 TO 1 GIVING SOMETEXT.
+           DISPLAY "SOMETEXT XX= " SOMETEXT.
+           ADD 1 TO 1 GIVING SOMETEXT.
            SUBTRACT 1 FROM SOMETEXT.
-           SUBTRACT 2 FROM 2 GIVING INVOICE-AMOUNT.
            MULTIPLY 2 BY 2 GIVING INVOICE-AMOUNT.
         P4.
            ADD SOMETEXT TO SOMETEXT.

@@ -14,6 +14,7 @@ import org.smojol.common.vm.interpreter.FlowControl;
 import org.smojol.common.vm.stack.StackFrames;
 import org.smojol.common.vm.structure.CobolDataStructure;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -26,6 +27,8 @@ public class AddFlowNode extends CobolFlowNode {
     private List<CobolExpression> fromExpressions;
     private List<CobolExpression> tosGivingExpressions;
     private List<CobolExpression> givingDestinationExpressions;
+    private List<CobolExpression> destinationExpressions = new ArrayList<>();
+    private List<CobolExpression> sourceExpressions = new ArrayList<>();
 
     public AddFlowNode(ParseTree parseTree, FlowNode scope, FlowNodeService nodeService, StackFrames stackFrames) {
         super(parseTree, scope, nodeService, stackFrames);
@@ -78,5 +81,14 @@ public class AddFlowNode extends CobolFlowNode {
         fromExpressions = froms.stream().map(from -> builder.literalOrIdentifier(from.literal(), from.generalIdentifier())).toList();
         tosGivingExpressions = tosGiving.stream().map(from -> builder.literalOrIdentifier(from.literal(), from.generalIdentifier())).toList();
         givingDestinationExpressions = givingDestinations.stream().map(dest -> builder.identifier(dest.generalIdentifier())).toList();
+
+        if (givingDestinationExpressions.isEmpty()) {
+            sourceExpressions.addAll(fromExpressions);
+            destinationExpressions.addAll(toExpressions);
+        } else {
+            sourceExpressions.addAll(fromExpressions);
+            sourceExpressions.addAll(tosGivingExpressions);
+            destinationExpressions.addAll(givingDestinationExpressions);
+        }
     }
 }

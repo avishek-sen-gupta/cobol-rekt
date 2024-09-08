@@ -26,7 +26,7 @@ public class TableCallExpression extends CobolExpression {
 
     @Override
     public CobolDataStructure reference(CobolDataStructure data) {
-        String rootVariableName = variableExpression.name();
+        String rootVariableName = variableExpression.getName();
         AccessChain chain = data.chain(rootVariableName);
         List<Integer> resolvedIndices = indexes.stream().map(index -> resolve(data, index)).toList();
         List<Integer> fixedIndices = resolvedIndices.stream().map(i -> i == 0 ? 1 : i).toList();

@@ -27,6 +27,11 @@ public class IntermediateExpressionReference implements CobolReference {
         return new DetachedDataStructure(internalResolve());
     }
 
+    @Override
+    public CobolExpression asExpression() {
+        return expression;
+    }
+
     private TypedRecord internalResolve() {
         CobolExpression expressionResult = expression.evaluate(data);
         if (expressionResult instanceof PrimitiveCobolExpression p)

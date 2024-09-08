@@ -3,6 +3,7 @@ package org.smojol.common.vm.reference;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.vm.expression.CobolExpression;
 import org.smojol.common.vm.expression.CobolExpressionBuilder;
+import org.smojol.common.vm.expression.FunctionCallExpression;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.common.vm.type.CobolDataType;
 import org.smojol.common.vm.type.TypedRecord;
@@ -28,6 +29,11 @@ public class FunctionCallCobolReference implements CobolReference {
     @Override
     public CobolDataStructure resolve() {
         return proxyReturnValue;
+    }
+
+    @Override
+    public CobolExpression asExpression() {
+        return new FunctionCallExpression(functionName, arguments);
     }
 
     @Override

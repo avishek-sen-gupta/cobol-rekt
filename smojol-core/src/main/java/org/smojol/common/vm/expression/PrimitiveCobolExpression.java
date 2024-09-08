@@ -134,9 +134,11 @@ public class PrimitiveCobolExpression extends CobolExpression {
         return evaluation.apply(otherPrimitiveExpression);
     }
 
+    // TODO: Opportunity to automatically extract or resolve values
+    // Evaluate other, and verify that the RESULT is PrimitiveCobolExpression
+    // Don't need to be so strict
     private boolean isCompatibleWith(CobolExpression other) {
-        return true;
-//        if (!(other instanceof PrimitiveCobolExpression)) return false;
+        return other instanceof PrimitiveCobolExpression;
 //        PrimitiveCobolExpression otherPrimitiveExpression = (PrimitiveCobolExpression) other;
 //        return value.isCompatibleWith(otherPrimitiveExpression.value);
     }
