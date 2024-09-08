@@ -103,7 +103,7 @@ public class PrimitiveCobolExpression extends CobolExpression {
     }
 
     @Override
-    protected CobolExpression divide(CobolExpression other, CobolDataStructure dataStructures) {
+    public CobolExpression divide(CobolExpression other, CobolDataStructure dataStructures) {
         return returnIf(o -> new PrimitiveCobolExpression(value.divide(o.value)), other);
     }
 

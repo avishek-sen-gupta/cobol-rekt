@@ -88,7 +88,7 @@ public class NullCobolExpression extends CobolExpression {
     }
 
     @Override
-    protected CobolExpression divide(CobolExpression other, CobolDataStructure dataStructures) {
+    public CobolExpression divide(CobolExpression other, CobolDataStructure dataStructures) {
         return withWarning2(this, "WARNING: Divide Operation requested on null cobol expression", referenceID);
     }
 

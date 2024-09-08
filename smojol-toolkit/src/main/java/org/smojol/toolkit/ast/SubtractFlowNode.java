@@ -93,7 +93,7 @@ public class SubtractFlowNode extends CobolFlowNode {
         }
     }
 
-    public boolean isGiving() {
+    private boolean isGiving() {
         CobolParser.SubtractStatementContext subtractStatement = new SyntaxIdentity<CobolParser.SubtractStatementContext>(executionContext).get();
         return subtractStatement.subtractFromGivingStatement() != null;
     }

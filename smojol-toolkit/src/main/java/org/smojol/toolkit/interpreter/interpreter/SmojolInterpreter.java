@@ -6,6 +6,7 @@ import org.antlr.v4.runtime.RuleContext;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.FlowNodeService;
+import org.smojol.common.vm.expression.CobolExpression;
 import org.smojol.common.vm.interpreter.*;
 import org.smojol.common.vm.stack.ExecutionContext;
 import org.smojol.common.vm.stack.StackFrames;
@@ -217,7 +218,7 @@ public class SmojolInterpreter implements CobolInterpreter {
             listeners.visit(node, nodeService);
             listeners.notify("Adding " + node, node, nodeService);
             DivideFlowNode divide = (DivideFlowNode) node;
-            listeners.notify(purple(coloured(String.format("%s was affected by %s", delimited(divide.getDividends()), divide.getIntoDivisor()), 227)), node, nodeService);
+            listeners.notify(purple(coloured(String.format("%s was affected by %s", delimitedExpressions(divide.getDividendExpressions()), divide.getIntoDivisor()), 227)), node, nodeService);
 //            new DivideOperation(divide).run(runtimeStackFrames.currentData());
             operations.divide().apply(node).run(runtimeStackFrames.currentData());
             return CobolVmSignal.CONTINUE;
@@ -281,6 +282,11 @@ public class SmojolInterpreter implements CobolInterpreter {
     private String delimited(List<? extends RuleContext> from) {
         return String.join(" , ", from.stream().map(RuleContext::getText).toList());
     }
+
+    private String delimitedExpressions(List<CobolExpression> expressions) {
+        return String.join(" , ", expressions.stream().map(Object::toString).toList());
+    }
+
 
     private String dataDescription(CobolParser.GeneralIdentifierContext identifier, CobolDataStructure dataStructures) {
         List<? extends CobolDataStructure> path = dataStructures.rootRecord(identifier);
