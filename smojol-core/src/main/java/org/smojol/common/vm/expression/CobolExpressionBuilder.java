@@ -3,6 +3,7 @@ package org.smojol.common.vm.expression;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.common.vm.type.CobolDataType;
+import org.smojol.common.vm.type.LiteralResolver;
 
 public class CobolExpressionBuilder {
     public CobolExpression identifier(CobolParser.GeneralIdentifierContext ctx) {
@@ -20,9 +21,7 @@ public class CobolExpressionBuilder {
     }
 
     private CobolExpression literal(CobolParser.LiteralContext ctx, CobolDataType expectedType) {
-        LiteralVisitor literalVisitor = new LiteralVisitor(expectedType);
-        ctx.accept(literalVisitor);
-        return literalVisitor.getExpression();
+        return new LiteralResolver().literal(ctx, expectedType);
     }
 
     public CobolExpression arithmetic(CobolParser.ArithmeticExpressionContext ctx) {
