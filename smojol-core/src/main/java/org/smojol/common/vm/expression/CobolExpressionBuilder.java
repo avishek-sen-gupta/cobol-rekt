@@ -2,6 +2,7 @@ package org.smojol.common.vm.expression;
 
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.vm.structure.CobolDataStructure;
+import org.smojol.common.vm.type.CobolDataType;
 
 public class CobolExpressionBuilder {
     public CobolExpression identifier(CobolParser.GeneralIdentifierContext ctx) {
@@ -11,13 +12,18 @@ public class CobolExpressionBuilder {
     }
 
     public CobolExpression literal(CobolParser.LiteralContext ctx) {
-        LiteralVisitor literalVisitor = new LiteralVisitor();
-        ctx.accept(literalVisitor);
-        return literalVisitor.getExpression();
+        return literal(ctx, CobolDataType.STRING);
     }
 
     public CobolExpression literalOrIdentifier(CobolParser.LiteralContext literalContext, CobolParser.GeneralIdentifierContext identifierContext) {
-        return literalContext != null ? literal(literalContext) : identifier(identifierContext);
+        return literalContext != null ? literal(literalContext, CobolDataType.NUMBER) : identifier(identifierContext);
+    }
+
+    private CobolExpression literal(CobolParser.LiteralContext ctx, CobolDataType expectedType) {
+        LiteralVisitor literalVisitor = new LiteralVisitor(expectedType);
+        ctx.accept(literalVisitor);
+        return literalVisitor.getExpression();
+
     }
 
     public CobolExpression arithmetic(CobolParser.ArithmeticExpressionContext ctx) {

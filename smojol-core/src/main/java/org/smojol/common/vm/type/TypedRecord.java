@@ -2,9 +2,11 @@ package org.smojol.common.vm.type;
 
 import java.util.Objects;
 import java.util.function.Supplier;
+import java.util.logging.Logger;
 
 // TODO: Might need polymorphic types at some point, addition of two strings, for example
 public final class TypedRecord {
+    private static final Logger LOGGER = Logger.getLogger(TypedRecord.class.getName());
     public static final TypedRecord NULL = new TypedRecord("NULL", CobolDataType.NULL);
     public static final TypedRecord TRUE = new TypedRecord(true, CobolDataType.BOOLEAN);
     public static final TypedRecord FALSE = new TypedRecord(false, CobolDataType.BOOLEAN);
@@ -133,6 +135,7 @@ public final class TypedRecord {
     }
 
     public boolean isCompatibleWith(TypedRecord other) {
+        LOGGER.finer(String.format("Comparing data types of %s and %s\n", this, other));
         return true;
 //        return dataType == other.dataType;
 //        return dataType == other.dataType ||

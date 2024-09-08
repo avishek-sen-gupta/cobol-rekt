@@ -1,9 +1,16 @@
 package org.smojol.cli;
 
+import org.apache.commons.lang3.tuple.Pair;
+import org.smojol.common.dialect.LanguageDialect;
+import org.smojol.toolkit.analysis.defined.InterpretTask;
+import org.smojol.toolkit.analysis.pipeline.ProgramSearch;
+import org.smojol.toolkit.analysis.pipeline.config.SourceConfig;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
+import java.io.File;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.logging.Logger;
@@ -42,10 +49,10 @@ public class InterpretCommand implements Callable<Integer> {
 
     @Override
     public Integer call() {
-//        List<File> copyBookPaths = copyBookDirs.stream().map(c -> Paths.get(c).toAbsolutePath().toFile()).toList();
-//        ProgramSearch programSearch = ProgramSearch.searchStrategy(isPermissiveSearch);
-//        return new InterpretTask(programSearch).processPrograms(programName, sourceDir,
-//                LanguageDialect.valueOf(dialect), copyBookPaths, dialectJarPath, outputPath, isStrict ? ProgramValidationErrors::IS_COMPLETE_SUCCESS : ProgramValidationErrors::IS_PARTIAL_SUCCESS, DataStructureValidation.NO_BUILD) ? 0 : 1;
+        Pair<File, String> programPath = ProgramSearch.searchStrategy(isPermissiveSearch).run(programName, sourceDir);
+        List<File> copyBookPaths = copyBookDirs.stream().map(c -> Paths.get(c).toAbsolutePath().toFile()).toList();
+        SourceConfig sourceConfig = new SourceConfig(programName, programPath.getRight(), copyBookPaths, dialectJarPath);
+        new InterpretTask(sourceConfig, LanguageDialect.dialect(dialect)).run();
         return 0;
     }
 }

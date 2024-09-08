@@ -15,7 +15,7 @@ import java.util.List;
 public class Neo4JExecutionTracer implements ExecutionListener {
     private final GraphSDK sdk;
     private final NodeSpecBuilder qualifier;
-    private List<FlowNode> path = new ArrayList<>();
+    private final List<FlowNode> path = new ArrayList<>();
 
     public Neo4JExecutionTracer(GraphSDK sdk, NodeSpecBuilder qualifier) {
         this.sdk = sdk;

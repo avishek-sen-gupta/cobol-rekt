@@ -1,17 +1,11 @@
 package org.smojol.toolkit.analysis.defined;
 
-import com.mojo.woof.EdgeType;
-import com.mojo.woof.GraphSDK;
 import com.mojo.woof.Neo4JDriverBuilder;
 import org.apache.commons.lang3.tuple.Pair;
-import org.neo4j.driver.Record;
 import org.smojol.common.ast.*;
 import org.smojol.common.id.UUIDProvider;
 import org.smojol.common.navigation.PseudocodeNavigator;
 import org.smojol.common.pseudocode.*;
-import org.smojol.toolkit.analysis.graph.NamespaceQualifier;
-import org.smojol.toolkit.analysis.graph.NodeSpecBuilder;
-import org.smojol.toolkit.analysis.graph.NodeToWoof;
 import org.smojol.toolkit.task.*;
 
 import java.util.ArrayList;
