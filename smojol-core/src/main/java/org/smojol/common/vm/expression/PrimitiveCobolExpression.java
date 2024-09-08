@@ -98,7 +98,7 @@ public class PrimitiveCobolExpression extends CobolExpression {
     }
 
     @Override
-    protected CobolExpression subtract(CobolExpression other, CobolDataStructure dataStructures) {
+    public CobolExpression subtract(CobolExpression other, CobolDataStructure dataStructures) {
         return returnIf(o -> new PrimitiveCobolExpression(value.subtract(o.value)), other);
     }
 

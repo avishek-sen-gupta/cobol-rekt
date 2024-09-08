@@ -69,7 +69,7 @@ public abstract class CobolExpression {
         return evaluate(dataStructures).or(other.evaluate(dataStructures), dataStructures);
     }
 
-    protected CobolExpression subtract(CobolExpression other, CobolDataStructure dataStructures) {
+    public CobolExpression subtract(CobolExpression other, CobolDataStructure dataStructures) {
         return evaluate(dataStructures).subtract(other.evaluate(dataStructures), dataStructures);
     }
 

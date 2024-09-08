@@ -83,7 +83,7 @@ public class NullCobolExpression extends CobolExpression {
     }
 
     @Override
-    protected CobolExpression subtract(CobolExpression other, CobolDataStructure dataStructures) {
+    public CobolExpression subtract(CobolExpression other, CobolDataStructure dataStructures) {
         return withWarning2(this, "WARNING: Subtract Operation requested on null cobol expression", referenceID);
     }
 

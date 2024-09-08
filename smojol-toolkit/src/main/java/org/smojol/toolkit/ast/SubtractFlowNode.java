@@ -14,19 +14,19 @@ import org.smojol.common.vm.interpreter.FlowControl;
 import org.smojol.common.vm.stack.StackFrames;
 import org.smojol.common.vm.structure.CobolDataStructure;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 public class SubtractFlowNode extends CobolFlowNode {
-    private List<CobolParser.SubtractSubtrahendContext> rhses;
-    private List<CobolParser.SubtractMinuendContext> lhses;
-    private CobolParser.SubtractMinuendGivingContext lhsGiving;
-    private List<CobolParser.SubtractSubtrahendContext> rhsGiving;
+    private List<CobolParser.SubtractSubtrahendContext> subtrahends;
+    private List<CobolParser.SubtractMinuendContext> minuends;
+    private CobolParser.SubtractMinuendGivingContext minuendsGiving;
+    private List<CobolParser.SubtractSubtrahendContext> subtrahendsGiving;
     private List<CobolParser.SubtractGivingContext> givingDestinations;
-    private List<CobolExpression> lhsExpressions;
-    private List<CobolExpression> rhsExpressions;
-    private List<CobolExpression> rhsGivingExpressions;
-    private List<CobolExpression> givingDestinationExpressions;
+    private final List<CobolExpression> destinationExpressions = new ArrayList<>();
+    private final List<CobolExpression> subtrahendExpressions = new ArrayList<>();
+    private final List<CobolExpression> minuendExpressions = new ArrayList<>();
 
     public SubtractFlowNode(ParseTree parseTree, FlowNode scope, FlowNodeService nodeService, StackFrames stackFrames) {
         super(parseTree, scope, nodeService, stackFrames);
@@ -36,17 +36,17 @@ public class SubtractFlowNode extends CobolFlowNode {
     public void buildInternalFlow() {
         CobolParser.SubtractStatementContext subtractStatement = new SyntaxIdentity<CobolParser.SubtractStatementContext>(executionContext).get();
         if (subtractStatement.subtractFromStatement() != null) {
-            lhses = subtractStatement.subtractFromStatement().subtractMinuend();
-            rhses = subtractStatement.subtractFromStatement().subtractSubtrahend();
-            lhsGiving = null;
-            rhsGiving = ImmutableList.of();
+            minuends = subtractStatement.subtractFromStatement().subtractMinuend();
+            subtrahends = subtractStatement.subtractFromStatement().subtractSubtrahend();
+            minuendsGiving = null;
+            subtrahendsGiving = ImmutableList.of();
             givingDestinations = ImmutableList.of();
         }
         else if (subtractStatement.subtractFromGivingStatement() != null) {
-            lhses = ImmutableList.of();
-            rhses = ImmutableList.of();
-            lhsGiving = subtractStatement.subtractFromGivingStatement().subtractMinuendGiving();
-            rhsGiving = subtractStatement.subtractFromGivingStatement().subtractSubtrahend();
+            minuends = ImmutableList.of();
+            subtrahends = ImmutableList.of();
+            minuendsGiving = subtractStatement.subtractFromGivingStatement().subtractMinuendGiving();
+            subtrahendsGiving = subtractStatement.subtractFromGivingStatement().subtractSubtrahend();
             givingDestinations = subtractStatement.subtractFromGivingStatement().subtractGiving();
         }
         super.buildInternalFlow();
@@ -76,9 +76,25 @@ public class SubtractFlowNode extends CobolFlowNode {
     @Override
     public void resolve(SmojolSymbolTable symbolTable, CobolDataStructure dataStructures) {
         CobolExpressionBuilder builder = new CobolExpressionBuilder();
-        lhsExpressions = lhses.stream().map(lhs -> builder.identifier(lhs.generalIdentifier())).toList();
-        rhsExpressions = rhses.stream().map(rhs -> builder.literalOrIdentifier(rhs.literal(), rhs.generalIdentifier())).toList();
-        rhsGivingExpressions = rhsGiving.stream().map(rhs -> builder.literalOrIdentifier(rhs.literal(), rhs.generalIdentifier())).toList();
-        givingDestinationExpressions = givingDestinations.stream().map(dest -> builder.identifier(dest.generalIdentifier())).toList();
+
+        if (!isGiving()) {
+            List<CobolExpression> lhsExpressions = minuends.stream().map(lhs -> builder.identifier(lhs.generalIdentifier())).toList();
+            List<CobolExpression> rhsExpressions = subtrahends.stream().map(rhs -> builder.literalOrIdentifier(rhs.literal(), rhs.generalIdentifier())).toList();
+            subtrahendExpressions.addAll(rhsExpressions);
+            minuendExpressions.addAll(lhsExpressions);
+            destinationExpressions.addAll(lhsExpressions);
+        } else {
+            CobolExpression lhsGivingExpressions = builder.literalOrIdentifier(minuendsGiving.literal(), minuendsGiving.generalIdentifier());
+            List<CobolExpression> rhsGivingExpressions = subtrahendsGiving.stream().map(rhs -> builder.literalOrIdentifier(rhs.literal(), rhs.generalIdentifier())).toList();
+            List<CobolExpression> givingDestinationExpressions = givingDestinations.stream().map(dest -> builder.identifier(dest.generalIdentifier())).toList();
+            subtrahendExpressions.addAll(rhsGivingExpressions);
+            minuendExpressions.add(lhsGivingExpressions);
+            destinationExpressions.addAll(givingDestinationExpressions);
+        }
+    }
+
+    public boolean isGiving() {
+        CobolParser.SubtractStatementContext subtractStatement = new SyntaxIdentity<CobolParser.SubtractStatementContext>(executionContext).get();
+        return subtractStatement.subtractFromGivingStatement() != null;
     }
 }

@@ -189,8 +189,8 @@ public class SmojolInterpreter implements CobolInterpreter {
             listeners.visit(node, nodeService);
             listeners.notify("Subtracting " + node, node, nodeService);
             SubtractFlowNode subtract = (SubtractFlowNode) node;
-            String lhses = delimited(subtract.getLhses());
-            String rhses = delimited(subtract.getRhses());
+            String lhses = delimited(subtract.getMinuends());
+            String rhses = delimited(subtract.getSubtrahends());
             listeners.notify(purple(coloured(String.format("%s was affected by %s", lhses, rhses), 227)), node, nodeService);
 //            new SubtractOperation(subtract).run(runtimeStackFrames.currentData());
             operations.subtract().apply(node).run(runtimeStackFrames.currentData());
