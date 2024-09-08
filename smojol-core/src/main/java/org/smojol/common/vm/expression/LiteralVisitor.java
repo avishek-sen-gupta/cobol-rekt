@@ -3,7 +3,6 @@ package org.smojol.common.vm.expression;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.vm.structure.ConversionStrategy;
 import org.smojol.common.vm.type.CobolDataType;
-import org.smojol.common.vm.type.LiteralResolver;
 import org.smojol.common.vm.type.TypedRecord;
 
 // TODO: Merge this to use LiteralResolver
