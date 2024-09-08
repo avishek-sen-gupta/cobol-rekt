@@ -2,12 +2,11 @@ package org.smojol.toolkit.interpreter.interpreter;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.vm.expression.CobolExpression;
 import org.smojol.common.vm.reference.CobolReference;
 import org.smojol.toolkit.ast.DivideFlowNode;
 import org.smojol.common.vm.structure.CobolDataStructure;
-import org.smojol.common.vm.reference.DeepReferenceBuilder;
+import org.smojol.common.vm.reference.CobolReferenceBuilder;
 import org.smojol.common.vm.structure.CobolOperation;
 
 import java.util.List;
@@ -22,7 +21,7 @@ public class DivideOperation implements CobolOperation {
     }
 
     public void run(CobolDataStructure cobolDataStructure) {
-        DeepReferenceBuilder builder = new DeepReferenceBuilder();
+        CobolReferenceBuilder builder = new CobolReferenceBuilder();
         List<CobolExpression> quotients = divide.getDividendExpressions().stream().map(dividend -> dividend.evaluate(cobolDataStructure).divide(divide.getDivisorExpression(), cobolDataStructure)).toList();
         List<CobolExpression> destinations = divide.getDestinationExpression();
         if (quotients.size() == 1)

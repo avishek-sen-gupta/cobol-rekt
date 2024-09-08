@@ -7,7 +7,7 @@ import org.smojol.common.vm.structure.CobolDataStructure;
 
 import java.util.List;
 
-public class DeepReferenceBuilder {
+public class CobolReferenceBuilder {
 
     public CobolReference getReference(CobolParser.GeneralIdentifierContext to, CobolDataStructure data) {
         return new VariableCobolReference(resolve(to, data));

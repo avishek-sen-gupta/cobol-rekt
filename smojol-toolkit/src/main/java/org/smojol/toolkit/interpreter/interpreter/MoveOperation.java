@@ -1,10 +1,9 @@
 package org.smojol.toolkit.interpreter.interpreter;
 
-import org.smojol.common.vm.expression.CobolExpression;
 import org.smojol.toolkit.ast.MoveFlowNode;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.common.vm.reference.CobolReference;
-import org.smojol.common.vm.reference.DeepReferenceBuilder;
+import org.smojol.common.vm.reference.CobolReferenceBuilder;
 import org.smojol.common.vm.structure.CobolOperation;
 
 import java.util.List;
@@ -20,7 +19,7 @@ public class MoveOperation implements CobolOperation {
 
     public void run(CobolDataStructure cobolDataStructure) {
         LOGGER.finer("From is " + move.getFromExpression().toString());
-        DeepReferenceBuilder referenceBuilder = new DeepReferenceBuilder();
+        CobolReferenceBuilder referenceBuilder = new CobolReferenceBuilder();
         List<CobolReference> tos = move.getToExpressions().stream().map(to -> referenceBuilder.getReference(to, cobolDataStructure)).toList();
         CobolReference from = referenceBuilder.getReference(move.getFromExpression(), cobolDataStructure);
 //        CobolExpression from = referenceBuilder.getReference(move.getFromExpression(), cobolDataStructure);

@@ -2,18 +2,16 @@ package org.smojol.toolkit.interpreter.interpreter;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.vm.expression.CobolExpression;
 import org.smojol.common.vm.expression.PrimitiveCobolExpression;
 import org.smojol.common.vm.reference.CobolReference;
 import org.smojol.common.vm.type.TypedRecord;
 import org.smojol.toolkit.ast.SubtractFlowNode;
 import org.smojol.common.vm.structure.CobolDataStructure;
-import org.smojol.common.vm.reference.DeepReferenceBuilder;
+import org.smojol.common.vm.reference.CobolReferenceBuilder;
 import org.smojol.common.vm.structure.CobolOperation;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 import static com.google.common.collect.Streams.zip;
 
@@ -25,7 +23,7 @@ public class SubtractOperation implements CobolOperation {
     }
 
     public void run(CobolDataStructure cobolDataStructure) {
-        DeepReferenceBuilder builder = new DeepReferenceBuilder();
+        CobolReferenceBuilder builder = new CobolReferenceBuilder();
         CobolExpression subtrahendSum = subtract.getSubtrahendExpressions().stream().map(srcExpr -> srcExpr.evaluate(cobolDataStructure)).reduce(new PrimitiveCobolExpression(TypedRecord.typedNumber(0)), (sum, currentExpr) -> sum.add(currentExpr, cobolDataStructure));
         List<CobolExpression> differences = subtract.getMinuendExpressions().stream().map(minuend -> minuend.evaluate(cobolDataStructure).subtract(subtrahendSum, cobolDataStructure)).toList();
         if (differences.size() == 1) {

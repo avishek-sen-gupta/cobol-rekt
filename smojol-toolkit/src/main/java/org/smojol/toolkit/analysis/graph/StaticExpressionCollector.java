@@ -5,7 +5,7 @@ import org.smojol.common.vm.expression.CobolExpressionVisitor;
 import org.smojol.common.vm.expression.PrimitiveCobolExpression;
 import org.smojol.common.vm.expression.VariableExpression;
 import org.smojol.common.vm.reference.CobolReference;
-import org.smojol.common.vm.reference.DeepReferenceBuilder;
+import org.smojol.common.vm.reference.CobolReferenceBuilder;
 import org.smojol.common.vm.structure.CobolDataStructure;
 
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ public class StaticExpressionCollector implements CobolExpressionVisitor {
 
     @Override
     public CobolExpressionVisitor visit(CobolExpression expression) {
-        DeepReferenceBuilder referenceBuilder = new DeepReferenceBuilder();
+        CobolReferenceBuilder referenceBuilder = new CobolReferenceBuilder();
         if (expression.getClass() == PrimitiveCobolExpression.class) {
             CobolReference reference = referenceBuilder.getReference((PrimitiveCobolExpression) expression);
             structures.add(reference.resolve());

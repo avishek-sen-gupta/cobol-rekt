@@ -6,7 +6,7 @@ import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.common.vm.structure.ConditionalDataStructure;
 import org.smojol.common.vm.structure.NullDataStructure;
 import org.smojol.common.vm.reference.CobolReference;
-import org.smojol.common.vm.reference.DeepReferenceBuilder;
+import org.smojol.common.vm.reference.CobolReferenceBuilder;
 
 public class SimpleConditionVisitor extends AntlrCobolExpressionVisitor {
     private final CobolExpression mostRecentLhs;
@@ -26,7 +26,7 @@ public class SimpleConditionVisitor extends AntlrCobolExpressionVisitor {
     public CobolExpression visitSimpleCondition(CobolParser.SimpleConditionContext ctx) {
         lhs = new CobolExpressionBuilder().arithmetic(ctx.arithmeticExpression());
         if (lhs instanceof VariableExpression varExpr) {
-            CobolReference reference = new DeepReferenceBuilder().getReference(varExpr.getName(), dataRoot);
+            CobolReference reference = new CobolReferenceBuilder().getReference(varExpr.getName(), dataRoot);
             CobolDataStructure resolved = reference.resolve();
             if (resolved.getClass() == NullDataStructure.class) {
                 // TODO: Temp fix for variables which don't directly appear in data structures like indexes in INDEXED BY clauses

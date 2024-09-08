@@ -5,7 +5,7 @@ import lombok.Getter;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.common.vm.type.TypedRecord;
 import org.smojol.common.vm.reference.CobolReference;
-import org.smojol.common.vm.reference.DeepReferenceBuilder;
+import org.smojol.common.vm.reference.CobolReferenceBuilder;
 
 public class VariableExpression extends CobolExpression {
     @Getter private final String name;
@@ -29,7 +29,7 @@ public class VariableExpression extends CobolExpression {
 
     @Override
     public CobolDataStructure reference(CobolDataStructure data) {
-        CobolReference ref = new DeepReferenceBuilder().getReference(name, data);
+        CobolReference ref = new CobolReferenceBuilder().getReference(name, data);
         return ref.resolve();
     }
 }
