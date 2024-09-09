@@ -403,4 +403,21 @@ public class DataTypesTest {
         assertMemory(memoryRegion, "01:23:4F");
         assertEquals("12.34", layout.readFormatted().toString());
     }
+
+    @Test
+    public void canPerformArithmeticOperationsWithComp3Data() {
+        Comp3lDataTypeSpec comp3lDataTypeSpec = new Comp3lDataTypeSpec(2, 2, SignType.UNSIGNED);
+        MemoryRegion memoryRegion1 = new MemoryRegion(comp3lDataTypeSpec.sizeInBytes());
+        MemoryRegion memoryRegion2 = new MemoryRegion(comp3lDataTypeSpec.sizeInBytes());
+        MemoryRegion resultMemoryRegion = new MemoryRegion(comp3lDataTypeSpec.sizeInBytes());
+        MemoryLayout layout1 = new MemoryLayout(memoryRegion1.fullAccess(), comp3lDataTypeSpec);
+        MemoryLayout layout2 = new MemoryLayout(memoryRegion2.fullAccess(), comp3lDataTypeSpec);
+        MemoryLayout resultLayout = new MemoryLayout(resultMemoryRegion.fullAccess(), comp3lDataTypeSpec);
+        layout1.set("1234");
+        layout2.set("1234");
+        double sum = (Double) layout1.read() + (Double) layout2.read();
+        resultLayout.set(String.valueOf((int) sum));
+        assertEquals("24.68", resultLayout.readFormatted().toString());
+        assertEquals(2468.0, resultLayout.read());
+    }
 }
