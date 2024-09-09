@@ -6,7 +6,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.eclipse.lsp.cobol.core.CobolDataTypes;
 import org.eclipse.lsp.cobol.core.CobolDataTypesLexer;
-import org.smojol.common.vm.type.SignType;
+import org.smojol.common.vm.type.ZonedDecimalSignType;
 import org.smojol.common.vm.type.AlphanumericDataTypeSpec;
 import org.smojol.common.vm.type.DataTypeSpec;
 import org.smojol.common.vm.type.ZonedDecimalDataTypeSpec;
@@ -31,7 +31,7 @@ public class DataLayoutBuilder {
 
     private ImmutablePair<DataTypeSpec, Integer> numeric(CobolDataTypes.DataTypeSpecContext spec) {
         CobolDataTypes.FractionContext fractionCtx = spec.fraction();
-        SignType signType = fractionCtx.SIGN_SYMBOL() != null ? SignType.SIGNED : SignType.UNSIGNED;
+        ZonedDecimalSignType signType = fractionCtx.SIGN_SYMBOL() != null ? ZonedDecimalSignType.SIGNED : ZonedDecimalSignType.UNSIGNED;
         Pair<Integer, Integer> leftRight = numChars(fractionCtx);
         ZonedDecimalDataTypeSpec numericType = new ZonedDecimalDataTypeSpec(leftRight.getLeft(), leftRight.getRight(), signType);
         int totalChars = leftRight.getRight() + leftRight.getLeft();

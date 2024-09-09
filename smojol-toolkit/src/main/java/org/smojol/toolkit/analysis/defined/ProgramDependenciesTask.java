@@ -7,7 +7,6 @@ import org.smojol.common.flowchart.ConsoleColors;
 import org.smojol.common.id.UUIDProvider;
 import org.smojol.common.program.TransferControlCollectorVisitor;
 import org.smojol.common.pseudocode.PseudocodeInstruction;
-import org.smojol.common.vm.type.SignType;
 import org.smojol.toolkit.task.CommandLineAnalysisTask;
 import org.smojol.toolkit.task.AnalysisTask;
 import org.smojol.toolkit.task.AnalysisTaskResult;

@@ -11,7 +11,6 @@ import org.smojol.common.flowchart.ConsoleColors;
 import org.smojol.common.flowchart.FlowchartOutputFormat;
 import org.smojol.common.id.UUIDProvider;
 import org.smojol.common.dialect.LanguageDialect;
-import org.smojol.common.vm.type.SignType;
 import org.smojol.toolkit.task.CommandLineAnalysisTask;
 import org.smojol.toolkit.analysis.pipeline.ProgramSearch;
 import org.smojol.toolkit.task.AnalysisTaskResult;

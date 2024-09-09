@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.smojol.common.vm.memory.DataLayoutBuilder;
 import org.smojol.common.vm.memory.MemoryLayout;
 import org.smojol.common.vm.type.AlphanumericDataTypeSpec;
-import org.smojol.common.vm.type.SignType;
+import org.smojol.common.vm.type.ZonedDecimalSignType;
 import org.smojol.common.vm.type.ZonedDecimalDataTypeSpec;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -43,7 +43,7 @@ public class DataLayoutBuilderTest {
         MemoryLayout layout = builder.layout("9999");
         assertEquals(4, layout.memory().asBytes().size());
         assertEquals(ZonedDecimalDataTypeSpec.class, layout.getTypeSpec().getClass());
-        assertEquals(SignType.UNSIGNED, ((ZonedDecimalDataTypeSpec) layout.getTypeSpec()).getSignType());
+        assertEquals(ZonedDecimalSignType.UNSIGNED, ((ZonedDecimalDataTypeSpec) layout.getTypeSpec()).getSignType());
         assertEquals(4, layout.getTypeSpec().sizeInBytes());
     }
 
@@ -53,7 +53,7 @@ public class DataLayoutBuilderTest {
         MemoryLayout layout = builder.layout("99(3)99(5)");
         assertEquals(10, layout.memory().asBytes().size());
         assertEquals(ZonedDecimalDataTypeSpec.class, layout.getTypeSpec().getClass());
-        assertEquals(SignType.UNSIGNED, ((ZonedDecimalDataTypeSpec) layout.getTypeSpec()).getSignType());
+        assertEquals(ZonedDecimalSignType.UNSIGNED, ((ZonedDecimalDataTypeSpec) layout.getTypeSpec()).getSignType());
         assertEquals(10, layout.getTypeSpec().sizeInBytes());
     }
 
@@ -63,7 +63,7 @@ public class DataLayoutBuilderTest {
         MemoryLayout layout = builder.layout("S99(3)99(5)");
         assertEquals(10, layout.memory().asBytes().size());
         assertEquals(ZonedDecimalDataTypeSpec.class, layout.getTypeSpec().getClass());
-        assertEquals(SignType.SIGNED, ((ZonedDecimalDataTypeSpec) layout.getTypeSpec()).getSignType());
+        assertEquals(ZonedDecimalSignType.SIGNED, ((ZonedDecimalDataTypeSpec) layout.getTypeSpec()).getSignType());
         assertEquals(10, layout.getTypeSpec().sizeInBytes());
     }
 }

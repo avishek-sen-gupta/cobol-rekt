@@ -8,7 +8,7 @@ import org.smojol.common.vm.memory.MemoryRegion;
 import java.util.List;
 import java.util.logging.Logger;
 
-public enum SignType {
+public enum ZonedDecimalSignType {
     UNSIGNED {
         @Override
         public List<Byte> toBytes(String magnitudeString, boolean isPositive) {
@@ -31,7 +31,7 @@ public enum SignType {
             int signByte = region.asBytes().getLast() & 0xF0;
             if (signByte == 0xD0) return -v;
             else if (signByte == 0xC0) return v;
-            java.util.logging.Logger logger = Logger.getLogger(SignType.class.getName());
+            java.util.logging.Logger logger = Logger.getLogger(ZonedDecimalSignType.class.getName());
             logger.warning(ConsoleColors.coloured("Unknown sign bit in signed type, possible bug in set() of ZonedDecimalType", 0, 202));
             return v;
         }
@@ -42,7 +42,7 @@ public enum SignType {
 
     public Double signed(double v, MemoryAccess access) {
         if (v < 0) {
-            java.util.logging.Logger logger = Logger.getLogger(SignType.class.getName());
+            java.util.logging.Logger logger = Logger.getLogger(ZonedDecimalSignType.class.getName());
             logger.warning(ConsoleColors.red("Value is already negative. Potential misrepresentation of memory region!"));
             return v;
         }

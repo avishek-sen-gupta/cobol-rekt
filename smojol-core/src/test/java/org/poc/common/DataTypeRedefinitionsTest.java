@@ -6,7 +6,7 @@ import org.smojol.common.vm.memory.MemoryRegion;
 import org.smojol.common.vm.memory.RangeMemoryAccess;
 import org.smojol.common.vm.type.AlphanumericDataTypeSpec;
 import org.smojol.common.vm.type.DataTypeSpec;
-import org.smojol.common.vm.type.SignType;
+import org.smojol.common.vm.type.ZonedDecimalSignType;
 import org.smojol.common.vm.type.ZonedDecimalDataTypeSpec;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -15,7 +15,7 @@ import static org.poc.common.MemoryTestUtils.assertMemory;
 public class DataTypeRedefinitionsTest {
     @Test
     public void canHandlePartialRedefinitionsAsAlphanumerics() {
-        DataTypeSpec numeric = new ZonedDecimalDataTypeSpec(4, 0, SignType.UNSIGNED);
+        DataTypeSpec numeric = new ZonedDecimalDataTypeSpec(4, 0, ZonedDecimalSignType.UNSIGNED);
         MemoryRegion memoryRegion = new MemoryRegion(numeric.sizeInBytes());
         MemoryLayout layout = new MemoryLayout(memoryRegion.fullAccess(), numeric);
         layout.set("1234");
@@ -34,7 +34,7 @@ public class DataTypeRedefinitionsTest {
 
     @Test
     public void canHandleSmallerPartialRedefinitionsAsNumerics() {
-        DataTypeSpec numeric = new ZonedDecimalDataTypeSpec(4, 0, SignType.UNSIGNED);
+        DataTypeSpec numeric = new ZonedDecimalDataTypeSpec(4, 0, ZonedDecimalSignType.UNSIGNED);
         MemoryRegion memoryRegion = new MemoryRegion(numeric.sizeInBytes());
         MemoryLayout layout = new MemoryLayout(memoryRegion.fullAccess(), numeric);
         layout.set("1234");

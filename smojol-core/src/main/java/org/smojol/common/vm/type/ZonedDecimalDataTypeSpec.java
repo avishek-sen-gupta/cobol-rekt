@@ -12,15 +12,15 @@ import java.util.List;
 public class ZonedDecimalDataTypeSpec extends DataTypeSpec {
     public static final String BYTE_0X0 = Character.toString(0x00);
     public static final String CHARACTER_ZERO = "0";
-    @Getter private final SignType signType;
+    @Getter private final ZonedDecimalSignType signType;
     private final int leftSideDigits;
     private final int rightSideDigits;
 
     public ZonedDecimalDataTypeSpec(int leftSideDigits, int rightSideDigits) {
-        this(leftSideDigits, rightSideDigits, SignType.UNSIGNED);
+        this(leftSideDigits, rightSideDigits, ZonedDecimalSignType.UNSIGNED);
     }
 
-    public ZonedDecimalDataTypeSpec(int leftSideDigits, int rightSideDigits, SignType signType) {
+    public ZonedDecimalDataTypeSpec(int leftSideDigits, int rightSideDigits, ZonedDecimalSignType signType) {
         super(new DecimalPointAligner(leftSideDigits, rightSideDigits));
         this.signType = signType;
         this.leftSideDigits = leftSideDigits;
@@ -51,8 +51,8 @@ public class ZonedDecimalDataTypeSpec extends DataTypeSpec {
     public void refresh(MemoryAccess access) {
         MemoryRegion region = access.get();
         List<Byte> digits = digits(region);
-        boolean isPositive = signType == SignType.UNSIGNED
-                || (signType == SignType.SIGNED && ((region.asBytes().getLast() & 0xF0) != 0xD0));
+        boolean isPositive = signType == ZonedDecimalSignType.UNSIGNED
+                || (signType == ZonedDecimalSignType.SIGNED && ((region.asBytes().getLast() & 0xF0) != 0xD0));
 
         String overflowingNumber = digits.stream().map(HexMapper::hexChar).reduce((a, b) -> a + b).get();
         int zoned = MemoryRegion.zoned(overflowingNumber);
