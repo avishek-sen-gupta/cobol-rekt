@@ -3,6 +3,7 @@ package org.smojol.common.vm.expression;
 import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 import org.smojol.common.vm.structure.CobolDataStructure;
+import org.smojol.common.vm.type.AbstractCobolType;
 
 import java.util.logging.Logger;
 
@@ -36,6 +37,11 @@ public class SimpleConditionExpression extends CobolExpression {
     @Override
     public String description() {
         return operationMnemonic + "(" + lhs.description() + ", " + comparison.description() + ")";
+    }
+
+    @Override
+    public AbstractCobolType expressionType(CobolDataStructure dataStructures) {
+        return AbstractCobolType.BOOLEAN;
     }
 
     public CobolExpression standalone() {

@@ -172,22 +172,22 @@ public class Format1DataStructure extends CobolDataStructure {
 
     @Override
     public void add(CobolReference ref) {
-        this.set(new PrimitiveReference(this.getValue().add(ref.resolveAs(CobolDataType.NUMBER))));
+        this.set(new PrimitiveReference(this.getValue().add(ref.resolveAs(AbstractCobolType.NUMBER))));
     }
 
     @Override
     public void subtract(CobolReference ref) {
-        this.set(new PrimitiveReference(this.getValue().subtract(ref.resolveAs(CobolDataType.NUMBER))));
+        this.set(new PrimitiveReference(this.getValue().subtract(ref.resolveAs(AbstractCobolType.NUMBER))));
     }
 
     @Override
     public void multiply(CobolReference ref) {
-        this.set(new PrimitiveReference(this.getValue().multiply(ref.resolveAs(CobolDataType.NUMBER))));
+        this.set(new PrimitiveReference(this.getValue().multiply(ref.resolveAs(AbstractCobolType.NUMBER))));
     }
 
     @Override
     public void divide(CobolReference ref) {
-        this.set(new PrimitiveReference(this.getValue().divide(ref.resolveAs(CobolDataType.NUMBER))));
+        this.set(new PrimitiveReference(this.getValue().divide(ref.resolveAs(AbstractCobolType.NUMBER))));
     }
 
     public CobolDataStructure addConditionalVariable(ConditionalDataStructure conditionalDataStructure) {

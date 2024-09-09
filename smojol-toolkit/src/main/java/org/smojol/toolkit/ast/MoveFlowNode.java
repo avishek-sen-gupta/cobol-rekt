@@ -13,6 +13,7 @@ import org.smojol.common.vm.interpreter.CobolVmSignal;
 import org.smojol.common.vm.interpreter.FlowControl;
 import org.smojol.common.vm.stack.StackFrames;
 import org.smojol.common.vm.structure.CobolDataStructure;
+import org.smojol.common.vm.type.AbstractCobolType;
 
 import java.util.List;
 
@@ -62,6 +63,9 @@ public class MoveFlowNode extends CobolFlowNode {
         CobolExpressionBuilder builder = new CobolExpressionBuilder();
         toExpressions = moveStatement.moveToStatement().generalIdentifier().stream().map(builder::identifier).toList();
         CobolParser.MoveToSendingAreaContext sendingArea = moveStatement.moveToStatement().moveToSendingArea();
-        fromExpression = sendingArea.literal() != null ? builder.literal(sendingArea.literal()) : builder.identifier(sendingArea.generalIdentifier());
+        AbstractCobolType expectedType = toExpressions.getFirst().expressionType(dataStructures);
+        // TODO: Maybe distribute this across multiple expressions, one corresponding to each destination, but with a separate type
+        fromExpression = sendingArea.literal() != null ? builder.literal(sendingArea.literal(), expectedType) : builder.identifier(sendingArea.generalIdentifier());
     }
+
 }

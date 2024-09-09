@@ -3,6 +3,7 @@ package org.smojol.common.vm.expression;
 import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 import org.smojol.common.vm.structure.CobolDataStructure;
+import org.smojol.common.vm.type.AbstractCobolType;
 import org.smojol.common.vm.type.TypedRecord;
 import org.smojol.common.vm.reference.CobolReference;
 import org.smojol.common.vm.reference.CobolReferenceBuilder;
@@ -25,6 +26,11 @@ public class VariableExpression extends CobolExpression {
     @Override
     public String description() {
         return operationMnemonic + "('" + name + "')";
+    }
+
+    @Override
+    public AbstractCobolType expressionType(CobolDataStructure dataStructures) {
+        return dataStructures.reference(name).getDataType().abstractType();
     }
 
     @Override

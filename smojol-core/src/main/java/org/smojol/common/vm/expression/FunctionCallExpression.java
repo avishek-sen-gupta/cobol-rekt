@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.vm.reference.DetachedDataStructure;
 import org.smojol.common.vm.structure.CobolDataStructure;
+import org.smojol.common.vm.type.AbstractCobolType;
 import org.smojol.common.vm.type.TypedRecord;
 
 import java.util.List;
@@ -33,6 +34,11 @@ public class FunctionCallExpression extends CobolExpression {
     @Override
     public String description() {
         return functionInfo(functionName);
+    }
+
+    @Override
+    public AbstractCobolType expressionType(CobolDataStructure dataStructures) {
+        return AbstractCobolType.STRING;
     }
 
     private static String functionInfo(String fnName) {

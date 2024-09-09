@@ -38,12 +38,12 @@ public class NodeSpecBuilder {
     }
 
     public NodeSpec newDataNode(CobolDataStructure structure) {
-        return new NodeSpec(ImmutableList.of(DATA_STRUCTURE, structure.getDataType().toString()),
+        return new NodeSpec(ImmutableList.of(DATA_STRUCTURE, structure.getDataType().abstractType().name()),
                 Map.of(ID, idProvider.next(),
                         INTERNAL_ID, structure.getId(),
                         NAME, structure.name(),
                         TEXT, structure.content(),
-                        TYPE, structure.getDataType().name(),
+                        TYPE, structure.getDataType().abstractType().name(),
                         ENTITY_TYPE, DATA_STRUCTURE,
                         ENTITY_CATEGORIES, ImmutableList.of(structure.dataCategory().name()),
                         LEVEL, structure.getLevelNumber(),

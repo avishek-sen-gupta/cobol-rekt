@@ -9,7 +9,7 @@ import org.smojol.common.vm.expression.PrimitiveCobolExpression;
 import org.smojol.common.vm.memory.MemoryLayout;
 import org.smojol.common.vm.memory.MemoryRegion;
 import org.smojol.common.vm.reference.CobolReference;
-import org.smojol.common.vm.type.CobolDataType;
+import org.smojol.common.vm.type.AbstractCobolType;
 import org.smojol.common.vm.type.LiteralResolver;
 import org.smojol.common.vm.type.TypedRecord;
 
@@ -20,7 +20,7 @@ public class ConditionalDataStructure extends CobolDataStructure {
     private final CobolParser.DataDescriptionEntryFormat3Context dataDescription;
 
     public ConditionalDataStructure(CobolParser.DataDescriptionEntryFormat3Context dataDescription, CobolDataStructure parent, SourceSection sourceSection) {
-        super(dataDescription.getText(), 88, CobolDataType.CONSTRAINT, NodeText.originalText(dataDescription), sourceSection);
+        super(dataDescription.getText(), 88, parent.getDataType(), NodeText.originalText(dataDescription), sourceSection);
         this.dataDescription = dataDescription;
         this.parent = parent;
     }
@@ -178,8 +178,8 @@ public class ConditionalDataStructure extends CobolDataStructure {
 
     private String resolve(CobolParser.DataValueIntervalFromContext dataValueIntervalFromContext) {
         CobolParser.LiteralContext literal = dataValueIntervalFromContext.literal();
-        TypedRecord data = ((PrimitiveCobolExpression) new LiteralResolver().literal(literal, dataType)).data();
-        return ConversionStrategy.cast(data, CobolDataType.STRING).asString();
+        TypedRecord data = ((PrimitiveCobolExpression) new LiteralResolver().literal(literal, dataType.abstractType())).data();
+        return ConversionStrategy.convert(data, AbstractCobolType.STRING).asString();
     }
 
     @Override

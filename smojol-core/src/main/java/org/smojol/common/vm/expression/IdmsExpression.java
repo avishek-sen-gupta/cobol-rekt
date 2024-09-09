@@ -3,6 +3,7 @@ package org.smojol.common.vm.expression;
 import com.google.common.collect.ImmutableList;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.smojol.common.vm.structure.CobolDataStructure;
+import org.smojol.common.vm.type.AbstractCobolType;
 import org.smojol.common.vm.type.TypedRecord;
 
 public class IdmsExpression extends CobolExpression {
@@ -22,5 +23,11 @@ public class IdmsExpression extends CobolExpression {
     @Override
     public String description() {
         return operationMnemonic + "(" + expression.getText() + ")";
+    }
+
+    // TODO: This is sus
+    @Override
+    public AbstractCobolType expressionType(CobolDataStructure dataStructures) {
+        return AbstractCobolType.BOOLEAN;
     }
 }

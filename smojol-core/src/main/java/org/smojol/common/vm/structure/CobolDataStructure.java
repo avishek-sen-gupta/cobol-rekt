@@ -23,6 +23,7 @@ import java.util.UUID;
 import java.util.function.Function;
 
 import static org.smojol.common.vm.memory.DataLayoutBuilder.parseSpec;
+import static org.smojol.common.vm.type.CobolDataType.*;
 
 public abstract class CobolDataStructure extends SimpleTreeNode {
     @Getter
@@ -234,13 +235,18 @@ public abstract class CobolDataStructure extends SimpleTreeNode {
         if (dataDescription.dataOccursClause() != null && !dataDescription.dataOccursClause().isEmpty())
             return CobolDataType.TABLE;
         else if (isPointer(dataDescription)) return CobolDataType.POINTER;
-        if (dataDescription.dataPictureClause().isEmpty()) return CobolDataType.GROUP;
+        if (dataDescription.dataPictureClause().isEmpty()) return GROUP;
 
         // TODO: Handle multiple usage clauses?
         String input = dataDescription.dataPictureClause().getFirst().pictureString().getFirst().getText();
         CobolDataTypes.StartRuleContext root = parseSpec(input);
-        if (root.dataTypeSpec().fraction() != null) return CobolDataType.NUMBER;
-        else if (root.dataTypeSpec().alphanumeric() != null) return CobolDataType.STRING;
+        if (root.dataTypeSpec().fraction() != null) {
+             if (dataDescription.dataUsageClause().isEmpty()) return NUMERIC_EXTERNAL_DECIMAL;
+            CobolParser.UsageFormatContext usageFormatContext = dataDescription.dataUsageClause().getFirst().usageFormat();
+            if (usageFormatContext.COMP_3() != null || usageFormatContext.COMPUTATIONAL_3() != null)
+                return COMPUTATIONAL3_DECIMAL;
+            return NUMERIC_EXTERNAL_DECIMAL;
+        } else if (root.dataTypeSpec().alphanumeric() != null) return STRING;
         throw new UnsupportedOperationException("Unknown type: " + root.dataTypeSpec().getText());
     }
 
@@ -254,14 +260,12 @@ public abstract class CobolDataStructure extends SimpleTreeNode {
     }
 
     protected TypedRecord typed(Object v) {
-        return switch (dataType) {
-            case STRING, GROUP -> TypedRecord.typedString(v.toString());
-            case NUMBER -> TypedRecord.typedNumber(Double.parseDouble(v.toString()));
-            case BOOLEAN -> TypedRecord.typedBoolean(Boolean.parseBoolean(v.toString()));
-            case ROOT -> throw new IllegalArgumentException("Can't get value of root structure");
-            default ->
-                    throw new IllegalArgumentException("Can't get value of type " + dataType + " of structure " + v.toString());
-        };
+        if (dataType == STRING || dataType == GROUP) return TypedRecord.typedString(v.toString());
+        if (dataType == NUMERIC_EXTERNAL_DECIMAL || dataType == COMPUTATIONAL3_DECIMAL)
+            return TypedRecord.typedNumber(Double.parseDouble(v.toString()));
+        if (dataType == BOOLEAN) return TypedRecord.typedBoolean(Boolean.parseBoolean(v.toString()));
+        if (dataType == ROOT) return TypedRecord.typedBoolean(Boolean.parseBoolean(v.toString()));
+        throw new IllegalArgumentException("Can't get value of type " + dataType + " of structure " + v.toString());
     }
 
     public CobolDataStructure index(int index) {

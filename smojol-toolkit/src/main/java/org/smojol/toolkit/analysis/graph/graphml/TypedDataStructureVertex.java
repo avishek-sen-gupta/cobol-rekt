@@ -20,7 +20,7 @@ public class TypedDataStructureVertex implements TypedGraphVertex {
     }
 
     public String type() {
-        return node.getDataType().name();
+        return node.getDataType().abstractType().name();
     }
 
     public String label() {

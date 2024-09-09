@@ -3,6 +3,7 @@ package org.smojol.common.vm.expression;
 import com.google.common.collect.ImmutableList;
 import org.smojol.common.flowchart.ConsoleColors;
 import org.smojol.common.vm.structure.CobolDataStructure;
+import org.smojol.common.vm.type.AbstractCobolType;
 import org.smojol.common.vm.type.TypedRecord;
 
 import java.util.logging.Logger;
@@ -50,6 +51,11 @@ public class NullCobolExpression extends CobolExpression {
     @Override
     public String description() {
         return operationMnemonic + "()";
+    }
+
+    @Override
+    public AbstractCobolType expressionType(CobolDataStructure dataStructures) {
+        return AbstractCobolType.NULL;
     }
 
     @Override

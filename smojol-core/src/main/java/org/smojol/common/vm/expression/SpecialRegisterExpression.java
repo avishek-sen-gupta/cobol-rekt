@@ -3,6 +3,7 @@ package org.smojol.common.vm.expression;
 import com.google.common.collect.ImmutableList;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.vm.structure.CobolDataStructure;
+import org.smojol.common.vm.type.AbstractCobolType;
 
 public class SpecialRegisterExpression extends CobolExpression {
 
@@ -25,5 +26,10 @@ public class SpecialRegisterExpression extends CobolExpression {
     @Override
     public String description() {
         return functionCall.description();
+    }
+
+    @Override
+    public AbstractCobolType expressionType(CobolDataStructure dataStructures) {
+        return AbstractCobolType.NUMBER;
     }
 }

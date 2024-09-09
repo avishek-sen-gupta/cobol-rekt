@@ -4,7 +4,7 @@ import org.smojol.common.vm.expression.CobolExpression;
 import org.smojol.common.vm.expression.PrimitiveCobolExpression;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.common.vm.structure.ConversionStrategy;
-import org.smojol.common.vm.type.CobolDataType;
+import org.smojol.common.vm.type.AbstractCobolType;
 import org.smojol.common.vm.type.TypedRecord;
 
 public class PrimitiveReference implements CobolReference {
@@ -14,7 +14,7 @@ public class PrimitiveReference implements CobolReference {
     }
 
     @Override
-    public TypedRecord resolveAs(CobolDataType type) {
+    public TypedRecord resolveAs(AbstractCobolType type) {
         return ConversionStrategy.convert(value, type);
     }
 

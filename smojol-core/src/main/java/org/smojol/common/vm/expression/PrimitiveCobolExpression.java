@@ -2,6 +2,7 @@ package org.smojol.common.vm.expression;
 
 import com.google.common.collect.ImmutableList;
 import org.smojol.common.vm.structure.CobolDataStructure;
+import org.smojol.common.vm.type.AbstractCobolType;
 import org.smojol.common.vm.type.TypedRecord;
 
 import java.util.function.Function;
@@ -45,6 +46,11 @@ public class PrimitiveCobolExpression extends CobolExpression {
     @Override
     public String description() {
         return operationMnemonic + "(" + value.toString() + ")";
+    }
+
+    @Override
+    public AbstractCobolType expressionType(CobolDataStructure dataStructures) {
+        return value.dataType().abstractType();
     }
 
     @Override

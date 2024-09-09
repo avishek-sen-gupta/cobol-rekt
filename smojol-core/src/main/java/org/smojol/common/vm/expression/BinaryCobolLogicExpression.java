@@ -3,6 +3,8 @@ package org.smojol.common.vm.expression;
 import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 import lombok.Setter;
+import org.smojol.common.vm.structure.CobolDataStructure;
+import org.smojol.common.vm.type.AbstractCobolType;
 
 @Setter
 @Getter
@@ -19,5 +21,10 @@ public abstract class BinaryCobolLogicExpression extends CobolExpression {
     @Override
     public String description() {
         return operationMnemonic + "(" + lhs.description() + ", " + rhs.description() + ")";
+    }
+
+    @Override
+    public AbstractCobolType expressionType(CobolDataStructure dataStructures) {
+        return AbstractCobolType.BOOLEAN;
     }
 }

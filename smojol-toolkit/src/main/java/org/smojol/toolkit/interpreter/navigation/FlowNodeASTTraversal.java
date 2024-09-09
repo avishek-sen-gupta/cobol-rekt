@@ -5,7 +5,6 @@ import org.smojol.common.ast.FlowNodeASTVisitor;
 
 public class FlowNodeASTTraversal<T> {
     public void accept(FlowNode node, FlowNodeASTVisitor<T> visitor) {
-        System.out.println("Visiting " + node.originalText());
         T nodeResult = visitor.visit(node);
         node.astChildren().forEach(c -> accept(c, visitor.scope(c, nodeResult)));
     }

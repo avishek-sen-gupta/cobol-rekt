@@ -1,57 +1,13 @@
 package org.smojol.common.vm.type;
 
-public enum CobolDataType {
-    STRING {
-        @Override
-        public TypedRecord defaultValue() {
-            return TypedRecord.typedString("");
-        }
-    }, NUMBER {
-        @Override
-        public TypedRecord defaultValue() {
-            return TypedRecord.typedNumber(0.0);
-        }
-    }, CONSTRAINT {
-        @Override
-        public TypedRecord defaultValue() {
-            throw new IllegalArgumentException("Constraint does not have default value");
-        }
-    }, ROOT {
-        @Override
-        public TypedRecord defaultValue() {
-            throw new IllegalArgumentException("Root does not have default value");
-        }
-    }, BOOLEAN {
-        @Override
-        public TypedRecord defaultValue() {
-            return TypedRecord.FALSE;
-        }
-    }, GROUP {
-        @Override
-        public TypedRecord defaultValue() {
-            throw new IllegalArgumentException("Group does not have default value");
-        }
-    }, NULL {
-        @Override
-        public TypedRecord defaultValue() {
-            return TypedRecord.NULL;
-        }
-    }, TABLE {
-        @Override
-        public TypedRecord defaultValue() {
-            return TypedRecord.NULL;
-        }
-    }, DETACHED {
-        @Override
-        public TypedRecord defaultValue() {
-            return TypedRecord.typedNumber(0);
-        }
-    }, POINTER {
-        @Override
-        public TypedRecord defaultValue() {
-            return TypedRecord.pointer(0x0);
-        }
-    };
-
-    public abstract TypedRecord defaultValue();
+public record CobolDataType(UsageType usageType, TypedRecord defaultValue, AbstractCobolType abstractType) {
+    public static final CobolDataType STRING = new CobolDataType(UsageType.DEFAULT, TypedRecord.typedString(""), AbstractCobolType.STRING);
+    public static final CobolDataType BOOLEAN = new CobolDataType(UsageType.DEFAULT, TypedRecord.typedBoolean(false), AbstractCobolType.BOOLEAN);
+    public static final CobolDataType ROOT = new CobolDataType(UsageType.DEFAULT, TypedRecord.NULL, AbstractCobolType.OBJECT);
+    public static final CobolDataType GROUP = new CobolDataType(UsageType.DEFAULT, TypedRecord.NULL, AbstractCobolType.OBJECT);
+    public static final CobolDataType NULL = new CobolDataType(UsageType.DEFAULT, TypedRecord.NULL, AbstractCobolType.NULL);
+    public static final CobolDataType TABLE = new CobolDataType(UsageType.DEFAULT, TypedRecord.NULL, AbstractCobolType.OBJECT);
+    public static final CobolDataType POINTER = new CobolDataType(UsageType.DEFAULT, TypedRecord.NULL, AbstractCobolType.POINTER);
+    public static final CobolDataType NUMERIC_EXTERNAL_DECIMAL = new CobolDataType(UsageType.ZONED_DECIMAL, TypedRecord.NULL, AbstractCobolType.NUMBER);
+    public static final CobolDataType COMPUTATIONAL3_DECIMAL = new CobolDataType(UsageType.COMPUTATIONAL3_DECIMAL, TypedRecord.NULL, AbstractCobolType.NUMBER);
 }

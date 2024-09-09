@@ -9,7 +9,6 @@ import org.smojol.common.vm.structure.AccessChain;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.common.vm.structure.ConditionalDataStructure;
 import org.smojol.common.vm.structure.NamingScheme;
-import org.smojol.common.vm.type.CobolDataType;
 import org.smojol.common.vm.type.TypedRecord;
 
 import java.util.List;
@@ -27,7 +26,7 @@ public class DetachedDataStructure extends CobolDataStructure {
     }
 
     private DetachedDataStructure(String name, TypedRecord value, String rawText) {
-        super(name, -1, CobolDataType.DETACHED, rawText, SourceSection.PROCEDURE_DIVISION);
+        super(name, -1, value.dataType(), rawText, SourceSection.PROCEDURE_DIVISION);
         this.value = value;
     }
 

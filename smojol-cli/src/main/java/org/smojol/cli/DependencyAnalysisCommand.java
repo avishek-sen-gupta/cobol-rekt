@@ -27,7 +27,7 @@ import java.util.logging.Logger;
 @Command(name = "dependency", mixinStandardHelpOptions = true, version = "graph 0.1",
         description = "Implements various operations useful for reverse engineering Cobol code")
 public class DependencyAnalysisCommand implements Callable<Integer> {
-    private static final java.util.logging.Logger LOGGER = Logger.getLogger(DependencyAnalysisCommand.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(DependencyAnalysisCommand.class.getName());
     @Option(names = {"-dp", "--dialectJarPath"},
             defaultValue = "che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar",
             description = "Path to dialect .JAR")

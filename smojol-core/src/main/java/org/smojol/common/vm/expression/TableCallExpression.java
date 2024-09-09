@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.vm.structure.AccessChain;
 import org.smojol.common.vm.structure.CobolDataStructure;
+import org.smojol.common.vm.type.AbstractCobolType;
 
 import java.util.List;
 
@@ -28,6 +29,11 @@ public class TableCallExpression extends CobolExpression {
     public String description() {
         return operationMnemonic + "(" + variableExpression.description()
                 + String.join(", ", indexes.stream().map(CobolExpression::description).toList()) + ")";
+    }
+
+    @Override
+    public AbstractCobolType expressionType(CobolDataStructure dataStructures) {
+        return variableExpression.expressionType(dataStructures);
     }
 
     @Override

@@ -3,6 +3,7 @@ package org.smojol.common.vm.expression;
 import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 import org.smojol.common.vm.structure.CobolDataStructure;
+import org.smojol.common.vm.type.AbstractCobolType;
 
 public class RelationExpression extends CobolExpression {
     @Getter
@@ -24,6 +25,11 @@ public class RelationExpression extends CobolExpression {
     @Override
     public String description() {
         return operationMnemonic + "(" + relationalOperation.mnemonic() + ", " + rhs.description() + ")";
+    }
+
+    @Override
+    public AbstractCobolType expressionType(CobolDataStructure dataStructures) {
+        return AbstractCobolType.BOOLEAN;
     }
 
     public CobolExpression evaluate(CobolExpression lhs, CobolDataStructure data) {

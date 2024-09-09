@@ -3,6 +3,7 @@ package org.smojol.common.vm.expression;
 import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 import org.smojol.common.vm.structure.CobolDataStructure;
+import org.smojol.common.vm.type.AbstractCobolType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,8 @@ public abstract class CobolExpression {
 
     public abstract CobolExpression evaluate(CobolDataStructure data);
     public abstract String description();
+    public abstract AbstractCobolType expressionType(CobolDataStructure dataStructures);
+
     public CobolDataStructure reference(CobolDataStructure data) {
         throw new UnsupportedOperationException("Cannot resolve to references of intermediate expressions");
     }

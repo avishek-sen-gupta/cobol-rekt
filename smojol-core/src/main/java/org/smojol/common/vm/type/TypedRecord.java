@@ -19,14 +19,6 @@ public final class TypedRecord {
 
     private final ValueBasedComparator valueBasedComparator = new ValueBasedComparator();
 
-    public static TypedRecord demo(CobolDataType cobolDataType) {
-        if (cobolDataType == CobolDataType.STRING) return TypedRecord.typedString("SOME DEMO");
-        else if (cobolDataType == CobolDataType.NUMBER) return TypedRecord.typedNumber(250.);
-        else if (cobolDataType == CobolDataType.BOOLEAN) return TypedRecord.TRUE;
-        else if (cobolDataType == CobolDataType.GROUP) return TypedRecord.NULL;
-        throw new IllegalArgumentException("This is not a valid data type to generate data for: " + cobolDataType);
-    }
-
     public static TypedRecord typedNumber(String text) {
         return typedNumber(Double.parseDouble(text));
     }
@@ -53,7 +45,7 @@ public final class TypedRecord {
     }
 
     public Double asNumber() {
-        if (dataType == CobolDataType.NUMBER) return (Double) value;
+        if (dataType.abstractType() == AbstractCobolType.NUMBER) return (Double) value;
         throw new IllegalArgumentException("Unsupported data type: " + dataType);
     }
 
@@ -100,7 +92,7 @@ public final class TypedRecord {
     }
 
     public static TypedRecord typedNumber(double v) {
-        return new TypedRecord(v, CobolDataType.NUMBER);
+        return new TypedRecord(v, CobolDataType.NUMERIC_EXTERNAL_DECIMAL);
     }
 
     public TypedRecord divide(TypedRecord other) {
