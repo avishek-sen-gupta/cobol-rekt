@@ -1,5 +1,6 @@
 package org.poc.common;
 
+import com.google.common.collect.ImmutableList;
 import org.junit.jupiter.api.Test;
 import org.smojol.common.vm.exception.IllegalIndexException;
 import org.smojol.common.vm.memory.MemoryLayout;
@@ -379,6 +380,27 @@ public class DataTypesTest {
     }
 
     @Test
-    public void canErrorOnOutOfBoundsTableSpec() {
+    public void canAllocateCorrectNumberOfBytesBasedOnNumberOfDigitsInComp3DataType() {
+        assertEquals(3, new Comp3lDataTypeSpec(3, 2, SignType.UNSIGNED).sizeInBytes());
+        assertEquals(3, new Comp3lDataTypeSpec(2, 2, SignType.UNSIGNED).sizeInBytes());
+    }
+
+    @Test
+    public void canReadComp3Item() {
+        Comp3lDataTypeSpec comp3lDataTypeSpec = new Comp3lDataTypeSpec(3, 2, SignType.UNSIGNED);
+        MemoryRegion memoryRegion = new MemoryRegion(comp3lDataTypeSpec.sizeInBytes());
+        MemoryLayout layout = new MemoryLayout(memoryRegion.fullAccess(), comp3lDataTypeSpec);
+        memoryRegion.write(HexMapper.asBytes(ImmutableList.of(0x01, 0x23, 0x4F)));
+        assertEquals(1234.0, layout.read());
+    }
+
+    @Test
+    public void canWriteComp3Item() {
+        Comp3lDataTypeSpec comp3lDataTypeSpec = new Comp3lDataTypeSpec(2, 2, SignType.UNSIGNED);
+        MemoryRegion memoryRegion = new MemoryRegion(comp3lDataTypeSpec.sizeInBytes());
+        MemoryLayout layout = new MemoryLayout(memoryRegion.fullAccess(), comp3lDataTypeSpec);
+        layout.set("1234");
+        assertMemory(memoryRegion, "01:23:4F");
+        assertEquals("12.34", layout.readFormatted().toString());
     }
 }
