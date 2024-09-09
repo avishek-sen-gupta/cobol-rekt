@@ -1,8 +1,11 @@
 package org.smojol.common.vm.expression;
 
+import java.util.logging.Logger;
+
 public class FigurativeConstantMap {
+    private static final java.util.logging.Logger LOGGER = Logger.getLogger(FigurativeConstantMap.class.getName());
     public String map(String figurativeConstant) {
-        System.out.println("Mapping FC: " + figurativeConstant);
+        LOGGER.finer("Mapping Figurative Constant: " + figurativeConstant);
         if ("SPACE".equals(figurativeConstant) || "SPACES".equals(figurativeConstant)) return " ";
         else if ("QUOTE".equals(figurativeConstant) || "QUOTES".equals(figurativeConstant)) return "\"";
         else if ("ZERO".equals(figurativeConstant) || "ZEROES".equals(figurativeConstant) || "ZEROS".equals(figurativeConstant)) return "0";

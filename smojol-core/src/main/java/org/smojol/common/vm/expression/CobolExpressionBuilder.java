@@ -5,7 +5,10 @@ import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.common.vm.type.AbstractCobolType;
 import org.smojol.common.vm.type.LiteralResolver;
 
+import java.util.logging.Logger;
+
 public class CobolExpressionBuilder {
+    private static final java.util.logging.Logger LOGGER = Logger.getLogger(CobolExpressionBuilder.class.getName());
     public CobolExpression identifier(CobolParser.GeneralIdentifierContext ctx) {
         GeneralIdentifierVisitor identifierVisitor = new GeneralIdentifierVisitor();
         ctx.accept(identifierVisitor);
@@ -28,7 +31,7 @@ public class CobolExpressionBuilder {
 
     public CobolExpression condition(CobolParser.ConditionContext condition, CobolDataStructure dataStructures) {
         ConditionVisitor visitor = new ConditionVisitor(dataStructures);
-        System.out.println("Visiting: " + condition.getText());
+        LOGGER.finer("Visiting condition: " + condition.getText());
         condition.accept(visitor);
         return visitor.getExpression();
     }
