@@ -66,6 +66,7 @@ public class DependencyAnalysisCommand implements Callable<Integer> {
 
     @Override
     public Integer call() throws IOException {
+        LoggingConfig.setupLogging();
         List<File> copyBookPaths = copyBookDirs.stream().map(c -> Paths.get(c).toAbsolutePath().toFile()).toList();
         copyBookPaths.forEach(cbp -> LOGGER.info(cbp.getAbsolutePath()));
         ProgramSearch programSearch = ProgramSearch.searchStrategy(isPermissiveSearch);

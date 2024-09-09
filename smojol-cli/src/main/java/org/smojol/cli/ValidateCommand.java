@@ -57,6 +57,7 @@ public class ValidateCommand implements Callable<Integer> {
 
     @Override
     public Integer call() {
+        LoggingConfig.setupLogging();
         List<File> copyBookPaths = copyBookDirs.stream().map(c -> Paths.get(c).toAbsolutePath().toFile()).toList();
         ProgramSearch programSearch = ProgramSearch.searchStrategy(isPermissiveSearch);
         LOGGER.info(String.format("Running validation in %s mode...", isStrict ? "STRICT" : "PERMISSIVE"));

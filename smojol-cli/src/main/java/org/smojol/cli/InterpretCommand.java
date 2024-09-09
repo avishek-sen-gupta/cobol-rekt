@@ -55,6 +55,7 @@ public class InterpretCommand implements Callable<Integer> {
 
     @Override
     public Integer call() {
+        LoggingConfig.setupLogging();
         Pair<File, String> programPath = ProgramSearch.searchStrategy(isPermissiveSearch).run(programName, sourceDir);
         List<File> copyBookPaths = copyBookDirs.stream().map(c -> Paths.get(c).toAbsolutePath().toFile()).toList();
         SourceConfig sourceConfig = new SourceConfig(programName, programPath.getRight(), copyBookPaths, dialectJarPath);
