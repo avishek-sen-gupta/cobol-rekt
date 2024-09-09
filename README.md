@@ -185,6 +185,7 @@ The interpreter can run in two modes:
 ### Example interpreter session demonstrating breakpoints, stack traces, and record inspection
 ![Interpreter Session](documentation/smojol-interpreter-session.png)
 
+
 ### Integration with Neo4J
 
 The interpreter also supports injecting a complete execution path through the program into Neo4J. The screenshot below shows the execution trace of a reasonably complex program.
@@ -482,6 +483,44 @@ Validates the candidate COBOL code
   -V, --version              Print version information and exit.
 ```
 
+#### Command: ```interpret```
+
+To run the interpreter, use the ```interpret``` command, like in the example below. Most of the options overlap with other commands.
+
+```
+java -jar smojol-cli/target/smojol-cli.jar interpret test-exp.cbl --srcDir /Users/asgupta/code/smojol/smojol-test-code --copyBooksDir "/Users/asgupta/code/smojol/smojol-test-code" --dialectJarPath /Users/asgupta/code/smojol/che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar --dialect COBOL --resolveTactic=CONSOLE
+```
+
+The ```resolveTactic``` parameters are as below:
+
+- ```YES```: Automatically resolved every condition to TRUE
+- ```NO```: Automatically resolved every condition to FALSE
+- ```CONSOLE```: Wait for user input on the command line to resolve the condition. ```Y``` implies TRUE, all other values resolve to FALSE.
+- ```EVAL```: Actually evaluate the condition based on the expressions in it. This is a Work in Progress.
+
+The help text for the ```interpret``` command is reproduced below.
+
+```
+Usage: app interpret [-hpV] [-d=<dialect>] [-dp=<dialectJarPath>]
+                     -s=<sourceDir> [-t=<resolutionTactic>] -cp=<copyBookDirs>[,
+                     <copyBookDirs>...] [-cp=<copyBookDirs>[,
+                     <copyBookDirs>...]]... <programName>
+Interprets the COBOL source
+      <programName>          The program to analyse
+      -cp, --copyBooksDir=<copyBookDirs>[,<copyBookDirs>...]
+                             Copybook directories (repeatable)
+  -d, --dialect=<dialect>    The COBOL dialect (COBOL, IDMS)
+      -dp, --dialectJarPath=<dialectJarPath>
+                             Path to dialect .JAR
+  -h, --help                 Show this help message and exit.
+  -p, --permissiveSearch     Match filename using looser criteria
+  -s, --srcDir=<sourceDir>   The Cobol source directory
+  -t, --resolveTactic=<resolutionTactic>
+                             The condition resolution strategy (YES, NO,
+                               CONSOLE, EVAL)
+  -V, --version              Print version information and exit.
+```
+
 ### Programmatic Usage
 
 **NOTE: The API is under active development, and may be subject to change.**
@@ -506,7 +545,7 @@ If you want more fine-grained control of the location of output artifacts, you c
 
 **NOTE:** For all analyses, specifying the ```OccursIgnoringFormat1DataStructureBuilder``` class is preferable to prevent extra noise that can be generated when creating arrays for structures using ```OCCURS``` clauses. However, the ```DefaultFormat1DataStructureBuilder``` should be specified when running the interpreter, because that will require the correct number of elements in array data structures.
 
-## How to Use
+Programmatic examples are provided in the following classes.
 
 - See ```FlowChartBuildMain.java``` for examples of how flowcharts are created.
 - See ```InterpreterMain.java``` for an example of how to run the interpreter on your code, as well as inject execution traces into Neo4J.
