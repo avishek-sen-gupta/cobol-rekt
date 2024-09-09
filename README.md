@@ -554,6 +554,10 @@ Programmatic examples are provided in the following classes.
 - See ```ValidateProgramMain.java``` for an example of how to run validation through code.
 - More detailed guides on programmatic use are on the way.
 
+## Logging Settings
+
+You can specify a custom logging settings file by adding ```-Djava.util.logging.config.file``` option. if not specified, a default ```logging.properties``` will be loaded, with ```INFO``` as the default level.
+
 ## A Note on Copyright
 
 - This toolkit is distributed under the MIT License. However, the Eclipse Cobol Parser project is distributed under the Eclipse Public License V2. Accordingly, all modifications to the parser fall under the EPL v2 license, while the toolkit proper falls under the MIT License.
