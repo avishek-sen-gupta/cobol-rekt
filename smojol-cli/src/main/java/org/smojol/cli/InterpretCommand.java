@@ -5,6 +5,7 @@ import org.smojol.common.dialect.LanguageDialect;
 import org.smojol.toolkit.analysis.defined.InterpretTask;
 import org.smojol.toolkit.analysis.pipeline.ProgramSearch;
 import org.smojol.toolkit.analysis.pipeline.config.SourceConfig;
+import org.smojol.toolkit.interpreter.interpreter.CobolConditionResolver;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -43,6 +44,11 @@ public class InterpretCommand implements Callable<Integer> {
             description = "The COBOL dialect (COBOL, IDMS)")
     private String dialect;
 
+    @Option(names = {"-t", "--resolveTactic"},
+            defaultValue = "NO",
+            description = "The condition resolution strategy (YES, NO, CONSOLE, EVAL)")
+    private String resolutionTactic;
+
     @Option(names = {"-p", "--permissiveSearch"},
             description = "Match filename using looser criteria")
     private boolean isPermissiveSearch;
@@ -52,7 +58,7 @@ public class InterpretCommand implements Callable<Integer> {
         Pair<File, String> programPath = ProgramSearch.searchStrategy(isPermissiveSearch).run(programName, sourceDir);
         List<File> copyBookPaths = copyBookDirs.stream().map(c -> Paths.get(c).toAbsolutePath().toFile()).toList();
         SourceConfig sourceConfig = new SourceConfig(programName, programPath.getRight(), copyBookPaths, dialectJarPath);
-        new InterpretTask(sourceConfig, LanguageDialect.dialect(dialect)).run();
+        new InterpretTask(sourceConfig, LanguageDialect.dialect(dialect), CobolConditionResolver.valueOf(resolutionTactic)).run();
         return 0;
     }
 }

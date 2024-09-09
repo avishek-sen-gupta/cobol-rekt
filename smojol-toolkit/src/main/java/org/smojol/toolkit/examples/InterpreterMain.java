@@ -6,6 +6,7 @@ import org.smojol.toolkit.analysis.defined.InterpretTask;
 import org.smojol.toolkit.analysis.pipeline.config.SourceConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.smojol.toolkit.interpreter.interpreter.CobolConditionResolver;
 import org.smojol.toolkit.task.AnalysisTaskResult;
 
 import java.io.File;
@@ -28,7 +29,7 @@ public class InterpreterMain {
                 ImmutableList.of(new File("/Users/asgupta/code/aws-mainframe-modernization-carddemo/app/cpy")),
                 "/Users/asgupta/code/smojol/che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar");
 
-        AnalysisTaskResult result = new InterpretTask(awsCardDemoConfig, LanguageDialect.COBOL).run();
+        AnalysisTaskResult result = new InterpretTask(awsCardDemoConfig, LanguageDialect.COBOL, CobolConditionResolver.ALWAYS_YES).run();
         System.out.println(result);
     }
 }

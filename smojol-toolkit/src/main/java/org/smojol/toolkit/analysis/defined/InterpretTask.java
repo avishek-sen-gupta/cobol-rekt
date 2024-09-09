@@ -11,6 +11,7 @@ import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.navigation.EntityNavigatorBuilder;
 import org.smojol.common.pseudocode.*;
 import org.smojol.common.vm.interpreter.Breakpointer;
+import org.smojol.common.vm.interpreter.ConditionResolver;
 import org.smojol.common.vm.interpreter.ExecutionListeners;
 import org.smojol.common.vm.interpreter.FlowControl;
 import org.smojol.common.vm.strategy.UnresolvedReferenceDoNothingStrategy;
@@ -22,6 +23,7 @@ import org.smojol.toolkit.ast.FlowchartBuilderImpl;
 import org.smojol.toolkit.interpreter.interpreter.CobolBreakpointer;
 import org.smojol.toolkit.interpreter.interpreter.CobolConditionResolver;
 import org.smojol.toolkit.interpreter.interpreter.CobolInterpreterFactory;
+import org.smojol.toolkit.interpreter.interpreter.RunLogger;
 import org.smojol.toolkit.interpreter.navigation.FlowNodeASTTraversal;
 import org.smojol.toolkit.interpreter.structure.DefaultFormat1DataStructureBuilder;
 import org.smojol.toolkit.task.*;
@@ -32,10 +34,12 @@ public class InterpretTask implements AnalysisTask {
     private static final String INTERPRET_SOURCE = "INTERPRET_SOURCE";
     private final SourceConfig sourceConfig;
     private final LanguageDialect dialect;
+    private final ConditionResolver conditionResolver;
 
-    public InterpretTask(SourceConfig sourceConfig, LanguageDialect dialect) {
+    public InterpretTask(SourceConfig sourceConfig, LanguageDialect dialect, ConditionResolver conditionResolver) {
         this.sourceConfig = sourceConfig;
         this.dialect = dialect;
+        this.conditionResolver = conditionResolver;
     }
 
     @Override
@@ -57,7 +61,7 @@ public class InterpretTask implements AnalysisTask {
             System.out.println("INTERPRETING\n--------------------------------\n");
             Breakpointer bp = new CobolBreakpointer();
             bp.addBreakpoint(n -> n.getClass() == DisplayFlowNode.class && n.originalText().contains("SOMETEXT"));
-            root.acceptInterpreter(CobolInterpreterFactory.executingInterpreter(CobolConditionResolver.EVALUATING_RESOLVER, dataStructures, ImmutableList.of(), new ExecutionListeners(ImmutableList.of()), bp), FlowControl::CONTINUE);
+            root.acceptInterpreter(CobolInterpreterFactory.executingInterpreter(conditionResolver, dataStructures, ImmutableList.of(), new ExecutionListeners(ImmutableList.of(new RunLogger("/Users/asgupta/code/smojol/out/report.md"))), bp), FlowControl::CONTINUE);
             return new AnalysisTaskResultOK(INTERPRET_SOURCE);
         } catch (IOException e) {
             return new AnalysisTaskResultError(e, INTERPRET_SOURCE);

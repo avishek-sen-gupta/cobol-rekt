@@ -1,7 +1,6 @@
 package org.smojol.toolkit.interpreter.interpreter;
 
 import org.eclipse.lsp.cobol.core.CobolParser;
-import org.smojol.common.ast.AggregatingFlowNodeASTVisitor;
 import org.smojol.common.vm.interpreter.*;
 import org.smojol.toolkit.ast.GenericOnClauseFlowNode;
 import org.smojol.toolkit.ast.IfFlowNode;
@@ -29,6 +28,16 @@ public class CobolConditionResolver implements ConditionResolver {
         this.ifResolver = ifResolver;
         this.whenResolver = whenResolver;
         this.onResolver = whenResolver;
+    }
+
+    public static ConditionResolver valueOf(String resolutionTactic) {
+        return switch (resolutionTactic) {
+            case "YES" -> ALWAYS_YES;
+            case "NO" -> ALWAYS_NO;
+            case "CONSOLE" -> CONSOLE_RESOLVER;
+            case "EVAL" -> EVALUATING_RESOLVER;
+            default -> throw new IllegalArgumentException("Unexpected value: " + resolutionTactic);
+        };
     }
 
     @Override
