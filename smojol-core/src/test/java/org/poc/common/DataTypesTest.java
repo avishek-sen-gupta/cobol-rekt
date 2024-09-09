@@ -405,6 +405,26 @@ public class DataTypesTest {
     }
 
     @Test
+    public void canTruncateLongerItemsComp3Item() {
+        Comp3lDataTypeSpec comp3lDataTypeSpec = new Comp3lDataTypeSpec(2, 2, SignType.UNSIGNED);
+        MemoryRegion memoryRegion = new MemoryRegion(comp3lDataTypeSpec.sizeInBytes());
+        MemoryLayout layout = new MemoryLayout(memoryRegion.fullAccess(), comp3lDataTypeSpec);
+        layout.set("1234.56");
+        assertMemory(memoryRegion, "03:45:6F");
+        assertEquals("34.56", layout.readFormatted().toString());
+    }
+
+    @Test
+    public void canTruncateIntegersComp3Item() {
+        Comp3lDataTypeSpec comp3lDataTypeSpec = new Comp3lDataTypeSpec(2, 2, SignType.UNSIGNED);
+        MemoryRegion memoryRegion = new MemoryRegion(comp3lDataTypeSpec.sizeInBytes());
+        MemoryLayout layout = new MemoryLayout(memoryRegion.fullAccess(), comp3lDataTypeSpec);
+        layout.set("1234");
+        assertMemory(memoryRegion, "03:40:0F");
+        assertEquals("34.0", layout.readFormatted().toString());
+    }
+
+    @Test
     public void canPerformArithmeticOperationsWithComp3Data() {
         Comp3lDataTypeSpec comp3lDataTypeSpec = new Comp3lDataTypeSpec(2, 2, SignType.UNSIGNED);
         MemoryRegion memoryRegion1 = new MemoryRegion(comp3lDataTypeSpec.sizeInBytes());

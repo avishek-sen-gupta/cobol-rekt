@@ -61,8 +61,8 @@ public class Comp3lDataTypeSpec extends DataTypeSpec {
         MemoryRegion region = access.get();
         boolean isPositive = ConversionStrategy.asNumber(s) >= 0;
         String magnitudeString = readThroughFilter(s.replace("-", ""));
-        char lastDigit = s.charAt(s.length() - 1);
-        String remainingDigits = s.substring(0, s.length() - 1);
+        char lastDigit = magnitudeString.charAt(magnitudeString.length() - 1);
+        String remainingDigits = magnitudeString.substring(0, magnitudeString.length() - 1);
         List<Byte> allBytes = recurse(new StringBuilder(remainingDigits).reverse().toString()).reversed();
         allBytes.add(HexMapper.hexStringToByte(lastDigit, 'F'));
 //        List<Byte> bytes = signType.toBytes(magnitudeString, isPositive);
