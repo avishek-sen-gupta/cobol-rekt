@@ -71,38 +71,8 @@ public class ConditionalDataStructure extends CobolDataStructure {
     }
 
     @Override
-    public void set(String destinationRecordID, CobolReference ref) {
-        throw new UnsupportedOperationException("Cannot set conditional variable");
-    }
-
-    @Override
-    public void reset(String recordID) {
-        throw new UnsupportedOperationException("Cannot reset conditional variable");
-    }
-
-    @Override
     public void reset() {
         throw new UnsupportedOperationException("Cannot reset conditional variable");
-    }
-
-    @Override
-    public void add(String recordID, CobolReference ref) {
-        throw new UnsupportedOperationException("Cannot add to a conditional variable");
-    }
-
-    @Override
-    public void subtract(String recordID, CobolReference ref) {
-        throw new UnsupportedOperationException("Cannot subtract from a conditional variable");
-    }
-
-    @Override
-    public void multiply(String recordID, CobolReference ref) {
-        throw new UnsupportedOperationException("Cannot subtract from a conditional variable");
-    }
-
-    @Override
-    public void divide(String recordID, CobolReference ref) {
-        throw new UnsupportedOperationException("Cannot divide a conditional variable");
     }
 
     @Override

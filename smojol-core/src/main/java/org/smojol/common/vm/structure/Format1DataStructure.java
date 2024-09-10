@@ -107,67 +107,14 @@ public class Format1DataStructure extends CobolDataStructure {
     }
 
     @Override
-    public void reset(String recordID) {
-        List<? extends CobolDataStructure> path = searchRecursively(recordID, this);
-        unresolvedReferenceStrategy.runIfResolved(path, recordID, () -> path.getLast().reset());
-    }
-
-    @Override
     public void set(CobolReference ref) {
         ConversionStrategy.set(this, ref);
-    }
-
-    @Override
-    public void set(String destinationRecordID, CobolReference ref) {
-        List<? extends CobolDataStructure> path = searchRecursively(destinationRecordID, this);
-        unresolvedReferenceStrategy.runIfResolved(path, destinationRecordID, () -> {
-            ConversionStrategy.set(path.getLast(), ref);
-        });
     }
 
     @Override
     public void reset() {
         if (dataType != CobolDataType.GROUP) set(new PrimitiveReference(dataType.defaultValue()));
         structures.forEach(CobolDataStructure::reset);
-    }
-
-    @Override
-    public void add(String recordID, CobolReference ref) {
-        List<? extends CobolDataStructure> path = searchRecursively(recordID, this);
-        unresolvedReferenceStrategy.runIfResolved(path, recordID, () -> {
-            CobolDataStructure record = path.getLast();
-            record.add(ref);
-        });
-    }
-
-    @Override
-    public void subtract(String recordID, CobolReference ref) {
-        List<? extends CobolDataStructure> path = searchRecursively(recordID, this);
-        unresolvedReferenceStrategy.runIfResolved(path, recordID, () -> {
-            CobolDataStructure record = path.getLast();
-            record.subtract(ref);
-//            record.set(new PrimitiveReference(record.getValue().subtract(ref.resolveAs(CobolDataType.NUMBER))));
-        });
-    }
-
-    @Override
-    public void multiply(String recordID, CobolReference ref) {
-        List<? extends CobolDataStructure> path = searchRecursively(recordID, this);
-        unresolvedReferenceStrategy.runIfResolved(path, recordID, () -> {
-            CobolDataStructure record = path.getLast();
-            record.multiply(ref);
-//            record.set(new PrimitiveReference(record.getValue().multiply(ref.resolveAs(CobolDataType.NUMBER))));
-        });
-    }
-
-    @Override
-    public void divide(String recordID, CobolReference ref) {
-        List<? extends CobolDataStructure> path = searchRecursively(recordID, this);
-        unresolvedReferenceStrategy.runIfResolved(path, recordID, () -> {
-            CobolDataStructure record = path.getLast();
-            record.divide(ref);
-//            record.set(new PrimitiveReference(record.getValue().divide(ref.resolveAs(CobolDataType.NUMBER))));
-        });
     }
 
     @Override

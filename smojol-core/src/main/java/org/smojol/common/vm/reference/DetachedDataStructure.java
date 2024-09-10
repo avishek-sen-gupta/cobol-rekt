@@ -76,16 +76,6 @@ public class DetachedDataStructure extends CobolDataStructure {
     }
 
     @Override
-    public void set(String destinationRecordID, CobolReference ref) {
-
-    }
-
-    @Override
-    public void reset(String recordID) {
-
-    }
-
-    @Override
     public void reset() {
 
     }
@@ -98,26 +88,6 @@ public class DetachedDataStructure extends CobolDataStructure {
     @Override
     public CobolDataStructure cobolIndex(int index) {
         throw new UnsupportedOperationException("Indexing is not supported for detached structures");
-    }
-
-    @Override
-    public void add(String recordID, CobolReference ref) {
-
-    }
-
-    @Override
-    public void subtract(String recordID, CobolReference ref) {
-
-    }
-
-    @Override
-    public void multiply(String recordID, CobolReference ref) {
-
-    }
-
-    @Override
-    public void divide(String recordID, CobolReference ref) {
-
     }
 
     @Override
