@@ -4,7 +4,41 @@
 
 You can see the current backlog [here](https://github.com/users/avishek-sen-gupta/projects/1).
 
-This is an evolving toolkit of capabilities helpful for reverse engineering legacy Cobol code. As of now, the following capabilities are available:
+## Contents
+
+- [Introduction](#introduction)
+- [Major Dependencies](#major-dependencies)
+- [Reverse Engineering Use Cases](#reverse-engineering-use-cases)
+- [Planned Capabilities](#planned-capabilities-andor-experiments)
+- [Flowchart Generation](#flowchart-generation)
+- [Parse Tree Generation](#parse-tree-generation)
+- [Control Flow Generation](#control-flow-generation)
+- [Neo4J Integration](#neo4j-integration)
+- [OpenAI integration](#openai-integration)
+- [Data Dependency Generation](#data-dependency-graph)
+- [Comments integration](#comments-integration)
+- [SMOJOL (SMol Java-powered CobOL) Interpreter](#smojol-smol-java-powered-cobol-interpreter)
+- [Analysis through JGraphT](#analysis-through-jgrapht)
+- [Useful Analyses through plain Python](#useful-analyses-through-plain-python)
+  - [Analyse static value assignments to variables](#1-analyse-static-value-assignments-to-variables)
+- [Analysis through NetworkX](#analysis-through-networkx)
+    - [Code Similarity](#code-similarity)
+    - [Code Pattern Recognition](#code-pattern-recognition)
+- [Building Glossaries](#building-glossaries-alpha)
+- [Building Capability Maps](#building-capability-maps-alpha)
+- [Basic Block Analysis](#basic-blocks)
+- [How to Build](#how-to-build)
+- [Running against AWS Card Demo](#running-against-aws-card-demo)
+- [Developer Guide](#developer-guide)
+  - [CLI Usage](#cli-usage)
+  - [Programmatic Usage](#programmatic-usage)
+- [Logging Settings](#logging-settings)
+- [A Note on Copyright](#a-note-on-copyright)
+- [Caveats](#caveats)
+- [Known Issues](#known-issues)
+
+## Introduction
+Cobol-REKT is an evolving toolkit of capabilities helpful for reverse engineering legacy Cobol code. As of now, the following capabilities are available:
 
 - Program / section / paragraph level flowchart generation based on AST (SVG or PNG)
 - Section-wise generation of Mermaid flowcharts
@@ -19,11 +53,13 @@ This is an evolving toolkit of capabilities helpful for reverse engineering lega
 - Exposes a unified model (AST, CFG, Data Structures with appropriate interconnections) which can be analysed through [JGraphT](https://jgrapht.org/), together with export to GraphML format and JSON.
 - Support for namespaces to allow unique addressing of (possibly same) graphs
 - Analysing static value assignments to variables
-- **ALPHA:** Support for building Glossary of Variables from data structures using LLMs
-- **ALPHA:** Support for extracting Capability Graph from paragraphs of a program using LLMs
-- **ALPHA:** Injecting inter-program dependencies into Neo4J (with export to JSON)
-- **ALPHA:** Paragraph similarity map (Java / Python)
-- **ALPHA:** Code Pattern Detection (Neo4J / NetworkX)
+- Support for building Glossary of Variables from data structures using LLMs
+- Support for extracting Capability Graph from paragraphs of a program using LLMs
+- Injecting inter-program dependencies into Neo4J (with export to JSON)
+- Paragraph similarity map (Java / Python)
+- Code Pattern Detection (Neo4J / NetworkX)
+- Exposing Basic Blocks which are a useful first step in raw transpilation
+
 
 Cobol-REKT is more of a library of useful things intended to be embedded in more formal reverse engineering workflows/pipelines, rather than being a standalone tool (though you can certainly use it as such). Many of the higher-level wrappers are merely sensible defaults; you are encouraged to modify them to suit your needs.
 
@@ -62,7 +98,6 @@ Some reverse engineering use cases are listed below. Descriptions of the capabil
 
 - Integrating Domain Knowledge
 - IDMS Identify UI interactions and participants (```INSPECT```, ```MAP IN```, ```INQUIRE MAP```, Panel Definition parsing)
-- Exposing Basic Blocks which are a useful first step in raw transpilation
 - Quad Generation (WIP): This is a WIP experiment to generate Instruction Quads (a sort of language-independent Intermediate Representation described in the Dragon Book (Compilers: Principles, Techniques, and Tools by Aho, Sethi, Ullman).
 
 ## Flowchart Generation
@@ -94,7 +129,7 @@ Most of the capabilities are already present in the Che4z library. Some new gram
 
 This capability can be used by specifiying the ```WRITE_RAW_AST``` task.
 
-## Control Flow Tree Generation
+## Control Flow Generation
 
 This capability allows the engineer to produce a control flow tree for the Cobol source. This can be used for straight-up visualisation (the flowchart capability actually uses the control flow tree behind the scenes), or more dynamic analysis through an interpreter. See [SMOJOL (SMol Java-powered CobOL Interpreter)](#smojol-smol-java-powered-cobol-interpreter) for a description of how this can help.
 
@@ -148,14 +183,14 @@ The interpreter can run in two modes:
 - **No-Operation mode:** In this mode, none of the processing statements like MOVE, ADD, etc. are actually executed, but control flow is still respected. This mode is useful in many contexts where the actual change in variables isn't as important as knowing / logging the action that is taking place. This is a good default starting point for ingesting runtime execution paths into a graph. Decisions which affect control flow are evaluated based on the kind of evaluation strategy specified, so the full expression evaluation strategy will not be effective. More specific strategies can be written, or interactive resolution through the console can be used.
 - **Full evaluation mode (Experimental):** In this mode, expressions are actually evaluated to their final results, and is the closest to actual execution of the program including storing variable state. Note that this is a work in progress, since every nook and cranny of the Cobol standard is not supported yet.
 
-## Current Capabilities of the Interpreter
+### Current Capabilities of the Interpreter
 
 - Support for most control constructs: IF/THEN, NEXT SENTENCE, GO TO, PERFORM, SEARCH...WHEN, IDMS ON
 - Support for expression evaluation in COMPUTE, MOVE, ADD, SUBTRACT, MULTIPLY, DIVIDE
 - Support for interactive resolution of conditions
 - Most common class comparisons supported
 - Support for abbreviated relation condition forms (IF A > 10 OR 20 AND 30...)
-- Functioning type system (supports zoned decimals and alphanumerics) with a large subset of z/OS behaviour compatibility for scenarios undefined in the Cobol standard
+- Functioning type system (supports zoned decimals, COMP-3 / Packed Decimal and alphanumerics) with a large subset of z/OS behaviour compatibility for scenarios undefined in the Cobol standard
 - Support for fixed-size tables and single subscripting
 - Support for elementary, composite, and recursive REDEFINES (REDEFINES of REDEFINES)
 - Multiple subscript access
@@ -168,7 +203,7 @@ The interpreter can run in two modes:
 - Support for different strategies to deal with unresolved record references (ignore / throw exception)
 - Support for listeners to extract specific information about the current state of the program (all the Neo4J integrations are via these listeners)
 
-## Planned Capabilities
+### Planned Capabilities for the interpreter
 
 - Support symbolic execution
 - Support EVALUATE statements
@@ -287,7 +322,7 @@ python -m src.llm.glossary_builder.main /path/to/report/dir/program-data.json ou
 
 This will generate the glossary in ```out/glossary.md```. Integrating other out-of-band data sources is a work in progress.
 
-## Build Capability Maps **(ALPHA)**
+## Building Capability Maps **(ALPHA)**
 
 The toolkit supports extracting a capability map from the paragraphs of a source. For this, you need to generate both the AST in Neo4J, as well as the data structures JSON, you can do this via:
 
@@ -315,6 +350,19 @@ This will take a little time, depending upon the number of paragraphs and their 
 ![Capability Map Dendrogram](documentation/capability-map-dendrogram.png)
 
 ![Capability Map Neo4J](documentation/capability-graph-neo4j.png)
+
+## Basic Blocks
+
+Basic Blocks are useful for analysing flow of the code without worrying about the specific computational details of the code. They are also useful (and the more pertinent use-case in our case) for rewriting / transpiling potential unstructured COBOL code (code with possibly arbitrary GOTOs) into a structured form / language (i.e., without GOTOs).
+
+Exposing basic blocks is done through the ```AnalyseControlFlowTask``` task. Note that this task does not actually output any artifacts, because it is intended for more internal analysis and transpilation (if I get to it at some point). It can be triggered through the ```CodeTaskRunner``` API just like many of the tasks. The return value on success is a pair.
+
+- The first item is a list of ```BasicBlock``` objects. These objects in turn contain lists of ```PseudocodeInstruction```s. These instructions represent a linear translation of the code (like bytecode, but still very COBOL-specific) with extra sentinel instructions (ENTER/EXIT, etc.) inserted for more hook points.
+- The second item is an object which contains two thing: a complete list of ```PseudocodeInstruction```s which the basic blocks are derived from, and all the edges between these instructions which represent possible control flows (sequential as well as jumps). If you choose to inject this graph into Neo4J, you will see that most of the graph is a linear chain of nodes, unlike the ```FlowNode``` representation which continues to maintain a syntactical hierarchy. ```PseudocodeInstruction``` objects do contain ```FlowNode``` objects internally for maintaining links with the original parse tree.
+
+A sequence of ```PseudocodeInstruction```s look something like below:
+
+![Pseudocode example](documentation/psuedocode-example.png)
 
 ## How to Build
 

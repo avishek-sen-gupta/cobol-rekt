@@ -1,8 +1,10 @@
 package org.smojol.toolkit.analysis.defined;
 
+import com.google.common.collect.ImmutableList;
 import com.mojo.woof.EdgeType;
 import com.mojo.woof.GraphSDK;
 import com.mojo.woof.Neo4JDriverBuilder;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.neo4j.driver.Record;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.FlowNodeLike;
@@ -37,8 +39,8 @@ public class AnalyseControlFlowTask implements AnalysisTask {
     }
 
     private AnalysisTaskResult analyse(PseudocodeGraph graph) {
-        List<BasicBlock> nasicBlocks = basicBlocks(graph);
-        return new AnalysisTaskResultOK(CommandLineAnalysisTask.ANALYSE_CONTROL_FLOW.name(), nasicBlocks);
+        List<BasicBlock> basicBlocks = basicBlocks(graph);
+        return new AnalysisTaskResultOK(CommandLineAnalysisTask.ANALYSE_CONTROL_FLOW.name(), ImmutablePair.of(basicBlocks, graph));
     }
 
     private List<BasicBlock> basicBlocks(PseudocodeGraph graph) {

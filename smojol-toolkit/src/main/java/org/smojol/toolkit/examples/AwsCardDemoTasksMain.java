@@ -24,14 +24,7 @@ public class AwsCardDemoTasksMain {
                         new File("/Users/asgupta/code/aws-mainframe-modernization-carddemo/app/cpy-bms")),
                 "/Users/asgupta/code/smojol/che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar",
                 LanguageDialect.COBOL, new FullProgram(FlowchartOutputFormat.SVG), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder(), new ProgramSearch())
-                .runForPrograms(ImmutableList.of(CommandLineAnalysisTask.WRITE_RAW_AST,
-                                                 CommandLineAnalysisTask.EXPORT_TO_GRAPHML,
-                                                 CommandLineAnalysisTask.WRITE_CFG,
-                                                 CommandLineAnalysisTask.WRITE_DATA_STRUCTURES,
-                                                 CommandLineAnalysisTask.EXPORT_UNIFIED_TO_JSON,
-                                                 CommandLineAnalysisTask.INJECT_INTO_NEO4J,
-                                                 CommandLineAnalysisTask.BUILD_PROGRAM_DEPENDENCIES
-                                                ), ImmutableList.of("COADM01C.cbl"));
+                .runForPrograms(ImmutableList.of(CommandLineAnalysisTask.ANALYSE_CONTROL_FLOW), ImmutableList.of("COADM01C.cbl"));
         for (Map.Entry<String, List<AnalysisTaskResult>> entry : result.entrySet()) {
             System.out.println(entry.getKey() + ": ");
             for (AnalysisTaskResult taskResult : entry.getValue()) {
