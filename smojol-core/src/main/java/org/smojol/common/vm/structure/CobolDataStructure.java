@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static org.smojol.common.vm.memory.DataLayoutBuilder.parseSpec;
 import static org.smojol.common.vm.type.CobolDataType.*;
@@ -240,14 +241,28 @@ public abstract class CobolDataStructure extends SimpleTreeNode {
         // TODO: Handle multiple usage clauses?
         String input = dataDescription.dataPictureClause().getFirst().pictureString().getFirst().getText();
         CobolDataTypes.StartRuleContext root = parseSpec(input);
+//        CobolDataTypes.FractionContext ctx = new MemberParseTreeChain<>(root)
+//                .chain(CobolDataTypes.StartRuleContext::dataTypeSpec)
+//                .chain(CobolDataTypes.DataTypeSpecContext::fraction).get();
+
+//        new MemberParseTreeChain<>(dataDescription).listChain(CobolParser.DataDescriptionEntryFormat1Context::dataUsageClause).exists();
+        List<CobolParser.DataUsageClauseContext> dataUsageClauseContexts = new MemberParseTreeChain<>(dataDescription).listChain(CobolParser.DataDescriptionEntryFormat1Context::dataUsageClause).get();
+
         if (root.dataTypeSpec().fraction() != null) {
-             if (dataDescription.dataUsageClause().isEmpty()) return NUMERIC_EXTERNAL_DECIMAL;
+            if (dataDescription.dataUsageClause().isEmpty()) return NUMERIC_EXTERNAL_DECIMAL;
+
             CobolParser.UsageFormatContext usageFormatContext = dataDescription.dataUsageClause().getFirst().usageFormat();
-            if (usageFormatContext.COMP_3() != null || usageFormatContext.COMPUTATIONAL_3() != null)
+            if (usageFormatContext.COMP_3() != null
+                    || usageFormatContext.COMPUTATIONAL_3() != null
+                    || usageFormatContext.PACKED_DECIMAL() != null)
                 return COMPUTATIONAL3_DECIMAL;
             return NUMERIC_EXTERNAL_DECIMAL;
         } else if (root.dataTypeSpec().alphanumeric() != null) return STRING;
         throw new UnsupportedOperationException("Unknown type: " + root.dataTypeSpec().getText());
+    }
+
+    private static <T> boolean chain(CobolParser.DataDescriptionEntryFormat1Context dataDescription, Supplier<T> levelNumber) {
+        return false;
     }
 
     private static boolean isPointer(CobolParser.DataDescriptionEntryFormat1Context dataDescription) {
