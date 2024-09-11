@@ -41,6 +41,7 @@ public class CobolDataStructureBuilder implements DataStructureBuilder {
         zerothStructure.expandTables();
         zerothStructure.calculateMemoryRequirements();
         zerothStructure.allocateRecordPointers();
+        int i = 0;
         while (zerothStructure.buildRedefinitions(zerothStructure)) {
             LOGGER.info("Building redefinitions...");
         }

@@ -1,4 +1,4 @@
-package org.smojol.cli;
+package org.smojol.common.logging;
 
 import java.io.IOException;
 import java.io.InputStream;

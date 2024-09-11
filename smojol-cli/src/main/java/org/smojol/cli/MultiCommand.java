@@ -1,5 +1,6 @@
 package org.smojol.cli;
 
+import org.smojol.common.logging.LoggingConfig;
 import org.smojol.toolkit.analysis.defined.CodeTaskRunner;
 import org.smojol.toolkit.analysis.validation.DataStructureValidation;
 import org.smojol.toolkit.task.AnalysisTaskResult;

@@ -218,6 +218,7 @@ public class Format1DataStructure extends CobolDataStructure {
 
     @Override
     public boolean buildRedefinitions(CobolDataStructure root) {
+        LOGGER.finer("Inspecting Redefinitions of " + root + "...");
         if (!isComposite && (!isRedefinition() || isInitialisedRedefinition())) return false;
         if (isComposite && (!isRedefinition() || isInitialisedRedefinition())) {
             return structures.stream().map(dataStructure -> dataStructure.buildRedefinitions(root)).reduce(false, (a, b) -> a || b);
@@ -231,10 +232,12 @@ public class Format1DataStructure extends CobolDataStructure {
         }
         MemoryAccess originalAccess = redefinedRecord.layout().getAccess();
         if (isComposite) {
+            LOGGER.finer(String.format("Building [%s] redefinition of group record [%s]", name(), redefinedRecord.name()));
             int headPointer = originalAccess.fromIndex();
             allocateLayouts(headPointer, originalAccess.fullMemory());
             return true;
         }
+        LOGGER.finer(String.format("Building [%s] redefinition of atomic record [%s]", name(), redefinedRecord.name()));
         RangeMemoryAccess redefinedAccess = originalAccess.copy(typeSpec.getLeft().sizeInBytes());
         layout = new MemoryLayout(redefinedAccess, typeSpec.getLeft());
         return true;

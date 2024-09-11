@@ -3,6 +3,7 @@ package org.smojol.cli;
 import com.mojo.woof.GraphSDK;
 import com.mojo.woof.Neo4JDriverBuilder;
 import org.smojol.common.dialect.LanguageDialect;
+import org.smojol.common.logging.LoggingConfig;
 import org.smojol.toolkit.analysis.defined.AnalyseProgramDependenciesTask;
 import org.smojol.toolkit.analysis.defined.ExportProgramDependenciesTask;
 import org.smojol.toolkit.analysis.defined.InjectProgramDependenciesIntoNeo4JTask;
