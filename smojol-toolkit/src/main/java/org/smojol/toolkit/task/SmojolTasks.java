@@ -5,7 +5,6 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.smojol.common.pseudocode.BasicBlockFactory;
 import org.smojol.common.pseudocode.SmojolSymbolTable;
 import org.smojol.common.pseudocode.SymbolReferenceBuilder;
-import org.smojol.common.vm.expression.CobolExpressionBuilder;
 import org.smojol.toolkit.analysis.defined.*;
 import org.smojol.toolkit.analysis.pipeline.ParsePipeline;
 import org.smojol.toolkit.analysis.graph.NamespaceQualifier;
@@ -126,7 +125,7 @@ public class SmojolTasks {
     public AnalysisTask BUILD_PSEUDOCODE_GRAPH = new AnalysisTask() {
         @Override
         public AnalysisTaskResult run() {
-            return new BuildPseudocodeGraphTask(flowRoot, neo4JDriverBuilder).run();
+            return new BuildPseudocodeGraphTask(flowRoot).run();
         }
     };
 
@@ -134,6 +133,13 @@ public class SmojolTasks {
         @Override
         public AnalysisTaskResult run() {
             return new AnalyseControlFlowTask(flowRoot, new BasicBlockFactory(idProvider), neo4JDriverBuilder).run();
+        }
+    };
+
+    public AnalysisTask BUILD_TRANSPILER_TREE = new AnalysisTask() {
+        @Override
+        public AnalysisTaskResult run() {
+            return new BuildTranspilerTreeTask(flowRoot, dataStructures).run();
         }
     };
 
@@ -212,6 +218,7 @@ public class SmojolTasks {
             case SUMMARISE_THROUGH_LLM -> SUMMARISE_THROUGH_LLM;
             case BUILD_PSEUDOCODE_GRAPH -> BUILD_PSEUDOCODE_GRAPH;
             case ANALYSE_CONTROL_FLOW -> ANALYSE_CONTROL_FLOW;
+            case BUILD_TRANSPILER_TREE -> BUILD_TRANSPILER_TREE;
             case GENERATE_IR -> nullTask(CommandLineAnalysisTask.GENERATE_IR);
         });
     }

@@ -1,13 +1,13 @@
 package org.smojol.common.vm.expression;
 
 import com.google.common.collect.ImmutableList;
+import lombok.Getter;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.common.vm.type.AbstractCobolType;
 
 public class SpecialRegisterExpression extends CobolExpression {
-
-    private final FunctionCallExpression functionCall;
+    @Getter private final FunctionCallExpression functionCall;
 
     public SpecialRegisterExpression(CobolParser.SpecialRegisterContext specialRegisterContext) {
         super("FUNCTION_" + (specialRegisterContext.ADDRESS() != null ? "ADDRESS" : "LENGTH"));

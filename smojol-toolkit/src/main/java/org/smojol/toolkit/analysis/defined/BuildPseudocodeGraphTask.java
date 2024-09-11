@@ -1,6 +1,5 @@
 package org.smojol.toolkit.analysis.defined;
 
-import com.mojo.woof.Neo4JDriverBuilder;
 import org.apache.commons.lang3.tuple.Pair;
 import org.smojol.common.ast.*;
 import org.smojol.common.id.UUIDProvider;
@@ -13,11 +12,9 @@ import java.util.List;
 
 public class BuildPseudocodeGraphTask implements AnalysisTask {
     private final FlowNode astRoot;
-    private final Neo4JDriverBuilder neo4JDriverBuilder;
 
-    public BuildPseudocodeGraphTask(FlowNode astRoot, Neo4JDriverBuilder neo4JDriverBuilder) {
+    public BuildPseudocodeGraphTask(FlowNode astRoot) {
         this.astRoot = astRoot;
-        this.neo4JDriverBuilder = neo4JDriverBuilder;
     }
 
     @Override

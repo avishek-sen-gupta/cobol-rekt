@@ -1,5 +1,6 @@
 package org.smojol.common.vm.expression;
 
+import com.google.common.collect.ImmutableList;
 import lombok.Setter;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.vm.structure.CobolDataStructure;
@@ -32,9 +33,14 @@ public class SimpleConditionVisitor extends AntlrCobolExpressionVisitor {
                 // TODO: Temp fix for variables which don't directly appear in data structures like indexes in INDEXED BY clauses
                 expression = new PrimitiveCobolExpression(resolved.getValue());
                 return expression;
-            } else if (resolved.getClass() == ConditionalDataStructure.class) {
-                expression = lhs;
+            } else if (resolved instanceof ConditionalDataStructure cds) {
+                // TODO: This can be more than just equality
+                expression = new SimpleConditionExpression(new VariableExpression(cds.parent().name()), new RelationExpression(RelationalOperation.EQUAL, new VariableExpression(cds.name())));
+                expression = new FunctionCallExpression("isInRange", ImmutableList.of(new VariableExpression(cds.parent().name()), new VariableExpression(cds.name())));
                 return expression;
+//                cds.parent().
+//                expression = lhs;
+//                return expression;
             }
         }
         if (ctx.fixedComparison() != null) {
@@ -49,7 +55,7 @@ public class SimpleConditionVisitor extends AntlrCobolExpressionVisitor {
                 expression = new SimpleConditionExpression(lhs).standalone();
             } else {
                 // Abbreviated condition
-                expression = new SimpleConditionExpression(mostRecentLhs, relation).standalone();
+                expression = new SimpleConditionExpression(mostRecentLhs, relation);
             }
             return expression;
         }

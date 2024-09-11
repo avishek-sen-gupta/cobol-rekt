@@ -1,6 +1,7 @@
 package org.smojol.common.vm.expression;
 
 import com.google.common.collect.ImmutableList;
+import lombok.Getter;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.vm.structure.AccessChain;
 import org.smojol.common.vm.structure.CobolDataStructure;
@@ -9,8 +10,8 @@ import org.smojol.common.vm.type.AbstractCobolType;
 import java.util.List;
 
 public class TableCallExpression extends CobolExpression {
-    private final VariableExpression variableExpression;
-    private final List<CobolExpression> indexes;
+    @Getter private final VariableExpression variableExpression;
+    @Getter private final List<CobolExpression> indexes;
 
     public TableCallExpression(VariableExpression variableExpression, List<CobolParser.ArithmeticExpressionContext> indexContexts) {
         super(ImmutableList.of(variableExpression), "INDEX");

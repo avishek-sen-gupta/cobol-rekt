@@ -1,6 +1,5 @@
 package org.smojol.toolkit.analysis.defined;
 
-import com.google.common.collect.ImmutableList;
 import com.mojo.woof.EdgeType;
 import com.mojo.woof.GraphSDK;
 import com.mojo.woof.Neo4JDriverBuilder;
@@ -31,7 +30,7 @@ public class AnalyseControlFlowTask implements AnalysisTask {
 
     @Override
     public AnalysisTaskResult run() {
-        AnalysisTaskResult result = new BuildPseudocodeGraphTask(astRoot, neo4JDriverBuilder).run();
+        AnalysisTaskResult result = new BuildPseudocodeGraphTask(astRoot).run();
         return switch (result) {
             case AnalysisTaskResultError analysisTaskResultError -> analysisTaskResultError;
             case AnalysisTaskResultOK analysisTaskResultOK -> analyse(analysisTaskResultOK.getDetail());

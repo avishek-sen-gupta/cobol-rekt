@@ -21,7 +21,7 @@ public class IfFlowNode extends CobolFlowNode {
     private FlowNode ifThenBlock;
     private FlowNode ifElseBlock;
     @Getter private CobolParser.ConditionContext condition;
-    private CobolExpression conditionExpression;
+    @Getter private CobolExpression conditionExpression;
 
     public IfFlowNode(ParseTree parseTree, FlowNode scope, FlowNodeService nodeService, StackFrames stackFrames) {
         super(parseTree, scope, nodeService, stackFrames);

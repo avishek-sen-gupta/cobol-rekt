@@ -8,7 +8,6 @@
                     10 SOME-PART-2 PIC XXXX.
                     10 INVOICE-AMOUNT PIC 9999.
                     10 VENDOR-CORRECTION PIC 9999.
-                    10 COMPTEST USAGE COMP-3
 
                01 SOME-GROUP.
                     10 LEVEL-10-A  PIC XXXX OCCURS 3.

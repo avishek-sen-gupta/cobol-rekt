@@ -1,6 +1,7 @@
 package org.smojol.common.vm.expression;
 
 import com.google.common.collect.ImmutableList;
+import lombok.Getter;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.vm.reference.DetachedDataStructure;
 import org.smojol.common.vm.structure.CobolDataStructure;
@@ -9,6 +10,7 @@ import org.smojol.common.vm.type.TypedRecord;
 
 import java.util.List;
 
+@Getter
 public class FunctionCallExpression extends CobolExpression {
     private final DetachedDataStructure proxyReturnValue;
     private final String functionName;
