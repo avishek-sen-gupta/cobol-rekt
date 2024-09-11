@@ -23,7 +23,7 @@ public class DivideOperation implements CobolOperation {
     public void run(CobolDataStructure cobolDataStructure) {
         CobolReferenceBuilder builder = new CobolReferenceBuilder();
         List<CobolExpression> quotients = divide.getDividendExpressions().stream().map(dividend -> dividend.evaluate(cobolDataStructure).divide(divide.getDivisorExpression(), cobolDataStructure)).toList();
-        List<CobolExpression> destinations = divide.getDestinationExpression();
+        List<CobolExpression> destinations = divide.getDestinationExpressions();
         if (quotients.size() == 1)
             destinations.forEach(dst -> builder.getReference(dst, cobolDataStructure).set(builder.getReference(quotients.getFirst(), cobolDataStructure)));
         else {

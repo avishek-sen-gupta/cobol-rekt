@@ -16,6 +16,6 @@ public class SubtractTranspilerNodeBuilder implements TranspilerNode {
 
         if (!n.isGiving())
             return new TranspilerCodeBlock(zip(n.getDestinationExpressions().stream().map(nodeBuilder::build), differences.stream(), (dst, src) -> (TranspilerNode) new SetTranspilerNode(src, dst)).toList()).unwrap();
-        return new TranspilerCodeBlock(n.getDestinationExpressions().stream().map(dst -> (TranspilerNode) new SetTranspilerNode(differences.getFirst(), nodeBuilder.build(dst))).toList());
+        return new TranspilerCodeBlock(n.getDestinationExpressions().stream().map(dst -> (TranspilerNode) new SetTranspilerNode(differences.getFirst(), nodeBuilder.build(dst))).toList()).unwrap();
     }
 }

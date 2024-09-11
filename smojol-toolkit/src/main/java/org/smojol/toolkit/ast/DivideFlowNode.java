@@ -23,7 +23,7 @@ public class DivideFlowNode extends CobolFlowNode {
     private CobolParser.DivisorContext givingDividend;
     private CobolExpression divisorExpression;
     private List<CobolExpression> dividendExpressions;
-    private List<CobolExpression> destinationExpression;
+    private List<CobolExpression> destinationExpressions;
 
     public DivideFlowNode(ParseTree parseTree, FlowNode scope, FlowNodeService nodeService, StackFrames stackFrames) {
         super(parseTree, scope, nodeService, stackFrames);
@@ -76,13 +76,13 @@ public class DivideFlowNode extends CobolFlowNode {
             // Format 1: See https://www.ibm.com/docs/en/cobol-zos/6.3?topic=statements-divide-statement
             dividendExpressions = divideStatement.divideIntoStatement().divideInto().stream().map(lhs -> builder.identifier(lhs.generalIdentifier())).toList();
             divisorExpression = builder.literalOrIdentifier(divideStatement.divisor().literal(), divideStatement.divisor().generalIdentifier());
-            destinationExpression = dividendExpressions;
+            destinationExpressions = dividendExpressions;
         } else if (divideStatement.divideIntoGivingStatement() != null) {
             // Format 2: See https://www.ibm.com/docs/en/cobol-zos/6.3?topic=statements-divide-statement
             divisorExpression = builder.literalOrIdentifier(divideStatement.divisor().literal(), divideStatement.divisor().generalIdentifier());
             dividendExpressions = ImmutableList.of(builder.literalOrIdentifier(divideStatement.divideIntoGivingStatement().literal(),
                     divideStatement.divideIntoGivingStatement().generalIdentifier()));
-            destinationExpression = divideStatement.divideIntoGivingStatement().divideGivingPhrase()
+            destinationExpressions = divideStatement.divideIntoGivingStatement().divideGivingPhrase()
                     .divideGiving().stream().map(dst -> builder.identifier(dst.generalIdentifier())).toList();
 
             // Format 4: See https://www.ibm.com/docs/en/cobol-zos/6.3?topic=statements-divide-statement
@@ -92,10 +92,15 @@ public class DivideFlowNode extends CobolFlowNode {
             divisorExpression = builder.literalOrIdentifier(divideStatement.divideByGivingStatement().divisor().literal(),
                     divideStatement.divideByGivingStatement().divisor().generalIdentifier());
             dividendExpressions = ImmutableList.of(builder.literalOrIdentifier(divideStatement.divisor().literal(), divideStatement.divisor().generalIdentifier()));
-            destinationExpression = divideStatement.divideByGivingStatement().divideGivingPhrase()
+            destinationExpressions = divideStatement.divideByGivingStatement().divideGivingPhrase()
                     .divideGiving().stream().map(dst -> builder.identifier(dst.generalIdentifier())).toList();
 
             // Format 5: See https://www.ibm.com/docs/en/cobol-zos/6.3?topic=statements-divide-statement
         }
+    }
+
+    public boolean isGiving() {
+        CobolParser.DivideStatementContext divideStatement = new SyntaxIdentity<CobolParser.DivideStatementContext>(executionContext).get();
+        return divideStatement.divideByGivingStatement() != null;
     }
 }

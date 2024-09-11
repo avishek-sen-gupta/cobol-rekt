@@ -3,10 +3,7 @@ package org.smojol.toolkit.transpiler;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.transpiler.TranspilerNode;
 import org.smojol.common.vm.structure.CobolDataStructure;
-import org.smojol.toolkit.ast.AddFlowNode;
-import org.smojol.toolkit.ast.IfFlowNode;
-import org.smojol.toolkit.ast.MoveFlowNode;
-import org.smojol.toolkit.ast.SubtractFlowNode;
+import org.smojol.toolkit.ast.*;
 
 public class TranspilerTreeBuilder {
     public static TranspilerNode flowToTranspiler(FlowNode node, CobolDataStructure dataStructures) {
@@ -15,6 +12,8 @@ public class TranspilerTreeBuilder {
             case IfFlowNode n -> IfTranspilerNodeBuilder.build(n, dataStructures);
             case AddFlowNode n -> AddTranspilerNodeBuilder.build(n, dataStructures);
             case SubtractFlowNode n -> SubtractTranspilerNodeBuilder.build(n, dataStructures);
+            case MultiplyFlowNode n -> MultiplyTranspilerNodeBuilder.build(n, dataStructures);
+            case DivideFlowNode n -> DivideTranspilerNodeBuilder.build(n, dataStructures);
             default -> new TranspilerCodeBlock();
         };
     }

@@ -89,4 +89,9 @@ public class MultiplyFlowNode extends CobolFlowNode {
         }
 
     }
+
+    public boolean isGiving() {
+        CobolParser.MultiplyStatementContext multiplyStatement = new SyntaxIdentity<CobolParser.MultiplyStatementContext>(executionContext).get();
+        return multiplyStatement.multiplyGiving() != null;
+    }
 }
