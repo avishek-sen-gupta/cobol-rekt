@@ -1,15 +1,12 @@
 package org.smojol.toolkit.analysis.defined;
 
-import com.google.common.collect.ImmutableList;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.pseudocode.*;
 import org.smojol.common.vm.structure.CobolDataStructure;
-import org.smojol.toolkit.ast.IfFlowNode;
-import org.smojol.toolkit.transpiler.AssignTranspilerNode;
 import org.smojol.common.transpiler.TranspilerNode;
-import org.smojol.toolkit.ast.MoveFlowNode;
 import org.smojol.toolkit.task.*;
-import org.smojol.toolkit.transpiler.IfTranspilerNode;
+import org.smojol.toolkit.transpiler.TranspilerCodeBlock;
+import org.smojol.toolkit.transpiler.TranspilerTreeBuilder;
 
 import java.util.List;
 
@@ -32,16 +29,9 @@ public class BuildTranspilerTreeTask implements AnalysisTask {
     }
 
     private AnalysisTaskResult analyse(PseudocodeGraph graph) {
-        List<TranspilerNode> stuff = graph.instructions().stream().flatMap(instr -> transpilerTree(instr).stream()).toList();
+        List<TranspilerNode> stuff = graph.instructions().stream().filter(instr -> instr.codeSentinelType() == CodeSentinelType.BODY).map(instr -> TranspilerTreeBuilder.flowToTranspiler(instr.getNode(), dataStructures)).toList();
+        List<TranspilerNode> nonEmptyInstructions = stuff.stream().filter(instr -> !(instr instanceof TranspilerCodeBlock && ((TranspilerCodeBlock) instr).isEmpty())).toList();
         return new AnalysisTaskResultOK(CommandLineAnalysisTask.ANALYSE_CONTROL_FLOW.name(), graph);
-    }
-
-    private List<TranspilerNode> transpilerTree(PseudocodeInstruction instruction) {
-        return switch(instruction.getNode()) {
-            case MoveFlowNode n -> ImmutableList.of(new AssignTranspilerNode(n, dataStructures));
-            case IfFlowNode n -> ImmutableList.of(new IfTranspilerNode(n, dataStructures));
-            default -> ImmutableList.of();
-        };
     }
 }
 

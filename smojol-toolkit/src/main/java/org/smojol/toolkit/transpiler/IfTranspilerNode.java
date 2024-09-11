@@ -1,14 +1,15 @@
 package org.smojol.toolkit.transpiler;
 
 import org.smojol.common.transpiler.TranspilerNode;
-import org.smojol.common.vm.expression.CobolExpression;
-import org.smojol.common.vm.structure.CobolDataStructure;
-import org.smojol.toolkit.ast.IfFlowNode;
 
 public class IfTranspilerNode implements TranspilerNode {
-    public IfTranspilerNode(IfFlowNode n, CobolDataStructure dataStructures) {
-        CobolExpression condition = n.getConditionExpression();
-        TranspilerNodeBuilder nodeBuilder = new TranspilerNodeBuilder(dataStructures);
-        TranspilerNode node = nodeBuilder.build(condition);
+    private final TranspilerNode condition;
+    private final TranspilerCodeBlock ifThenBlock;
+    private final TranspilerCodeBlock ifElseBlock;
+
+    public IfTranspilerNode(TranspilerNode condition, TranspilerCodeBlock ifThenBlock, TranspilerCodeBlock ifElseBlock) {
+        this.condition = condition;
+        this.ifThenBlock = ifThenBlock;
+        this.ifElseBlock = ifElseBlock;
     }
 }

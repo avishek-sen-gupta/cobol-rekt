@@ -5,10 +5,10 @@ import org.smojol.common.transpiler.TranspilerNode;
 import org.smojol.common.vm.expression.*;
 import org.smojol.common.vm.structure.CobolDataStructure;
 
-public class TranspilerNodeBuilder {
+public class TranspilerExpressionBuilder {
     private final CobolDataStructure dataStructures;
 
-    public TranspilerNodeBuilder(CobolDataStructure dataStructures) {
+    public TranspilerExpressionBuilder(CobolDataStructure dataStructures) {
         this.dataStructures = dataStructures;
     }
 

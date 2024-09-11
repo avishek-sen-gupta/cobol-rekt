@@ -3,11 +3,11 @@ package org.smojol.toolkit.transpiler;
 import org.smojol.common.transpiler.TranspilerNode;
 
 public class SubtractNode implements TranspilerNode {
-    private final TranspilerNode lhs;
-    private final TranspilerNode rhs;
+    private final TranspilerNode minuend;
+    private final TranspilerNode subtrahend;
 
-    public SubtractNode(TranspilerNode lhs, TranspilerNode rhs) {
-        this.lhs = lhs;
-        this.rhs = rhs;
+    public SubtractNode(TranspilerNode minuend, TranspilerNode subtrahend) {
+        this.minuend = minuend;
+        this.subtrahend = subtrahend;
     }
 }

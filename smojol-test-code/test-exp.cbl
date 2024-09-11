@@ -40,6 +40,8 @@
            GO TO SECTION-A.
        SECTION-A SECTION.
         P2.
+           ADD SOMETEXT, SCALED, 30 TO SOMETHING.
+           MOVE SOMETEXT2 TO SOMETEXT2.
            MOVE 0 TO SOMETEXT2.
            MOVE "ABCD" TO LEVEL-10-A(1).
            MOVE "EFGH" TO LEVEL-10-A(2).
