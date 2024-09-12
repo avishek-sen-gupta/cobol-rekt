@@ -13,6 +13,10 @@ public class IfTranspilerNode extends TranspilerNode {
         this.ifElseBlock = ifElseBlock;
     }
 
+    public IfTranspilerNode(TranspilerNode condition, TranspilerCodeBlock ifThenBlock) {
+        this(condition, ifThenBlock, new TranspilerCodeBlock());
+    }
+
     @Override
     public String description() {
         return String.format("if(%s) then (%s) else (%s)", condition.description(), ifThenBlock.description(), ifElseBlock.description());

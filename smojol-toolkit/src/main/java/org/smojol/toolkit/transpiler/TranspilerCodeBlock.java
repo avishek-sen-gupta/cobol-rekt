@@ -3,17 +3,22 @@ package org.smojol.toolkit.transpiler;
 import com.google.common.collect.ImmutableList;
 import org.smojol.common.transpiler.TranspilerNode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TranspilerCodeBlock extends TranspilerNode {
-    private final List<TranspilerNode> children;
+    private final List<TranspilerNode> children = new ArrayList<>();
 
     public TranspilerCodeBlock(List<TranspilerNode> children) {
-        this.children = children;
+        this.children.addAll(children);
     }
 
     public TranspilerCodeBlock() {
         this(ImmutableList.of());
+    }
+
+    public TranspilerCodeBlock(TranspilerNode single) {
+        this.children.add(single);
     }
 
     public boolean isEmpty() {

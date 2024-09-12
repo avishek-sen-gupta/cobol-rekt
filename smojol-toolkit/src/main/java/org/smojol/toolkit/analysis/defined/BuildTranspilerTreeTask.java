@@ -1,6 +1,7 @@
 package org.smojol.toolkit.analysis.defined;
 
 import org.smojol.common.ast.FlowNode;
+import org.smojol.common.ast.FlowNodeType;
 import org.smojol.common.pseudocode.*;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.common.transpiler.TranspilerNode;
@@ -29,9 +30,15 @@ public class BuildTranspilerTreeTask implements AnalysisTask {
     }
 
     private AnalysisTaskResult analyse(PseudocodeGraph graph) {
-        List<TranspilerNode> stuff = graph.instructions().stream().filter(instr -> instr.codeSentinelType() == CodeSentinelType.BODY).map(instr -> TranspilerTreeBuilder.flowToTranspiler(instr.getNode(), dataStructures)).toList();
+        List<TranspilerNode> stuff = graph.instructions().stream().filter(BuildTranspilerTreeTask::shouldTranslate)
+                .map(instr -> TranspilerTreeBuilder.flowToTranspiler(instr.getNode(), dataStructures, instr.codeSentinelType())).toList();
         List<TranspilerNode> nonEmptyInstructions = stuff.stream().filter(instr -> !(instr instanceof TranspilerCodeBlock && ((TranspilerCodeBlock) instr).isEmpty())).toList();
         return new AnalysisTaskResultOK(CommandLineAnalysisTask.ANALYSE_CONTROL_FLOW.name(), graph);
+    }
+
+    private static boolean shouldTranslate(PseudocodeInstruction instr) {
+        return (instr.type() != FlowNodeType.SECTION && instr.type() != FlowNodeType.PARAGRAPH && instr.codeSentinelType() == CodeSentinelType.BODY)
+                || ((instr.type() == FlowNodeType.SECTION || instr.type() == FlowNodeType.PARAGRAPH) && instr.codeSentinelType() != CodeSentinelType.BODY);
     }
 }
 
