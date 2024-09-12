@@ -35,4 +35,12 @@ public class CobolExpressionBuilder {
         condition.accept(visitor);
         return visitor.getExpression();
     }
+
+    public CobolExpression literalOrIdentifier(CobolParser.IntegerLiteralContext integerLiteralContext, CobolParser.GeneralIdentifierContext identifierContext) {
+        return integerLiteralContext != null ? literal(integerLiteralContext, AbstractCobolType.NUMBER) : identifier(identifierContext);
+    }
+
+    private CobolExpression literal(CobolParser.IntegerLiteralContext integerLiteralContext, AbstractCobolType abstractCobolType) {
+        return new LiteralResolver().literal(integerLiteralContext, abstractCobolType);
+    }
 }

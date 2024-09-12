@@ -4,10 +4,14 @@ import com.google.common.collect.ImmutableList;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.ast.*;
+import org.smojol.common.pseudocode.SmojolSymbolTable;
+import org.smojol.common.vm.expression.FlowLoop;
+import org.smojol.common.vm.expression.Iteration;
 import org.smojol.common.vm.interpreter.CobolInterpreter;
 import org.smojol.common.vm.interpreter.CobolVmSignal;
 import org.smojol.common.vm.interpreter.FlowControl;
 import org.smojol.common.vm.stack.StackFrames;
+import org.smojol.common.vm.structure.CobolDataStructure;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +20,11 @@ import java.util.logging.Logger;
 public class PerformProcedureFlowNode extends CobolFlowNode implements InternalControlFlowNode {
     private static final Logger logger = Logger.getLogger(PerformProcedureFlowNode.class.getName());
     private FlowNode inlineStatementContext;
-    private List<FlowNode> procedures = new ArrayList<>();
+    private final List<FlowNode> procedures = new ArrayList<>();
     private FlowNode condition;
+    private List<Iteration> nestedLoops;
+    private FlowNode startNode;
+    private FlowNode endNode;
 
     public PerformProcedureFlowNode(ParseTree parseTree, FlowNode scope, FlowNodeService nodeService, StackFrames stackFrames) {
         super(parseTree, scope, nodeService, stackFrames);
@@ -55,12 +62,12 @@ public class PerformProcedureFlowNode extends CobolFlowNode implements InternalC
         CobolParser.ProcedureNameContext procedureNameContext = performProcedureStatementContext.procedureName();
         String procedureName = procedureNameContext.getText();
         logger.finer("Found a PERFORM, routing to " + procedureName);
-        FlowNode startNode = nodeService.sectionOrParaWithName(procedureName);
+        startNode = nodeService.sectionOrParaWithName(procedureName);
         if (performStatement.performProcedureStatement().through() == null) {
             procedures.add(startNode);
         } else {
             CobolParser.ProcedureNameContext endProcedureNameContext = performStatement.performProcedureStatement().through().procedureName();
-            FlowNode endNode = nodeService.sectionOrParaWithName(endProcedureNameContext.getText());
+            endNode = nodeService.sectionOrParaWithName(endProcedureNameContext.getText());
             procedures.addAll(allProcedures(startNode, endNode));
         }
     }
@@ -123,5 +130,12 @@ public class PerformProcedureFlowNode extends CobolFlowNode implements InternalC
     @Override
     public List<FlowNode> callTargets() {
         return procedures;
+    }
+
+    @Override
+    public void resolve(SmojolSymbolTable symbolTable, CobolDataStructure dataStructures) {
+        CobolParser.PerformStatementContext performStatement = new SyntaxIdentity<CobolParser.PerformStatementContext>(getExecutionContext()).get();
+        CobolParser.PerformProcedureStatementContext performProcedureStatementContext = performStatement.performProcedureStatement();
+        nestedLoops = FlowLoop.build(performProcedureStatementContext.performType(), dataStructures);
     }
 }
