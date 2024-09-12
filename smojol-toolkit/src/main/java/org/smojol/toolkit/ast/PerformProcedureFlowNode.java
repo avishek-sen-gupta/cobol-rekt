@@ -1,12 +1,13 @@
 package org.smojol.toolkit.ast;
 
 import com.google.common.collect.ImmutableList;
+import lombok.Getter;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.ast.*;
 import org.smojol.common.pseudocode.SmojolSymbolTable;
-import org.smojol.common.vm.expression.FlowLoop;
-import org.smojol.common.vm.expression.Iteration;
+import org.smojol.common.vm.expression.FlowIterationBuilder;
+import org.smojol.common.vm.expression.FlowIteration;
 import org.smojol.common.vm.interpreter.CobolInterpreter;
 import org.smojol.common.vm.interpreter.CobolVmSignal;
 import org.smojol.common.vm.interpreter.FlowControl;
@@ -22,7 +23,7 @@ public class PerformProcedureFlowNode extends CobolFlowNode implements InternalC
     private FlowNode inlineStatementContext;
     private final List<FlowNode> procedures = new ArrayList<>();
     private FlowNode condition;
-    private List<Iteration> nestedLoops;
+    @Getter private List<FlowIteration> nestedLoops;
     private FlowNode startNode;
     private FlowNode endNode;
 
@@ -136,6 +137,6 @@ public class PerformProcedureFlowNode extends CobolFlowNode implements InternalC
     public void resolve(SmojolSymbolTable symbolTable, CobolDataStructure dataStructures) {
         CobolParser.PerformStatementContext performStatement = new SyntaxIdentity<CobolParser.PerformStatementContext>(getExecutionContext()).get();
         CobolParser.PerformProcedureStatementContext performProcedureStatementContext = performStatement.performProcedureStatement();
-        nestedLoops = FlowLoop.build(performProcedureStatementContext.performType(), dataStructures);
+        nestedLoops = FlowIterationBuilder.build(performProcedureStatementContext.performType(), dataStructures);
     }
 }

@@ -22,6 +22,7 @@ public class TranspilerTreeBuilder {
             case ParagraphFlowNode n -> LabelledTranspilerCodeBlockNodeBuilder.build(n, dataStructures, codeSentinelType);
             case GoToFlowNode n -> JumpNodeBuilder.build(n, dataStructures);
             case PerformProcedureFlowNode n -> PerformProcedureNodeBuilder.build(n, dataStructures);
+            case PerformInlineFlowNode n -> PerformProcedureNodeBuilder.build(n, dataStructures);
             default -> new TranspilerCodeBlock();
         };
     }

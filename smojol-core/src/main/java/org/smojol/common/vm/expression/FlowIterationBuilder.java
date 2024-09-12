@@ -10,31 +10,31 @@ import java.util.List;
 import static org.smojol.common.vm.expression.ConditionTestTime.AFTER;
 import static org.smojol.common.vm.expression.ConditionTestTime.BEFORE;
 
-public abstract class FlowLoop {
-    public static List<Iteration> build(CobolParser.PerformTypeContext performTypeContext, CobolDataStructure dataStructures) {
+public class FlowIterationBuilder {
+    public static List<FlowIteration> build(CobolParser.PerformTypeContext performTypeContext, CobolDataStructure dataStructures) {
         CobolExpressionBuilder builder = new CobolExpressionBuilder();
         if (performTypeContext.performTimes() != null)
-            return ImmutableList.of(new Iteration(builder.literalOrIdentifier(performTypeContext.performTimes().integerLiteral(), performTypeContext.performTimes().generalIdentifier())));
+            return ImmutableList.of(FlowIteration.times(builder.literalOrIdentifier(performTypeContext.performTimes().integerLiteral(), performTypeContext.performTimes().generalIdentifier())));
         else if (performTypeContext.performUntil() != null) {
             if (performTypeContext.performUntil().performTestClause().BEFORE() != null)
-                return ImmutableList.of(Iteration.whileLoop(builder.condition(performTypeContext.performUntil().condition(), dataStructures),
+                return ImmutableList.of(FlowIteration.whileLoop(builder.condition(performTypeContext.performUntil().condition(), dataStructures),
                         BEFORE));
             else
-                return ImmutableList.of(Iteration.whileLoop(builder.condition(performTypeContext.performUntil().condition(), dataStructures),
+                return ImmutableList.of(FlowIteration.whileLoop(builder.condition(performTypeContext.performUntil().condition(), dataStructures),
                         AFTER));
         }
         CobolParser.PerformVaryingPhraseContext outerLoop = performTypeContext.performVarying().performVaryingClause().performVaryingPhrase();
         List<CobolParser.PerformVaryingPhraseContext> additionalNestedLoops = performTypeContext.performVarying().performVaryingClause().performAfter().stream().map(CobolParser.PerformAfterContext::performVaryingPhrase).toList();
-        List<Iteration> allLoops = new ArrayList<>();
-        allLoops.add(FlowLoop.asIteration(outerLoop, dataStructures));
+        List<FlowIteration> allLoops = new ArrayList<>();
+        allLoops.add(FlowIterationBuilder.asIteration(outerLoop, dataStructures));
         allLoops.addAll(additionalNestedLoops.stream().map(loop -> asIteration(loop, dataStructures)).toList());
 
         return allLoops;
     }
 
-    private static Iteration asIteration(CobolParser.PerformVaryingPhraseContext outerLoop, CobolDataStructure dataStructures) {
+    private static FlowIteration asIteration(CobolParser.PerformVaryingPhraseContext outerLoop, CobolDataStructure dataStructures) {
         CobolExpressionBuilder builder = new CobolExpressionBuilder();
-        return Iteration.withMaxValue(builder.literalOrIdentifier(outerLoop.performFrom().literal(), outerLoop.performFrom().generalIdentifier()),
+        return FlowIteration.withMaxValue(builder.literalOrIdentifier(outerLoop.performFrom().literal(), outerLoop.performFrom().generalIdentifier()),
                 builder.literalOrIdentifier(outerLoop.performFrom().literal(), outerLoop.performFrom().generalIdentifier()),
                 builder.condition(outerLoop.performUntil().condition(), dataStructures),
                 new LoopUpdate(builder.literalOrIdentifier(outerLoop.performBy().literal(), outerLoop.performBy().generalIdentifier())),
