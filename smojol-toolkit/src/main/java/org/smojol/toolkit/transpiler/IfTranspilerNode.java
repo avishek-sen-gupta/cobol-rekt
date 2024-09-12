@@ -2,7 +2,7 @@ package org.smojol.toolkit.transpiler;
 
 import org.smojol.common.transpiler.TranspilerNode;
 
-public class IfTranspilerNode implements TranspilerNode {
+public class IfTranspilerNode extends TranspilerNode {
     private final TranspilerNode condition;
     private final TranspilerCodeBlock ifThenBlock;
     private final TranspilerCodeBlock ifElseBlock;
@@ -11,5 +11,10 @@ public class IfTranspilerNode implements TranspilerNode {
         this.condition = condition;
         this.ifThenBlock = ifThenBlock;
         this.ifElseBlock = ifElseBlock;
+    }
+
+    @Override
+    public String description() {
+        return String.format("if(%s) then (%s) else (%s)", condition.description(), ifThenBlock.description(), ifElseBlock.description());
     }
 }

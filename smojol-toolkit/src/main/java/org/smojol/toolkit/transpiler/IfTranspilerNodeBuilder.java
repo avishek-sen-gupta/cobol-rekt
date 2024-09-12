@@ -5,7 +5,7 @@ import org.smojol.common.vm.expression.CobolExpression;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.toolkit.ast.IfFlowNode;
 
-public class IfTranspilerNodeBuilder implements TranspilerNode {
+public class IfTranspilerNodeBuilder {
     public static TranspilerNode build(IfFlowNode n, CobolDataStructure dataStructures) {
         CobolExpression condition = n.getConditionExpression();
         TranspilerExpressionBuilder nodeBuilder = new TranspilerExpressionBuilder(dataStructures);

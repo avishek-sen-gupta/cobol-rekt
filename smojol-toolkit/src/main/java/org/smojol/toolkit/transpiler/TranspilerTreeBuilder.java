@@ -14,6 +14,7 @@ public class TranspilerTreeBuilder {
             case SubtractFlowNode n -> SubtractTranspilerNodeBuilder.build(n, dataStructures);
             case MultiplyFlowNode n -> MultiplyTranspilerNodeBuilder.build(n, dataStructures);
             case DivideFlowNode n -> DivideTranspilerNodeBuilder.build(n, dataStructures);
+            case ComputeFlowNode n -> ComputeTranspilerNodeBuilder.build(n, dataStructures);
             default -> new TranspilerCodeBlock();
         };
     }

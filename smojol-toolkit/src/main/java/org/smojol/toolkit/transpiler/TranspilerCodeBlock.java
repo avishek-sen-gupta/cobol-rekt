@@ -5,7 +5,7 @@ import org.smojol.common.transpiler.TranspilerNode;
 
 import java.util.List;
 
-public class TranspilerCodeBlock implements TranspilerNode {
+public class TranspilerCodeBlock extends TranspilerNode {
     private final List<TranspilerNode> children;
 
     public TranspilerCodeBlock(List<TranspilerNode> children) {
@@ -22,5 +22,10 @@ public class TranspilerCodeBlock implements TranspilerNode {
 
     public TranspilerNode unwrap() {
         return children.size() > 1 ? this : children.getFirst();
+    }
+
+    @Override
+    public String description() {
+        return "";
     }
 }

@@ -84,6 +84,7 @@ public class AddFlowNode extends CobolFlowNode {
 
         if (givingDestinationExpressions.isEmpty()) {
             sourceExpressions.addAll(fromExpressions);
+            sourceExpressions.addAll(toExpressions);
             destinationExpressions.addAll(toExpressions);
         } else {
             sourceExpressions.addAll(fromExpressions);

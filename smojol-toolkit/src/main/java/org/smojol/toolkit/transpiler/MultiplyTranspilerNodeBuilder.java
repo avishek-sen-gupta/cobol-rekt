@@ -9,7 +9,7 @@ import java.util.List;
 
 import static com.google.common.collect.Streams.zip;
 
-public class MultiplyTranspilerNodeBuilder implements TranspilerNode {
+public class MultiplyTranspilerNodeBuilder {
     public static TranspilerNode build(MultiplyFlowNode n, CobolDataStructure dataStructures) {
         TranspilerExpressionBuilder nodeBuilder = new TranspilerExpressionBuilder(dataStructures);
         TranspilerNode from = nodeBuilder.build(n.getSourceExpressions().getFirst());

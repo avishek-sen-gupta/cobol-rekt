@@ -7,7 +7,7 @@ import org.smojol.toolkit.ast.MoveFlowNode;
 
 import java.util.List;
 
-public class SetTranspilerNodeBuilder implements TranspilerNode {
+public class SetTranspilerNodeBuilder {
     public static TranspilerNode build(MoveFlowNode n, CobolDataStructure dataStructures) {
         TranspilerExpressionBuilder nodeBuilder = new TranspilerExpressionBuilder(dataStructures);
         List<TranspilerNode> tos = n.getToExpressions().stream().map(nodeBuilder::build).toList();

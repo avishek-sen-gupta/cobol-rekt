@@ -8,7 +8,7 @@ import java.util.List;
 
 import static com.google.common.collect.Streams.zip;
 
-public class DivideTranspilerNodeBuilder implements TranspilerNode {
+public class DivideTranspilerNodeBuilder {
     public static TranspilerNode build(DivideFlowNode n, CobolDataStructure dataStructures) {
         TranspilerExpressionBuilder nodeBuilder = new TranspilerExpressionBuilder(dataStructures);
         TranspilerNode divisor = nodeBuilder.build(n.getDivisorExpression());

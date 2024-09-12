@@ -4,9 +4,9 @@ import org.smojol.common.transpiler.TranspilerNode;
 import org.smojol.common.vm.expression.ComparisonOperator;
 import org.smojol.common.vm.expression.RelationalOperation;
 
-public abstract class TranspilerComparisonOperator implements TranspilerNode {
-    private final TranspilerNode lhs;
-    private final TranspilerNode rhs;
+public abstract class TranspilerComparisonOperator extends TranspilerNode {
+    protected final TranspilerNode lhs;
+    protected final TranspilerNode rhs;
 
     public TranspilerComparisonOperator(TranspilerNode lhs, TranspilerNode rhs) {
         this.lhs = lhs;

@@ -8,7 +8,7 @@ import java.util.List;
 
 import static com.google.common.collect.Streams.zip;
 
-public class SubtractTranspilerNodeBuilder implements TranspilerNode {
+public class SubtractTranspilerNodeBuilder {
     public static TranspilerNode build(SubtractFlowNode n, CobolDataStructure dataStructures) {
         TranspilerExpressionBuilder nodeBuilder = new TranspilerExpressionBuilder(dataStructures);
         TranspilerNode subtrahendSum = n.getSubtrahendExpressions().stream().map(nodeBuilder::build).reduce((subExpr, summand) -> new AddNode(summand, subExpr)).get();
