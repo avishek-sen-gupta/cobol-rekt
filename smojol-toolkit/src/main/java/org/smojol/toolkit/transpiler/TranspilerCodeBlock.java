@@ -26,6 +26,6 @@ public class TranspilerCodeBlock extends TranspilerNode {
 
     @Override
     public String description() {
-        return "";
+        return String.join("\n", children.stream().map(TranspilerNode::description).toList());
     }
 }

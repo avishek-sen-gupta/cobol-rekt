@@ -1,6 +1,7 @@
 package org.smojol.toolkit.ast;
 
 import com.google.common.collect.ImmutableList;
+import lombok.Getter;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.ast.*;
@@ -18,7 +19,7 @@ import java.util.List;
 public class DisplayFlowNode extends CobolFlowNode {
     private String message;
     private List<CobolParser.DisplayOperandContext> operands;
-    private List<CobolExpression> operandExpressions;
+    @Getter private List<CobolExpression> operandExpressions;
 
     public DisplayFlowNode(ParseTree parseTree, FlowNode scope, FlowNodeService nodeService, StackFrames stackFrames) {
         super(parseTree, scope, nodeService, stackFrames);

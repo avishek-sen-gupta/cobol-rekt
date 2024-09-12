@@ -15,6 +15,8 @@ public class TranspilerTreeBuilder {
             case MultiplyFlowNode n -> MultiplyTranspilerNodeBuilder.build(n, dataStructures);
             case DivideFlowNode n -> DivideTranspilerNodeBuilder.build(n, dataStructures);
             case ComputeFlowNode n -> ComputeTranspilerNodeBuilder.build(n, dataStructures);
+            case DisplayFlowNode n -> DisplayTranspilerNodeBuilder.build(n, dataStructures);
+            case ConditionalStatementFlowNode n -> flowToTranspiler(n.astChildren().getFirst(), dataStructures);
             default -> new TranspilerCodeBlock();
         };
     }
