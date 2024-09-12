@@ -26,30 +26,6 @@ public final class TranspilerLoop extends TranspilerNode {
         this.body = body;
     }
 
-    public TranspilerNode loopVariable() {
-        return loopVariable;
-    }
-
-    public TranspilerNode initialValue() {
-        return initialValue;
-    }
-
-    public TranspilerNode maxValue() {
-        return maxValue;
-    }
-
-    public TranspilerNode terminateCondition() {
-        return terminateCondition;
-    }
-
-    public TranspilerNode loopUpdate() {
-        return loopUpdate;
-    }
-
-    public ConditionTestTime conditionTestTime() {
-        return conditionTestTime;
-    }
-
     public TranspilerNode body() {
         return body;
     }
@@ -74,20 +50,14 @@ public final class TranspilerLoop extends TranspilerNode {
     }
 
     @Override
-    public String toString() {
-        return "TranspilerLoop[" +
-                "loopVariable=" + loopVariable + ", " +
-                "initialValue=" + initialValue + ", " +
-                "maxValue=" + maxValue + ", " +
-                "terminateCondition=" + terminateCondition + ", " +
-                "loopUpdate=" + loopUpdate + ", " +
-                "conditionTestTime=" + conditionTestTime + ", " +
-                "body=" + body + ']';
-    }
-
-    @Override
     public String description() {
-        return "";
+        return "loop[" +
+                "loopVariable=" + loopVariable.description() + ", " +
+                "initialValue=" + initialValue.description() + ", " +
+                "maxValue=" + maxValue.description() + ", " +
+                "terminateCondition=" + terminateCondition.description() + ", " +
+                "loopUpdate=" + loopUpdate.description() + ", " +
+                "conditionTestTime=" + conditionTestTime.name() + ", " +
+                "body=" + body.description() + ']';
     }
-
 }

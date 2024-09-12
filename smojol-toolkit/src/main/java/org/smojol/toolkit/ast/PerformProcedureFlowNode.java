@@ -24,8 +24,8 @@ public class PerformProcedureFlowNode extends CobolFlowNode implements InternalC
     private final List<FlowNode> procedures = new ArrayList<>();
     private FlowNode condition;
     @Getter private List<FlowIteration> nestedLoops;
-    private FlowNode startNode;
-    private FlowNode endNode;
+    @Getter private FlowNode startNode;
+    @Getter private FlowNode endNode;
 
     public PerformProcedureFlowNode(ParseTree parseTree, FlowNode scope, FlowNodeService nodeService, StackFrames stackFrames) {
         super(parseTree, scope, nodeService, stackFrames);

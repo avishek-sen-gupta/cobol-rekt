@@ -1,5 +1,6 @@
 package org.smojol.toolkit.transpiler;
 
+import com.fasterxml.jackson.databind.node.NullNode;
 import com.google.common.collect.ImmutableList;
 import org.smojol.common.transpiler.TranspilerNode;
 import org.smojol.common.vm.expression.*;
@@ -37,6 +38,7 @@ public class TranspilerExpressionBuilder {
             return TranspilerComparisonOperator.operator(e.getComparison().getRelationalOperation(), build(e.getLhs()), build(e.getComparison().getRhs()));
         } else if (expression instanceof SpecialRegisterExpression e)
             return new FunctionCallNode(e.getFunctionCall().getFunctionName(), e.getFunctionCall().getArguments().stream().map(this::build).toList());
+        else if (expression instanceof NullCobolExpression e) return new NullTranspilerNode();
         // TODO: IDMS expressions not supported yet
         throw new UnsupportedOperationException("Unknown expression type: " + expression.getClass());
     }

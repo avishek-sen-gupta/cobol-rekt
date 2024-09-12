@@ -11,8 +11,10 @@ public record FlowIteration(CobolExpression loopVariable,
                             LoopUpdate loopUpdate,
                             ConditionTestTime conditionTestTime
 ) {
-    public static FlowIteration withMaxValue(CobolExpression loopVariable, CobolExpression initialValue, CobolExpression maxValue, LoopUpdate loopUpdate, ConditionTestTime conditionTestTime) {
-        return new FlowIteration(loopVariable, initialValue, maxValue, new NullCobolExpression("NULL"), loopUpdate, conditionTestTime);
+    public static FlowIteration withCondition(CobolExpression loopVariable, CobolExpression initialValue, CobolExpression condition, LoopUpdate loopUpdate, ConditionTestTime conditionTestTime) {
+//        return new FlowIteration(loopVariable, initialValue, maxValue, new NullCobolExpression("NULL"), loopUpdate, conditionTestTime);
+//        return new FlowIteration(loopVariable, initialValue, condition, new SimpleConditionExpression(loopVariable, new RelationExpression(RelationalOperation.EQUAL, condition)), loopUpdate, conditionTestTime);
+        return new FlowIteration(loopVariable, initialValue, new NullCobolExpression("NULL"), condition, loopUpdate, conditionTestTime);
     }
 
     public static FlowIteration whileLoop(CobolExpression condition, ConditionTestTime conditionTestTime) {
@@ -22,8 +24,9 @@ public record FlowIteration(CobolExpression loopVariable,
     }
 
     public static FlowIteration times(CobolExpression times) {
-        return new FlowIteration(new VariableExpression("TEMP"), new PrimitiveCobolExpression(TypedRecord.typedNumber(1)),
-                times, new NullCobolExpression("NULL"),
+        VariableExpression temp = new VariableExpression("TEMP");
+        return new FlowIteration(temp, new PrimitiveCobolExpression(TypedRecord.typedNumber(1)),
+                times, new SimpleConditionExpression(temp, new RelationExpression(RelationalOperation.EQUAL, times)),
                 new LoopUpdate(new PrimitiveCobolExpression(TypedRecord.typedNumber(1))),
                 BEFORE);
     }

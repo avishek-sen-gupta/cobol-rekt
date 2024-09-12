@@ -34,7 +34,7 @@ public class FlowIterationBuilder {
 
     private static FlowIteration asIteration(CobolParser.PerformVaryingPhraseContext outerLoop, CobolDataStructure dataStructures) {
         CobolExpressionBuilder builder = new CobolExpressionBuilder();
-        return FlowIteration.withMaxValue(builder.literalOrIdentifier(outerLoop.performFrom().literal(), outerLoop.performFrom().generalIdentifier()),
+        return FlowIteration.withCondition(builder.literalOrIdentifier(outerLoop.literal(), outerLoop.generalIdentifier()),
                 builder.literalOrIdentifier(outerLoop.performFrom().literal(), outerLoop.performFrom().generalIdentifier()),
                 builder.condition(outerLoop.performUntil().condition(), dataStructures),
                 new LoopUpdate(builder.literalOrIdentifier(outerLoop.performBy().literal(), outerLoop.performBy().generalIdentifier())),
