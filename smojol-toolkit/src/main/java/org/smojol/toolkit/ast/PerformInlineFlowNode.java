@@ -48,7 +48,7 @@ public class PerformInlineFlowNode extends CompositeCobolFlowNode {
     public List<? extends ParseTree> getChildren() {
         CobolParser.PerformStatementContext performStatement = new SyntaxIdentity<CobolParser.PerformStatementContext>(getExecutionContext()).get();
         CobolParser.PerformInlineStatementContext x = performStatement.performInlineStatement();
-        return x.performInlineBody() != null ? x.performInlineBody().conditionalStatementCall() : ImmutableList.of();
+        return x.conditionalStatementCall();
     }
 
     @Override
