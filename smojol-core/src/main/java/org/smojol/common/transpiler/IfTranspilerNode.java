@@ -1,7 +1,5 @@
 package org.smojol.common.transpiler;
 
-import org.smojol.common.transpiler.TranspilerNode;
-
 public class IfTranspilerNode extends TranspilerNode {
     private final TranspilerNode condition;
     private final TranspilerNode ifThenBlock;

@@ -1,6 +1,5 @@
 package org.smojol.common.transpiler;
 
-import org.smojol.common.transpiler.TranspilerNode;
 import org.smojol.common.vm.type.TypedRecord;
 
 public class PrimitiveValueNode extends TranspilerNode {

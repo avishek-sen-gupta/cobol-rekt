@@ -1,8 +1,5 @@
 package org.smojol.common.transpiler;
 
-import org.smojol.common.transpiler.TranspilerNode;
-import org.smojol.common.vm.type.TypedRecord;
-
 import java.util.List;
 
 public class FunctionCallNode extends TranspilerNode {

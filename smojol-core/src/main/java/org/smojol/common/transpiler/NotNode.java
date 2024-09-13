@@ -1,9 +1,5 @@
 package org.smojol.common.transpiler;
 
-import org.smojol.common.transpiler.TranspilerNode;
-
-import java.util.List;
-
 public class NotNode extends TranspilerNode {
     private final TranspilerNode expression;
 

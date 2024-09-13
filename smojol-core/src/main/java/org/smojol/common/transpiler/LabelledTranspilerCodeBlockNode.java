@@ -1,7 +1,6 @@
 package org.smojol.common.transpiler;
 
 import org.smojol.common.pseudocode.CodeSentinelType;
-import org.smojol.common.transpiler.TranspilerNode;
 
 public class LabelledTranspilerCodeBlockNode extends TranspilerNode {
     private final String name;

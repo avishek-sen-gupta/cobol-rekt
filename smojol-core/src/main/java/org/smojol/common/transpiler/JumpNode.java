@@ -1,7 +1,5 @@
 package org.smojol.common.transpiler;
 
-import org.smojol.common.transpiler.TranspilerNode;
-
 public class JumpNode extends TranspilerNode {
     private final LocationNode start;
     private final LocationNode end;

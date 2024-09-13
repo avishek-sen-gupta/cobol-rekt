@@ -1,7 +1,5 @@
 package org.smojol.common.transpiler;
 
-import org.smojol.common.transpiler.TranspilerNode;
-
 public class DivideNode extends TranspilerNode {
     private final TranspilerNode dividend;
     private final TranspilerNode divisor;

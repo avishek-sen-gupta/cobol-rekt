@@ -1,7 +1,5 @@
 package org.smojol.common.transpiler;
 
-import org.smojol.common.transpiler.TranspilerNode;
-
 public class LocationNode extends TranspilerNode {
     public static LocationNode END = new LocationNode("END");
     private final String name;

@@ -1,7 +1,5 @@
 package org.smojol.common.transpiler;
 
-import org.smojol.common.transpiler.TranspilerNode;
-
 public class SubtractNode extends TranspilerNode {
     private final TranspilerNode minuend;
     private final TranspilerNode subtrahend;

@@ -1,7 +1,5 @@
 package org.smojol.common.transpiler;
 
-import org.smojol.common.transpiler.TranspilerNode;
-
 public class ExponentNode extends TranspilerNode {
     private final TranspilerNode basis;
     private final TranspilerNode exponent;

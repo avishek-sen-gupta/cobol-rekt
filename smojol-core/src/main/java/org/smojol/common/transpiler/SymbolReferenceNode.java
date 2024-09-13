@@ -1,7 +1,5 @@
 package org.smojol.common.transpiler;
 
-import org.smojol.common.transpiler.TranspilerNode;
-
 public class SymbolReferenceNode extends TranspilerNode {
     private final String name;
 

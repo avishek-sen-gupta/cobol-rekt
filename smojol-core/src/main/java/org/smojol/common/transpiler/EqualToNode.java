@@ -1,7 +1,5 @@
 package org.smojol.common.transpiler;
 
-import org.smojol.common.transpiler.TranspilerNode;
-
 public class EqualToNode extends TranspilerComparisonOperator {
     public EqualToNode(TranspilerNode lhs, TranspilerNode rhs) {
         super(lhs, rhs);
@@ -14,7 +12,7 @@ public class EqualToNode extends TranspilerComparisonOperator {
 }
 
 class NotEqualToNode extends TranspilerComparisonOperator {
-    public NotEqualToNode(TranspilerNode lhs, TranspilerNode rhs) {
+    NotEqualToNode(TranspilerNode lhs, TranspilerNode rhs) {
         super(lhs, rhs);
     }
 
@@ -25,7 +23,7 @@ class NotEqualToNode extends TranspilerComparisonOperator {
 }
 
 class GreaterThanOrEqualToNode extends TranspilerComparisonOperator {
-    public GreaterThanOrEqualToNode(TranspilerNode lhs, TranspilerNode rhs) {
+    GreaterThanOrEqualToNode(TranspilerNode lhs, TranspilerNode rhs) {
         super(lhs, rhs);
     }
 
@@ -36,7 +34,7 @@ class GreaterThanOrEqualToNode extends TranspilerComparisonOperator {
 }
 
 class LessThanOrEqualToNode extends TranspilerComparisonOperator {
-    public LessThanOrEqualToNode(TranspilerNode lhs, TranspilerNode rhs) {
+    LessThanOrEqualToNode(TranspilerNode lhs, TranspilerNode rhs) {
         super(lhs, rhs);
     }
 
@@ -47,7 +45,7 @@ class LessThanOrEqualToNode extends TranspilerComparisonOperator {
 }
 
 class GreaterThanNode extends TranspilerComparisonOperator {
-    public GreaterThanNode(TranspilerNode lhs, TranspilerNode rhs) {
+    GreaterThanNode(TranspilerNode lhs, TranspilerNode rhs) {
         super(lhs, rhs);
     }
 
@@ -58,7 +56,7 @@ class GreaterThanNode extends TranspilerComparisonOperator {
 }
 
 class LessThanNode extends TranspilerComparisonOperator {
-    public LessThanNode(TranspilerNode lhs, TranspilerNode rhs) {
+    LessThanNode(TranspilerNode lhs, TranspilerNode rhs) {
         super(lhs, rhs);
     }
 
