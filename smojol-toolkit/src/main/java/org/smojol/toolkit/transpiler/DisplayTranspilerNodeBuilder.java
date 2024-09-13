@@ -1,5 +1,6 @@
 package org.smojol.toolkit.transpiler;
 
+import org.smojol.common.transpiler.PrintTranspilerNode;
 import org.smojol.common.transpiler.TranspilerNode;
 import org.smojol.common.transpiler.ValueOfNode;
 import org.smojol.common.vm.structure.CobolDataStructure;

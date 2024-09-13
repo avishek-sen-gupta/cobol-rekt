@@ -2,6 +2,7 @@ package org.smojol.toolkit.transpiler;
 
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.pseudocode.CodeSentinelType;
+import org.smojol.common.transpiler.TranspilerCodeBlock;
 import org.smojol.common.transpiler.TranspilerNode;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.toolkit.ast.*;

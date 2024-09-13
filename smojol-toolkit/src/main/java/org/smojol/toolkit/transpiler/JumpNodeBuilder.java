@@ -1,17 +1,10 @@
 package org.smojol.toolkit.transpiler;
 
 import com.google.common.collect.ImmutableList;
-import org.smojol.common.ast.FlowNode;
-import org.smojol.common.transpiler.TranspilerNode;
-import org.smojol.common.transpiler.ValueOfNode;
+import org.smojol.common.transpiler.*;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.common.vm.type.TypedRecord;
 import org.smojol.toolkit.ast.GoToFlowNode;
-import org.smojol.toolkit.ast.ParagraphFlowNode;
-import org.smojol.toolkit.ast.SectionFlowNode;
-
-import java.util.List;
-import java.util.stream.IntStream;
 
 public class JumpNodeBuilder {
     public static TranspilerNode build(GoToFlowNode n, CobolDataStructure dataStructures) {

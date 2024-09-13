@@ -1,8 +1,8 @@
-package org.smojol.toolkit.transpiler;
+package org.smojol.common.transpiler;
 
 import org.smojol.common.transpiler.TranspilerNode;
 
-class EqualToNode extends TranspilerComparisonOperator {
+public class EqualToNode extends TranspilerComparisonOperator {
     public EqualToNode(TranspilerNode lhs, TranspilerNode rhs) {
         super(lhs, rhs);
     }

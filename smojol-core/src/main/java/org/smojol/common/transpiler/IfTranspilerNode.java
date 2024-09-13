@@ -1,11 +1,11 @@
-package org.smojol.toolkit.transpiler;
+package org.smojol.common.transpiler;
 
 import org.smojol.common.transpiler.TranspilerNode;
 
 public class IfTranspilerNode extends TranspilerNode {
     private final TranspilerNode condition;
-    private final TranspilerCodeBlock ifThenBlock;
-    private final TranspilerCodeBlock ifElseBlock;
+    private final TranspilerNode ifThenBlock;
+    private final TranspilerNode ifElseBlock;
 
     public IfTranspilerNode(TranspilerNode condition, TranspilerCodeBlock ifThenBlock, TranspilerCodeBlock ifElseBlock) {
         this.condition = condition;

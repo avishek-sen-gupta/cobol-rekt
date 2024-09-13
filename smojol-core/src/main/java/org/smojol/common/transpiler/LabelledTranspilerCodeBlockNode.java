@@ -1,4 +1,4 @@
-package org.smojol.toolkit.transpiler;
+package org.smojol.common.transpiler;
 
 import org.smojol.common.pseudocode.CodeSentinelType;
 import org.smojol.common.transpiler.TranspilerNode;

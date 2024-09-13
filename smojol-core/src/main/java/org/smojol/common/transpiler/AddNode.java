@@ -1,6 +1,4 @@
-package org.smojol.toolkit.transpiler;
-
-import org.smojol.common.transpiler.TranspilerNode;
+package org.smojol.common.transpiler;
 
 public class AddNode extends TranspilerNode {
     private final TranspilerNode lhs;

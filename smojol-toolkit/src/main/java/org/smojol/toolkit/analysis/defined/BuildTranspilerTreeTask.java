@@ -3,10 +3,10 @@ package org.smojol.toolkit.analysis.defined;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.FlowNodeType;
 import org.smojol.common.pseudocode.*;
+import org.smojol.common.transpiler.TranspilerCodeBlock;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.common.transpiler.TranspilerNode;
 import org.smojol.toolkit.task.*;
-import org.smojol.toolkit.transpiler.TranspilerCodeBlock;
 import org.smojol.toolkit.transpiler.TranspilerTreeBuilder;
 
 import java.util.List;

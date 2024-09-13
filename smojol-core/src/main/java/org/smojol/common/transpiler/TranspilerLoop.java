@@ -1,4 +1,4 @@
-package org.smojol.toolkit.transpiler;
+package org.smojol.common.transpiler;
 
 import org.smojol.common.transpiler.TranspilerNode;
 import org.smojol.common.vm.expression.ConditionTestTime;

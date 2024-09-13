@@ -1,13 +1,11 @@
 package org.smojol.toolkit.transpiler;
 
+import org.smojol.common.transpiler.MultiplyNode;
+import org.smojol.common.transpiler.SetTranspilerNode;
+import org.smojol.common.transpiler.TranspilerCodeBlock;
 import org.smojol.common.transpiler.TranspilerNode;
-import org.smojol.common.vm.expression.CobolExpression;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.toolkit.ast.MultiplyFlowNode;
-
-import java.util.List;
-
-import static com.google.common.collect.Streams.zip;
 
 public class MultiplyTranspilerNodeBuilder {
     public static TranspilerNode build(MultiplyFlowNode n, CobolDataStructure dataStructures) {

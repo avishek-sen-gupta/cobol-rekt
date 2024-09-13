@@ -1,13 +1,10 @@
 package org.smojol.toolkit.transpiler;
 
 import org.smojol.common.ast.FlowNode;
-import org.smojol.common.id.UUIDProvider;
 import org.smojol.common.pseudocode.CodeSentinelType;
-import org.smojol.common.pseudocode.PseudocodeInstruction;
-import org.smojol.common.transpiler.TranspilerNode;
+import org.smojol.common.transpiler.*;
 import org.smojol.common.vm.expression.FlowIteration;
 import org.smojol.common.vm.structure.CobolDataStructure;
-import org.smojol.toolkit.analysis.defined.BuildPseudocodeTask;
 import org.smojol.toolkit.ast.ConditionalStatementFlowNode;
 import org.smojol.toolkit.ast.PerformInlineFlowNode;
 import org.smojol.toolkit.ast.PerformProcedureFlowNode;
