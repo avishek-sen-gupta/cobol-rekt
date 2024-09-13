@@ -9,12 +9,9 @@ import org.smojol.common.navigation.CobolEntityNavigator;
 import java.util.ArrayList;
 import java.util.List;
 
-import static guru.nidi.graphviz.model.Factory.mutGraph;
-import static guru.nidi.graphviz.model.Factory.mutNode;
-
 public class PerSectionFlowNodeMermaidVisitor implements FlowNodeVisitor {
     @Getter
-    private final ArrayList<String> lines = new ArrayList<>();
+    private final List<String> lines = new ArrayList<>();
     private final FlowNode root;
     private final CobolEntityNavigator navigator;
 
