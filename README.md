@@ -26,7 +26,9 @@ You can see the current backlog [here](https://github.com/users/avishek-sen-gupt
     - [Code Pattern Recognition](#code-pattern-recognition)
 - [Building Glossaries](#building-glossaries-alpha)
 - [Building Capability Maps](#building-capability-maps-alpha)
-- [Basic Block Analysis](#basic-blocks)
+- [Control Flow Analysis](#control-flow-analysis)
+  - [Reducibility Testing](#testing-reducibility-experimental-feature)
+  - [Basic Block Analysis](#basic-blocks-experimental-feature)
 - [How to Build](#how-to-build)
 - [Running against AWS Card Demo](#running-against-aws-card-demo)
 - [Developer Guide](#developer-guide)
@@ -352,7 +354,15 @@ This will take a little time, depending upon the number of paragraphs and their 
 
 ![Capability Map Neo4J](documentation/capability-graph-neo4j.png)
 
-## Basic Blocks
+## Control Flow Analysis
+
+### Testing Reducibility (Experimental Feature)
+
+TODO...
+
+See [IntervalAnalysisMain.java](smojol-toolkit/src/main/java/org/smojol/toolkit/examples/IntervalAnalysisMain.java) for an example.
+
+### Basic Blocks (Experimental Feature)
 
 Basic Blocks are useful for analysing flow of the code without worrying about the specific computational details of the code. They are also useful (and the more pertinent use-case in our case) for rewriting / transpiling potential unstructured COBOL code (code with possibly arbitrary GOTOs) into a structured form / language (i.e., without GOTOs).
 
