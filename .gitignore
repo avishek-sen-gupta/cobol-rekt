@@ -132,6 +132,8 @@ clients/cobol-lsp-vscode-extensiontest-report
 clients/cobol-lsp-vscode-extension/test-report.xml
 .scannerwork
 
+**/*ForTestingOnly.java
+**/*ForProduction.java
 **/FlowchartBuildForTestingOnly.java
 **/InterpreterMainForTestingOnly.java
 **/GraphExplorerMainForTestingOnly.java
