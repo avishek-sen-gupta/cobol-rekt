@@ -2,11 +2,12 @@ package org.smojol.common.flowchart;
 
 import org.apache.commons.text.StringEscapeUtils;
 import org.jgrapht.Graph;
+import org.smojol.common.id.Identifiable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MermaidGraph<V, E> {
+public class MermaidGraph<V extends Identifiable, E> {
     public String draw(Graph<V, E> graph) {
         List<String> lines = new ArrayList<>();
         lines.add("---");
@@ -33,6 +34,6 @@ public class MermaidGraph<V, E> {
     }
 
     private String node(V v) {
-        return String.format("%s[\"%s\"]", v.toString(), escaped(v.toString()));
+        return String.format("%s[\"%s\"]", v.id(), escaped(v.label()));
     }
 }

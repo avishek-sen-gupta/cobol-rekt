@@ -193,7 +193,7 @@ public class SmojolTasks {
         symbolTable = new SmojolSymbolTable(dataStructures, new SymbolReferenceBuilder(idProvider));
         flowcharter.buildFlowAST(rawAST).buildControlFlow().buildOverlay();
         flowRoot = flowcharter.getRoot();
-        buildSymbolTable();
+//        buildSymbolTable();
         return this;
     }
 
