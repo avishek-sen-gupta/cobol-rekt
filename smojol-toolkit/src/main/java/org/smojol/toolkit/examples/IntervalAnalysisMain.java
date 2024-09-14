@@ -32,14 +32,16 @@ public class IntervalAnalysisMain {
                 ImmutableList.of(new File("/Users/asgupta/code/smojol/smojol-test-code")),
                 "/Users/asgupta/code/smojol/che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar",
                 LanguageDialect.IDMS, new FullProgram(FlowchartOutputFormat.MERMAID), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder(), new ProgramSearch())
-                .runForPrograms(ImmutableList.of(CommandLineAnalysisTask.BUILD_PSEUDOCODE_GRAPH), ImmutableList.of("test-exp.cbl"));
+                .runForPrograms(ImmutableList.of(CommandLineAnalysisTask.BUILD_PSEUDOCODE_GRAPH), ImmutableList.of("flowgraph.cbl"));
         System.out.println("DONE");
-        List<AnalysisTaskResult> results = result.get("test-exp.cbl");
+        List<AnalysisTaskResult> results = result.get("flowgraph.cbl");
         PseudocodeGraph graph = ((AnalysisTaskResultOK) results.getFirst()).getDetail();
 
         Graph<PseudocodeInstruction, DefaultEdge> jgraph = new DefaultDirectedGraph<>(DefaultEdge.class);
         graph.instructions().forEach(jgraph::addVertex);
         graph.edges().forEach(e -> jgraph.addEdge(e.getFrom(), e.getTo()));
-        System.out.println(new FlowgraphTransformer<>(jgraph, (a, b) -> new DefaultEdge()).isReducible());
+        FlowgraphTransformer<PseudocodeInstruction, DefaultEdge> transformer = new FlowgraphTransformer<>(jgraph, (a, b) -> new DefaultEdge());
+        System.out.println(transformer.isReducible());
+        System.out.println(transformer.getEvolutions().getLast());
     }
 }

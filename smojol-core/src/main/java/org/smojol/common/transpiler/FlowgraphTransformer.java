@@ -1,5 +1,6 @@
 package org.smojol.common.transpiler;
 
+import lombok.Getter;
 import org.jgrapht.Graph;
 import org.smojol.common.flowchart.MermaidGraph;
 import org.smojol.common.id.Identifiable;
@@ -13,7 +14,7 @@ public class FlowgraphTransformer<V extends Identifiable, E> {
     private static final java.util.logging.Logger LOGGER = Logger.getLogger(FlowgraphTransformer.class.getName());
     private final BiFunction<V, V, E> buildEdge;
     private final Graph<V, E> graph;
-    private final List<String> evolutions = new ArrayList<>();
+    @Getter private final List<String> evolutions = new ArrayList<>();
 
     public FlowgraphTransformer(Graph<V, E> graph, BiFunction<V, V, E> buildEdge) {
         this.buildEdge = buildEdge;

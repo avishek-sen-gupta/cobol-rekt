@@ -125,7 +125,7 @@ public class SmojolTasks {
     public AnalysisTask BUILD_PSEUDOCODE_GRAPH = new AnalysisTask() {
         @Override
         public AnalysisTaskResult run() {
-            return new BuildPseudocodeGraphTask(flowRoot).run();
+            return new BuildPseudocodeGraphTask(flowRoot, true).run();
         }
     };
 

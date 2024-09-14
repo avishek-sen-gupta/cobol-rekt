@@ -22,7 +22,7 @@ public class BuildTranspilerTreeTask implements AnalysisTask {
 
     @Override
     public AnalysisTaskResult run() {
-        AnalysisTaskResult result = new BuildPseudocodeGraphTask(astRoot).run();
+        AnalysisTaskResult result = new BuildPseudocodeGraphTask(astRoot, true).run();
         return switch (result) {
             case AnalysisTaskResultError analysisTaskResultError -> analysisTaskResultError;
             case AnalysisTaskResultOK analysisTaskResultOK -> analyse(analysisTaskResultOK.getDetail());

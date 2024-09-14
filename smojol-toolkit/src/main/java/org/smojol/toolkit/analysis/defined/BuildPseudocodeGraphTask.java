@@ -9,12 +9,17 @@ import org.smojol.toolkit.task.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class BuildPseudocodeGraphTask implements AnalysisTask {
-    private final FlowNode astRoot;
+    private static final java.util.logging.Logger LOGGER = Logger.getLogger(BuildPseudocodeGraphTask.class.getName());
 
-    public BuildPseudocodeGraphTask(FlowNode astRoot) {
+    private final FlowNode astRoot;
+    private final boolean pruneUnreachables;
+
+    public BuildPseudocodeGraphTask(FlowNode astRoot, boolean pruneUnreachables) {
         this.astRoot = astRoot;
+        this.pruneUnreachables = pruneUnreachables;
     }
 
     @Override
@@ -33,7 +38,7 @@ public class BuildPseudocodeGraphTask implements AnalysisTask {
                 List<PseudocodeInstruction> exits = callTargets.getRight();
                 entries.forEach(ct -> edges.add(new InstructionEdge(current, ct, InstructionEdgeType.JUMP)));
                 exits.forEach(ct -> edges.add(new InstructionEdge(ct, returnJoinPoint, InstructionEdgeType.RETURN)));
-                edges.add(new InstructionEdge(current, next, InstructionEdgeType.SYNTANTICALLY_FOLLOWED_BY));
+//                edges.add(new InstructionEdge(current, next, InstructionEdgeType.SYNTANTICALLY_FOLLOWED_BY));
                 int returnJoinPointIndex = instructions.indexOf(returnJoinPoint);
                 if (returnJoinPointIndex + 1 < instructions.size())
                     edges.add(new InstructionEdge(returnJoinPoint, instructions.get(returnJoinPointIndex + 1), InstructionEdgeType.FOLLOWED_BY));
@@ -56,6 +61,23 @@ public class BuildPseudocodeGraphTask implements AnalysisTask {
 //        injectIntoNeo4J(nodes, edges);
 
         PseudocodeGraph graph = new PseudocodeGraph(instructions, edges);
-        return new AnalysisTaskResultOK(CommandLineAnalysisTask.BUILD_PSEUDOCODE_GRAPH.name(), graph);
+
+        return new AnalysisTaskResultOK(CommandLineAnalysisTask.BUILD_PSEUDOCODE_GRAPH.name(), pruneUnreachables ? pruneAllUnreachables(graph) : graph);
+    }
+
+    private PseudocodeGraph pruneAllUnreachables(PseudocodeGraph graph) {
+        while (!pruneUnreachables(graph)) {
+            LOGGER.finer("Pruning...");
+        }
+        return graph;
+    }
+
+    private boolean pruneUnreachables(PseudocodeGraph graph) {
+        List<PseudocodeInstruction> unreachableInstructions = graph.instructions().stream().filter(instr -> instr.getNode().type() != FlowNodeType.PROCEDURE_DIVISION_BODY && graph.edges().stream().filter(e -> e.getTo() == instr).count() == 0).toList();
+        List<InstructionEdge> edgesFromUnreachables = unreachableInstructions.stream().flatMap(instr -> graph.edges().stream().filter(e -> e.getFrom() == instr)).toList();
+        unreachableInstructions.forEach(instr -> graph.instructions().remove(instr));
+        edgesFromUnreachables.forEach(e -> graph.edges().remove(e));
+        LOGGER.finer("Pruned " + unreachableInstructions.size() + " instructions...");
+        return unreachableInstructions.isEmpty();
     }
 }
