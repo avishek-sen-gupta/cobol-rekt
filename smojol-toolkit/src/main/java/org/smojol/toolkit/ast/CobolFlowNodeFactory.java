@@ -22,6 +22,8 @@ public class CobolFlowNodeFactory {
             return new CallFlowNode(parseTree, scope, nodeService, stackFrames);
         else if (SyntaxIdentity.isStatementOfType(parseTree, CobolParser.ExitStatementContext.class))
             return new ExitFlowNode(parseTree, scope, nodeService, stackFrames);
+        else if (SyntaxIdentity.isStatementOfType(parseTree, CobolParser.StopStatementContext.class))
+            return new StopFlowNode(parseTree, scope, nodeService, stackFrames);
         else if (SyntaxIdentity.isStatementOfType(parseTree, CobolParser.NextSentenceContext.class) ||
                 SyntaxIdentity.isOfType(parseTree, CobolParser.NextSentenceWrapperStatementContext.class))
             return new NextSentenceFlowNode(parseTree, scope, nodeService, stackFrames);

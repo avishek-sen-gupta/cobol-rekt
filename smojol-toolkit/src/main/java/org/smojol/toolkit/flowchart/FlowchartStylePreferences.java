@@ -13,6 +13,7 @@ public class FlowchartStylePreferences {
         schemes.put(FlowNodeType.PARAGRAPH_NAME, new GraphvizStyleScheme(Color.WHEAT, Color.BLACK, Shape.NONE));
         schemes.put(FlowNodeType.GENERIC_PROCESSING, new GraphvizStyleScheme(Color.WHEAT, Color.BLACK));
         schemes.put(FlowNodeType.ATOMIC, new GraphvizStyleScheme(Color.WHEAT, Color.BLACK, Shape.POINT));
+        schemes.put(FlowNodeType.STOP, new GraphvizStyleScheme(Color.DEEPSKYBLUE, Color.WHITE, Shape.CIRCLE));
         schemes.put(FlowNodeType.EXIT, new GraphvizStyleScheme(Color.RED3, Color.WHITE, Shape.DOUBLE_CIRCLE));
         schemes.put(FlowNodeType.SYMBOL, new GraphvizStyleScheme(Color.WHEAT, Color.BLACK, Shape.M_CIRCLE));
         schemes.put(FlowNodeType.DISPLAY, new GraphvizStyleScheme(Color.BLACK, Color.GREEN1));

@@ -41,6 +41,9 @@ public class PseudocodeNavigator {
             List<PseudocodeInstruction> targetInstructionExits = from.getNode().type() == FlowNodeType.GOTO ? ImmutableList.of() : findAllByCondition(i -> callTargets.contains(i.getNode()) && i.getSentinelType() == CodeSentinelType.EXIT, instructions);
             return ImmutablePair.of(targetInstructionEntries, targetInstructionExits);
 //            return zip(targetInstructionEntries.stream(), targetInstructionExits.stream(), (entry, exit) -> (Pair<PseudocodeInstruction, PseudocodeInstruction>) ImmutablePair.of(entry, exit)).toList();
+        } else if (from.getNode().type() == FlowNodeType.STOP) {
+            PseudocodeInstruction programExit = findSingleByCondition(i -> i.getNode().type() == FlowNodeType.PROCEDURE_DIVISION_BODY && i.getSentinelType() == CodeSentinelType.EXIT, instructions);
+            return ImmutablePair.of(ImmutableList.of(programExit), ImmutableList.of());
         }
 
         return ImmutablePair.of(ImmutableList.of(), ImmutableList.of());

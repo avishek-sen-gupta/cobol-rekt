@@ -27,7 +27,6 @@ public class FlowgraphTransformer<V extends Identifiable, E> {
         selfEdges.forEach(graph::removeEdge);
         affectedNodes.add(node);
         LOGGER.finer("Removed self-loop from " + node.label() + "...");
-        evolutions.add(new MermaidGraph<V, E>().draw(graph));
     }
 
     public void applyT2(V node, List<V> affectedNodes) {
@@ -35,7 +34,7 @@ public class FlowgraphTransformer<V extends Identifiable, E> {
         if (incomingVertices.stream().distinct().count() != 1) return;
         merge(incomingVertices.getFirst(), node);
         affectedNodes.add(node);
-        evolutions.add(new MermaidGraph<V, E>().draw(graph));
+//        evolutions.add(new MermaidGraph<V, E>().draw(graph));
     }
 
     private List<E> selfLoops(V node, Graph<V, E> graph) {
@@ -73,6 +72,7 @@ public class FlowgraphTransformer<V extends Identifiable, E> {
             List<V> nodes = new ArrayList<>(graph.vertexSet());
             nodes.forEach(node -> applyT1(node, affectedNodes));
             nodes.forEach(node -> applyT2(node, affectedNodes));
+            evolutions.add(new MermaidGraph<V, E>().draw(graph));
         } while (!affectedNodes.isEmpty());
 
         return evolutions;

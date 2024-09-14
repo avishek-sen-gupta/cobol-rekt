@@ -1,15 +1,11 @@
 package org.smojol.toolkit.analysis.defined;
 
 import org.smojol.common.ast.FlowNode;
-import org.smojol.common.ast.FlowNodeType;
 import org.smojol.common.pseudocode.*;
-import org.smojol.common.transpiler.TranspilerCodeBlock;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.common.transpiler.TranspilerNode;
 import org.smojol.toolkit.task.*;
 import org.smojol.toolkit.transpiler.TranspilerTreeBuilder;
-
-import java.util.List;
 
 public class BuildTranspilerTreeTask implements AnalysisTask {
     private final FlowNode astRoot;
@@ -22,23 +18,8 @@ public class BuildTranspilerTreeTask implements AnalysisTask {
 
     @Override
     public AnalysisTaskResult run() {
-        AnalysisTaskResult result = new BuildPseudocodeGraphTask(astRoot, true).run();
-        return switch (result) {
-            case AnalysisTaskResultError analysisTaskResultError -> analysisTaskResultError;
-            case AnalysisTaskResultOK analysisTaskResultOK -> analyse(analysisTaskResultOK.getDetail());
-        };
-    }
-
-    private AnalysisTaskResult analyse(PseudocodeGraph graph) {
-        List<TranspilerNode> stuff = graph.instructions().stream().filter(BuildTranspilerTreeTask::shouldTranslate)
-                .map(instr -> TranspilerTreeBuilder.flowToTranspiler(instr.getNode(), dataStructures, instr.codeSentinelType())).toList();
-        List<TranspilerNode> nonEmptyInstructions = stuff.stream().filter(instr -> !(instr instanceof TranspilerCodeBlock && ((TranspilerCodeBlock) instr).isEmpty())).toList();
-        return new AnalysisTaskResultOK(CommandLineAnalysisTask.ANALYSE_CONTROL_FLOW.name(), graph);
-    }
-
-    private static boolean shouldTranslate(PseudocodeInstruction instr) {
-        return (instr.type() != FlowNodeType.SECTION && instr.type() != FlowNodeType.PARAGRAPH && instr.codeSentinelType() == CodeSentinelType.BODY)
-                || ((instr.type() == FlowNodeType.SECTION || instr.type() == FlowNodeType.PARAGRAPH) && instr.codeSentinelType() != CodeSentinelType.BODY);
+        TranspilerNode transpilerTree = TranspilerTreeBuilder.flowToTranspiler(astRoot, dataStructures, CodeSentinelType.BODY);
+        return new AnalysisTaskResultOK(CommandLineAnalysisTask.ANALYSE_CONTROL_FLOW.name(), transpilerTree);
     }
 }
 
