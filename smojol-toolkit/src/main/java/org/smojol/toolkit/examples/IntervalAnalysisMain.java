@@ -10,6 +10,7 @@ import org.smojol.common.id.UUIDProvider;
 import org.smojol.common.logging.LoggingConfig;
 import org.smojol.common.pseudocode.PseudocodeGraph;
 import org.smojol.common.pseudocode.PseudocodeInstruction;
+import org.smojol.common.resource.LocalFilesystemOperations;
 import org.smojol.common.transpiler.FlowgraphTransformer;
 import org.smojol.toolkit.analysis.defined.CodeTaskRunner;
 import org.smojol.toolkit.analysis.pipeline.ProgramSearch;
@@ -32,7 +33,7 @@ public class IntervalAnalysisMain {
                 "/Users/asgupta/code/smojol/out/report",
                 ImmutableList.of(new File("/Users/asgupta/code/smojol/smojol-test-code")),
                 "/Users/asgupta/code/smojol/che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar",
-                LanguageDialect.IDMS, new FullProgram(FlowchartOutputFormat.MERMAID), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder(), new ProgramSearch())
+                LanguageDialect.IDMS, new FullProgram(FlowchartOutputFormat.MERMAID), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder(), new ProgramSearch(), new LocalFilesystemOperations())
                 .runForPrograms(ImmutableList.of(CommandLineAnalysisTask.BUILD_PSEUDOCODE_GRAPH), ImmutableList.of(programName));
         System.out.println("DONE");
         List<AnalysisTaskResult> results = result.get(programName);

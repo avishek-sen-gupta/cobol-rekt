@@ -10,6 +10,7 @@ import org.smojol.common.id.UUIDProvider;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.navigation.EntityNavigatorBuilder;
 import org.smojol.common.pseudocode.*;
+import org.smojol.common.resource.ResourceOperations;
 import org.smojol.common.vm.interpreter.Breakpointer;
 import org.smojol.common.vm.interpreter.ConditionResolver;
 import org.smojol.common.vm.interpreter.ExecutionListeners;
@@ -21,7 +22,6 @@ import org.smojol.toolkit.analysis.pipeline.config.SourceConfig;
 import org.smojol.toolkit.ast.DisplayFlowNode;
 import org.smojol.toolkit.ast.FlowchartBuilderImpl;
 import org.smojol.toolkit.interpreter.interpreter.CobolBreakpointer;
-import org.smojol.toolkit.interpreter.interpreter.CobolConditionResolver;
 import org.smojol.toolkit.interpreter.interpreter.CobolInterpreterFactory;
 import org.smojol.toolkit.interpreter.interpreter.RunLogger;
 import org.smojol.toolkit.interpreter.navigation.FlowNodeASTTraversal;
@@ -35,18 +35,20 @@ public class InterpretTask implements AnalysisTask {
     private final SourceConfig sourceConfig;
     private final LanguageDialect dialect;
     private final ConditionResolver conditionResolver;
+    private final ResourceOperations resourceOperations;
 
-    public InterpretTask(SourceConfig sourceConfig, LanguageDialect dialect, ConditionResolver conditionResolver) {
+    public InterpretTask(SourceConfig sourceConfig, LanguageDialect dialect, ConditionResolver conditionResolver, ResourceOperations resourceOperations) {
         this.sourceConfig = sourceConfig;
         this.dialect = dialect;
         this.conditionResolver = conditionResolver;
+        this.resourceOperations = resourceOperations;
     }
 
     @Override
     public AnalysisTaskResult run() {
         ComponentsBuilder ops = new ComponentsBuilder(new CobolTreeVisualiser(),
                 FlowchartBuilderImpl::build, new EntityNavigatorBuilder(), new UnresolvedReferenceDoNothingStrategy(),
-                new DefaultFormat1DataStructureBuilder(), new UUIDProvider());
+                new DefaultFormat1DataStructureBuilder(), new UUIDProvider(), resourceOperations);
         ParsePipeline pipeline = new ParsePipeline(sourceConfig, ops, dialect);
         try {
             CobolEntityNavigator navigator = pipeline.parse();

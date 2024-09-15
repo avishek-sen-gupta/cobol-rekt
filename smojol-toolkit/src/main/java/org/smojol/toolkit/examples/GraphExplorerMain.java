@@ -2,6 +2,7 @@ package org.smojol.toolkit.examples;
 
 import com.google.common.collect.ImmutableList;
 import org.smojol.common.dialect.LanguageDialect;
+import org.smojol.common.resource.LocalFilesystemOperations;
 import org.smojol.toolkit.analysis.defined.CodeTaskRunner;
 import org.smojol.common.id.UUIDProvider;
 import org.smojol.toolkit.analysis.pipeline.ProgramSearch;
@@ -20,7 +21,7 @@ public class GraphExplorerMain {
         new CodeTaskRunner("/Users/asgupta/code/smojol/smojol-test-code",
                 "/Users/asgupta/code/smojol/out/report",
                 ImmutableList.of(new File("/Users/asgupta/code/smojol/smojol-test-code")),
-                dialectJarPath, LanguageDialect.COBOL   , new FullProgram(PNG), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder(), new ProgramSearch())
+                dialectJarPath, LanguageDialect.COBOL   , new FullProgram(PNG), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder(), new ProgramSearch(), new LocalFilesystemOperations())
                 .runForPrograms(ImmutableList.of(
                         CommandLineAnalysisTask.INJECT_INTO_NEO4J,
                         CommandLineAnalysisTask.EXPORT_TO_GRAPHML,

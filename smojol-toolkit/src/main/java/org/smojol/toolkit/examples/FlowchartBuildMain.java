@@ -2,6 +2,7 @@ package org.smojol.toolkit.examples;
 
 import com.google.common.collect.ImmutableList;
 import org.smojol.common.dialect.LanguageDialect;
+import org.smojol.common.resource.LocalFilesystemOperations;
 import org.smojol.toolkit.analysis.defined.CodeTaskRunner;
 import org.smojol.common.flowchart.FlowchartOutputFormat;
 import org.smojol.common.id.UUIDProvider;
@@ -22,7 +23,7 @@ public class FlowchartBuildMain {
                 "/Users/asgupta/code/smojol/out/report",
                 ImmutableList.of(new File("/Users/asgupta/code/smojol/smojol-test-code")),
                 "/Users/asgupta/code/smojol/che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar",
-                LanguageDialect.IDMS, new FullProgram(FlowchartOutputFormat.MERMAID), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder(), new ProgramSearch())
+                LanguageDialect.IDMS, new FullProgram(FlowchartOutputFormat.MERMAID), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder(), new ProgramSearch(), new LocalFilesystemOperations())
                 .runForPrograms(ImmutableList.of(CommandLineAnalysisTask.WRITE_RAW_AST), ImmutableList.of("test-exp.cbl"));
         System.out.println("DONE");
     }

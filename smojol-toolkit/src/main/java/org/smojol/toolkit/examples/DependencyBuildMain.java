@@ -1,16 +1,12 @@
 package org.smojol.toolkit.examples;
 
 import com.google.common.collect.ImmutableList;
-import com.mojo.woof.GraphSDK;
-import com.mojo.woof.Neo4JDriverBuilder;
 import org.smojol.common.dialect.LanguageDialect;
+import org.smojol.common.resource.LocalFilesystemOperations;
 import org.smojol.toolkit.analysis.defined.AnalyseProgramDependenciesTask;
-import org.smojol.toolkit.analysis.defined.InjectProgramDependenciesIntoNeo4JTask;
 import org.smojol.toolkit.task.AnalysisTaskResult;
 import org.smojol.toolkit.task.AnalysisTaskResultError;
 import org.smojol.toolkit.task.AnalysisTaskResultOK;
-import org.smojol.toolkit.analysis.graph.NamespaceQualifier;
-import org.smojol.toolkit.analysis.graph.NodeSpecBuilder;
 import org.smojol.common.program.CobolProgram;
 import org.smojol.toolkit.analysis.pipeline.*;
 
@@ -23,7 +19,7 @@ public class DependencyBuildMain {
                 ImmutableList.of(new File("/Users/asgupta/code/smojol/smojol-test-code")),
                 "/Users/asgupta/code/smojol/out/report",
                 "/Users/asgupta/code/smojol/che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar",
-                LanguageDialect.IDMS, new ProgramSearch())
+                LanguageDialect.IDMS, new ProgramSearch(), new LocalFilesystemOperations())
                 .run("if-test.cbl");
         CobolProgram root = switch (result) {
             case AnalysisTaskResultOK o -> o.getDetail();

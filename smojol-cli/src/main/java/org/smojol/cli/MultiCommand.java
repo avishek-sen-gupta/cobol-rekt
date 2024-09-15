@@ -1,6 +1,7 @@
 package org.smojol.cli;
 
 import org.smojol.common.logging.LoggingConfig;
+import org.smojol.common.resource.LocalFilesystemOperations;
 import org.smojol.toolkit.analysis.defined.CodeTaskRunner;
 import org.smojol.toolkit.analysis.validation.DataStructureValidation;
 import org.smojol.toolkit.task.AnalysisTaskResult;
@@ -99,7 +100,7 @@ public class MultiCommand implements Callable<Integer> {
             return validationResult ? 0 : 1;
         }
 
-        CodeTaskRunner taskRunner = new CodeTaskRunner(sourceDir, reportRootDir, copyBookPaths, dialectJarPath, LanguageDialect.dialect(dialect), FlowchartGenerationStrategy.strategy(flowchartGenerationStrategy, flowchartOutputFormat), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder(), programSearch);
+        CodeTaskRunner taskRunner = new CodeTaskRunner(sourceDir, reportRootDir, copyBookPaths, dialectJarPath, LanguageDialect.dialect(dialect), FlowchartGenerationStrategy.strategy(flowchartGenerationStrategy, flowchartOutputFormat), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder(), programSearch, new LocalFilesystemOperations());
         copyBookPaths.forEach(cpp -> LOGGER.info(cpp.getAbsolutePath()));
         Map<String, List<AnalysisTaskResult>> runResults = taskRunner.runForPrograms(toGraphTasks(commands), programNames, TaskRunnerMode.PRODUCTION_MODE);
         return processResults(runResults);

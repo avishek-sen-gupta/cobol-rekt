@@ -4,6 +4,7 @@ import com.mojo.woof.GraphSDK;
 import com.mojo.woof.Neo4JDriverBuilder;
 import org.smojol.common.dialect.LanguageDialect;
 import org.smojol.common.logging.LoggingConfig;
+import org.smojol.common.resource.LocalFilesystemOperations;
 import org.smojol.toolkit.analysis.defined.AnalyseProgramDependenciesTask;
 import org.smojol.toolkit.analysis.defined.ExportProgramDependenciesTask;
 import org.smojol.toolkit.analysis.defined.InjectProgramDependenciesIntoNeo4JTask;
@@ -71,7 +72,7 @@ public class DependencyAnalysisCommand implements Callable<Integer> {
         List<File> copyBookPaths = copyBookDirs.stream().map(c -> Paths.get(c).toAbsolutePath().toFile()).toList();
         copyBookPaths.forEach(cbp -> LOGGER.info(cbp.getAbsolutePath()));
         ProgramSearch programSearch = ProgramSearch.searchStrategy(isPermissiveSearch);
-        AnalysisTaskResult result = new AnalyseProgramDependenciesTask(sourceDir, copyBookPaths, "dummy", dialectJarPath, LanguageDialect.dialect(dialect), programSearch).run(programName);
+        AnalysisTaskResult result = new AnalyseProgramDependenciesTask(sourceDir, copyBookPaths, "dummy", dialectJarPath, LanguageDialect.dialect(dialect), programSearch, new LocalFilesystemOperations()).run(programName);
         CobolProgram root = switch (result) {
             case AnalysisTaskResultOK ok -> ok.getDetail();
             case AnalysisTaskResultError e -> throw new RuntimeException(e.getException());

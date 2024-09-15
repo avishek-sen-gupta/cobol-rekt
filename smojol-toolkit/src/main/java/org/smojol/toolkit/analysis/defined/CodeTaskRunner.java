@@ -6,6 +6,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.eclipse.lsp.cobol.common.error.SyntaxError;
 import org.smojol.common.dialect.LanguageDialect;
 import org.smojol.toolkit.analysis.pipeline.*;
+import org.smojol.common.resource.ResourceOperations;
 import org.smojol.toolkit.task.AnalysisTaskResult;
 import org.smojol.toolkit.analysis.error.ParseDiagnosticRuntimeError;
 import org.smojol.toolkit.analysis.graph.neo4j.NodeReferenceStrategy;
@@ -53,8 +54,9 @@ public class CodeTaskRunner {
     private final Map<String, List<SyntaxError>> errorMap = new HashMap<>();
     private final Format1DataStructureBuilder format1DataStructureBuilder;
     private final ProgramSearch programSearch;
+    private final ResourceOperations resourceOperations;
 
-    public CodeTaskRunner(String sourceDir, String reportRootDir, List<File> copyBookPaths, String dialectJarPath, LanguageDialect dialect, FlowchartGenerationStrategy flowchartGenerationStrategy, IdProvider idProvider, Format1DataStructureBuilder format1DataStructureBuilder, ProgramSearch programSearch) {
+    public CodeTaskRunner(String sourceDir, String reportRootDir, List<File> copyBookPaths, String dialectJarPath, LanguageDialect dialect, FlowchartGenerationStrategy flowchartGenerationStrategy, IdProvider idProvider, Format1DataStructureBuilder format1DataStructureBuilder, ProgramSearch programSearch, ResourceOperations resourceOperations) {
         this.sourceDir = sourceDir;
         this.copyBookPaths = copyBookPaths;
         this.dialectJarPath = dialectJarPath;
@@ -64,6 +66,7 @@ public class CodeTaskRunner {
         this.idProvider = idProvider;
         this.format1DataStructureBuilder = format1DataStructureBuilder;
         this.programSearch = programSearch;
+        this.resourceOperations = resourceOperations;
         reportParameters();
     }
 
@@ -128,9 +131,9 @@ public class CodeTaskRunner {
         FlowASTOutputConfig flowASTOutputConfig = new FlowASTOutputConfig(flowASTOutputDir, flowASTOutputPath);
         GraphMLExportConfig graphMLOutputConfig = new GraphMLExportConfig(graphMLExportOutputDir, graphMLExportOutputPath);
         CFGOutputConfig cfgOutputConfig = new CFGOutputConfig(cfgOutputDir, cfgOutputPath);
-        ComponentsBuilder ops = new ComponentsBuilder(new CobolTreeVisualiser(),
+        ComponentsBuilder ops = new ComponentsBuilder(new CobolTreeVisualiser(resourceOperations),
                 FlowchartBuilderImpl::build, new EntityNavigatorBuilder(), new UnresolvedReferenceThrowStrategy(),
-                format1DataStructureBuilder, idProvider);
+                format1DataStructureBuilder, idProvider, resourceOperations);
         ParsePipeline pipeline = new ParsePipeline(sourceConfig, ops, dialect);
         GraphBuildConfig graphBuildConfig = new GraphBuildConfig(
                 NodeReferenceStrategy.EXISTING_CFG_NODE,
@@ -142,7 +145,7 @@ public class CodeTaskRunner {
                 flowASTOutputConfig, cfgOutputConfig,
                 graphBuildConfig, dataStructuresOutputConfig, unifiedModelOutputConfig, similarityOutputConfig,
                 mermaidOutputConfig,
-                idProvider, new Neo4JDriverBuilder()).build();
+                idProvider, resourceOperations, new Neo4JDriverBuilder()).build();
         return pipelineTasks.run(tasks);
     }
 }

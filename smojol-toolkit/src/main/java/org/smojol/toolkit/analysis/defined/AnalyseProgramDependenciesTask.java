@@ -11,6 +11,7 @@ import org.smojol.common.flowchart.ConsoleColors;
 import org.smojol.common.flowchart.FlowchartOutputFormat;
 import org.smojol.common.id.UUIDProvider;
 import org.smojol.common.dialect.LanguageDialect;
+import org.smojol.common.resource.ResourceOperations;
 import org.smojol.toolkit.task.CommandLineAnalysisTask;
 import org.smojol.toolkit.analysis.pipeline.ProgramSearch;
 import org.smojol.toolkit.task.AnalysisTaskResult;
@@ -33,14 +34,16 @@ public class AnalyseProgramDependenciesTask {
     private final String dialectJarPath;
     private final LanguageDialect dialect;
     private final ProgramSearch programSearch;
+    private final ResourceOperations resourceOperations;
 
-    public AnalyseProgramDependenciesTask(String sourceDir, List<File> copyBookPaths, String reportRootDir, String dialectJarPath, LanguageDialect dialect, ProgramSearch programSearch) {
+    public AnalyseProgramDependenciesTask(String sourceDir, List<File> copyBookPaths, String reportRootDir, String dialectJarPath, LanguageDialect dialect, ProgramSearch programSearch, ResourceOperations resourceOperations) {
         this.sourceDir = sourceDir;
         this.copyBookPaths = copyBookPaths;
         this.reportRootDir = reportRootDir;
         this.dialectJarPath = dialectJarPath;
         this.dialect = dialect;
         this.programSearch = programSearch;
+        this.resourceOperations = resourceOperations;
     }
 
     private void recurse(CobolProgram program, List<File> copyBookPaths) throws IOException {
@@ -52,7 +55,7 @@ public class AnalyseProgramDependenciesTask {
         try {
             Map<String, List<AnalysisTaskResult>> results = new CodeTaskRunner(srcDir,
                     reportRootDir, copyBookPaths, dialectJarPath,
-                    dialect, new FullProgram(FlowchartOutputFormat.SVG), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder(), programSearch)
+                    dialect, new FullProgram(FlowchartOutputFormat.SVG), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder(), programSearch, resourceOperations)
                     .runForPrograms(ImmutableList.of(CommandLineAnalysisTask.BUILD_PROGRAM_DEPENDENCIES), ImmutableList.of(foundFile.getName()));
             AnalysisTaskResult first = results.get(program.getName()).getFirst();
             List<CallTarget> dependencies = switch (first) {

@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonWriter;
 import org.smojol.common.ast.FlowNode;
+import org.smojol.common.resource.ResourceOperations;
 import org.smojol.toolkit.task.CommandLineAnalysisTask;
 import org.smojol.toolkit.analysis.pipeline.NodeOperationCostFunctions;
 import org.smojol.toolkit.task.AnalysisTask;
@@ -25,7 +26,7 @@ public class CompareCodeTask implements AnalysisTask {
     private final NodeSpecBuilder qualifier;
     private final OutputArtifactConfig similarityOutputConfig;
 
-    public CompareCodeTask(FlowNode astRoot, CobolDataStructure dataStructures, NodeSpecBuilder qualifier, OutputArtifactConfig similarityOutputConfig) {
+    public CompareCodeTask(FlowNode astRoot, CobolDataStructure dataStructures, NodeSpecBuilder qualifier, OutputArtifactConfig similarityOutputConfig, ResourceOperations resourceOperations) {
         this.astRoot = astRoot;
         this.dataStructures = dataStructures;
         this.qualifier = qualifier;

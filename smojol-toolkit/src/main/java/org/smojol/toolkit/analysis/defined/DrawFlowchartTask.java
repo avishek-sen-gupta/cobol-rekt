@@ -3,6 +3,7 @@ package org.smojol.toolkit.analysis.defined;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.smojol.common.flowchart.FlowchartBuilder;
 import org.smojol.common.navigation.CobolEntityNavigator;
+import org.smojol.common.resource.ResourceOperations;
 import org.smojol.toolkit.task.CommandLineAnalysisTask;
 import org.smojol.toolkit.task.AnalysisTask;
 import org.smojol.toolkit.task.AnalysisTaskResult;
@@ -17,7 +18,7 @@ public class DrawFlowchartTask implements AnalysisTask {
     private final CobolEntityNavigator navigator;
     private final FlowchartBuilder flowcharter;
 
-    public DrawFlowchartTask(FlowchartBuilder flowcharter, CobolEntityNavigator navigator, FlowchartOutputWriter flowchartOutputWriter, SourceConfig sourceConfig) {
+    public DrawFlowchartTask(FlowchartBuilder flowcharter, CobolEntityNavigator navigator, FlowchartOutputWriter flowchartOutputWriter, SourceConfig sourceConfig, ResourceOperations resourceOperations) {
         this.sourceConfig = sourceConfig;
         this.flowchartOutputWriter = flowchartOutputWriter;
         this.navigator = navigator;

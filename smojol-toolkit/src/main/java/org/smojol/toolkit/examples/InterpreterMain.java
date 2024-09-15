@@ -2,6 +2,7 @@ package org.smojol.toolkit.examples;
 
 import com.google.common.collect.ImmutableList;
 import org.smojol.common.dialect.LanguageDialect;
+import org.smojol.common.resource.LocalFilesystemOperations;
 import org.smojol.toolkit.analysis.defined.InterpretTask;
 import org.smojol.toolkit.analysis.pipeline.config.SourceConfig;
 import org.slf4j.Logger;
@@ -29,7 +30,7 @@ public class InterpreterMain {
                 ImmutableList.of(new File("/Users/asgupta/code/aws-mainframe-modernization-carddemo/app/cpy")),
                 "/Users/asgupta/code/smojol/che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar");
 
-        AnalysisTaskResult result = new InterpretTask(awsCardDemoConfig, LanguageDialect.COBOL, CobolConditionResolver.ALWAYS_YES).run();
+        AnalysisTaskResult result = new InterpretTask(awsCardDemoConfig, LanguageDialect.COBOL, CobolConditionResolver.ALWAYS_YES, new LocalFilesystemOperations()).run();
         System.out.println(result);
     }
 }

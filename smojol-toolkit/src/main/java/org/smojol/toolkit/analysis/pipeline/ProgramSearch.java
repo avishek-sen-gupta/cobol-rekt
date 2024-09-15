@@ -2,17 +2,15 @@ package org.smojol.toolkit.analysis.pipeline;
 
 import io.vavr.Function1;
 import io.vavr.Function2;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.smojol.common.ast.AggregatingFlowNodeASTVisitor;
 import org.smojol.common.flowchart.ConsoleColors;
+import org.smojol.common.resource.LocalFilesystemOperations;
+import org.smojol.common.resource.ResourceOperations;
 
 import java.io.File;
 import java.util.Collection;
 import java.util.List;
-import java.util.function.BiFunction;
-import java.util.function.Predicate;
 import java.util.logging.Logger;
 
 import static org.apache.commons.lang3.tuple.ImmutablePair.nullPair;
@@ -25,13 +23,23 @@ public class ProgramSearch {
             String.format("%s.cbl", name.toUpperCase()).equals(f.getName().toUpperCase()) ||
             f.getName().toUpperCase().contains(name.toUpperCase());
     private final Function2<String, File, Boolean> matchStrategy;
+    private final ResourceOperations resourceOperations;
 
     public ProgramSearch() {
         this(STRICT);
     }
 
     public ProgramSearch(Function2<String, File, Boolean> matchStrategy) {
+        this(matchStrategy, new LocalFilesystemOperations());
+    }
+
+    public ProgramSearch(Function2<String, File, Boolean> matchStrategy, ResourceOperations resourceOperations) {
         this.matchStrategy = matchStrategy;
+        this.resourceOperations = resourceOperations;
+    }
+
+    public ProgramSearch(ResourceOperations resourceOperations) {
+        this(STRICT, resourceOperations);
     }
 
     public static ProgramSearch searchStrategy(boolean isPermissiveSearch) {
@@ -40,7 +48,8 @@ public class ProgramSearch {
 
     public Pair<File, String> run(String program, String sourceDir) {
         LOGGER.info("Searching for program: " + program + "...");
-        Collection<File> files = FileUtils.listFiles(new File(sourceDir), null, true);
+//        Collection<File> files = FileUtils.listFiles(new File(sourceDir), null, true);
+        Collection<File> files = resourceOperations.listFiles(new File(sourceDir));
         Function1<File, Boolean> curriedMatch = matchStrategy.curried().apply(program);
         List<File> matchingFiles = files.stream().filter(curriedMatch::apply).toList();
         if (matchingFiles.isEmpty()) {

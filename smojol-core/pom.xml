@@ -31,6 +31,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <commons.codec.version>1.17.0</commons.codec.version>
+        <commons.io.version>2.16.1</commons.io.version>
     </properties>
 
     <dependencies>
@@ -115,6 +116,12 @@
             <artifactId>mockito-junit-jupiter</artifactId>
             <version>${mockito.core.version}</version>
             <scope>test</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons.io.version}</version>
         </dependency>
     </dependencies>
 

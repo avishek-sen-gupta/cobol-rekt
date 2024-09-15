@@ -3,6 +3,7 @@ package org.smojol.cli;
 import org.apache.commons.lang3.tuple.Pair;
 import org.smojol.common.dialect.LanguageDialect;
 import org.smojol.common.logging.LoggingConfig;
+import org.smojol.common.resource.LocalFilesystemOperations;
 import org.smojol.toolkit.analysis.defined.InterpretTask;
 import org.smojol.toolkit.analysis.pipeline.ProgramSearch;
 import org.smojol.toolkit.analysis.pipeline.config.SourceConfig;
@@ -60,7 +61,8 @@ public class InterpretCommand implements Callable<Integer> {
         Pair<File, String> programPath = ProgramSearch.searchStrategy(isPermissiveSearch).run(programName, sourceDir);
         List<File> copyBookPaths = copyBookDirs.stream().map(c -> Paths.get(c).toAbsolutePath().toFile()).toList();
         SourceConfig sourceConfig = new SourceConfig(programName, programPath.getRight(), copyBookPaths, dialectJarPath);
-        new InterpretTask(sourceConfig, LanguageDialect.dialect(dialect), CobolConditionResolver.valueOf(resolutionTactic)).run();
+        new InterpretTask(sourceConfig, LanguageDialect.dialect(dialect), CobolConditionResolver.valueOf(resolutionTactic),
+                new LocalFilesystemOperations()).run();
         return 0;
     }
 }

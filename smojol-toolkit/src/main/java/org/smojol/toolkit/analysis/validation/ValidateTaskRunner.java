@@ -6,9 +6,10 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.smojol.common.dialect.LanguageDialect;
 import org.smojol.common.flowchart.ConsoleColors;
 import org.smojol.common.navigation.CobolEntityNavigator;
+import org.smojol.common.resource.LocalFilesystemOperations;
+import org.smojol.common.resource.ResourceOperations;
 import org.smojol.common.validation.ProgramValidationErrorReporter;
 import org.smojol.common.validation.ProgramValidationErrors;
-import org.smojol.toolkit.analysis.defined.ProgramDependenciesTask;
 import org.smojol.toolkit.analysis.pipeline.*;
 import org.smojol.toolkit.analysis.error.ParseDiagnosticRuntimeError;
 import org.smojol.toolkit.analysis.pipeline.config.SourceConfig;
@@ -29,13 +30,22 @@ import java.util.logging.Logger;
 public class ValidateTaskRunner {
     java.util.logging.Logger LOGGER = Logger.getLogger(ValidateTaskRunner.class.getName());
     private final ProgramSearch programSearch;
+    private final ResourceOperations resourceOperations;
 
     public ValidateTaskRunner() {
         this(new ProgramSearch());
     }
 
     public ValidateTaskRunner(ProgramSearch programSearch) {
+        this(programSearch, new LocalFilesystemOperations());
+    }
+
+    public ValidateTaskRunner(ProgramSearch programSearch, ResourceOperations resourceOperations) {
         this.programSearch = programSearch;
+        this.resourceOperations = resourceOperations;
+    }
+    public ValidateTaskRunner(ResourceOperations resourceOperations) {
+        this(new ProgramSearch(resourceOperations), resourceOperations);
     }
 
     public boolean processPrograms(List<String> programNames, String sourceDir, LanguageDialect dialect, List<File> copyBookPaths, String dialectJarPath, String outputPath) {
@@ -66,7 +76,7 @@ public class ValidateTaskRunner {
     public ProgramValidationErrors run(List<File> copyBookPaths, String absoluteDialectJarPath, String programFilename, String sourceDir, LanguageDialect dialect, DataStructureValidation dataStructureValidation) {
         ComponentsBuilder ops = new ComponentsBuilder(new CobolTreeVisualiser(),
                 FlowchartBuilderImpl::build, new EntityNavigatorBuilder(), new UnresolvedReferenceDoNothingStrategy(),
-                new OccursIgnoringFormat1DataStructureBuilder(), new UUIDProvider());
+                new OccursIgnoringFormat1DataStructureBuilder(), new UUIDProvider(), resourceOperations);
 
         Pair<File, String> programPath = programSearch.run(programFilename, sourceDir);
         if (programPath == ProgramSearch.NO_PATH) {

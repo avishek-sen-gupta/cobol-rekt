@@ -13,7 +13,6 @@ import org.smojol.common.ast.FlowNodeVisitor;
 import org.smojol.common.ast.VisitContext;
 import org.smojol.common.flowchart.*;
 import org.smojol.common.id.IdProvider;
-import org.smojol.toolkit.analysis.defined.ProgramDependenciesTask;
 import org.smojol.toolkit.interpreter.stack.CobolStackFrames;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.vm.structure.CobolDataStructure;

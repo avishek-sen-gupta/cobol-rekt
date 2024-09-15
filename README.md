@@ -626,7 +626,6 @@ You can specify a custom logging settings file by adding ```-Djava.util.logging.
 
 - This was built based on a time-boxed PoC, and thus isn't well-covered by tests yet. More are being added on an ongoing basis.
 - Cobol is a large language, and thus the interpreter's capabilities are not exhaustive. However, the hope is that the subset currently present is useful enough to get started with reverse engineering legacy code. Obviously, more capabilities are being added on an ongoing basis.
-- There are 4 superfluous directories at the top (engine, parser, dialect-daco, dialect-idms), which are a hack to get the Che4z Checkstyle targets to run because of a path configuration issue.
 - Visual indicators in picture clauses, like ```-```, ```,```, and ```Z``` are currently ignored.
 
 ## Known Issues

@@ -2,8 +2,8 @@ package org.smojol.toolkit.analysis.defined;
 
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.FlowNodeSymbolExtractorVisitor;
-import org.smojol.common.pseudocode.SmojolSymbolTable;
 import org.smojol.toolkit.interpreter.navigation.FlowNodeASTTraversal;
+import org.smojol.common.resource.ResourceOperations;
 import org.smojol.toolkit.task.CommandLineAnalysisTask;
 import org.smojol.toolkit.task.AnalysisTask;
 import org.smojol.toolkit.task.AnalysisTaskResult;
@@ -22,7 +22,7 @@ public class ExportToGraphMLTask implements AnalysisTask {
     private final GraphMLExportConfig graphMLOutputConfig;
     private final NodeSpecBuilder qualifier;
 
-    public ExportToGraphMLTask(FlowNode astRoot, CobolDataStructure dataStructures, GraphMLExportConfig graphMLOutputConfig, NodeSpecBuilder qualifier) {
+    public ExportToGraphMLTask(FlowNode astRoot, CobolDataStructure dataStructures, GraphMLExportConfig graphMLOutputConfig, NodeSpecBuilder qualifier, ResourceOperations resourceOperations) {
         this.astRoot = astRoot;
         this.dataStructures = dataStructures;
         this.graphMLOutputConfig = graphMLOutputConfig;

@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonWriter;
 import org.smojol.common.ast.FlowNode;
+import org.smojol.common.resource.ResourceOperations;
 import org.smojol.toolkit.task.CommandLineAnalysisTask;
 import org.smojol.toolkit.task.AnalysisTask;
 import org.smojol.toolkit.task.AnalysisTaskResult;
@@ -24,7 +25,7 @@ public class ExportUnifiedModelToJSONTask implements AnalysisTask {
     private final NodeSpecBuilder qualifier;
     private final OutputArtifactConfig unifiedModelOutputConfig;
 
-    public ExportUnifiedModelToJSONTask(FlowNode flowRoot, CobolDataStructure dataStructures, NodeSpecBuilder qualifier, OutputArtifactConfig unifiedModelOutputConfig) {
+    public ExportUnifiedModelToJSONTask(FlowNode flowRoot, CobolDataStructure dataStructures, NodeSpecBuilder qualifier, OutputArtifactConfig unifiedModelOutputConfig, ResourceOperations resourceOperations) {
         this.flowRoot = flowRoot;
         this.dataStructures = dataStructures;
         this.qualifier = qualifier;

@@ -44,7 +44,6 @@ import org.smojol.toolkit.analysis.validation.DataStructureValidation;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -95,9 +94,7 @@ public class ParsePipeline {
         }
         cliClientProvider.setCpyExt(Arrays.asList(cpyExt));
 
-        // Cleaning up
         CleanerPreprocessor preprocessor = diCtx.getInstance(TrueDialectServiceImpl.class).getPreprocessor(CobolLanguageId.COBOL);
-//        TextPreprocessor preprocessor = diCtx.getInstance(TextPreprocessor.class);
         Pipeline pipeline = setupPipeline(diCtx, preprocessor);
         BenchmarkService benchmarkService = diCtx.getInstance(BenchmarkService.class);
         ErrorFinalizerService errorFinalizerService = diCtx.getInstance(ErrorFinalizerService.class);
@@ -107,7 +104,8 @@ public class ParsePipeline {
         }
 
         String documentUri = src.toURI().toString();
-        String text = new String(Files.readAllBytes(src.toPath()));
+//        String text = new String(Files.readAllBytes(src.toPath()));
+        String text = new String(ops.getResourceOperations().readAllBytes(src.toPath()));
 
         ResultWithErrors<ExtendedText> resultWithErrors = preprocessor.cleanUpCode(documentUri, text);
         AnalysisContext ctx =
