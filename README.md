@@ -60,7 +60,8 @@ Cobol-REKT is an evolving toolkit of capabilities helpful for reverse engineerin
 - Injecting inter-program dependencies into Neo4J (with export to JSON)
 - Paragraph similarity map (Java / Python)
 - Code Pattern Detection (Neo4J / NetworkX)
-- Exposing Basic Blocks which are a useful first step in raw transpilation
+- **(WIP)** Exposing Basic Blocks which are a useful first step in raw transpilation
+- **(WIP)** Analysing whether the control flow graph is reducible or not: a proxy for how well-structured the program is, and how amenable it is to direct transpilation to structured program languages (without arbitrary GOTOs)
 
 
 Cobol-REKT is more of a library of useful things intended to be embedded in more formal reverse engineering workflows/pipelines, rather than being a standalone tool (though you can certainly use it as such). Many of the higher-level wrappers are merely sensible defaults; you are encouraged to modify them to suit your needs.
