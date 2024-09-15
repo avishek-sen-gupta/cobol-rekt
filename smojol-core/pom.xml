@@ -17,7 +17,7 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <maven.antlr4.plugin.version>4.7</maven.antlr4.plugin.version>
-        <antlr.version>4.7.1</antlr.version>
+        <antlr.version>4.13.2</antlr.version>
         <lombok.version>1.18.30</lombok.version>
         <maven.resources.plugin.version>3.0.2</maven.resources.plugin.version>
         <maven.checkstyle.plugin.version>3.4.0</maven.checkstyle.plugin.version>
