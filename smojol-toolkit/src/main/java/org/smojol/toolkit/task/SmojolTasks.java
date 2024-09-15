@@ -139,7 +139,7 @@ public class SmojolTasks {
     public AnalysisTask BUILD_TRANSPILER_TREE = new AnalysisTask() {
         @Override
         public AnalysisTaskResult run() {
-            return new BuildTranspilerTreeTask(flowRoot, dataStructures).run();
+            return new BuildTranspilerTreeTask(flowRoot, dataStructures, symbolTable).run();
         }
     };
 
@@ -193,7 +193,7 @@ public class SmojolTasks {
         symbolTable = new SmojolSymbolTable(dataStructures, new SymbolReferenceBuilder(idProvider));
         flowcharter.buildFlowAST(rawAST).buildControlFlow().buildOverlay();
         flowRoot = flowcharter.getRoot();
-        buildSymbolTable();
+//        buildSymbolTable();
         return this;
     }
 

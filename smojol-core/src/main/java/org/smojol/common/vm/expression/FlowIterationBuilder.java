@@ -16,12 +16,17 @@ public class FlowIterationBuilder {
         if (performTypeContext.performTimes() != null)
             return ImmutableList.of(FlowIteration.times(builder.literalOrIdentifier(performTypeContext.performTimes().integerLiteral(), performTypeContext.performTimes().generalIdentifier())));
         else if (performTypeContext.performUntil() != null) {
-            if (performTypeContext.performUntil().performTestClause().BEFORE() != null)
-                return ImmutableList.of(FlowIteration.whileLoop(builder.condition(performTypeContext.performUntil().condition(), dataStructures),
-                        BEFORE));
-            else
+            if (performTypeContext.performUntil().performTestClause() != null) {
+                if (performTypeContext.performUntil().performTestClause().AFTER() != null)
+                    return ImmutableList.of(FlowIteration.whileLoop(builder.condition(performTypeContext.performUntil().condition(), dataStructures),
+                            AFTER));
+                else
+                    return ImmutableList.of(FlowIteration.whileLoop(builder.condition(performTypeContext.performUntil().condition(), dataStructures),
+                            BEFORE));
+            } else
                 return ImmutableList.of(FlowIteration.whileLoop(builder.condition(performTypeContext.performUntil().condition(), dataStructures),
                         AFTER));
+
         }
         CobolParser.PerformVaryingPhraseContext outerLoop = performTypeContext.performVarying().performVaryingClause().performVaryingPhrase();
         List<CobolParser.PerformVaryingPhraseContext> additionalNestedLoops = performTypeContext.performVarying().performVaryingClause().performAfter().stream().map(CobolParser.PerformAfterContext::performVaryingPhrase).toList();

@@ -23,9 +23,12 @@ public class PerformProcedureFlowNode extends CobolFlowNode implements InternalC
     private FlowNode inlineStatementContext;
     private final List<FlowNode> procedures = new ArrayList<>();
     private FlowNode condition;
-    @Getter private List<FlowIteration> nestedLoops;
-    @Getter private FlowNode startNode;
-    @Getter private FlowNode endNode;
+    @Getter
+    private List<FlowIteration> nestedLoops;
+    @Getter
+    private FlowNode startNode;
+    @Getter
+    private FlowNode endNode;
 
     public PerformProcedureFlowNode(ParseTree parseTree, FlowNode scope, FlowNodeService nodeService, StackFrames stackFrames) {
         super(parseTree, scope, nodeService, stackFrames);
@@ -137,6 +140,8 @@ public class PerformProcedureFlowNode extends CobolFlowNode implements InternalC
     public void resolve(SmojolSymbolTable symbolTable, CobolDataStructure dataStructures) {
         CobolParser.PerformStatementContext performStatement = new SyntaxIdentity<CobolParser.PerformStatementContext>(getExecutionContext()).get();
         CobolParser.PerformProcedureStatementContext performProcedureStatementContext = performStatement.performProcedureStatement();
-        nestedLoops = FlowIterationBuilder.build(performProcedureStatementContext.performType(), dataStructures);
+        nestedLoops = performProcedureStatementContext.performType() != null
+                ? FlowIterationBuilder.build(performProcedureStatementContext.performType(), dataStructures)
+                : ImmutableList.of();
     }
 }

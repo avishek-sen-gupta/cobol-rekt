@@ -1,5 +1,6 @@
 package org.smojol.toolkit.transpiler;
 
+import com.google.common.collect.ImmutableList;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.pseudocode.CodeSentinelType;
 import org.smojol.common.transpiler.*;
@@ -37,6 +38,7 @@ public class PerformProcedureNodeBuilder {
 
     public static TranspilerNode build(PerformInlineFlowNode n, CobolDataStructure dataStructures) {
         List<FlowIteration> nestedLoops = n.getNestedLoops();
+        if (nestedLoops.isEmpty()) return body(n, dataStructures);
         return recurse(nestedLoops, body(n, dataStructures), dataStructures);
     }
 

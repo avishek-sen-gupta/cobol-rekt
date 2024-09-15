@@ -1,6 +1,9 @@
 package org.smojol.toolkit.analysis.defined;
 
 import org.smojol.common.ast.FlowNode;
+import org.smojol.common.ast.FlowNodeSymbolExtractorVisitor;
+import org.smojol.common.pseudocode.SmojolSymbolTable;
+import org.smojol.toolkit.interpreter.navigation.FlowNodeASTTraversal;
 import org.smojol.toolkit.task.CommandLineAnalysisTask;
 import org.smojol.toolkit.task.AnalysisTask;
 import org.smojol.toolkit.task.AnalysisTaskResult;
@@ -31,6 +34,7 @@ public class ExportToGraphMLTask implements AnalysisTask {
         try {
             Files.createDirectories(graphMLOutputConfig.outputDir());
             String graphMLOutputPath = graphMLOutputConfig.outputDir().resolve(graphMLOutputConfig.outputPath()).toAbsolutePath().normalize().toString();
+            new FlowNodeASTTraversal<FlowNode>().accept(astRoot, new FlowNodeSymbolExtractorVisitor(astRoot, null, dataStructures));
             exportUnifiedToGraphML(astRoot, dataStructures, qualifier, graphMLOutputPath);
             return AnalysisTaskResult.OK(CommandLineAnalysisTask.EXPORT_TO_GRAPHML);
         } catch (IOException e) {
