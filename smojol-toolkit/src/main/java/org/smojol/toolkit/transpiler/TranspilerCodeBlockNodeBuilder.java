@@ -15,7 +15,7 @@ public class TranspilerCodeBlockNodeBuilder {
     }
 
     private static TranspilerCodeBlock block(FlowNode n, CobolDataStructure dataStructures, CodeSentinelType codeSentinelType) {
-        List<TranspilerNode> childTranspilerNodes = n.astChildren().stream().map(child -> TranspilerTreeBuilder.flowToTranspiler(child, dataStructures, codeSentinelType)).toList();
+        List<TranspilerNode> childTranspilerNodes = n.astChildren().stream().map(child -> TranspilerTreeBuilder.flowToTranspiler(child, dataStructures)).toList();
         return new TranspilerCodeBlock(childTranspilerNodes);
     }
 

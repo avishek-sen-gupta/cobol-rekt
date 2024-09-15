@@ -23,7 +23,7 @@ public class BuildTranspilerTreeTask implements AnalysisTask {
     @Override
     public AnalysisTaskResult run() {
         new FlowNodeASTTraversal<FlowNode>().accept(astRoot, new FlowNodeSymbolExtractorVisitor(astRoot, symbolTable, dataStructures));
-        TranspilerNode transpilerTree = TranspilerTreeBuilder.flowToTranspiler(astRoot, dataStructures, CodeSentinelType.BODY);
+        TranspilerNode transpilerTree = TranspilerTreeBuilder.flowToTranspiler(astRoot, dataStructures);
         return new AnalysisTaskResultOK(CommandLineAnalysisTask.ANALYSE_CONTROL_FLOW.name(), transpilerTree);
     }
 }

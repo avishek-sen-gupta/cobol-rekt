@@ -5,7 +5,7 @@ public class JumpNode extends TranspilerNode {
     private final LocationNode end;
 
     public JumpNode(LocationNode location) {
-        this(location, LocationNode.END);
+        this(location, ProgramTerminalLocationNode.END);
     }
 
     public JumpNode(LocationNode start, LocationNode end) {
