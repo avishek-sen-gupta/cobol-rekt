@@ -12,24 +12,25 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.eclipse.lsp.cobol.cli.di.CliModule;
 import org.eclipse.lsp.cobol.cli.modules.CliClientProvider;
+import org.eclipse.lsp.cobol.common.CleanerPreprocessor;
 import org.eclipse.lsp.cobol.common.ResultWithErrors;
 import org.eclipse.lsp.cobol.common.benchmark.BenchmarkService;
 import org.eclipse.lsp.cobol.common.benchmark.BenchmarkSession;
 import org.eclipse.lsp.cobol.common.benchmark.Measurement;
+import org.eclipse.lsp.cobol.common.dialects.CobolLanguageId;
 import org.eclipse.lsp.cobol.common.error.SyntaxError;
 import org.eclipse.lsp.cobol.common.mapping.ExtendedDocument;
 import org.eclipse.lsp.cobol.common.mapping.ExtendedText;
 import org.eclipse.lsp.cobol.common.message.MessageService;
+import org.eclipse.lsp.cobol.common.pipeline.Pipeline;
+import org.eclipse.lsp.cobol.common.pipeline.PipelineResult;
+import org.eclipse.lsp.cobol.common.pipeline.StageResult;
 import org.eclipse.lsp.cobol.core.engine.analysis.AnalysisContext;
 import org.eclipse.lsp.cobol.core.engine.dialects.DialectService;
 import org.eclipse.lsp.cobol.core.engine.errors.ErrorFinalizerService;
-import org.eclipse.lsp.cobol.core.engine.pipeline.Pipeline;
-import org.eclipse.lsp.cobol.core.engine.pipeline.PipelineResult;
-import org.eclipse.lsp.cobol.core.engine.pipeline.StageResult;
-import org.eclipse.lsp.cobol.core.engine.pipeline.stages.*;
-import org.eclipse.lsp.cobol.core.preprocessor.TextPreprocessor;
 import org.eclipse.lsp.cobol.core.preprocessor.delegates.GrammarPreprocessor;
-import org.smojol.common.ast.AggregatingFlowNodeASTVisitor;
+import org.eclipse.lsp.cobol.dialects.TrueDialectServiceImpl;
+import org.eclipse.lsp.cobol.dialects.ibm.*;
 import org.smojol.common.dependency.ComponentsBuilder;
 import org.smojol.common.flowchart.FlowchartBuilder;
 import org.smojol.common.idms.DialectIntegratorListener;
@@ -87,7 +88,6 @@ public class ParsePipeline {
      */
     public CobolEntityNavigator parse(DataStructureValidation dataStructureValidation) throws IOException {
         Injector diCtx = Guice.createInjector(new CliModule());
-        Pipeline pipeline = setupPipeline(diCtx);
 
         CliClientProvider cliClientProvider = diCtx.getInstance(CliClientProvider.class);
         if (cpyPaths != null) {
@@ -96,7 +96,9 @@ public class ParsePipeline {
         cliClientProvider.setCpyExt(Arrays.asList(cpyExt));
 
         // Cleaning up
-        TextPreprocessor preprocessor = diCtx.getInstance(TextPreprocessor.class);
+        CleanerPreprocessor preprocessor = diCtx.getInstance(TrueDialectServiceImpl.class).getPreprocessor(CobolLanguageId.COBOL);
+//        TextPreprocessor preprocessor = diCtx.getInstance(TextPreprocessor.class);
+        Pipeline pipeline = setupPipeline(diCtx, preprocessor);
         BenchmarkService benchmarkService = diCtx.getInstance(BenchmarkService.class);
         ErrorFinalizerService errorFinalizerService = diCtx.getInstance(ErrorFinalizerService.class);
         if (src == null) {
@@ -112,7 +114,7 @@ public class ParsePipeline {
                 new AnalysisContext(
                         new ExtendedDocument(resultWithErrors.getResult(), text),
                         dialect.analysisConfig(dialectJarPath),
-                        benchmarkService.startSession());
+                        benchmarkService.startSession(), src.toURI().toString(), text, CobolLanguageId.COBOL);
         ctx.getAccumulatedErrors().addAll(resultWithErrors.getErrors());
         PipelineResult pipelineResult = pipeline.run(ctx);
         Gson gson = new GsonBuilder().setPrettyPrinting().addSerializationExclusionStrategy(new ExclusionStrategy() {
@@ -165,7 +167,7 @@ public class ParsePipeline {
         return ops.getFlowchartBuilderFactory().apply(navigator, dataStructures, ops.getIdProvider());
     }
 
-    private static Pipeline setupPipeline(Injector diCtx) {
+    private static Pipeline setupPipeline(Injector diCtx, CleanerPreprocessor preprocessor) {
         DialectService dialectService = diCtx.getInstance(DialectService.class);
         MessageService messageService = diCtx.getInstance(MessageService.class);
         GrammarPreprocessor grammarPreprocessor = diCtx.getInstance(GrammarPreprocessor.class);
@@ -174,8 +176,8 @@ public class ParsePipeline {
         Pipeline pipeline = new Pipeline();
         pipeline.add(new DialectCompilerDirectiveStage(dialectService));
         pipeline.add(new CompilerDirectivesStage(messageService));
-        pipeline.add(new DialectProcessingStage(dialectService));
-        pipeline.add(new PreprocessorStage(grammarPreprocessor));
+        pipeline.add(new DialectProcessingStage(dialectService, preprocessor));
+        pipeline.add(new PreprocessorStage(grammarPreprocessor, preprocessor));
         pipeline.add(new ImplicitDialectProcessingStage(dialectService));
         pipeline.add(new ParserStage(messageService, parseTreeListener));
         return pipeline;
