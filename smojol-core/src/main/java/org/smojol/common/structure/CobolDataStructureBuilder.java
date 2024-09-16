@@ -15,7 +15,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.logging.Logger;
 
-public class CobolDataStructureBuilder implements DataStructureBuilder {
+public class CobolDataStructureBuilder {
     private static final Logger LOGGER = Logger.getLogger(CobolDataStructureBuilder.class.getName());
     private final CobolEntityNavigator navigator;
     private final UnresolvedReferenceStrategy unresolvedReferenceStrategy;
@@ -30,7 +30,6 @@ public class CobolDataStructureBuilder implements DataStructureBuilder {
         this.idProvider = idProvider;
     }
 
-    @Override
     public CobolDataStructure build() {
         zerothStructure = new Format1DataStructure(0, unresolvedReferenceStrategy);
         ParseTree dataDivision = navigator.dataDivisionBodyRoot();

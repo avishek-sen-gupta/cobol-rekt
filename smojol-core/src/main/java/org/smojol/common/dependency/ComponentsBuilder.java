@@ -10,7 +10,6 @@ import org.smojol.common.vm.structure.Format1DataStructureBuilder;
 import org.smojol.common.vm.strategy.UnresolvedReferenceStrategy;
 import org.smojol.common.ast.CobolTreeVisualiser;
 import org.smojol.common.flowchart.FlowchartBuilderFactoryMethod;
-import org.smojol.common.vm.structure.DataStructureBuilder;
 
 public class ComponentsBuilder {
     @Getter private final CobolTreeVisualiser visualiser;
@@ -31,7 +30,7 @@ public class ComponentsBuilder {
         this.resourceOperations = resourceOperations;
     }
 
-    public DataStructureBuilder getDataStructureBuilder(CobolEntityNavigator navigator) {
+    public CobolDataStructureBuilder getDataStructureBuilder(CobolEntityNavigator navigator) {
         return new CobolDataStructureBuilder(navigator, unresolvedReferenceStrategy, format1DataStructureBuilder, idProvider);
     }
 }

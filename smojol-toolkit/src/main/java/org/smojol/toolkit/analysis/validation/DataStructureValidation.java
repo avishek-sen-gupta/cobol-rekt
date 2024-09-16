@@ -2,11 +2,11 @@ package org.smojol.toolkit.analysis.validation;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.smojol.common.navigation.CobolEntityNavigator;
+import org.smojol.common.structure.CobolDataStructureBuilder;
 import org.smojol.common.structure.UnreferencedVariableSearch;
 import org.smojol.common.validation.ProgramValidationErrors;
 import org.smojol.common.vm.strategy.UnresolvedReferenceDoNothingStrategy;
 import org.smojol.common.vm.structure.CobolDataStructure;
-import org.smojol.common.vm.structure.DataStructureBuilder;
 import org.smojol.common.vm.structure.Format1DataStructure;
 import org.smojol.toolkit.analysis.pipeline.ParsePipeline;
 
@@ -15,7 +15,7 @@ import java.util.List;
 public interface DataStructureValidation {
     ProgramValidationErrors validate(CobolEntityNavigator navigator, ParsePipeline pipeline, String programFilename);
 
-    CobolDataStructure run(DataStructureBuilder dataStructureBuilder);
+    CobolDataStructure run(CobolDataStructureBuilder dataStructureBuilder);
 
 
     DataStructureValidation BUILD = new DataStructureValidation() {
@@ -27,7 +27,7 @@ public interface DataStructureValidation {
         }
 
         @Override
-        public CobolDataStructure run(DataStructureBuilder dataStructureBuilder) {
+        public CobolDataStructure run(CobolDataStructureBuilder dataStructureBuilder) {
             return dataStructureBuilder.build();
         }
     };
@@ -39,7 +39,7 @@ public interface DataStructureValidation {
         }
 
         @Override
-        public CobolDataStructure run(DataStructureBuilder dataStructureBuilder) {
+        public CobolDataStructure run(CobolDataStructureBuilder dataStructureBuilder) {
             return new Format1DataStructure(0, new UnresolvedReferenceDoNothingStrategy());
         }
     };

@@ -88,7 +88,7 @@ public abstract class CobolDataStructure extends SimpleTreeNode {
         super(name);
         this.rawText = rawText;
         this.sourceSection = sourceSection;
-        // TODO: Inject ID Provider. ID Provider is already present in DataStructureBuilder, inject it into all the constructors
+        // TODO: Inject ID Provider. ID Provider is already present in CobolDataStructureBuilder, inject it into all the constructors
         this.id = UUID.randomUUID().toString();
         this.name = name;
         this.dataType = dataType;
