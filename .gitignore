@@ -151,3 +151,4 @@ artifacts/
 **/.run/
 
 test.md
+**/test-code/out/

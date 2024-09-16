@@ -10,7 +10,7 @@
        PROCEDURE DIVISION.
        SECTION-0 SECTION.
         P1.
-            DISPLAY "GOING " SOME-PART-1 " AND " SOME-PART-2
+            DISPLAY "GOING " SOME-PART-1 " AND " SOME-PART-2.
        SECTION-A SECTION.
         P2.
             MOVE SOME-PART-1 TO SOME-PART-1.
