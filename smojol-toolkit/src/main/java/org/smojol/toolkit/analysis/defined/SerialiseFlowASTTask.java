@@ -7,8 +7,8 @@ import org.smojol.toolkit.interpreter.navigation.FlowNodeASTTraversal;
 
 public class SerialiseFlowASTTask {
     public SerialisableASTFlowNode serialisedFlowAST(FlowNode astRoot) {
-        SerialisableFlowNodeASTVisitor visitor = new SerialisableFlowNodeASTVisitor();
+        SerialisableFlowNodeASTVisitor visitor = new SerialisableFlowNodeASTVisitor(new SerialisableASTFlowNode());
         new FlowNodeASTTraversal<SerialisableASTFlowNode>().accept(astRoot, visitor);
-        return visitor.root();
+        return visitor.root().getChildren().getFirst();
     }
 }

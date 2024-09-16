@@ -38,7 +38,7 @@ public class WriteFlowASTTask implements AnalysisTask {
 //        try (JsonWriter writer = new JsonWriter(new FileWriter(flowASTOutputConfig.outputPath()))) {
             writer.setIndent("  ");
             gson.toJson(serialisableASTFlowRoot, SerialisableASTFlowNode.class, writer);
-            return AnalysisTaskResult.OK(CommandLineAnalysisTask.WRITE_FLOW_AST);
+            return AnalysisTaskResult.OK(CommandLineAnalysisTask.WRITE_FLOW_AST, serialisableASTFlowRoot);
         } catch (IOException e) {
             return AnalysisTaskResult.ERROR(e, CommandLineAnalysisTask.WRITE_FLOW_AST);
         }

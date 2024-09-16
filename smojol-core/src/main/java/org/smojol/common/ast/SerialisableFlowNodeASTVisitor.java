@@ -6,14 +6,10 @@ public class SerialisableFlowNodeASTVisitor extends FlowNodeASTVisitor<Serialisa
         super(ancestorNode);
     }
 
-    public SerialisableFlowNodeASTVisitor() {
-        this(null);
-    }
-
     @Override
     public SerialisableASTFlowNode visit(FlowNode node) {
         SerialisableASTFlowNode child = new SerialisableASTFlowNode(node);
-        if (ancestor == null) return child;
+        if (ancestor == node) return child;
         ancestor.addChild(child);
         return child;
     }
