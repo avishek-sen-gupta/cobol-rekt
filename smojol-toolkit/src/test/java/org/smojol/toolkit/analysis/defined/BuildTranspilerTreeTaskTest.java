@@ -1,9 +1,7 @@
 package org.smojol.toolkit.analysis.defined;
 
-import org.jgrapht.Graph;
 import org.junit.jupiter.api.Test;
-import org.smojol.toolkit.analysis.graph.graphml.TypedGraphEdge;
-import org.smojol.toolkit.analysis.graph.graphml.TypedGraphVertex;
+import org.smojol.common.transpiler.TranspilerNode;
 import org.smojol.toolkit.task.AnalysisTaskResult;
 import org.smojol.toolkit.task.AnalysisTaskResultOK;
 import org.smojol.toolkit.task.CommandLineAnalysisTask;
@@ -12,12 +10,12 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class ExportToGraphMLTaskTest {
+class BuildTranspilerTreeTaskTest {
     @Test
-    void canCreateDataStructures() throws IOException {
+    void canCreateTrasnpilerTree() throws IOException {
         AnalysisTaskResult taskResult = new TestTaskRunner("no-branches.cbl", "test-code/flow-ast")
-                .runTask(CommandLineAnalysisTask.EXPORT_TO_GRAPHML);
+                .runTask(CommandLineAnalysisTask.BUILD_TRANSPILER_TREE);
         assertTrue(taskResult.isSuccess());
-        Graph<TypedGraphVertex, TypedGraphEdge> root = ((AnalysisTaskResultOK) taskResult).getDetail();
+        TranspilerNode root = ((AnalysisTaskResultOK) taskResult).getDetail();
     }
 }
