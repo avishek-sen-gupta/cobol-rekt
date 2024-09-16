@@ -3,6 +3,7 @@ package org.smojol.toolkit.transpiler;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.transpiler.NextLocationNode;
 import org.smojol.common.transpiler.NullTranspilerNode;
+import org.smojol.common.transpiler.PlaceholderTranspilerNode;
 import org.smojol.common.transpiler.TranspilerNode;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.toolkit.ast.*;
@@ -12,7 +13,7 @@ public class TranspilerTreeBuilder {
         return switch (node) {
             case MoveFlowNode n -> SetTranspilerNodeBuilder.build(n, dataStructures);
             case IfFlowNode n -> IfTranspilerNodeBuilder.build(n, dataStructures);
-            case GenericOnClauseFlowNode n -> new NextLocationNode();
+            case GenericOnClauseFlowNode n -> new PlaceholderTranspilerNode(n.originalText());
             case SearchFlowNode n -> SearchWhenNodeBuilder.build(n, dataStructures);
             case AddFlowNode n -> AddTranspilerNodeBuilder.build(n, dataStructures);
             case SubtractFlowNode n -> SubtractTranspilerNodeBuilder.build(n, dataStructures);
