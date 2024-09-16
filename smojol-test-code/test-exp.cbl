@@ -3,6 +3,7 @@
        DATA DIVISION.
            WORKING-STORAGE SECTION.
                01 EXCHANGE-PART-01 PIC XXXX.
+               01 SOME-ARRAY PIC XXXX OCCURS 10.
                01 SOME-PART PIC XXXX.
                     10 SOME-PART-1 PIC XXXX.
                     10 SOME-PART-2 PIC XXXX.
@@ -37,6 +38,11 @@
        PROCEDURE DIVISION.
        SECTION-0 SECTION.
         P1.
+           SEARCH SOME-ARRAY
+           WHEN SOME-PART-1 > 10
+            DISPLAY "CONDITION 1"
+           WHEN SOME-PART-2 <= 10
+            DISPLAY "CONDITION 2".
            PERFORM TEST BEFORE VARYING SOME-PART-1 FROM 1 BY 1
            UNTIL SOME-PART-1 > 10
            AFTER SOME-PART-2 FROM 1 BY 1 UNTIL SOME-PART-2 > 10

@@ -17,6 +17,6 @@ public class IfTranspilerNode extends TranspilerNode {
 
     @Override
     public String description() {
-        return String.format("if(%s) then (%s) else (%s)", condition.description(), ifThenBlock.description(), ifElseBlock.description());
+        return String.format("if(%s) %n then %n{%n %s %n}%n %nelse %n{%n %s %n}%n", condition.description(), ifThenBlock.description(), ifElseBlock.description());
     }
 }

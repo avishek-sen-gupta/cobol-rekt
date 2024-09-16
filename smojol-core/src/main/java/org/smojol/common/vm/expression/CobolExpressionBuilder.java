@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 
 public class CobolExpressionBuilder {
     private static final java.util.logging.Logger LOGGER = Logger.getLogger(CobolExpressionBuilder.class.getName());
+
     public CobolExpression identifier(CobolParser.GeneralIdentifierContext ctx) {
         GeneralIdentifierVisitor identifierVisitor = new GeneralIdentifierVisitor();
         ctx.accept(identifierVisitor);
@@ -42,5 +43,11 @@ public class CobolExpressionBuilder {
 
     private CobolExpression literal(CobolParser.IntegerLiteralContext integerLiteralContext, AbstractCobolType abstractCobolType) {
         return new LiteralResolver().literal(integerLiteralContext, abstractCobolType);
+    }
+
+    public CobolExpression identifier(CobolParser.QualifiedDataNameContext context) {
+        VariableExpression variableExpression = new VariableExpression(context.variableUsageName().getText());
+        return context.tableCall() != null ? new TableCallExpression(variableExpression, context.tableCall().arithmeticExpression())
+                : variableExpression;
     }
 }

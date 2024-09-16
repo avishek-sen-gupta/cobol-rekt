@@ -32,4 +32,8 @@ public class TranspilerCodeBlock extends TranspilerNode {
     public String description() {
         return String.join("\n", children.stream().map(TranspilerNode::description).toList());
     }
+
+    public void add(TranspilerNode node) {
+        children.add(node);
+    }
 }

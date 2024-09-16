@@ -5,13 +5,19 @@ import lombok.Getter;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.ast.*;
+import org.smojol.common.pseudocode.SmojolSymbolTable;
+import org.smojol.common.vm.expression.CobolExpression;
+import org.smojol.common.vm.expression.CobolExpressionBuilder;
 import org.smojol.common.vm.stack.StackFrames;
+import org.smojol.common.vm.structure.CobolDataStructure;
 
 import java.util.List;
 
 @Getter
 public class SearchWhenFlowNode extends CompositeCobolFlowNode {
     private FlowNode condition;
+    private CobolExpression conditionExpression;
+    private List<FlowNode> whenFlowNodes;
 
     public SearchWhenFlowNode(ParseTree parseTree, FlowNode scope, FlowNodeService nodeService, StackFrames stackFrames) {
         super(parseTree, scope, nodeService, stackFrames);
@@ -28,9 +34,6 @@ public class SearchWhenFlowNode extends CompositeCobolFlowNode {
     @Override
     public List<? extends ParseTree> getChildren() {
         CobolParser.SearchWhenContext searchWhenStatementContext = (CobolParser.SearchWhenContext) executionContext;
-        if (searchWhenStatementContext.nextSentenceWrapperStatement() != null) {
-            return ImmutableList.of(searchWhenStatementContext.nextSentenceWrapperStatement());
-        }
         return searchWhenStatementContext.conditionalStatementCall();
     }
 
@@ -51,6 +54,13 @@ public class SearchWhenFlowNode extends CompositeCobolFlowNode {
     public String name() {
         CobolParser.SearchWhenContext searchWhenStatementContext = (CobolParser.SearchWhenContext) executionContext;
         return "When\n" + NodeText.originalText(searchWhenStatementContext.condition(), NodeText::PASSTHROUGH);
+    }
+
+    @Override
+    public void resolve(SmojolSymbolTable symbolTable, CobolDataStructure dataStructures) {
+        CobolParser.SearchWhenContext searchWhenStatementContext = (CobolParser.SearchWhenContext) executionContext;
+        conditionExpression = new CobolExpressionBuilder().condition(searchWhenStatementContext.condition(), nodeService.getDataStructures());
+        whenFlowNodes = searchWhenStatementContext.conditionalStatementCall().stream().map(stmt -> nodeService.node(stmt, this, staticFrameContext)).toList();
     }
 
     @Override
