@@ -74,12 +74,12 @@ public abstract class CobolDataStructure extends SimpleTreeNode {
         return new ArrayList<>(structures);
     }
 
-    public CobolDataStructure(String name, int levelNumber, CobolDataType dataType, String rawText, SourceSection sourceSection) {
+    protected CobolDataStructure(String name, int levelNumber, CobolDataType dataType, String rawText, SourceSection sourceSection) {
         this(name, new ArrayList<>(), levelNumber, null, false, dataType, rawText, sourceSection);
     }
 
     // Root constructor
-    public CobolDataStructure(int levelNumber) {
+    private CobolDataStructure(int levelNumber) {
         this("[ROOT]", levelNumber, CobolDataType.ROOT, "[ROOT]", SourceSection.ROOT);
     }
 

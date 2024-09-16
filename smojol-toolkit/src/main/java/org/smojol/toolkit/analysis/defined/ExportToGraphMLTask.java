@@ -1,7 +1,10 @@
 package org.smojol.toolkit.analysis.defined;
 
+import org.jgrapht.Graph;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.FlowNodeSymbolExtractorVisitor;
+import org.smojol.toolkit.analysis.graph.graphml.TypedGraphEdge;
+import org.smojol.toolkit.analysis.graph.graphml.TypedGraphVertex;
 import org.smojol.toolkit.interpreter.navigation.FlowNodeASTTraversal;
 import org.smojol.common.resource.ResourceOperations;
 import org.smojol.toolkit.task.CommandLineAnalysisTask;
@@ -35,18 +38,19 @@ public class ExportToGraphMLTask implements AnalysisTask {
             Files.createDirectories(graphMLOutputConfig.outputDir());
             String graphMLOutputPath = graphMLOutputConfig.outputDir().resolve(graphMLOutputConfig.outputPath()).toAbsolutePath().normalize().toString();
             new FlowNodeASTTraversal<FlowNode>().accept(astRoot, new FlowNodeSymbolExtractorVisitor(astRoot, null, dataStructures));
-            exportUnifiedToGraphML(astRoot, dataStructures, qualifier, graphMLOutputPath);
-            return AnalysisTaskResult.OK(CommandLineAnalysisTask.EXPORT_TO_GRAPHML);
+            Graph<TypedGraphVertex, TypedGraphEdge> model = exportUnifiedToGraphML(astRoot, dataStructures, qualifier, graphMLOutputPath);
+            return AnalysisTaskResult.OK(CommandLineAnalysisTask.EXPORT_TO_GRAPHML, model);
         } catch (IOException e) {
             return AnalysisTaskResult.ERROR(e, CommandLineAnalysisTask.EXPORT_TO_GRAPHML);
         }
     }
 
-    private static void exportUnifiedToGraphML(FlowNode astRoot, CobolDataStructure dataStructures, NodeSpecBuilder qualifier, String outputPath) {
+    private static Graph<TypedGraphVertex, TypedGraphEdge> exportUnifiedToGraphML(FlowNode astRoot, CobolDataStructure dataStructures, NodeSpecBuilder qualifier, String outputPath) {
         JGraphTGraphBuilder graphMLExporter = new JGraphTGraphBuilder(dataStructures, astRoot, qualifier);
         graphMLExporter.buildAST();
         graphMLExporter.buildCFG();
         graphMLExporter.buildDataStructures();
         graphMLExporter.writeToGraphML(new File(outputPath));
+        return graphMLExporter.getModel();
     }
 }

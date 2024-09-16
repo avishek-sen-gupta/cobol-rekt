@@ -141,4 +141,6 @@ public class CobolDataStructureBuilder {
     private CobolDataStructure format1(CobolParser.DataDescriptionEntryFormat1Context format1Context, UnresolvedReferenceStrategy unresolvedReferenceStrategy, SourceSection sourceSection) {
         return format1DataStructureBuilder.build(format1Context, unresolvedReferenceStrategy, sourceSection);
     }
+
+
 }
