@@ -43,4 +43,8 @@ public class SerialisableCobolDataStructure {
     public void add(SerialisableCobolDataStructure child) {
         children.add(child);
     }
+
+    public SerialisableCobolDataStructure getChild(int i) {
+        return children.get(i);
+    }
 }

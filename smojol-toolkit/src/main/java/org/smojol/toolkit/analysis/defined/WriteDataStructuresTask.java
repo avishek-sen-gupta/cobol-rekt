@@ -31,6 +31,7 @@ public class WriteDataStructuresTask implements AnalysisTask {
         SerialisableCobolDataStructure root = new SerialisableCobolDataStructure();
         DataStructureExporter visitor = new DataStructureExporter(root);
         dataStructures.acceptScopedVisitor(visitor);
+        SerialisableCobolDataStructure realRoot = root.getChild(0);
         try {
             Files.createDirectories(outputArtifactConfig.outputDir());
         } catch (IOException e) {
@@ -38,10 +39,10 @@ public class WriteDataStructuresTask implements AnalysisTask {
         }
         try (JsonWriter writer = new JsonWriter(new FileWriter(outputArtifactConfig.fullPath()))) {
             writer.setIndent("  ");
-            gson.toJson(root, SerialisableCobolDataStructure.class, writer);
+            gson.toJson(realRoot, SerialisableCobolDataStructure.class, writer);
         } catch (IOException e) {
             return AnalysisTaskResult.ERROR(e, CommandLineAnalysisTask.WRITE_DATA_STRUCTURES);
         }
-        return AnalysisTaskResult.OK(CommandLineAnalysisTask.WRITE_DATA_STRUCTURES);
+        return AnalysisTaskResult.OK(CommandLineAnalysisTask.WRITE_DATA_STRUCTURES, realRoot);
     }
 }
