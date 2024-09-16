@@ -40,7 +40,7 @@ public class TestTaskRunner {
         return taskResult;
     }
 
-    private static String dir(String path) {
+    public static String dir(String path) {
         return Paths.get(System.getProperty("user.dir"), path).toString();
     }
 }
