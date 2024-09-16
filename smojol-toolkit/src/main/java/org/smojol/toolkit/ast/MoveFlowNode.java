@@ -67,5 +67,4 @@ public class MoveFlowNode extends CobolFlowNode {
         // TODO: Maybe distribute this across multiple expressions, one corresponding to each destination, but with a separate type
         fromExpression = sendingArea.literal() != null ? builder.literal(sendingArea.literal(), expectedType) : builder.identifier(sendingArea.generalIdentifier());
     }
-
 }

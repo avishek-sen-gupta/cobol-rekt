@@ -4,7 +4,12 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonWriter;
 import org.smojol.common.ast.FlowNode;
+import org.smojol.common.ast.FlowNodeSymbolExtractorVisitor;
+import org.smojol.common.id.UUIDProvider;
+import org.smojol.common.pseudocode.SmojolSymbolTable;
+import org.smojol.common.pseudocode.SymbolReferenceBuilder;
 import org.smojol.common.resource.ResourceOperations;
+import org.smojol.toolkit.interpreter.navigation.FlowNodeASTTraversal;
 import org.smojol.toolkit.task.CommandLineAnalysisTask;
 import org.smojol.toolkit.task.AnalysisTask;
 import org.smojol.toolkit.task.AnalysisTaskResult;
@@ -33,6 +38,7 @@ public class ExportUnifiedModelToJSONTask implements AnalysisTask {
     }
 
     public AnalysisTaskResult run() {
+        new FlowNodeASTTraversal<FlowNode>().accept(flowRoot, new FlowNodeSymbolExtractorVisitor(flowRoot, new SmojolSymbolTable(dataStructures, new SymbolReferenceBuilder(new UUIDProvider())), dataStructures));
         JGraphTGraphBuilder graphMLExporter = new JGraphTGraphBuilder(dataStructures, flowRoot, qualifier);
         graphMLExporter.buildAST();
         graphMLExporter.buildCFG();
@@ -50,7 +56,7 @@ public class ExportUnifiedModelToJSONTask implements AnalysisTask {
         try (JsonWriter writer = new JsonWriter(new FileWriter(unifiedModelOutputConfig.fullPath()))) {
             writer.setIndent("  ");
             gson.toJson(unifiedModel, SerialisableUnifiedModel.class, writer);
-            return AnalysisTaskResult.OK(CommandLineAnalysisTask.EXPORT_UNIFIED_TO_JSON);
+            return AnalysisTaskResult.OK(CommandLineAnalysisTask.EXPORT_UNIFIED_TO_JSON, unifiedModel);
         } catch (IOException e) {
             return AnalysisTaskResult.ERROR(e, CommandLineAnalysisTask.EXPORT_UNIFIED_TO_JSON);
         }

@@ -1,7 +1,7 @@
 package org.smojol.toolkit.analysis.defined;
 
 import org.junit.jupiter.api.Test;
-import org.smojol.toolkit.analysis.pipeline.SerialisableCobolDataStructure;
+import org.smojol.toolkit.analysis.graph.graphml.SerialisableUnifiedModel;
 import org.smojol.toolkit.task.AnalysisTaskResult;
 import org.smojol.toolkit.task.AnalysisTaskResultOK;
 import org.smojol.toolkit.task.CommandLineAnalysisTask;
@@ -10,12 +10,12 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class WriteDataStructuresTaskTest {
+class ExportUnifiedTaskTest {
     @Test
     void canCreateDataStructures() throws IOException {
         AnalysisTaskResult taskResult = new TestTaskRunner("no-branches.cbl", "test-code/flow-ast")
-                .runTask(CommandLineAnalysisTask.WRITE_DATA_STRUCTURES);
+                .runTask(CommandLineAnalysisTask.EXPORT_UNIFIED_TO_JSON);
         assertTrue(taskResult.isSuccess());
-        SerialisableCobolDataStructure root = ((AnalysisTaskResultOK) taskResult).getDetail();
+        SerialisableUnifiedModel root = ((AnalysisTaskResultOK) taskResult).getDetail();
     }
 }
