@@ -100,8 +100,8 @@ public class DialectStatementFlowNode extends CobolFlowNode {
     }
 
     @Override
-    public List<FlowNodeCategory> categories() {
-        return ImmutableList.of(FlowNodeCategory.DIALECT);
+    public List<SemanticCategory> categories() {
+        return ImmutableList.of(SemanticCategory.DIALECT);
     }
 
     @Override

@@ -4,7 +4,7 @@ import org.smojol.common.ast.*;
 import org.smojol.common.id.IdProvider;
 import org.smojol.common.pseudocode.PseudocodeGeneratorVisitor;
 import org.smojol.common.pseudocode.PseudocodeInstruction;
-import org.smojol.toolkit.interpreter.navigation.AggregatingFlowNodeASTTraversal;
+import org.smojol.common.navigation.AggregatingFlowNodeASTTraversal;
 
 import java.util.List;
 

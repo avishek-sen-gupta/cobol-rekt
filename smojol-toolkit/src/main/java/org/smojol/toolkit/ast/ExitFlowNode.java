@@ -3,7 +3,7 @@ package org.smojol.toolkit.ast;
 import com.google.common.collect.ImmutableList;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.smojol.common.ast.FlowNode;
-import org.smojol.common.ast.FlowNodeCategory;
+import org.smojol.common.ast.SemanticCategory;
 import org.smojol.common.ast.FlowNodeService;
 import org.smojol.common.ast.FlowNodeType;
 import org.smojol.common.vm.interpreter.CobolInterpreter;
@@ -29,7 +29,7 @@ public class ExitFlowNode extends CobolFlowNode {
     }
 
     @Override
-    public List<FlowNodeCategory> categories() {
-        return ImmutableList.of(FlowNodeCategory.TERMINAL);
+    public List<SemanticCategory> categories() {
+        return ImmutableList.of(SemanticCategory.TERMINAL);
     }
 }

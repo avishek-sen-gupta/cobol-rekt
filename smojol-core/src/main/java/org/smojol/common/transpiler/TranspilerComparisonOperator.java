@@ -1,5 +1,7 @@
 package org.smojol.common.transpiler;
 
+import com.google.common.collect.ImmutableList;
+import org.smojol.common.ast.SemanticCategory;
 import org.smojol.common.vm.expression.ComparisonOperator;
 import org.smojol.common.vm.expression.RelationalOperation;
 
@@ -8,6 +10,7 @@ public abstract class TranspilerComparisonOperator extends TranspilerNode {
     protected final TranspilerNode rhs;
 
     public TranspilerComparisonOperator(TranspilerNode lhs, TranspilerNode rhs) {
+        super(ImmutableList.of(SemanticCategory.COMPARISON));
         this.lhs = lhs;
         this.rhs = rhs;
     }

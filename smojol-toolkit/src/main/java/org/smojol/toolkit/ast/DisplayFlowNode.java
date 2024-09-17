@@ -49,8 +49,8 @@ public class DisplayFlowNode extends CobolFlowNode {
     }
 
     @Override
-    public List<FlowNodeCategory> categories() {
-        return ImmutableList.of(FlowNodeCategory.IO);
+    public List<SemanticCategory> categories() {
+        return ImmutableList.of(SemanticCategory.IO);
     }
 
     @Override

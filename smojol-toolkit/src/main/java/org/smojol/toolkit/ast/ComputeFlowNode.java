@@ -52,8 +52,8 @@ public class ComputeFlowNode extends CobolFlowNode {
     }
 
     @Override
-    public List<FlowNodeCategory> categories() {
-        return ImmutableList.of(FlowNodeCategory.COMPUTATIONAL, FlowNodeCategory.DATA_FLOW);
+    public List<SemanticCategory> categories() {
+        return ImmutableList.of(SemanticCategory.COMPUTATIONAL, SemanticCategory.DATA_FLOW);
     }
 
     @Override

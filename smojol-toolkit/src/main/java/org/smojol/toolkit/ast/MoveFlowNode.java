@@ -53,8 +53,8 @@ public class MoveFlowNode extends CobolFlowNode {
     }
 
     @Override
-    public List<FlowNodeCategory> categories() {
-        return ImmutableList.of(FlowNodeCategory.DATA_FLOW);
+    public List<SemanticCategory> categories() {
+        return ImmutableList.of(SemanticCategory.DATA_FLOW);
     }
 
     @Override

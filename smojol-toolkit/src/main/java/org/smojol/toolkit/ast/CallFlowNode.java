@@ -35,7 +35,7 @@ public class CallFlowNode extends CobolFlowNode implements ExternalControlFlowNo
     }
 
     @Override
-    public List<FlowNodeCategory> categories() {
-        return ImmutableList.of(FlowNodeCategory.CONTROL_FLOW);
+    public List<SemanticCategory> categories() {
+        return ImmutableList.of(SemanticCategory.CONTROL_FLOW);
     }
 }

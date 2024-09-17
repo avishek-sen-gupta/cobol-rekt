@@ -70,8 +70,8 @@ public class GenericProcessingFlowNode implements FlowNode {
     }
 
     @Override
-    public List<FlowNodeCategory> categories() {
-        return ImmutableList.of(FlowNodeCategory.CODE_BLOCK);
+    public List<SemanticCategory> categories() {
+        return ImmutableList.of(SemanticCategory.CODE_BLOCK);
     }
 
     @Override

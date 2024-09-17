@@ -1,4 +1,4 @@
-package org.smojol.toolkit.interpreter.navigation;
+package org.smojol.common.navigation;
 
 import org.smojol.common.ast.AggregatingFlowNodeASTVisitor;
 import org.smojol.common.ast.FlowNode;

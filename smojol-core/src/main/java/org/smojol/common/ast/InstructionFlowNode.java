@@ -38,7 +38,7 @@ public class InstructionFlowNode implements FlowNodeLike {
     }
 
     @Override
-    public List<FlowNodeCategory> categories() {
+    public List<SemanticCategory> categories() {
         return instruction.categories();
     }
 

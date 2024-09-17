@@ -31,7 +31,7 @@ public class TranspilerExpressionBuilder {
         else if (expression instanceof NotExpression e) return new NotNode(build(e.getExpression()));
         else if (expression instanceof AndExpression e) return new AndNode(build(e.getLhs()), build(e.getRhs()));
         else if (expression instanceof OrExpression e) return new OrNode(build(e.getLhs()), build(e.getRhs()));
-        else if (expression instanceof NestedConditionExpression e) return new NestedNode(build(e.getExpression()));
+        else if (expression instanceof NestedConditionExpression e) return new NestedConditionNode(build(e.getExpression()));
         else if (expression instanceof SimpleConditionExpression e) {
             if (e.getComparison() == null) return explicitCondition(e, dataStructures);
             return TranspilerComparisonOperator.operator(e.getComparison().getRelationalOperation(), build(e.getLhs()), build(e.getComparison().getRhs()));

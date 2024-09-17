@@ -3,16 +3,16 @@ package org.smojol.common.transpiler;
 import com.google.common.collect.ImmutableList;
 import org.smojol.common.ast.SemanticCategory;
 
-public class NegativeNode extends TranspilerNode {
+public class NestedConditionNode extends TranspilerNode {
     private final TranspilerNode expression;
 
-    public NegativeNode(TranspilerNode expression) {
-        super(ImmutableList.of(SemanticCategory.COMPUTATIONAL));
+    public NestedConditionNode(TranspilerNode expression) {
+        super(ImmutableList.of(SemanticCategory.RELATIONAL));
         this.expression = expression;
     }
 
     @Override
     public String description() {
-        return String.format("negative(%s)", expression.description());
+        return String.format("nest(%s)", expression.description());
     }
 }

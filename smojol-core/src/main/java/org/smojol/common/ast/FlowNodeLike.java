@@ -11,6 +11,6 @@ public interface FlowNodeLike extends Identifiable {
     String name();
     String originalText();
     FlowNodeType type();
-    List<FlowNodeCategory> categories();
+    List<SemanticCategory> categories();
     CodeSentinelType codeSentinelType();
 }

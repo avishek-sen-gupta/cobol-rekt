@@ -33,7 +33,7 @@ public class IfThenFlowNode extends CompositeCobolFlowNode {
     }
 
     @Override
-    public List<FlowNodeCategory> categories() {
-        return ImmutableList.of(FlowNodeCategory.DECISION_BRANCH);
+    public List<SemanticCategory> categories() {
+        return ImmutableList.of(SemanticCategory.DECISION_BRANCH);
     }
 }

@@ -1,7 +1,7 @@
 package org.smojol.toolkit.ast;
 
 import com.google.common.collect.ImmutableList;
-import org.smojol.common.ast.FlowNodeCategory;
+import org.smojol.common.ast.SemanticCategory;
 import org.smojol.common.ast.FlowNodeService;
 import org.smojol.common.ast.FlowNodeType;
 import org.smojol.common.ast.FlowNodeVisitor;
@@ -45,7 +45,7 @@ public class DummyFlowNode extends CobolFlowNode {
     }
 
     @Override
-    public List<FlowNodeCategory> categories() {
-        return ImmutableList.of(FlowNodeCategory.PLACEHOLDER);
+    public List<SemanticCategory> categories() {
+        return ImmutableList.of(SemanticCategory.PLACEHOLDER);
     }
 }

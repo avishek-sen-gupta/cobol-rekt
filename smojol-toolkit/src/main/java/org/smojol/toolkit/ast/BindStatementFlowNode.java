@@ -23,7 +23,7 @@ public class BindStatementFlowNode extends CobolFlowNode {
     }
 
     @Override
-    public List<FlowNodeCategory> categories() {
-        return ImmutableList.of(FlowNodeCategory.TRANSACTION_START, FlowNodeCategory.TRANSACTION);
+    public List<SemanticCategory> categories() {
+        return ImmutableList.of(SemanticCategory.TRANSACTION_START, SemanticCategory.TRANSACTION);
     }
 }

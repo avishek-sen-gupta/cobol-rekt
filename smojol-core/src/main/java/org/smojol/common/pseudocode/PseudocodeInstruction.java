@@ -35,11 +35,11 @@ public class PseudocodeInstruction implements FlowNodeLike {
     }
 
     public boolean isJump() {
-        return node.categories().contains(FlowNodeCategory.CONTROL_FLOW);
+        return node.categories().contains(SemanticCategory.CONTROL_FLOW);
     }
 
     public boolean isCondition() {
-        return node.categories().contains(FlowNodeCategory.DECISION);
+        return node.categories().contains(SemanticCategory.DECISION);
     }
 
     @Override
@@ -68,7 +68,7 @@ public class PseudocodeInstruction implements FlowNodeLike {
     }
 
     @Override
-    public List<FlowNodeCategory> categories() {
+    public List<SemanticCategory> categories() {
         return node.categories();
     }
 

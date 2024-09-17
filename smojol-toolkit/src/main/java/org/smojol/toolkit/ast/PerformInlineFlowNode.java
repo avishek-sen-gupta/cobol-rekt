@@ -76,8 +76,8 @@ public class PerformInlineFlowNode extends CompositeCobolFlowNode {
     }
 
     @Override
-    public List<FlowNodeCategory> categories() {
-        return ImmutableList.of(FlowNodeCategory.LOOP);
+    public List<SemanticCategory> categories() {
+        return ImmutableList.of(SemanticCategory.LOOP);
     }
 
     @Override

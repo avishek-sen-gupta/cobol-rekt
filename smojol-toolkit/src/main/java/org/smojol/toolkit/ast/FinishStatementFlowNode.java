@@ -3,7 +3,7 @@ package org.smojol.toolkit.ast;
 import com.google.common.collect.ImmutableList;
 import org.eclipse.lsp.cobol.dialects.idms.IdmsParser;
 import org.smojol.common.ast.FlowNode;
-import org.smojol.common.ast.FlowNodeCategory;
+import org.smojol.common.ast.SemanticCategory;
 import org.smojol.common.ast.FlowNodeService;
 import org.smojol.common.ast.FlowNodeType;
 import org.smojol.common.vm.stack.StackFrames;
@@ -26,7 +26,7 @@ public class FinishStatementFlowNode extends CobolFlowNode {
     }
 
     @Override
-    public List<FlowNodeCategory> categories() {
-        return ImmutableList.of(FlowNodeCategory.TRANSACTION_END, FlowNodeCategory.TRANSACTION);
+    public List<SemanticCategory> categories() {
+        return ImmutableList.of(SemanticCategory.TRANSACTION_END, SemanticCategory.TRANSACTION);
     }
 }

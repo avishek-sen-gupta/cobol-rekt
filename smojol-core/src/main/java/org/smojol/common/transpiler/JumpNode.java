@@ -1,5 +1,8 @@
 package org.smojol.common.transpiler;
 
+import com.google.common.collect.ImmutableList;
+import org.smojol.common.ast.SemanticCategory;
+
 public class JumpNode extends TranspilerNode {
     private final LocationNode start;
     private final LocationNode end;
@@ -9,6 +12,7 @@ public class JumpNode extends TranspilerNode {
     }
 
     public JumpNode(LocationNode start, LocationNode end) {
+        super(ImmutableList.of(SemanticCategory.CONTROL_FLOW));
         this.start = start;
         this.end = end;
     }

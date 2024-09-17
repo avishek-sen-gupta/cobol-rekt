@@ -6,8 +6,6 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.ast.*;
 import org.smojol.common.pseudocode.SmojolSymbolTable;
-import org.smojol.common.vm.expression.CobolExpression;
-import org.smojol.common.vm.expression.CobolExpressionBuilder;
 import org.smojol.common.vm.interpreter.CobolInterpreter;
 import org.smojol.common.vm.interpreter.CobolVmSignal;
 import org.smojol.common.vm.interpreter.FlowControl;
@@ -57,8 +55,8 @@ public class EvaluateFlowNode extends CobolFlowNode {
     }
 
     @Override
-    public List<FlowNodeCategory> categories() {
-        return ImmutableList.of(FlowNodeCategory.DECISION);
+    public List<SemanticCategory> categories() {
+        return ImmutableList.of(SemanticCategory.DECISION);
     }
 
     @Override

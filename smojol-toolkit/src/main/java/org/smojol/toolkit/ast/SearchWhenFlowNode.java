@@ -64,7 +64,7 @@ public class SearchWhenFlowNode extends CompositeCobolFlowNode {
     }
 
     @Override
-    public List<FlowNodeCategory> categories() {
-        return ImmutableList.of(FlowNodeCategory.SEARCH);
+    public List<SemanticCategory> categories() {
+        return ImmutableList.of(SemanticCategory.SEARCH);
     }
 }

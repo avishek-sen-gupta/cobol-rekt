@@ -154,8 +154,8 @@ public class NullFlowNode implements FlowNode {
     }
 
     @Override
-    public List<FlowNodeCategory> categories() {
-        return ImmutableList.of(FlowNodeCategory.UNKNOWN);
+    public List<SemanticCategory> categories() {
+        return ImmutableList.of(SemanticCategory.UNKNOWN);
     }
 
     @Override

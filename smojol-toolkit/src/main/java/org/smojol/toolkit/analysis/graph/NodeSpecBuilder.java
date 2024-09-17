@@ -20,8 +20,8 @@ import java.util.Map;
 import static com.mojo.woof.NodeLabels.*;
 import static com.mojo.woof.NodeProperties.*;
 import static com.mojo.woof.NodeProperties.LEVEL;
-import static org.smojol.common.ast.FlowNodeCategory.METADATA;
-import static org.smojol.common.ast.FlowNodeCategory.PROGRAM;
+import static org.smojol.common.ast.SemanticCategory.METADATA;
+import static org.smojol.common.ast.SemanticCategory.PROGRAM;
 
 // TODO: Move to common
 public class NodeSpecBuilder {

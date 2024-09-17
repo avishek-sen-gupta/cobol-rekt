@@ -3,17 +3,14 @@ package org.smojol.toolkit.ast;
 import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.ast.*;
 import org.smojol.common.pseudocode.SmojolSymbolTable;
-import org.smojol.common.vm.expression.CobolExpressionBuilder;
 import org.smojol.common.vm.interpreter.CobolInterpreter;
 import org.smojol.common.vm.interpreter.CobolVmSignal;
 import org.smojol.common.vm.interpreter.FlowControl;
 import org.smojol.common.vm.stack.StackFrames;
 import org.smojol.common.vm.structure.CobolDataStructure;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -48,8 +45,8 @@ public class EvaluateBranchFlowNode extends CobolFlowNode {
     }
 
     @Override
-    public List<FlowNodeCategory> categories() {
-        return ImmutableList.of(FlowNodeCategory.DECISION_BRANCH);
+    public List<SemanticCategory> categories() {
+        return ImmutableList.of(SemanticCategory.DECISION_BRANCH);
     }
 
     @Override

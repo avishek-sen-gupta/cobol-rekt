@@ -39,7 +39,7 @@ public class IdmsTransferFlowNode extends CobolFlowNode implements ExternalContr
     }
 
     @Override
-    public List<FlowNodeCategory> categories() {
-        return ImmutableList.of(FlowNodeCategory.CONTROL_FLOW);
+    public List<SemanticCategory> categories() {
+        return ImmutableList.of(SemanticCategory.CONTROL_FLOW);
     }
 }

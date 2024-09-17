@@ -1,7 +1,10 @@
 package org.smojol.common.transpiler;
 
+import com.google.common.collect.ImmutableList;
+import org.smojol.common.ast.SemanticCategory;
 import org.smojol.common.vm.expression.ConditionTestTime;
 
+import java.util.Collection;
 import java.util.Objects;
 
 public final class TranspilerLoop extends TranspilerNode {
@@ -16,6 +19,7 @@ public final class TranspilerLoop extends TranspilerNode {
     public TranspilerLoop(TranspilerNode loopVariable, TranspilerNode initialValue, TranspilerNode maxValue,
                           TranspilerNode terminateCondition, TranspilerNode loopUpdate,
                           ConditionTestTime conditionTestTime, TranspilerNode body) {
+        super(ImmutableList.of(SemanticCategory.ITERATION));
         this.loopVariable = loopVariable;
         this.initialValue = initialValue;
         this.maxValue = maxValue;
@@ -58,5 +62,10 @@ public final class TranspilerLoop extends TranspilerNode {
                 + "loopUpdate=" + loopUpdate.description() + ", "
                 + "conditionTestTime=" + conditionTestTime.name() + ", "
                 + "body=" + body.description() + ']';
+    }
+
+    @Override
+    public Collection<TranspilerNode> astChildren() {
+        return ImmutableList.of(body);
     }
 }

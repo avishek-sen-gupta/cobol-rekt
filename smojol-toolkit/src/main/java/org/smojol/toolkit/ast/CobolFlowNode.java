@@ -123,8 +123,8 @@ public class CobolFlowNode implements FlowNode {
     }
 
     @Override
-    public List<FlowNodeCategory> categories() {
-        return ImmutableList.of(FlowNodeCategory.GENERIC_CODE);
+    public List<SemanticCategory> categories() {
+        return ImmutableList.of(SemanticCategory.GENERIC_CODE);
     }
 
     @Override
