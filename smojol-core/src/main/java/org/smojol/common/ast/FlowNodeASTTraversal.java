@@ -1,7 +1,4 @@
-package org.smojol.toolkit.interpreter.navigation;
-
-import org.smojol.common.ast.FlowNode;
-import org.smojol.common.ast.FlowNodeASTVisitor;
+package org.smojol.common.ast;
 
 public class FlowNodeASTTraversal<T> {
     public void accept(FlowNode node, FlowNodeASTVisitor<T> visitor) {

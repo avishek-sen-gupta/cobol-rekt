@@ -9,7 +9,7 @@ import org.smojol.common.id.UUIDProvider;
 import org.smojol.common.pseudocode.SmojolSymbolTable;
 import org.smojol.common.pseudocode.SymbolReferenceBuilder;
 import org.smojol.common.resource.ResourceOperations;
-import org.smojol.toolkit.interpreter.navigation.FlowNodeASTTraversal;
+import org.smojol.common.ast.FlowNodeASTTraversal;
 import org.smojol.toolkit.task.CommandLineAnalysisTask;
 import org.smojol.toolkit.task.AnalysisTask;
 import org.smojol.toolkit.task.AnalysisTaskResult;
@@ -38,7 +38,7 @@ public class ExportUnifiedModelToJSONTask implements AnalysisTask {
     }
 
     public AnalysisTaskResult run() {
-        new FlowNodeASTTraversal<FlowNode>().accept(flowRoot, new FlowNodeSymbolExtractorVisitor(flowRoot, new SmojolSymbolTable(dataStructures, new SymbolReferenceBuilder(new UUIDProvider())), dataStructures));
+//        new FlowNodeASTTraversal<FlowNode>().accept(flowRoot, new FlowNodeSymbolExtractorVisitor(flowRoot, dataStructures, new SmojolSymbolTable(dataStructures, new SymbolReferenceBuilder(new UUIDProvider()))));
         JGraphTGraphBuilder graphMLExporter = new JGraphTGraphBuilder(dataStructures, flowRoot, qualifier);
         graphMLExporter.buildAST();
         graphMLExporter.buildCFG();

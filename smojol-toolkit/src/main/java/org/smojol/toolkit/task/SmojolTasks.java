@@ -5,6 +5,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.smojol.common.pseudocode.BasicBlockFactory;
 import org.smojol.common.pseudocode.SmojolSymbolTable;
 import org.smojol.common.pseudocode.SymbolReferenceBuilder;
+import org.smojol.common.transpiler.TranspilerSetup;
 import org.smojol.toolkit.analysis.defined.*;
 import org.smojol.toolkit.analysis.pipeline.ParsePipeline;
 import org.smojol.toolkit.analysis.graph.NamespaceQualifier;
@@ -16,7 +17,6 @@ import org.smojol.common.id.IdProvider;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.toolkit.flowchart.FlowchartOutputWriter;
-import org.smojol.toolkit.interpreter.navigation.FlowNodeASTTraversal;
 import org.smojol.common.resource.ResourceOperations;
 
 import java.io.IOException;
@@ -196,12 +196,8 @@ public class SmojolTasks {
         symbolTable = new SmojolSymbolTable(dataStructures, new SymbolReferenceBuilder(idProvider));
         flowcharter.buildFlowAST(rawAST).buildControlFlow().buildOverlay();
         flowRoot = flowcharter.getRoot();
-//        buildSymbolTable();
+        TranspilerSetup.buildSymbolTable(flowRoot, dataStructures, symbolTable);
         return this;
-    }
-
-    private void buildSymbolTable() {
-        new FlowNodeASTTraversal<FlowNode>().accept(flowRoot, new FlowNodeSymbolExtractorVisitor(flowRoot, symbolTable, dataStructures));
     }
 
     private Stream<AnalysisTask> tasks(List<CommandLineAnalysisTask> commandLineAnalysisTasks) {

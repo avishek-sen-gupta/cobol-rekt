@@ -3,7 +3,7 @@ package org.smojol.toolkit.analysis.defined;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.SerialisableASTFlowNode;
 import org.smojol.common.ast.SerialisableFlowNodeASTVisitor;
-import org.smojol.toolkit.interpreter.navigation.FlowNodeASTTraversal;
+import org.smojol.common.ast.FlowNodeASTTraversal;
 
 public class SerialiseFlowASTTask {
     public SerialisableASTFlowNode serialisedFlowAST(FlowNode astRoot) {

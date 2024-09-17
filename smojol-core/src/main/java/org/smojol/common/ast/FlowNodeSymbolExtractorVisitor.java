@@ -8,7 +8,7 @@ public class FlowNodeSymbolExtractorVisitor extends FlowNodeASTVisitor<FlowNode>
     private final SmojolSymbolTable symbolTable;
     private final CobolDataStructure dataStructures;
 
-    public FlowNodeSymbolExtractorVisitor(FlowNode ancestor, SmojolSymbolTable symbolTable, CobolDataStructure dataStructures) {
+    public FlowNodeSymbolExtractorVisitor(FlowNode ancestor, CobolDataStructure dataStructures, SmojolSymbolTable symbolTable) {
         super(ancestor);
         this.symbolTable = symbolTable;
         this.dataStructures = dataStructures;

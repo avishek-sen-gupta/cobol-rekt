@@ -24,7 +24,7 @@ import org.smojol.toolkit.ast.FlowchartBuilderImpl;
 import org.smojol.toolkit.interpreter.interpreter.CobolBreakpointer;
 import org.smojol.toolkit.interpreter.interpreter.CobolInterpreterFactory;
 import org.smojol.toolkit.interpreter.interpreter.RunLogger;
-import org.smojol.toolkit.interpreter.navigation.FlowNodeASTTraversal;
+import org.smojol.common.ast.FlowNodeASTTraversal;
 import org.smojol.toolkit.interpreter.structure.DefaultFormat1DataStructureBuilder;
 import org.smojol.toolkit.task.*;
 
@@ -57,7 +57,7 @@ public class InterpretTask implements AnalysisTask {
             ParseTree procedure = navigator.procedureBodyRoot();
             flowcharter.buildFlowAST(procedure).buildControlFlow().buildOverlay();
             FlowNode root = flowcharter.getRoot();
-            new FlowNodeASTTraversal<FlowNode>().accept(root, new FlowNodeSymbolExtractorVisitor(root, new SmojolSymbolTable(dataStructures, new SymbolReferenceBuilder(new UUIDProvider())), dataStructures));
+//            new FlowNodeASTTraversal<FlowNode>().accept(root, new FlowNodeSymbolExtractorVisitor(root, dataStructures, new SmojolSymbolTable(dataStructures, new SymbolReferenceBuilder(new UUIDProvider()))));
             System.out.println("DATA STRUCTURES\n--------------------------------\n");
             dataStructures.report();
             System.out.println("INTERPRETING\n--------------------------------\n");

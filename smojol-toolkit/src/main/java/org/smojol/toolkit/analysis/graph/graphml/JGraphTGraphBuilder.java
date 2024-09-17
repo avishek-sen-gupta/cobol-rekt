@@ -19,7 +19,7 @@ import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.SerialisableEdge;
 import org.smojol.common.ast.SerialisableCFGFlowNode;
 import org.smojol.common.vm.structure.CobolDataStructure;
-import org.smojol.toolkit.interpreter.navigation.FlowNodeASTTraversal;
+import org.smojol.common.ast.FlowNodeASTTraversal;
 
 import java.io.File;
 import java.util.*;

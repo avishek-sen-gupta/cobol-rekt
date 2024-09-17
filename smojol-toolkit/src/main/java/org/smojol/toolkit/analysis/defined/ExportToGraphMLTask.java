@@ -5,7 +5,7 @@ import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.FlowNodeSymbolExtractorVisitor;
 import org.smojol.toolkit.analysis.graph.graphml.TypedGraphEdge;
 import org.smojol.toolkit.analysis.graph.graphml.TypedGraphVertex;
-import org.smojol.toolkit.interpreter.navigation.FlowNodeASTTraversal;
+import org.smojol.common.ast.FlowNodeASTTraversal;
 import org.smojol.common.resource.ResourceOperations;
 import org.smojol.toolkit.task.CommandLineAnalysisTask;
 import org.smojol.toolkit.task.AnalysisTask;
@@ -37,7 +37,7 @@ public class ExportToGraphMLTask implements AnalysisTask {
         try {
             Files.createDirectories(graphMLOutputConfig.outputDir());
             String graphMLOutputPath = graphMLOutputConfig.outputDir().resolve(graphMLOutputConfig.outputPath()).toAbsolutePath().normalize().toString();
-            new FlowNodeASTTraversal<FlowNode>().accept(astRoot, new FlowNodeSymbolExtractorVisitor(astRoot, null, dataStructures));
+//            new FlowNodeASTTraversal<FlowNode>().accept(astRoot, new FlowNodeSymbolExtractorVisitor(astRoot, dataStructures, null));
             Graph<TypedGraphVertex, TypedGraphEdge> model = exportUnifiedToGraphML(astRoot, dataStructures, qualifier, graphMLOutputPath);
             return AnalysisTaskResult.OK(CommandLineAnalysisTask.EXPORT_TO_GRAPHML, model);
         } catch (IOException e) {

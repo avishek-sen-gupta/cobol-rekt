@@ -10,7 +10,7 @@ import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.toolkit.analysis.graph.graphml.Neo4JASTBuilderVisitor;
 import org.smojol.toolkit.analysis.graph.graphml.Neo4JDataDependencyBuilderVisitor;
 import org.smojol.toolkit.analysis.pipeline.config.GraphBuildConfig;
-import org.smojol.toolkit.interpreter.navigation.FlowNodeASTTraversal;
+import org.smojol.common.ast.FlowNodeASTTraversal;
 
 public class Neo4JGraphBuilder {
     private final GraphSDK sdk;
