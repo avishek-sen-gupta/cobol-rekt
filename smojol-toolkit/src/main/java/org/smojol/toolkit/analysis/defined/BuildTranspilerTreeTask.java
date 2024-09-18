@@ -36,9 +36,9 @@ public class BuildTranspilerTreeTask implements AnalysisTask {
         new AggregatingTranspilerNodeTraversal<List<TranspilerInstruction>>().accept(transpilerTree, visitor);
         List<TranspilerInstruction> instructions = visitor.result();
         Map<TranspilerNode, Triple<Integer, Integer, Integer>> transpilerNodeMap = buildTranspilerNodeMap(instructions);
-        List<TranspilerEdge> transpilerNodeEdges = controlFlowEdges(instructions, transpilerNodeMap);
+        List<TranspilerEdge> instructionEdges = controlFlowEdges(instructions, transpilerNodeMap);
         System.out.println(instructions);
-        return new AnalysisTaskResultOK(CommandLineAnalysisTask.ANALYSE_CONTROL_FLOW.name(), transpilerTree);
+        return new AnalysisTaskResultOK(CommandLineAnalysisTask.ANALYSE_CONTROL_FLOW.name(), new TranspilerModel(transpilerTree, instructions, instructionEdges));
     }
 
     private List<TranspilerEdge> controlFlowEdges(List<TranspilerInstruction> instructions, Map<TranspilerNode, Triple<Integer, Integer, Integer>> transpilerNodeMap) {
@@ -64,7 +64,7 @@ public class BuildTranspilerTreeTask implements AnalysisTask {
                     TranspilerInstruction forwardTarget = entry(resolveNode(j.getStart(), instructions, i), transpilerNodeMap, instructions);
                     TranspilerInstruction returnCallSite = entry(resolveNode(j.getEnd(), instructions, i), transpilerNodeMap, instructions);
                     edges.add(new TranspilerEdge(body(current, transpilerNodeMap, instructions), forwardTarget));
-                    if (returnCallSite.ref() instanceof NullTranspilerNode) continue;
+                    if (returnCallSite == TranspilerInstruction.NULL) continue;
                     edges.add(new TranspilerEdge(returnCallSite, exit(current, transpilerNodeMap, instructions)));
                 }
                 case TranspilerLoop transpilerLoop when currentInstruction.sentinel() == CodeSentinelType.EXIT ->
@@ -89,14 +89,17 @@ public class BuildTranspilerTreeTask implements AnalysisTask {
     }
 
     private TranspilerInstruction entry(TranspilerNode node, Map<TranspilerNode, Triple<Integer, Integer, Integer>> transpilerNodeMap, List<TranspilerInstruction> instructions) {
+        if (node instanceof NullTranspilerNode) return TranspilerInstruction.NULL;
         return instructions.get(transpilerNodeMap.get(node).getLeft());
     }
 
     private TranspilerInstruction exit(TranspilerNode node, Map<TranspilerNode, Triple<Integer, Integer, Integer>> transpilerNodeMap, List<TranspilerInstruction> instructions) {
+        if (node instanceof NullTranspilerNode) return TranspilerInstruction.NULL;
         return instructions.get(transpilerNodeMap.get(node).getRight());
     }
 
     private TranspilerInstruction body(TranspilerNode node, Map<TranspilerNode, Triple<Integer, Integer, Integer>> transpilerNodeMap, List<TranspilerInstruction> instructions) {
+        if (node instanceof NullTranspilerNode) return TranspilerInstruction.NULL;
         return instructions.get(transpilerNodeMap.get(node).getMiddle());
     }
 
