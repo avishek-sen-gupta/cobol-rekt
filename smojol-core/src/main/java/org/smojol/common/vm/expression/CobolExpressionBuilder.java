@@ -38,11 +38,11 @@ public class CobolExpressionBuilder {
     }
 
     public CobolExpression literalOrIdentifier(CobolParser.IntegerLiteralContext integerLiteralContext, CobolParser.GeneralIdentifierContext identifierContext) {
-        return integerLiteralContext != null ? literal(integerLiteralContext, AbstractCobolType.NUMBER) : identifier(identifierContext);
+        return integerLiteralContext != null ? literal(integerLiteralContext) : identifier(identifierContext);
     }
 
-    private CobolExpression literal(CobolParser.IntegerLiteralContext integerLiteralContext, AbstractCobolType abstractCobolType) {
-        return new LiteralResolver().literal(integerLiteralContext, abstractCobolType);
+    private CobolExpression literal(CobolParser.IntegerLiteralContext integerLiteralContext) {
+        return new LiteralResolver().literal(integerLiteralContext, AbstractCobolType.NUMBER);
     }
 
     public CobolExpression identifier(CobolParser.QualifiedDataNameContext context) {

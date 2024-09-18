@@ -3,9 +3,13 @@ package org.smojol.toolkit.ast;
 import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.apache.commons.lang3.tuple.Pair;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.ast.*;
 import org.smojol.common.pseudocode.SmojolSymbolTable;
+import org.smojol.common.vm.expression.CobolExpression;
+import org.smojol.common.vm.expression.CobolExpressionBuilder;
+import org.smojol.common.vm.expression.EvaluateBreaker;
 import org.smojol.common.vm.interpreter.CobolInterpreter;
 import org.smojol.common.vm.interpreter.CobolVmSignal;
 import org.smojol.common.vm.interpreter.FlowControl;
@@ -17,8 +21,11 @@ import java.util.List;
 
 @Getter
 public class EvaluateFlowNode extends CobolFlowNode {
-    private List<CobolParser.EvaluateSelectContext> evaluations = new ArrayList<>();
+    private final List<CobolParser.EvaluateSelectContext> evaluationChannels = new ArrayList<>();
     private List<EvaluateBranchFlowNode> whenPhrases;
+    private List<CobolExpression> evaluationSubjects = new ArrayList<>();
+    private List<Pair<CobolExpression, List<FlowNode>>> whenPhraseFlowNodes;
+    private Pair<List<CobolExpression>, List<Pair<CobolExpression, List<FlowNode>>>> deconstructedRepresentation;
 
     public EvaluateFlowNode(ParseTree parseTree, FlowNode scope, FlowNodeService nodeService, StackFrames stackFrames) {
         super(parseTree, scope, nodeService, stackFrames);
@@ -27,8 +34,8 @@ public class EvaluateFlowNode extends CobolFlowNode {
     @Override
     public void buildInternalFlow() {
         CobolParser.EvaluateStatementContext whenStatement = new SyntaxIdentity<CobolParser.EvaluateStatementContext>(getExecutionContext()).get();
-        evaluations.add(whenStatement.evaluateSelect());
-        evaluations.addAll(whenStatement.evaluateAlsoSelect().stream().map(CobolParser.EvaluateAlsoSelectContext::evaluateSelect).toList());
+        evaluationChannels.add(whenStatement.evaluateSelect());
+        evaluationChannels.addAll(whenStatement.evaluateAlsoSelect().stream().map(CobolParser.EvaluateAlsoSelectContext::evaluateSelect).toList());
         whenPhrases = whenStatement.evaluateWhenPhrase().stream().map(ewp -> new EvaluateBranchFlowNode(ewp, this, nodeService, staticFrameContext)).toList();
     }
 
@@ -66,5 +73,7 @@ public class EvaluateFlowNode extends CobolFlowNode {
 
     @Override
     public void resolve(SmojolSymbolTable symbolTable, CobolDataStructure dataStructures) {
+        CobolParser.EvaluateStatementContext whenStatement = new SyntaxIdentity<CobolParser.EvaluateStatementContext>(getExecutionContext()).get();
+        deconstructedRepresentation = new EvaluateBreaker(staticFrameContext, this, nodeService).decompose(whenStatement);
     }
 }

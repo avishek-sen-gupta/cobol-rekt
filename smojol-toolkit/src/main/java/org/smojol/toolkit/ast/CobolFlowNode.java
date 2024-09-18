@@ -24,12 +24,11 @@ public class CobolFlowNode implements FlowNode {
     protected final String uuid;
     protected List<FlowNode> outgoingNodes = new ArrayList<>();
     protected List<FlowNode> incomingNodes = new ArrayList<>();
-    @Getter
-    protected final ParseTree executionContext;
+    @Getter protected final ParseTree executionContext;
     protected FlowNodeService nodeService;
     private boolean databaseAccess;
     protected FlowNode scope;
-    protected final StackFrames staticFrameContext;
+    @Getter protected final StackFrames staticFrameContext;
     private List<CommentBlock> commentBlocks = new ArrayList<>();
 
     public CobolFlowNode(ParseTree executionContext, FlowNode scope, FlowNodeService nodeService, StackFrames stackFrames) {
