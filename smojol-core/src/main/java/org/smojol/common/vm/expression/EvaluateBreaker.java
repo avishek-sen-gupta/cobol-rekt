@@ -23,7 +23,6 @@ public class EvaluateBreaker {
     private final FlowNode parent;
     private final FlowNodeService nodeService;
     private final CobolExpressionBuilder cobolExpressionBuilder = new CobolExpressionBuilder();
-    private List<TestActionPair> whenPhraseFlowNodes;
     private final List<CobolExpression> evaluationSubjects = new ArrayList<>();
 
     public EvaluateBreaker(StackFrames staticFrameContext, FlowNode parent, FlowNodeService nodeService) {
@@ -39,7 +38,7 @@ public class EvaluateBreaker {
                 : ImmutableList.of();
         evaluationSubjects.add(selectionSubject(whenStatement.evaluateSelect(), dataStructures));
         evaluationSubjects.addAll(whenStatement.evaluateAlsoSelect().stream().map(subj -> selectionSubject(subj.evaluateSelect(), dataStructures)).toList());
-        whenPhraseFlowNodes = whenStatement.evaluateWhenPhrase().stream().map(this::conditionGroup).toList();
+        List<TestActionPair> whenPhraseFlowNodes = whenStatement.evaluateWhenPhrase().stream().map(this::conditionGroup).toList();
         return new ExpandedEvaluation(evaluationSubjects, whenPhraseFlowNodes, elseBody);
     }
 
