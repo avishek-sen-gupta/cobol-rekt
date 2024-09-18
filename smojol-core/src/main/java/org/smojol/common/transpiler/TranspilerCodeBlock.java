@@ -1,18 +1,16 @@
 package org.smojol.common.transpiler;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import org.smojol.common.ast.SemanticCategory;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public class TranspilerCodeBlock extends TranspilerNode {
-    private final List<TranspilerNode> children = new ArrayList<>();
-
     public TranspilerCodeBlock(List<TranspilerNode> children) {
-        super(ImmutableList.of(SemanticCategory.CODE_BLOCK));
-        this.children.addAll(children);
+        super(children, ImmutableMap.of(), ImmutableList.of(SemanticCategory.CODE_BLOCK));
     }
 
     public TranspilerCodeBlock() {
@@ -20,29 +18,32 @@ public class TranspilerCodeBlock extends TranspilerNode {
     }
 
     public TranspilerCodeBlock(TranspilerNode single) {
-        super(ImmutableList.of(SemanticCategory.CODE_BLOCK));
-        this.children.add(single);
+        super(ImmutableList.of(single), ImmutableMap.of(), ImmutableList.of(SemanticCategory.CODE_BLOCK));
+    }
+
+    public TranspilerCodeBlock(List<TranspilerNode> childTranspilerNodes, Map<String, Object> additionalAttributes) {
+        super(childTranspilerNodes, additionalAttributes, ImmutableList.of(SemanticCategory.CODE_BLOCK));
     }
 
     public boolean isEmpty() {
-        return children.isEmpty();
+        return childTranspilerNodes.isEmpty();
     }
 
     public TranspilerNode unwrap() {
-        return children.size() != 1 ? this : children.getFirst();
+        return childTranspilerNodes.size() != 1 ? this : childTranspilerNodes.getFirst();
     }
 
     @Override
     public String description() {
-        return String.join("\n", children.stream().map(TranspilerNode::description).toList());
+        return String.join("\n", childTranspilerNodes.stream().map(TranspilerNode::description).toList());
     }
 
     @Override
     public Collection<TranspilerNode> astChildren() {
-        return children;
+        return childTranspilerNodes;
     }
 
     public void add(TranspilerNode node) {
-        children.add(node);
+        childTranspilerNodes.add(node);
     }
 }

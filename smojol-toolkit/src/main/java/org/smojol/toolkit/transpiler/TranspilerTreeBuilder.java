@@ -1,6 +1,8 @@
 package org.smojol.toolkit.transpiler;
 
+import com.google.common.collect.ImmutableMap;
 import org.smojol.common.ast.FlowNode;
+import org.smojol.common.ast.FlowNodeType;
 import org.smojol.common.transpiler.NextLocationNode;
 import org.smojol.common.transpiler.NullTranspilerNode;
 import org.smojol.common.transpiler.PlaceholderTranspilerNode;
