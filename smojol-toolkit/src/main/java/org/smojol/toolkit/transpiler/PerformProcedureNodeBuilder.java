@@ -13,7 +13,7 @@ import java.util.List;
 public class PerformProcedureNodeBuilder {
     public static TranspilerNode build(PerformProcedureFlowNode n, CobolDataStructure dataStructures) {
         List<FlowIteration> nestedLoops = n.getNestedLoops();
-        TranspilerNode body = new JumpNode(new NamedLocationNode(n.getStartNode().name()), new NamedLocationNode(n.getEndNode().name()));
+        TranspilerNode body = new JumpTranspilerNode(new NamedLocationNode(n.getStartNode().name()), new NamedLocationNode(n.getEndNode().name()));
         return recurse(nestedLoops, body, dataStructures);
     }
 

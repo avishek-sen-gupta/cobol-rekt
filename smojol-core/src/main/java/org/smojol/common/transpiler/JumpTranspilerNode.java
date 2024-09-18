@@ -1,17 +1,19 @@
 package org.smojol.common.transpiler;
 
 import com.google.common.collect.ImmutableList;
+import lombok.Getter;
 import org.smojol.common.ast.SemanticCategory;
 
-public class JumpNode extends TranspilerNode {
+@Getter
+public class JumpTranspilerNode extends TranspilerNode {
     private final LocationNode start;
     private final LocationNode end;
 
-    public JumpNode(LocationNode location) {
-        this(location, ProgramTerminalLocationNode.END);
+    public JumpTranspilerNode(LocationNode location) {
+        this(location, LocationNode.NULL);
     }
 
-    public JumpNode(LocationNode start, LocationNode end) {
+    public JumpTranspilerNode(LocationNode start, LocationNode end) {
         super(ImmutableList.of(SemanticCategory.CONTROL_FLOW));
         this.start = start;
         this.end = end;

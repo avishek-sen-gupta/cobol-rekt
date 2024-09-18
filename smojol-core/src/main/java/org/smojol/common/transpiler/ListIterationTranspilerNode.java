@@ -5,11 +5,11 @@ import org.smojol.common.ast.SemanticCategory;
 
 import java.util.Collection;
 
-public class ListIterationNode extends TranspilerNode {
+public class ListIterationTranspilerNode extends TranspilerNode {
     private final TranspilerNode iterable;
     private final TranspilerNode body;
 
-    public ListIterationNode(TranspilerNode iterable, TranspilerNode body) {
+    public ListIterationTranspilerNode(TranspilerNode iterable, TranspilerNode body) {
         super(ImmutableList.of(SemanticCategory.ITERATION, SemanticCategory.REFERENCE));
         this.iterable = iterable;
         this.body = body;

@@ -3,10 +3,7 @@ package org.smojol.toolkit.transpiler;
 import com.google.common.collect.ImmutableMap;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.FlowNodeType;
-import org.smojol.common.transpiler.NextLocationNode;
-import org.smojol.common.transpiler.NullTranspilerNode;
-import org.smojol.common.transpiler.PlaceholderTranspilerNode;
-import org.smojol.common.transpiler.TranspilerNode;
+import org.smojol.common.transpiler.*;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.toolkit.ast.*;
 
@@ -33,7 +30,7 @@ public class TranspilerTreeBuilder {
             case GoToFlowNode n -> JumpNodeBuilder.build(n, dataStructures);
             case PerformProcedureFlowNode n -> PerformProcedureNodeBuilder.build(n, dataStructures);
             case PerformInlineFlowNode n -> PerformProcedureNodeBuilder.build(n, dataStructures);
-            case NextSentenceFlowNode n -> new NextLocationNode();
+            case NextSentenceFlowNode n -> new JumpTranspilerNode(new NextLocationNode());
             default -> new NullTranspilerNode();
         };
     }

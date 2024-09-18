@@ -8,7 +8,7 @@ import java.util.Collection;
 import static org.smojol.common.pseudocode.CodeSentinelType.*;
 
 public class TranspilerInstructionGenerator {
-    public static Collection<TranspilerInstruction> visiting(TranspilerNode node, IdProvider uuidProvider) {
+    public static Collection<TranspilerInstruction> body(TranspilerNode node, IdProvider uuidProvider) {
         return ImmutableList.of(new TranspilerInstruction(node, BODY, uuidProvider.next()));
     }
 

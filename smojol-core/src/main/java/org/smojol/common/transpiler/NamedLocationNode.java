@@ -1,7 +1,9 @@
 package org.smojol.common.transpiler;
 
+import lombok.Getter;
+
 public class NamedLocationNode extends LocationNode {
-    private final String name;
+    @Getter private final String name;
 
     public NamedLocationNode(String name) {
         this.name = name;

@@ -27,7 +27,9 @@ public abstract class TranspilerNode {
     }
 
     public abstract String description();
+
     public <T> T getProperty(String key) {
+        if (!properties.containsKey(key)) return null;
         return (T) properties.get(key);
     }
 

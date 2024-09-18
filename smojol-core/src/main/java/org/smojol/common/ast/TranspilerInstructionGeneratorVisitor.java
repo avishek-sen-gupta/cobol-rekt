@@ -19,7 +19,7 @@ public class TranspilerInstructionGeneratorVisitor extends AggregatingTranspiler
 
     @Override
     public void visit(TranspilerNode node) {
-        instructions.addAll(TranspilerInstructionGenerator.visiting(node, uuidProvider));
+        instructions.addAll(TranspilerInstructionGenerator.body(node, uuidProvider));
     }
 
     @Override

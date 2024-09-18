@@ -61,7 +61,7 @@ public final class TranspilerLoop extends TranspilerNode {
                 + "terminateCondition=" + terminateCondition.description() + ", "
                 + "loopUpdate=" + loopUpdate.description() + ", "
                 + "conditionTestTime=" + conditionTestTime.name() + ", "
-                + "body=" + body.description() + ']';
+                + "sentinel=" + body.description() + ']';
     }
 
     @Override
