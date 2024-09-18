@@ -2,7 +2,6 @@ package org.smojol.common.vm.expression;
 
 import com.google.common.collect.ImmutableList;
 import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.FlowNodeService;
@@ -24,7 +23,7 @@ public class EvaluateBreaker {
     private final FlowNode parent;
     private final FlowNodeService nodeService;
     private final CobolExpressionBuilder cobolExpressionBuilder = new CobolExpressionBuilder();
-    private List<Pair<CobolExpression, List<FlowNode>>> whenPhraseFlowNodes;
+    private List<TestActionPair> whenPhraseFlowNodes;
     private final List<CobolExpression> evaluationSubjects = new ArrayList<>();
 
     public EvaluateBreaker(StackFrames staticFrameContext, FlowNode parent, FlowNodeService nodeService) {
@@ -34,11 +33,14 @@ public class EvaluateBreaker {
         this.nodeService = nodeService;
     }
 
-    public Pair<List<CobolExpression>, List<Pair<CobolExpression, List<FlowNode>>>> decompose(CobolParser.EvaluateStatementContext whenStatement) {
+    public ExpandedEvaluation decompose(CobolParser.EvaluateStatementContext whenStatement) {
+        List<FlowNode> elseBody = whenStatement.evaluateWhenOther() != null
+                ? whenStatement.evaluateWhenOther().conditionalStatementCall().stream().map(stmt -> nodeService.node(stmt, parent, this.staticFrameContext)).toList()
+                : ImmutableList.of();
         evaluationSubjects.add(selectionSubject(whenStatement.evaluateSelect(), dataStructures));
         evaluationSubjects.addAll(whenStatement.evaluateAlsoSelect().stream().map(subj -> selectionSubject(subj.evaluateSelect(), dataStructures)).toList());
         whenPhraseFlowNodes = whenStatement.evaluateWhenPhrase().stream().map(this::conditionGroup).toList();
-        return ImmutablePair.of(evaluationSubjects, whenPhraseFlowNodes);
+        return new ExpandedEvaluation(evaluationSubjects, whenPhraseFlowNodes, elseBody);
     }
 
     public CobolExpression selectionSubject(CobolParser.EvaluateSelectContext selectionSubject, CobolDataStructure dataStructures) {
@@ -47,10 +49,10 @@ public class EvaluateBreaker {
         return cobolExpressionBuilder.condition(selectionSubject.condition(), dataStructures);
     }
 
-    public Pair<CobolExpression, List<FlowNode>> conditionGroup(CobolParser.EvaluateWhenPhraseContext whenPhrase) {
+    public TestActionPair conditionGroup(CobolParser.EvaluateWhenPhraseContext whenPhrase) {
         CobolExpression condition = recursiveOr(head(whenPhrase.evaluateWhen()), tail(whenPhrase.evaluateWhen()));
         List<FlowNode> body = whenPhrase.conditionalStatementCall().stream().map(stmt -> nodeService.node(stmt, parent, this.staticFrameContext)).toList();
-        return ImmutablePair.of(condition, body);
+        return new TestActionPair(condition, body);
     }
 
     private CobolExpression recursiveOr(Optional<CobolParser.EvaluateWhenContext> head, List<CobolParser.EvaluateWhenContext> remaining) {
@@ -62,7 +64,6 @@ public class EvaluateBreaker {
         List<CobolExpression> conditions = new ArrayList<>();
         conditions.add(condition(ctx.evaluateCondition(), evaluationSubjects.getFirst(), dataStructures));
         List<ImmutablePair<CobolParser.EvaluateAlsoConditionContext, CobolExpression>> subjectConditionPairs = zip(ctx.evaluateAlsoCondition().stream(), tail(evaluationSubjects).stream(), (a, b) -> ImmutablePair.of(a, b)).toList();
-//        conditions.addAll(ctx.evaluateAlsoCondition().stream().map(e -> condition(e.evaluateCondition(), dataStructures, evaluationSubjects.getFirst())).toList());
         conditions.addAll(subjectConditionPairs.stream().map(p -> condition(p.getLeft().evaluateCondition(), p.getRight(), dataStructures)).toList());
         return recursiveAnd(head(conditions), tail(conditions));
     }
@@ -77,10 +78,12 @@ public class EvaluateBreaker {
             return new SimpleConditionExpression(associatedSubject, new RelationExpression(RelationalOperation.EQUAL, new CobolExpressionBuilder().condition(evaluateConditionContext.condition(), dataStructures)));
         else if (evaluateConditionContext.booleanLiteral() != null)
             return new SimpleConditionExpression(associatedSubject, new PrimitiveCobolExpression(TypedRecord.typedBoolean(Boolean.parseBoolean(evaluateConditionContext.booleanLiteral().getText()))));
-        else if (evaluateConditionContext.ANY() != null) return new SimpleConditionExpression(associatedSubject, new PrimitiveCobolExpression(TypedRecord.TRUE));
+        else if (evaluateConditionContext.ANY() != null)
+            return new SimpleConditionExpression(associatedSubject, new PrimitiveCobolExpression(TypedRecord.TRUE));
         List<CobolExpression> args = ImmutableList.of(associatedSubject, cobolExpressionBuilder.arithmetic(evaluateConditionContext.evaluateValue().arithmeticExpression()),
                 cobolExpressionBuilder.arithmetic(evaluateConditionContext.evaluateThrough().evaluateValue().arithmeticExpression()));
         FunctionCallExpression isInRangeCall = new FunctionCallExpression("isInRange", args);
         return evaluateConditionContext.NOT() != null ? new NotExpression(isInRangeCall) : isInRangeCall;
     }
 }
+

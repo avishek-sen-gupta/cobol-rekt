@@ -9,6 +9,7 @@ import org.smojol.common.ast.*;
 import org.smojol.common.pseudocode.SmojolSymbolTable;
 import org.smojol.common.vm.expression.CobolExpression;
 import org.smojol.common.vm.expression.EvaluateBreaker;
+import org.smojol.common.vm.expression.ExpandedEvaluation;
 import org.smojol.common.vm.interpreter.CobolInterpreter;
 import org.smojol.common.vm.interpreter.CobolVmSignal;
 import org.smojol.common.vm.interpreter.FlowControl;
@@ -24,7 +25,7 @@ public class EvaluateFlowNode extends CobolFlowNode {
     private List<EvaluateBranchFlowNode> whenPhrases;
     private List<CobolExpression> evaluationSubjects = new ArrayList<>();
     private List<Pair<CobolExpression, List<FlowNode>>> whenPhraseFlowNodes;
-    private Pair<List<CobolExpression>, List<Pair<CobolExpression, List<FlowNode>>>> deconstructedRepresentation;
+    private ExpandedEvaluation deconstructedRepresentation;
 
     public EvaluateFlowNode(ParseTree parseTree, FlowNode scope, FlowNodeService nodeService, StackFrames stackFrames) {
         super(parseTree, scope, nodeService, stackFrames);
@@ -39,7 +40,7 @@ public class EvaluateFlowNode extends CobolFlowNode {
 
 //        CobolParser.EvaluateStatementContext whenStatement = new SyntaxIdentity<CobolParser.EvaluateStatementContext>(getExecutionContext()).get();
         deconstructedRepresentation = new EvaluateBreaker(staticFrameContext, this, nodeService).decompose(whenStatement);
-        deconstructedRepresentation.getRight().forEach(p -> p.getRight().forEach(FlowNode::buildFlow));
+        deconstructedRepresentation.buildFlow();
     }
 
     @Override
@@ -76,6 +77,6 @@ public class EvaluateFlowNode extends CobolFlowNode {
 
     @Override
     public void resolve(SmojolSymbolTable symbolTable, CobolDataStructure dataStructures) {
-        deconstructedRepresentation.getRight().forEach(x -> x.getRight().forEach(bodyStmt -> bodyStmt.resolve(symbolTable, dataStructures)));
+        deconstructedRepresentation.resolve(symbolTable, dataStructures);
     }
 }
