@@ -38,6 +38,16 @@
        PROCEDURE DIVISION.
        SECTION-0 SECTION.
         P1.
+        EVALUATE TRUE ALSO TRUE
+              WHEN SCALED + RESULT < 10 ALSO INVOICE-AMOUNT = 10
+                MOVE "CASE 1" TO SOMETHING
+              WHEN SCALED + RESULT > 50 ALSO
+                INVOICE-AMOUNT = ( SOMETEXT + RESULT ) / SCALED
+                MOVE "CASE 2" TO SOMETHING
+              WHEN OTHER
+                MOVE "CASE OTHER" TO SOMETHING
+            END-EVALUATE
+
            SEARCH SOME-ARRAY
            WHEN SOME-PART-1 > 10
             DISPLAY "CONDITION 1"

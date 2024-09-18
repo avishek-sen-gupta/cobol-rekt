@@ -12,8 +12,8 @@ import org.smojol.common.vm.stack.StackFrames;
 
 public class CobolFlowNodeFactory {
     public static FlowNode newNode(ParseTree parseTree, FlowNode scope, FlowNodeService nodeService, StackFrames stackFrames) {
-//        if (SyntaxIdentity.isStatementOfType(parseTree, CobolParser.EvaluateStatementContext.class))
-//            return new EvaluateFlowNode(parseTree, scope, nodeService, stackFrames);
+        if (SyntaxIdentity.isStatementOfType(parseTree, CobolParser.EvaluateStatementContext.class))
+            return new EvaluateFlowNode(parseTree, scope, nodeService, stackFrames);
         if (SyntaxIdentity.isStatementOfType(parseTree, CobolParser.IfStatementContext.class))
             return new IfFlowNode(parseTree, scope, nodeService, stackFrames);
         else if (SyntaxIdentity.isStatementOfType(parseTree, CobolParser.GoToStatementContext.class))

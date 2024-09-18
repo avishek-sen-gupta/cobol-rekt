@@ -10,14 +10,14 @@ public class IfTranspilerNode extends TranspilerNode {
     private final TranspilerNode ifThenBlock;
     private final TranspilerNode ifElseBlock;
 
-    public IfTranspilerNode(TranspilerNode condition, TranspilerCodeBlock ifThenBlock, TranspilerCodeBlock ifElseBlock) {
+    public IfTranspilerNode(TranspilerNode condition, TranspilerNode ifThenBlock, TranspilerNode ifElseBlock) {
         super(ImmutableList.of(SemanticCategory.DECISION));
         this.condition = condition;
         this.ifThenBlock = ifThenBlock;
         this.ifElseBlock = ifElseBlock;
     }
 
-    public IfTranspilerNode(TranspilerNode condition, TranspilerCodeBlock ifThenBlock) {
+    public IfTranspilerNode(TranspilerNode condition, TranspilerNode ifThenBlock) {
         this(condition, ifThenBlock, new TranspilerCodeBlock());
     }
 

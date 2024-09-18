@@ -22,7 +22,7 @@ public class TranspilerTreeBuilder {
             case DivideFlowNode n -> DivideTranspilerNodeBuilder.build(n, dataStructures);
             case ComputeFlowNode n -> ComputeTranspilerNodeBuilder.build(n, dataStructures);
             case DisplayFlowNode n -> DisplayTranspilerNodeBuilder.build(n, dataStructures);
-            case ConditionalStatementFlowNode n -> flowToTranspiler(n.astChildren().getFirst(), dataStructures);
+            case ConditionalStatementFlowNode n -> flowToTranspiler(n.getActualStatement(), dataStructures);
             case ProcedureDivisionBodyFlowNode n -> LabelledTranspilerCodeBlockNodeBuilder.build(n, dataStructures);
             case SectionFlowNode n -> LabelledTranspilerCodeBlockNodeBuilder.build(n, dataStructures);
             case ParagraphsFlowNode n -> TranspilerCodeBlockNodeBuilder.build(n, dataStructures);

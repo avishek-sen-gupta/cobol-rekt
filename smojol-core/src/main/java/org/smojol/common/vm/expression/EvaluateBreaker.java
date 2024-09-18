@@ -37,7 +37,7 @@ public class EvaluateBreaker {
     public Pair<List<CobolExpression>, List<Pair<CobolExpression, List<FlowNode>>>> decompose(CobolParser.EvaluateStatementContext whenStatement) {
         evaluationSubjects.add(selectionSubject(whenStatement.evaluateSelect(), dataStructures));
         evaluationSubjects.addAll(whenStatement.evaluateAlsoSelect().stream().map(subj -> selectionSubject(subj.evaluateSelect(), dataStructures)).toList());
-        whenPhraseFlowNodes = whenStatement.evaluateWhenPhrase().stream().map(whenPhrase -> conditionGroup(whenPhrase)).toList();
+        whenPhraseFlowNodes = whenStatement.evaluateWhenPhrase().stream().map(this::conditionGroup).toList();
         return ImmutablePair.of(evaluationSubjects, whenPhraseFlowNodes);
     }
 
@@ -74,10 +74,10 @@ public class EvaluateBreaker {
 
     private CobolExpression condition(CobolParser.EvaluateConditionContext evaluateConditionContext, CobolExpression associatedSubject, CobolDataStructure dataStructures) {
         if (evaluateConditionContext.condition() != null)
-            return new CobolExpressionBuilder().condition(evaluateConditionContext.condition(), dataStructures);
+            return new SimpleConditionExpression(associatedSubject, new RelationExpression(RelationalOperation.EQUAL, new CobolExpressionBuilder().condition(evaluateConditionContext.condition(), dataStructures)));
         else if (evaluateConditionContext.booleanLiteral() != null)
-            return new PrimitiveCobolExpression(TypedRecord.typedBoolean(Boolean.parseBoolean(evaluateConditionContext.booleanLiteral().getText())));
-        else if (evaluateConditionContext.ANY() != null) return new PrimitiveCobolExpression(TypedRecord.TRUE);
+            return new SimpleConditionExpression(associatedSubject, new PrimitiveCobolExpression(TypedRecord.typedBoolean(Boolean.parseBoolean(evaluateConditionContext.booleanLiteral().getText()))));
+        else if (evaluateConditionContext.ANY() != null) return new SimpleConditionExpression(associatedSubject, new PrimitiveCobolExpression(TypedRecord.TRUE));
         List<CobolExpression> args = ImmutableList.of(associatedSubject, cobolExpressionBuilder.arithmetic(evaluateConditionContext.evaluateValue().arithmeticExpression()),
                 cobolExpressionBuilder.arithmetic(evaluateConditionContext.evaluateThrough().evaluateValue().arithmeticExpression()));
         FunctionCallExpression isInRangeCall = new FunctionCallExpression("isInRange", args);

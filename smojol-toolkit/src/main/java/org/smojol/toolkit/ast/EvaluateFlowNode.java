@@ -8,7 +8,6 @@ import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.ast.*;
 import org.smojol.common.pseudocode.SmojolSymbolTable;
 import org.smojol.common.vm.expression.CobolExpression;
-import org.smojol.common.vm.expression.CobolExpressionBuilder;
 import org.smojol.common.vm.expression.EvaluateBreaker;
 import org.smojol.common.vm.interpreter.CobolInterpreter;
 import org.smojol.common.vm.interpreter.CobolVmSignal;
@@ -37,6 +36,10 @@ public class EvaluateFlowNode extends CobolFlowNode {
         evaluationChannels.add(whenStatement.evaluateSelect());
         evaluationChannels.addAll(whenStatement.evaluateAlsoSelect().stream().map(CobolParser.EvaluateAlsoSelectContext::evaluateSelect).toList());
         whenPhrases = whenStatement.evaluateWhenPhrase().stream().map(ewp -> new EvaluateBranchFlowNode(ewp, this, nodeService, staticFrameContext)).toList();
+
+//        CobolParser.EvaluateStatementContext whenStatement = new SyntaxIdentity<CobolParser.EvaluateStatementContext>(getExecutionContext()).get();
+        deconstructedRepresentation = new EvaluateBreaker(staticFrameContext, this, nodeService).decompose(whenStatement);
+        deconstructedRepresentation.getRight().forEach(p -> p.getRight().forEach(FlowNode::buildFlow));
     }
 
     @Override
@@ -73,7 +76,6 @@ public class EvaluateFlowNode extends CobolFlowNode {
 
     @Override
     public void resolve(SmojolSymbolTable symbolTable, CobolDataStructure dataStructures) {
-        CobolParser.EvaluateStatementContext whenStatement = new SyntaxIdentity<CobolParser.EvaluateStatementContext>(getExecutionContext()).get();
-        deconstructedRepresentation = new EvaluateBreaker(staticFrameContext, this, nodeService).decompose(whenStatement);
+        deconstructedRepresentation.getRight().forEach(x -> x.getRight().forEach(bodyStmt -> bodyStmt.resolve(symbolTable, dataStructures)));
     }
 }
