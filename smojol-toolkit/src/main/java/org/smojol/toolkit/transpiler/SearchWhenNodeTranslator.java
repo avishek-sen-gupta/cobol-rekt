@@ -10,7 +10,7 @@ import java.util.List;
 import static org.smojol.common.list.ConsCar.head;
 import static org.smojol.common.list.ConsCar.tail;
 
-public class SearchWhenNodeBuilder {
+public class SearchWhenNodeTranslator {
     public static TranspilerNode build(SearchFlowNode n, CobolDataStructure dataStructures) {
         TranspilerExpressionBuilder nodeBuilder = new TranspilerExpressionBuilder(dataStructures);
         List<SearchWhenFlowNode> phrases = n.getWhenPhrases().stream().map(node -> (SearchWhenFlowNode) node).toList();

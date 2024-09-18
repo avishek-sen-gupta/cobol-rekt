@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class TranspilerNode {
-    protected Map<String, Object> properties = new HashMap<>();
-    private List<SemanticCategory> categories;
+    protected final Map<String, Object> properties = new HashMap<>();
+    private final List<SemanticCategory> categories;
 
     public TranspilerNode(List<SemanticCategory> categories) {
         this.categories = categories;

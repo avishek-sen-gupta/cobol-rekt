@@ -85,4 +85,3 @@ public class EvaluateBreaker {
         return evaluateConditionContext.NOT() != null ? new NotExpression(isInRangeCall) : isInRangeCall;
     }
 }
-

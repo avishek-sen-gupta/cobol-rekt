@@ -14,7 +14,7 @@ import java.util.Optional;
 import static org.smojol.common.list.ConsCar.head;
 import static org.smojol.common.list.ConsCar.tail;
 
-public class EvaluateNodeBuilder {
+public class EvaluateNodeTranslator {
     public static TranspilerNode build(EvaluateFlowNode n, CobolDataStructure dataStructures) {
         ExpandedEvaluation deconstructedRepresentation = n.getDeconstructedRepresentation();
         List<TestActionPair> clauses = deconstructedRepresentation.testActionPairs();

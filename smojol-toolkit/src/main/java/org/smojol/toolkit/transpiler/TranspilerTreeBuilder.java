@@ -14,8 +14,8 @@ public class TranspilerTreeBuilder {
             case MoveFlowNode n -> SetTranspilerNodeBuilder.build(n, dataStructures);
             case IfFlowNode n -> IfTranspilerNodeBuilder.build(n, dataStructures);
             case GenericOnClauseFlowNode n -> new PlaceholderTranspilerNode(n.originalText());
-            case SearchFlowNode n -> SearchWhenNodeBuilder.build(n, dataStructures);
-            case EvaluateFlowNode n -> EvaluateNodeBuilder.build(n, dataStructures);
+            case SearchFlowNode n -> SearchWhenNodeTranslator.build(n, dataStructures);
+            case EvaluateFlowNode n -> EvaluateNodeTranslator.build(n, dataStructures);
             case AddFlowNode n -> AddTranspilerNodeBuilder.build(n, dataStructures);
             case SubtractFlowNode n -> SubtractTranspilerNodeBuilder.build(n, dataStructures);
             case MultiplyFlowNode n -> MultiplyTranspilerNodeBuilder.build(n, dataStructures);

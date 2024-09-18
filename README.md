@@ -361,18 +361,22 @@ This will take a little time, depending upon the number of paragraphs and their 
 
 TODO...
 
+**NOTE**: This will be migrated soon to use the transpiler tree format.
+
 See [IntervalAnalysisMain.java](smojol-toolkit/src/main/java/org/smojol/toolkit/examples/IntervalAnalysisMain.java) for an example.
 
 ### Basic Blocks (Experimental Feature)
 
 Basic Blocks are useful for analysing flow of the code without worrying about the specific computational details of the code. They are also useful (and the more pertinent use-case in our case) for rewriting / transpiling potential unstructured COBOL code (code with possibly arbitrary GOTOs) into a structured form / language (i.e., without GOTOs).
 
-Exposing basic blocks is done through the ```AnalyseControlFlowTask``` task. Note that this task does not actually output any artifacts, because it is intended for more internal analysis and transpilation (if I get to it at some point). It can be triggered through the ```CodeTaskRunner``` API just like many of the tasks. The return value on success is a pair.
+**NOTE**: This will be migrated soon to use the transpiler tree format.
 
-- The first item is a list of ```BasicBlock``` objects. These objects in turn contain lists of ```PseudocodeInstruction```s. These instructions represent a linear translation of the code (like bytecode, but still very COBOL-specific) with extra sentinel instructions (ENTER/EXIT, etc.) inserted for more hook points.
-- The second item is an object which contains two thing: a complete list of ```PseudocodeInstruction```s which the basic blocks are derived from, and all the edges between these instructions which represent possible control flows (sequential as well as jumps). If you choose to inject this graph into Neo4J, you will see that most of the graph is a linear chain of nodes, unlike the ```FlowNode``` representation which continues to maintain a syntactical hierarchy. ```PseudocodeInstruction``` objects do contain ```FlowNode``` objects internally for maintaining links with the original parse tree.
+~~Exposing basic blocks is done through the ```AnalyseControlFlowTask``` task. Note that this task does not actually output any artifacts, because it is intended for more internal analysis and transpilation (if I get to it at some point). It can be triggered through the ```CodeTaskRunner``` API just like many of the tasks. The return value on success is a pair.~~
 
-A sequence of ```PseudocodeInstruction```s look something like below:
+- ~~The first item is a list of ```BasicBlock``` objects. These objects in turn contain lists of ```PseudocodeInstruction```s. These instructions represent a linear translation of the code (like bytecode, but still very COBOL-specific) with extra sentinel instructions (ENTER/EXIT, etc.) inserted for more hook points.~~
+- ~~The second item is an object which contains two thing: a complete list of ```PseudocodeInstruction```s which the basic blocks are derived from, and all the edges between these instructions which represent possible control flows (sequential as well as jumps). If you choose to inject this graph into Neo4J, you will see that most of the graph is a linear chain of nodes, unlike the ```FlowNode``` representation which continues to maintain a syntactical hierarchy. ```PseudocodeInstruction``` objects do contain ```FlowNode``` objects internally for maintaining links with the original parse tree.~~
+
+~~A sequence of ```PseudocodeInstruction```s look something like below:~~
 
 ![Pseudocode example](documentation/psuedocode-example.png)
 
