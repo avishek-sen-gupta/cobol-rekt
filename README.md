@@ -83,6 +83,7 @@ The toolkit consists of Java components, most of which are around parsing, inges
 - An implementation of the gSpan algorithm for Frequent Subgraph Mining is adapted from [https://github.com/betterenvi/gSpan].
 - [Neo4J](https://neo4j.com/) is required for using tasks involving Neo4J. The APOC and GDS plugins will need to be installed. All the tasks have also been tested using Neo4J Desktop.
 - A subscription to OpenAI's GPT-4o (or your choice of deployment) will be needed for capabilities which use LLMs. The tasks have been tested using Azure's OpenAI offering.
+- RuntimeTypeAdapterFactory from Gson for some serialisation use-cases.
 
 ## Reverse Engineering Use Cases
 
