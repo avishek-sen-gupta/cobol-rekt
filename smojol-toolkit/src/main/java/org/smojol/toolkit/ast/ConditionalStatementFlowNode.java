@@ -19,6 +19,11 @@ public class ConditionalStatementFlowNode extends CobolFlowNode {
     }
 
     @Override
+    public void buildControlFlow() {
+        actualStatement.buildControlFlow();
+    }
+
+    @Override
     public void buildInternalFlow() {
         CobolParser.ConditionalStatementCallContext stmt = (CobolParser.ConditionalStatementCallContext) executionContext;
         if (stmt.statement() != null)
