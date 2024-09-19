@@ -60,8 +60,7 @@ public final class TranspilerLoop extends TranspilerNode {
                 + "maxValue=" + maxValue.description() + ", "
                 + "terminateCondition=" + terminateCondition.description() + ", "
                 + "loopUpdate=" + loopUpdate.description() + ", "
-                + "conditionTestTime=" + conditionTestTime.name() + ", "
-                + "sentinel=" + body.description() + ']';
+                + "conditionTestTime=" + conditionTestTime.name() + "]";
     }
 
     @Override

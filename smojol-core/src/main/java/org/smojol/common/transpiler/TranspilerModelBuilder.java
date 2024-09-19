@@ -46,16 +46,22 @@ public class TranspilerModelBuilder {
                     edges.add(new TranspilerEdge(ifElseExit, currentExit));
                 }
                 case JumpTranspilerNode j when currentInstruction.sentinel() == CodeSentinelType.BODY -> {
-                    TranspilerInstruction forwardTarget = entry(resolveNode(j.getStart(), instructions, i), transpilerNodeMap, instructions);
-                    TranspilerInstruction returnCallSite = entry(resolveNode(j.getEnd(), instructions, i), transpilerNodeMap, instructions);
+                    TranspilerInstruction forwardTarget = j.getStart() instanceof ExitIterationScopeLocationNode
+                            ? exit(resolveNode(j.getStart(), instructions, i), transpilerNodeMap, instructions)
+                            : entry(resolveNode(j.getStart(), instructions, i), transpilerNodeMap, instructions);
+                    TranspilerInstruction returnCallSite = exit(resolveNode(j.getEnd(), instructions, i), transpilerNodeMap, instructions);
                     edges.add(new TranspilerEdge(body(current, transpilerNodeMap, instructions), forwardTarget));
                     if (returnCallSite == TranspilerInstruction.NULL) continue;
                     edges.add(new TranspilerEdge(returnCallSite, exit(current, transpilerNodeMap, instructions)));
                 }
-                case TranspilerLoop transpilerLoop when currentInstruction.sentinel() == CodeSentinelType.EXIT ->
-                        edges.add(new TranspilerEdge(currentInstruction, entry(current, transpilerNodeMap, instructions)));
-                case ListIterationTranspilerNode listIterationTranspilerNode when currentInstruction.sentinel() == CodeSentinelType.EXIT ->
-                        edges.add(new TranspilerEdge(currentInstruction, entry(current, transpilerNodeMap, instructions)));
+                case TranspilerLoop transpilerLoop when currentInstruction.sentinel() == CodeSentinelType.EXIT -> {
+                    edges.add(new TranspilerEdge(currentInstruction, body(current, transpilerNodeMap, instructions)));
+                    edges.add(new TranspilerEdge(currentInstruction, nextInstruction));
+                }
+                case ListIterationTranspilerNode listIterationTranspilerNode when currentInstruction.sentinel() == CodeSentinelType.EXIT -> {
+                    edges.add(new TranspilerEdge(currentInstruction, body(current, transpilerNodeMap, instructions)));
+                    edges.add(new TranspilerEdge(currentInstruction, nextInstruction));
+                }
                 case null, default -> edges.add(new TranspilerEdge(currentInstruction, nextInstruction));
             }
         }
@@ -93,10 +99,10 @@ public class TranspilerModelBuilder {
     private TranspilerNode resolveNode(LocationNode locationNode, List<TranspilerInstruction> instructions, int currentAddress) {
         return switch (locationNode) {
             case NamedLocationNode n ->
-                    instructions.stream().filter(instr -> instr.ref() instanceof LabelledTranspilerCodeBlockNode && instr.sentinel() == CodeSentinelType.ENTER).findFirst().get().ref();
+                    instructions.stream().filter(instr -> instr.ref() instanceof LabelledTranspilerCodeBlockNode && instr.sentinel() == CodeSentinelType.ENTER && ((LabelledTranspilerCodeBlockNode) instr.ref()).getName().equals(n.getName())).findFirst().get().ref();
             case ProgramTerminalLocationNode n -> instructions.getLast().ref();
             case NextLocationNode n -> nextLocation(instructions, currentAddress);
-            case ExitIterationScope s -> iterationExit(currentAddress, instructions);
+            case ExitIterationScopeLocationNode s -> iterationExit(currentAddress, instructions);
             default -> new NullTranspilerNode();
         };
     }

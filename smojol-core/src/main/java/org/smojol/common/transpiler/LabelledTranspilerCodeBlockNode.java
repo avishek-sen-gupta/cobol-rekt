@@ -1,13 +1,14 @@
 package org.smojol.common.transpiler;
 
 import com.google.common.collect.ImmutableList;
+import lombok.Getter;
 import org.smojol.common.ast.SemanticCategory;
 
 import java.util.Collection;
 import java.util.List;
 
 public class LabelledTranspilerCodeBlockNode extends TranspilerNode {
-    private final String name;
+    @Getter private final String name;
     private final List<TranspilerNode> children;
 
     public LabelledTranspilerCodeBlockNode(String name, List<TranspilerNode> children) {

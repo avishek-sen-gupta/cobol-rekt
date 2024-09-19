@@ -22,7 +22,7 @@ public class SearchWhenNodeTranslator {
         TranspilerNode transpilerCondition = nodeBuilder.build(n.getConditionExpression());
         TranspilerCodeBlock whenBlock = new TranspilerCodeBlock(n.getWhenFlowNodes().stream().map(node -> TranspilerTreeBuilder.flowToTranspiler(node, dataStructures)).toList());
 //        whenBlock.add(new BreakTranspilerNode());
-        whenBlock.add(new JumpTranspilerNode(new ExitIterationScope()));
+        whenBlock.add(new JumpTranspilerNode(new ExitIterationScopeLocationNode()));
         if (head(remaining).isEmpty()) return new IfTranspilerNode(transpilerCondition, whenBlock);
         return new IfTranspilerNode(transpilerCondition, whenBlock, new TranspilerCodeBlock(build(head(remaining).get(), tail(remaining), dataStructures)));
     }
