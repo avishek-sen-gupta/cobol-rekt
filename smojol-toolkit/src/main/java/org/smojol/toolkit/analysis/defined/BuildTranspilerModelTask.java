@@ -13,6 +13,7 @@ import org.smojol.common.navigation.AggregatingTranspilerNodeTraversal;
 import org.smojol.common.pseudocode.*;
 import org.smojol.common.resource.ResourceOperations;
 import org.smojol.common.transpiler.*;
+import org.smojol.common.typeadapter.RuntimeTypeAdapterFactory;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.toolkit.analysis.pipeline.config.OutputArtifactConfig;
 import org.smojol.toolkit.task.*;
@@ -60,45 +61,7 @@ public class BuildTranspilerModelTask implements AnalysisTask {
         }
 
         try (JsonWriter writer = new JsonWriter(resourceOperations.fileWriter(transpilerModelOutputConfig.fullPath()))) {
-            RuntimeTypeAdapterFactory<TranspilerNode> runtimeTypeAdapterFactory = RuntimeTypeAdapterFactory
-                    .of(TranspilerNode.class, "type") // Specify the base type and the JSON field for the type
-                    .registerSubtype(NegativeNode.class, "negative")
-                    .registerSubtype(ExponentNode.class, "exponent")
-                    .registerSubtype(AddNode.class, "add")
-                    .registerSubtype(SubtractNode.class, "subtract")
-                    .registerSubtype(MultiplyNode.class, "multiply")
-                    .registerSubtype(DivideNode.class, "divide")
-                    .registerSubtype(IfTranspilerNode.class, "if")
-                    .registerSubtype(EqualToNode.class, "equal_to")
-                    .registerSubtype(NotEqualToNode.class, "not_equal_to")
-                    .registerSubtype(GreaterThanNode.class, "greater_than")
-                    .registerSubtype(LessThanNode.class, "less_than")
-                    .registerSubtype(GreaterThanOrEqualToNode.class, "greater_than_or_equal_to")
-                    .registerSubtype(LessThanOrEqualToNode.class, "less_than_or_equal_to")
-                    .registerSubtype(FunctionCallNode.class, "function_call")
-                    .registerSubtype(IndexReferenceNode.class, "index_reference")
-                    .registerSubtype(JumpTranspilerNode.class, "jump")
-                    .registerSubtype(ValueOfNode.class, "valueOf")
-                    .registerSubtype(TranspilerLoop.class, "loop")
-                    .registerSubtype(TranspilerLoopUpdate.class, "loop_update")
-                    .registerSubtype(ListIterationTranspilerNode.class, "list_iterate")
-                    .registerSubtype(ExitIterationScopeLocationNode.class, "break")
-                    .registerSubtype(TranspilerCodeBlock.class, "block")
-                    .registerSubtype(SymbolReferenceNode.class, "symbol_reference")
-                    .registerSubtype(LabelledTranspilerCodeBlockNode.class, "labelled_block")
-                    .registerSubtype(NestedConditionNode.class, "nested_condition")
-                    .registerSubtype(NextLocationNode.class, "next_location")
-                    .registerSubtype(SetTranspilerNode.class, "set")
-                    .registerSubtype(PrintTranspilerNode.class, "print")
-                    .registerSubtype(AndNode.class, "and")
-                    .registerSubtype(OrNode.class, "or")
-                    .registerSubtype(NotNode.class, "not")
-                    .registerSubtype(PrimitiveValueNode.class, "primitive")
-                    .registerSubtype(ProgramTerminalLocationNode.class, "terminal_location")
-                    .registerSubtype(PlaceholderTranspilerNode.class, "placeholder")
-                    .registerSubtype(NullTranspilerNode.class, "null_node")
-                    ;
-            Gson gson = new GsonBuilder().setPrettyPrinting().registerTypeAdapterFactory(runtimeTypeAdapterFactory).create();
+            Gson gson = initGson();
             writer.setIndent("  ");
             gson.toJson(model, TranspilerModel.class, writer);
             String draw = mermaid.draw(jgraph);
@@ -107,5 +70,47 @@ public class BuildTranspilerModelTask implements AnalysisTask {
         } catch (IOException e) {
             return AnalysisTaskResult.ERROR(e, CommandLineAnalysisTask.BUILD_TRANSPILER_MODEL);
         }
+    }
+
+    private static Gson initGson() {
+        RuntimeTypeAdapterFactory<TranspilerNode> runtimeTypeAdapterFactory = RuntimeTypeAdapterFactory
+                .of(TranspilerNode.class, "type")
+                .registerSubtype(NegativeNode.class, "negative")
+                .registerSubtype(ExponentNode.class, "exponent")
+                .registerSubtype(AddNode.class, "add")
+                .registerSubtype(SubtractNode.class, "subtract")
+                .registerSubtype(MultiplyNode.class, "multiply")
+                .registerSubtype(DivideNode.class, "divide")
+                .registerSubtype(IfTranspilerNode.class, "if")
+                .registerSubtype(EqualToNode.class, "equal_to")
+                .registerSubtype(NotEqualToNode.class, "not_equal_to")
+                .registerSubtype(GreaterThanNode.class, "greater_than")
+                .registerSubtype(LessThanNode.class, "less_than")
+                .registerSubtype(GreaterThanOrEqualToNode.class, "greater_than_or_equal_to")
+                .registerSubtype(LessThanOrEqualToNode.class, "less_than_or_equal_to")
+                .registerSubtype(FunctionCallNode.class, "function_call")
+                .registerSubtype(IndexReferenceNode.class, "index_reference")
+                .registerSubtype(JumpTranspilerNode.class, "jump")
+                .registerSubtype(ValueOfNode.class, "valueOf")
+                .registerSubtype(TranspilerLoop.class, "loop")
+                .registerSubtype(TranspilerLoopUpdate.class, "loop_update")
+                .registerSubtype(ListIterationTranspilerNode.class, "list_iterate")
+                .registerSubtype(ExitIterationScopeLocationNode.class, "break")
+                .registerSubtype(TranspilerCodeBlock.class, "block")
+                .registerSubtype(SymbolReferenceNode.class, "symbol_reference")
+                .registerSubtype(LabelledTranspilerCodeBlockNode.class, "labelled_block")
+                .registerSubtype(NestedConditionNode.class, "nested_condition")
+                .registerSubtype(NextLocationNode.class, "next_location")
+                .registerSubtype(SetTranspilerNode.class, "set")
+                .registerSubtype(PrintTranspilerNode.class, "print")
+                .registerSubtype(AndNode.class, "and")
+                .registerSubtype(OrNode.class, "or")
+                .registerSubtype(NotNode.class, "not")
+                .registerSubtype(PrimitiveValueNode.class, "primitive")
+                .registerSubtype(ProgramTerminalLocationNode.class, "terminal_location")
+                .registerSubtype(PlaceholderTranspilerNode.class, "placeholder")
+                .registerSubtype(NullTranspilerNode.class, "null_node")
+                ;
+        return new GsonBuilder().setPrettyPrinting().registerTypeAdapterFactory(runtimeTypeAdapterFactory).create();
     }
 }

@@ -1,4 +1,4 @@
-package org.smojol.toolkit.analysis.defined;
+package org.smojol.common.typeadapter;
 
 /*
  * Copyright (C) 2011 Google Inc.
