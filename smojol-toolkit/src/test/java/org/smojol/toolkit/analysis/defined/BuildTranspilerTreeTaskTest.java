@@ -1,7 +1,7 @@
 package org.smojol.toolkit.analysis.defined;
 
 import org.junit.jupiter.api.Test;
-import org.smojol.common.transpiler.TranspilerNode;
+import org.smojol.common.transpiler.TranspilerModel;
 import org.smojol.toolkit.task.AnalysisTaskResult;
 import org.smojol.toolkit.task.AnalysisTaskResultOK;
 import org.smojol.toolkit.task.CommandLineAnalysisTask;
@@ -16,6 +16,6 @@ class BuildTranspilerTreeTaskTest {
         AnalysisTaskResult taskResult = new TestTaskRunner("no-branches.cbl", "test-code/flow-ast")
                 .runTask(CommandLineAnalysisTask.BUILD_TRANSPILER_TREE);
         assertTrue(taskResult.isSuccess());
-        TranspilerNode root = ((AnalysisTaskResultOK) taskResult).getDetail();
+        TranspilerModel model = ((AnalysisTaskResultOK) taskResult).getDetail();
     }
 }
