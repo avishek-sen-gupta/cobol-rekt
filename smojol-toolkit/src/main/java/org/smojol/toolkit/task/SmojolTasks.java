@@ -139,10 +139,10 @@ public class SmojolTasks {
         }
     };
 
-    public AnalysisTask BUILD_TRANSPILER_TREE = new AnalysisTask() {
+    public AnalysisTask BUILD_TRANSPILER_GRAPH = new AnalysisTask() {
         @Override
         public AnalysisTaskResult run() {
-            return new BuildTranspilerTreeTask(flowRoot, dataStructures, symbolTable).run();
+            return new BuildTranspilerGraphTask(flowRoot, dataStructures, symbolTable).run();
         }
     };
 
@@ -217,7 +217,7 @@ public class SmojolTasks {
             case SUMMARISE_THROUGH_LLM -> SUMMARISE_THROUGH_LLM;
             case BUILD_PSEUDOCODE_GRAPH -> BUILD_PSEUDOCODE_GRAPH;
             case ANALYSE_CONTROL_FLOW -> ANALYSE_CONTROL_FLOW;
-            case BUILD_TRANSPILER_TREE -> BUILD_TRANSPILER_TREE;
+            case BUILD_TRANSPILER_GRAPH -> BUILD_TRANSPILER_GRAPH;
             case GENERATE_IR -> nullTask(CommandLineAnalysisTask.GENERATE_IR);
         });
     }

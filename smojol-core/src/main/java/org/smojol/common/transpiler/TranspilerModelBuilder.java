@@ -1,44 +1,29 @@
-package org.smojol.toolkit.analysis.defined;
+package org.smojol.common.transpiler;
 
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
-import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.FlowNodeType;
-import org.smojol.common.ast.TranspilerInstructionGeneratorVisitor;
-import org.smojol.common.navigation.AggregatingTranspilerNodeTraversal;
-import org.smojol.common.pseudocode.*;
-import org.smojol.common.transpiler.*;
-import org.smojol.common.vm.structure.CobolDataStructure;
-import org.smojol.toolkit.task.*;
-import org.smojol.toolkit.transpiler.TranspilerTreeBuilder;
+import org.smojol.common.pseudocode.CodeSentinelType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
-public class BuildTranspilerTreeTask implements AnalysisTask {
-    private final FlowNode astRoot;
-    private final CobolDataStructure dataStructures;
-    private final SmojolSymbolTable symbolTable;
+public class TranspilerModelBuilder {
+    private final List<TranspilerInstruction> instructions;
+    private final TranspilerNode transpilerTree;
 
-    public BuildTranspilerTreeTask(FlowNode astRoot, CobolDataStructure dataStructures, SmojolSymbolTable symbolTable) {
-        this.astRoot = astRoot;
-        this.dataStructures = dataStructures;
-        this.symbolTable = symbolTable;
+    public TranspilerModelBuilder(List<TranspilerInstruction> instructions, TranspilerNode transpilerTree) {
+        this.instructions = instructions;
+        this.transpilerTree = transpilerTree;
     }
 
-    @Override
-    public AnalysisTaskResult run() {
-//        TranspilerSetup.buildSymbolTable(astRoot, dataStructures, symbolTable);
-        TranspilerNode transpilerTree = TranspilerTreeBuilder.flowToTranspiler(astRoot, dataStructures);
-        TranspilerInstructionGeneratorVisitor visitor = new TranspilerInstructionGeneratorVisitor(new IncrementingIdProvider());
-        new AggregatingTranspilerNodeTraversal<List<TranspilerInstruction>>().accept(transpilerTree, visitor);
-        List<TranspilerInstruction> instructions = visitor.result();
+    public TranspilerModel build() {
         Map<TranspilerNode, Triple<Integer, Integer, Integer>> transpilerNodeMap = buildTranspilerNodeMap(instructions);
         List<TranspilerEdge> instructionEdges = controlFlowEdges(instructions, transpilerNodeMap);
-        System.out.println(instructions);
-        return new AnalysisTaskResultOK(CommandLineAnalysisTask.ANALYSE_CONTROL_FLOW.name(), new TranspilerModel(transpilerTree, instructions, instructionEdges));
+        return new TranspilerModel(transpilerTree, instructions, instructionEdges);
     }
 
     private List<TranspilerEdge> controlFlowEdges(List<TranspilerInstruction> instructions, Map<TranspilerNode, Triple<Integer, Integer, Integer>> transpilerNodeMap) {
@@ -89,22 +74,20 @@ public class BuildTranspilerTreeTask implements AnalysisTask {
     }
 
     private TranspilerInstruction entry(TranspilerNode node, Map<TranspilerNode, Triple<Integer, Integer, Integer>> transpilerNodeMap, List<TranspilerInstruction> instructions) {
-        if (node instanceof NullTranspilerNode) return TranspilerInstruction.NULL;
-        return instructions.get(transpilerNodeMap.get(node).getLeft());
+        return instructionMarkedAs(Triple::getLeft, node, transpilerNodeMap, instructions);
     }
 
     private TranspilerInstruction exit(TranspilerNode node, Map<TranspilerNode, Triple<Integer, Integer, Integer>> transpilerNodeMap, List<TranspilerInstruction> instructions) {
-        if (node instanceof NullTranspilerNode) return TranspilerInstruction.NULL;
-        return instructions.get(transpilerNodeMap.get(node).getRight());
+        return instructionMarkedAs(Triple::getRight, node, transpilerNodeMap, instructions);
     }
 
     private TranspilerInstruction body(TranspilerNode node, Map<TranspilerNode, Triple<Integer, Integer, Integer>> transpilerNodeMap, List<TranspilerInstruction> instructions) {
-        if (node instanceof NullTranspilerNode) return TranspilerInstruction.NULL;
-        return instructions.get(transpilerNodeMap.get(node).getMiddle());
+        return instructionMarkedAs(Triple::getMiddle, node, transpilerNodeMap, instructions);
     }
 
-    private boolean isJump(TranspilerNode node) {
-        return false;
+    private static TranspilerInstruction instructionMarkedAs(Function<Triple<Integer, Integer, Integer>, Integer> access, TranspilerNode node, Map<TranspilerNode, Triple<Integer, Integer, Integer>> transpilerNodeMap, List<TranspilerInstruction> instructions) {
+        if (node instanceof NullTranspilerNode) return TranspilerInstruction.NULL;
+        return instructions.get(access.apply(transpilerNodeMap.get(node)));
     }
 
     private TranspilerNode resolveNode(LocationNode locationNode, List<TranspilerInstruction> instructions, int currentAddress) {
