@@ -38,9 +38,10 @@ public class BuildTranspilerGraphTask implements AnalysisTask {
         Graph<TranspilerInstruction, DefaultEdge> jgraph = new DefaultDirectedGraph<>(DefaultEdge.class);
         instructions.forEach(jgraph::addVertex);
         model.instructionEdges().forEach(edge -> jgraph.addEdge(edge.from(), edge.to()));
+        model.pruneUnreachables(jgraph);
         MermaidGraph<TranspilerInstruction, DefaultEdge> mermaid = new MermaidGraph<>();
         String draw = mermaid.draw(jgraph);
-        List<String> reduced = new FlowgraphTransformer<TranspilerInstruction, DefaultEdge>(jgraph, (a, b) -> new DefaultEdge()).reduce();
+        List<String> reduced = new FlowgraphTransformer<>(jgraph, (a, b) -> new DefaultEdge()).reduce();
         return new AnalysisTaskResultOK(CommandLineAnalysisTask.ANALYSE_CONTROL_FLOW.name(), model);
     }
 }
