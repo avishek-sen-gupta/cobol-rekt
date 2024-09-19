@@ -34,6 +34,7 @@ public class SmojolTasks {
     private final CFGOutputConfig cfgOutputConfig;
     private final OutputArtifactConfig dataStructuresOutputConfig;
     private final OutputArtifactConfig mermaidOutputConfig;
+    private final OutputArtifactConfig transpilerModelOutputConfig;
     private final IdProvider idProvider;
     private final GraphBuildConfig graphBuildConfig;
     private final ResourceOperations resourceOperations;
@@ -46,7 +47,7 @@ public class SmojolTasks {
     private ParserRuleContext rawAST;
     private SmojolSymbolTable symbolTable;
 
-    public SmojolTasks(ParsePipeline pipeline, SourceConfig sourceConfig, FlowchartOutputWriter flowchartOutputWriter, RawASTOutputConfig rawAstOutputConfig, GraphMLExportConfig graphMLOutputConfig, FlowASTOutputConfig flowASTOutputConfig, CFGOutputConfig cfgOutputConfig, GraphBuildConfig graphBuildConfig, OutputArtifactConfig dataStructuresOutputConfig, OutputArtifactConfig unifiedModelOutputConfig, OutputArtifactConfig similarityOutputConfig, OutputArtifactConfig mermaidOutputConfig, IdProvider idProvider, ResourceOperations resourceOperations, Neo4JDriverBuilder neo4JDriverBuilder) {
+    public SmojolTasks(ParsePipeline pipeline, SourceConfig sourceConfig, FlowchartOutputWriter flowchartOutputWriter, RawASTOutputConfig rawAstOutputConfig, GraphMLExportConfig graphMLOutputConfig, FlowASTOutputConfig flowASTOutputConfig, CFGOutputConfig cfgOutputConfig, GraphBuildConfig graphBuildConfig, OutputArtifactConfig dataStructuresOutputConfig, OutputArtifactConfig unifiedModelOutputConfig, OutputArtifactConfig similarityOutputConfig, OutputArtifactConfig mermaidOutputConfig, OutputArtifactConfig transpilerModelOutputConfig, IdProvider idProvider, ResourceOperations resourceOperations, Neo4JDriverBuilder neo4JDriverBuilder) {
         this.pipeline = pipeline;
         this.sourceConfig = sourceConfig;
         this.flowchartOutputWriter = flowchartOutputWriter;
@@ -58,6 +59,7 @@ public class SmojolTasks {
         this.flowASTOutputConfig = flowASTOutputConfig;
         this.cfgOutputConfig = cfgOutputConfig;
         this.mermaidOutputConfig = mermaidOutputConfig;
+        this.transpilerModelOutputConfig = transpilerModelOutputConfig;
         this.idProvider = idProvider;
         this.graphBuildConfig = graphBuildConfig;
         this.resourceOperations = resourceOperations;
@@ -139,10 +141,10 @@ public class SmojolTasks {
         }
     };
 
-    public AnalysisTask BUILD_TRANSPILER_GRAPH = new AnalysisTask() {
+    public AnalysisTask BUILD_TRANSPILER_MODEL = new AnalysisTask() {
         @Override
         public AnalysisTaskResult run() {
-            return new BuildTranspilerGraphTask(flowRoot, dataStructures, symbolTable).run();
+            return new BuildTranspilerModelTask(flowRoot, dataStructures, symbolTable, transpilerModelOutputConfig, resourceOperations).run();
         }
     };
 
@@ -217,7 +219,7 @@ public class SmojolTasks {
             case SUMMARISE_THROUGH_LLM -> SUMMARISE_THROUGH_LLM;
             case BUILD_PSEUDOCODE_GRAPH -> BUILD_PSEUDOCODE_GRAPH;
             case ANALYSE_CONTROL_FLOW -> ANALYSE_CONTROL_FLOW;
-            case BUILD_TRANSPILER_GRAPH -> BUILD_TRANSPILER_GRAPH;
+            case BUILD_TRANSPILER_MODEL -> BUILD_TRANSPILER_MODEL;
             case GENERATE_IR -> nullTask(CommandLineAnalysisTask.GENERATE_IR);
         });
     }

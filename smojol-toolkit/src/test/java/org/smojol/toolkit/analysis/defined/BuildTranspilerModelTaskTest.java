@@ -10,11 +10,11 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class BuildTranspilerGraphTaskTest {
+class BuildTranspilerModelTaskTest {
     @Test
     void canCreateTranspilerTree() throws IOException {
         AnalysisTaskResult taskResult = new TestTaskRunner("no-branches.cbl", "test-code/flow-ast")
-                .runTask(CommandLineAnalysisTask.BUILD_TRANSPILER_GRAPH);
+                .runTask(CommandLineAnalysisTask.BUILD_TRANSPILER_MODEL);
         assertTrue(taskResult.isSuccess());
         TranspilerModel model = ((AnalysisTaskResultOK) taskResult).getDetail();
     }

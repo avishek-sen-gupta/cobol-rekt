@@ -8,6 +8,7 @@ import org.smojol.common.id.Identifiable;
 import java.util.*;
 
 public abstract class TranspilerNode implements Identifiable {
+//    private final String nodeType = getClass().getSimpleName();
     protected final Map<String, Object> properties;
     private final List<SemanticCategory> categories;
     protected final List<TranspilerNode> childTranspilerNodes = new ArrayList<>();
