@@ -8,6 +8,7 @@ import org.smojol.toolkit.ast.GoToFlowNode;
 
 public class JumpNodeBuilder {
     public static TranspilerNode build(GoToFlowNode n, CobolDataStructure dataStructures) {
+        if (n.callTargets() == null) throw new RuntimeException("Call targets are empty: " + n.originalText());
         if (!n.dependsUponFactor()) return new JumpTranspilerNode(new NamedLocationNode(n.callTargets().getFirst().name()));
         TranspilerExpressionBuilder nodeBuilder = new TranspilerExpressionBuilder(dataStructures);
         ValueOfNode factorValue = new ValueOfNode(nodeBuilder.build(n.getDependingFactor()));

@@ -14,20 +14,22 @@ import java.util.function.Function;
 public class TranspilerModelBuilder {
     private final List<TranspilerInstruction> instructions;
     private final TranspilerNode transpilerTree;
+    private Map<TranspilerNode, Triple<Integer, Integer, Integer>> transpilerNodeMap;
+    private List<TranspilerEdge> edges;
 
     public TranspilerModelBuilder(List<TranspilerInstruction> instructions, TranspilerNode transpilerTree) {
         this.instructions = instructions;
         this.transpilerTree = transpilerTree;
+        transpilerNodeMap = buildTranspilerNodeMap(instructions);
+        edges = new ArrayList<>();
     }
 
     public TranspilerModel build() {
-        Map<TranspilerNode, Triple<Integer, Integer, Integer>> transpilerNodeMap = buildTranspilerNodeMap(instructions);
-        List<TranspilerEdge> instructionEdges = controlFlowEdges(instructions, transpilerNodeMap);
+        List<TranspilerEdge> instructionEdges = controlFlowEdges();
         return new TranspilerModel(transpilerTree, instructions, instructionEdges);
     }
 
-    private List<TranspilerEdge> controlFlowEdges(List<TranspilerInstruction> instructions, Map<TranspilerNode, Triple<Integer, Integer, Integer>> transpilerNodeMap) {
-        List<TranspilerEdge> edges = new ArrayList<>();
+    private List<TranspilerEdge> controlFlowEdges() {
         for (int i = 0; i < instructions.size() - 1; i++) {
             TranspilerInstruction currentInstruction = instructions.get(i);
             TranspilerInstruction nextInstruction = instructions.get(i + 1);
@@ -40,33 +42,40 @@ public class TranspilerModelBuilder {
                     TranspilerInstruction ifThenExit = exit(n.getIfThenBlock(), transpilerNodeMap, instructions);
                     TranspilerInstruction ifElseExit = exit(n.getIfElseBlock(), transpilerNodeMap, instructions);
                     TranspilerInstruction currentExit = exit(current, transpilerNodeMap, instructions);
-                    edges.add(new TranspilerEdge(currentInstruction, ifThenEntry));
-                    edges.add(new TranspilerEdge(currentInstruction, ifElseEntry));
-                    edges.add(new TranspilerEdge(ifThenExit, currentExit));
-                    edges.add(new TranspilerEdge(ifElseExit, currentExit));
+                    addEdge(currentInstruction, ifThenEntry);
+                    addEdge(currentInstruction, ifElseEntry);
+                    addEdge(ifThenExit, currentExit);
+                    addEdge(ifElseExit, currentExit);
                 }
                 case JumpTranspilerNode j when currentInstruction.sentinel() == CodeSentinelType.BODY -> {
                     TranspilerInstruction forwardTarget = j.getStart() instanceof ExitIterationScopeLocationNode
                             ? exit(resolveNode(j.getStart(), instructions, i), transpilerNodeMap, instructions)
                             : entry(resolveNode(j.getStart(), instructions, i), transpilerNodeMap, instructions);
                     TranspilerInstruction returnCallSite = exit(resolveNode(j.getEnd(), instructions, i), transpilerNodeMap, instructions);
-                    edges.add(new TranspilerEdge(body(current, transpilerNodeMap, instructions), forwardTarget));
-                    if (returnCallSite == TranspilerInstruction.NULL) continue;
-                    edges.add(new TranspilerEdge(returnCallSite, exit(current, transpilerNodeMap, instructions)));
+                    addEdge(body(current, transpilerNodeMap, instructions), forwardTarget);
+                    addEdge(returnCallSite, exit(current, transpilerNodeMap, instructions));
                 }
                 case TranspilerLoop transpilerLoop when currentInstruction.sentinel() == CodeSentinelType.EXIT -> {
-                    edges.add(new TranspilerEdge(currentInstruction, body(current, transpilerNodeMap, instructions)));
-                    edges.add(new TranspilerEdge(currentInstruction, nextInstruction));
+                    addEdge(currentInstruction, body(current, transpilerNodeMap, instructions));
+                    addEdge(currentInstruction, nextInstruction);
                 }
                 case ListIterationTranspilerNode listIterationTranspilerNode when currentInstruction.sentinel() == CodeSentinelType.EXIT -> {
-                    edges.add(new TranspilerEdge(currentInstruction, body(current, transpilerNodeMap, instructions)));
-                    edges.add(new TranspilerEdge(currentInstruction, nextInstruction));
+                    addEdge(currentInstruction, body(current, transpilerNodeMap, instructions));
+                    addEdge(currentInstruction, nextInstruction);
                 }
-                case null, default -> edges.add(new TranspilerEdge(currentInstruction, nextInstruction));
+                case null, default -> {
+                    System.out.println("Unknown instruction: " + currentInstruction.ref());
+                    addEdge(currentInstruction, nextInstruction);
+                }
             }
         }
 
         return edges;
+    }
+
+    private void addEdge(TranspilerInstruction from, TranspilerInstruction to) {
+        if (from == TranspilerInstruction.NULL || to == TranspilerInstruction.NULL) return;
+        edges.add(new TranspilerEdge(from, to));
     }
 
     private TranspilerNode iterationExit(int currentAddress, List<TranspilerInstruction> instructions) {
@@ -101,7 +110,10 @@ public class TranspilerModelBuilder {
             case NamedLocationNode n ->
                     instructions.stream().filter(instr -> instr.ref() instanceof LabelledTranspilerCodeBlockNode && instr.sentinel() == CodeSentinelType.ENTER && ((LabelledTranspilerCodeBlockNode) instr.ref()).getName().equals(n.getName())).findFirst().get().ref();
             case ProgramTerminalLocationNode n -> instructions.getLast().ref();
-            case NextLocationNode n -> nextLocation(instructions, currentAddress);
+//            case NextLocationNode n -> nextLocation(instructions, currentAddress);
+            // TODO: Make sure that FlowNodes reflect the exact hierarchy of sentences, otherwise sentences will be lost
+            // and we will have to resort to buggy half-fixes for NEXT SENTENCE
+            case NextLocationNode n -> instructions.get(currentAddress + 1).ref();
             case ExitIterationScopeLocationNode s -> iterationExit(currentAddress, instructions);
             default -> new NullTranspilerNode();
         };
@@ -109,9 +121,9 @@ public class TranspilerModelBuilder {
 
     private static TranspilerNode nextLocation(List<TranspilerInstruction> instructions, int currentAddress) {
         for (int searchAddress = currentAddress; searchAddress < instructions.size(); searchAddress++) {
-            if (!FlowNodeType.SENTENCE.equals(instructions.get(searchAddress).ref().getProperty("type")))
-                continue;
-            return instructions.get(searchAddress).ref();
+            if (FlowNodeType.SENTENCE.equals(instructions.get(searchAddress).ref().getProperty("type"))
+                    && instructions.get(searchAddress).sentinel() == CodeSentinelType.ENTER)
+                return instructions.get(searchAddress).ref();
         }
         return new NullTranspilerNode();
     }

@@ -28,6 +28,12 @@ public class IfFlowNode extends CobolFlowNode {
     }
 
     @Override
+    public void buildControlFlow() {
+        ifThenBlock.buildControlFlow();
+        if (ifElseBlock != null) ifElseBlock.buildControlFlow();
+    }
+
+    @Override
     public void buildInternalFlow() {
         CobolParser.IfStatementContext ifStatement = new SyntaxIdentity<CobolParser.IfStatementContext>(getExecutionContext()).get();
         condition = (CobolParser.ConditionContext) ifStatement.getChild(1);

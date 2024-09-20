@@ -69,6 +69,7 @@ public class PerformProcedureFlowNode extends CobolFlowNode implements InternalC
         startNode = nodeService.sectionOrParaWithName(procedureName);
         if (performStatement.performProcedureStatement().through() == null) {
             procedures.add(startNode);
+            endNode = startNode;
         } else {
             CobolParser.ProcedureNameContext endProcedureNameContext = performStatement.performProcedureStatement().through().procedureName();
             endNode = nodeService.sectionOrParaWithName(endProcedureNameContext.getText());

@@ -31,7 +31,7 @@ import java.util.Map;
 public class IntervalAnalysisMain {
     public static void main(String[] args) throws IOException, InterruptedException {
         LoggingConfig.setupLogging();
-        String programName = "stop-run.cbl";
+        String programName = "flowgraph.cbl";
         Map<String, List<AnalysisTaskResult>> result = new CodeTaskRunner("/Users/asgupta/code/smojol/smojol-test-code",
                 "/Users/asgupta/code/smojol/out/report",
                 ImmutableList.of(new File("/Users/asgupta/code/smojol/smojol-test-code")),
@@ -49,7 +49,7 @@ public class IntervalAnalysisMain {
         FlowgraphTransformer<TranspilerInstruction, DefaultEdge> transformer = new FlowgraphTransformer<>(jgraph, (a, b) -> new DefaultEdge());
         List<String> reductions = transformer.reduce();
 
-        System.out.println(transformer.isReducible());
         System.out.println(transformer.getEvolutions().getFirst());
+        System.out.println(transformer.isReducible());
     }
 }

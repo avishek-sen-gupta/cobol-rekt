@@ -33,16 +33,20 @@ public class TranspilerExpressionBuilder {
         else if (expression instanceof OrExpression e) return new OrNode(build(e.getLhs()), build(e.getRhs()));
         else if (expression instanceof NestedConditionExpression e) return new NestedConditionNode(build(e.getExpression()));
         else if (expression instanceof SimpleConditionExpression e) {
-            if (e.getComparison() == null) return explicitCondition(e, dataStructures);
+            if (e.getComparison() == null) return explicitCondition(e.getLhs(), dataStructures);
             return TranspilerComparisonOperator.operator(e.getComparison().getRelationalOperation(), build(e.getLhs()), build(e.getComparison().getRhs()));
         } else if (expression instanceof SpecialRegisterExpression e)
             return new FunctionCallNode(e.getFunctionCall().getFunctionName(), e.getFunctionCall().getArguments().stream().map(this::build).toList());
         else if (expression instanceof NullCobolExpression e) return new NullTranspilerNode();
+        else if (expression instanceof IsNumericCondition e) return new FunctionCallNode("isNumeric", ImmutableList.of(build(e.getExpression())));
+        else if (expression instanceof IsAlphabeticCondition e) return new FunctionCallNode("isAlphanumeric", ImmutableList.of(build(e.getExpression())));
         // TODO: IDMS expressions not supported yet
         throw new UnsupportedOperationException("Unknown expression type: " + expression.getClass());
     }
 
     private TranspilerNode explicitCondition(CobolExpression conditionalConstant, CobolDataStructure root) {
+        System.out.println("Resolving conditional constant: " + conditionalConstant.description());
+        if (conditionalConstant instanceof IdmsExpression) return new FunctionCallNode("idms_placeholder_function", ImmutableList.of(new SymbolReferenceNode(conditionalConstant.description())));
         CobolDataStructure range = root.reference(((VariableExpression) conditionalConstant).getName());
         CobolDataStructure actualVariable = range.parent();
         return new FunctionCallNode("isInRange", ImmutableList.of(new SymbolReferenceNode(actualVariable.name()), new SymbolReferenceNode(range.name())));

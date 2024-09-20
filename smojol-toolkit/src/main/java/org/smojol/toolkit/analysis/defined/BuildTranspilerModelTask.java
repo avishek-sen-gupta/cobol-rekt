@@ -46,11 +46,11 @@ public class BuildTranspilerModelTask implements AnalysisTask {
         new AggregatingTranspilerNodeTraversal<List<TranspilerInstruction>>().accept(transpilerTree, visitor);
         List<TranspilerInstruction> instructions = visitor.result();
         TranspilerModel model = new TranspilerModelBuilder(instructions, transpilerTree).build();
-        System.out.println(instructions);
+//        System.out.println(instructions);
         Graph<TranspilerInstruction, DefaultEdge> jgraph = new DefaultDirectedGraph<>(DefaultEdge.class);
         instructions.forEach(jgraph::addVertex);
         model.instructionEdges().forEach(edge -> jgraph.addEdge(edge.from(), edge.to()));
-        model.pruneUnreachables(jgraph);
+//        model.pruneUnreachables(jgraph);
         MermaidGraph<TranspilerInstruction, DefaultEdge> mermaid = new MermaidGraph<>();
 
         try {

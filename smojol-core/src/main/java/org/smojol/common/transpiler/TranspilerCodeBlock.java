@@ -8,6 +8,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import static org.apache.commons.lang3.StringUtils.truncate;
+
 public class TranspilerCodeBlock extends TranspilerNode {
     public TranspilerCodeBlock(List<TranspilerNode> children) {
         super(children, ImmutableMap.of(), ImmutableList.of(SemanticCategory.CODE_BLOCK));
@@ -35,8 +37,8 @@ public class TranspilerCodeBlock extends TranspilerNode {
 
     @Override
     public String description() {
-        return "CODE_BLOCK: " + id;
-//        return "CODE_BLOCK: " + String.join("\n", childTranspilerNodes.stream().map(TranspilerNode::description).toList());
+//        return "CODE_BLOCK: " + id;
+        return truncate("CODE_BLOCK: " + String.join("\n", childTranspilerNodes.stream().map(TranspilerNode::description).toList()), 70);
     }
 
     @Override

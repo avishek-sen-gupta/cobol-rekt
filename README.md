@@ -390,11 +390,11 @@ Run: ```mvn clean install```.
 
 The Checkstyle step is only applicable for the Eclipse Cobol parser project. You can skip the Checkstyle targets with:
 
-```mvn clean verify package -Dcheckstyle.skip=true```
+```mvn clean verify -Dcheckstyle.skip=true```
 
 You can skip the tests as well, using:
 
-```mvn clean verify package -Dmaven.test.skip=true```
+```mvn clean verify -Dmaven.test.skip=true```
 
 For generating flowcharts, you will need to set up Graphviz on your box; see the [site](https://graphviz.org/) for OS-specific installation instructions.
 

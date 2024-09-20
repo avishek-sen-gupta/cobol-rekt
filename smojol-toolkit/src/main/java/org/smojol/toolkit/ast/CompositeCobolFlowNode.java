@@ -6,10 +6,12 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.ast.*;
 import org.smojol.common.navigation.CobolEntityNavigator;
+import org.smojol.common.pseudocode.SmojolSymbolTable;
 import org.smojol.common.vm.interpreter.CobolInterpreter;
 import org.smojol.common.vm.interpreter.CobolVmSignal;
 import org.smojol.common.vm.interpreter.FlowControl;
 import org.smojol.common.vm.stack.StackFrames;
+import org.smojol.common.vm.structure.CobolDataStructure;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,6 +77,16 @@ public class CompositeCobolFlowNode extends CobolFlowNode {
             current.accept(visitor.newScope(this), stopRecurseCondition, level + 1);
         }
         outgoingNodes.forEach(c -> c.accept(visitor, stopRecurseCondition, level));
+    }
+
+    @Override
+    public void buildControlFlow() {
+        astChildren.forEach(FlowNode::buildControlFlow);
+    }
+
+    @Override
+    public void resolve(SmojolSymbolTable symbolTable, CobolDataStructure dataStructures) {
+        astChildren.forEach(child -> child.resolve(symbolTable, dataStructures));
     }
 
     @Override
