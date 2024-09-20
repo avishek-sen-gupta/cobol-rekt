@@ -14,8 +14,8 @@ import java.util.function.Function;
 public class TranspilerModelBuilder {
     private final List<TranspilerInstruction> instructions;
     private final TranspilerNode transpilerTree;
-    private Map<TranspilerNode, Triple<Integer, Integer, Integer>> transpilerNodeMap;
-    private List<TranspilerEdge> edges;
+    private final Map<TranspilerNode, Triple<Integer, Integer, Integer>> transpilerNodeMap;
+    private final List<TranspilerEdge> edges;
 
     public TranspilerModelBuilder(List<TranspilerInstruction> instructions, TranspilerNode transpilerTree) {
         this.instructions = instructions;
@@ -63,7 +63,7 @@ public class TranspilerModelBuilder {
                     addEdge(currentInstruction, body(current, transpilerNodeMap, instructions));
                     addEdge(currentInstruction, nextInstruction);
                 }
-                case null, default -> {
+                default -> {
                     System.out.println("Unknown instruction: " + currentInstruction.ref());
                     addEdge(currentInstruction, nextInstruction);
                 }

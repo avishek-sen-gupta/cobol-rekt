@@ -56,7 +56,6 @@ public class BuildTranspilerModelTask implements AnalysisTask {
         MermaidGraph<TranspilerInstruction, DefaultEdge> mermaid = new MermaidGraph<>();
 
         try {
-//            Files.createDirectories(cfgOutputConfig.outputDir());
             resourceOperations.createDirectories(transpilerModelOutputConfig.outputDir());
         } catch (IOException e) {
             return AnalysisTaskResult.ERROR(e, CommandLineAnalysisTask.BUILD_TRANSPILER_MODEL);
