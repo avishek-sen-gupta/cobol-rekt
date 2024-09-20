@@ -1,10 +1,10 @@
-package org.smojol.toolkit.intermediate;
+package org.smojol.toolkit.quad;
 
 import lombok.Getter;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.pseudocode.*;
 import org.smojol.toolkit.ast.*;
-import org.smojol.toolkit.intermediate.generators.*;
+import org.smojol.toolkit.quad.generators.*;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -6,7 +6,7 @@ import org.smojol.common.id.IdProvider;
 import org.smojol.common.navigation.FlowNodeNavigator;
 import org.smojol.common.pseudocode.*;
 import org.smojol.common.vm.structure.CobolDataStructure;
-import org.smojol.toolkit.intermediate.QuadSequenceGenerator;
+import org.smojol.toolkit.quad.QuadSequenceGenerator;
 import org.smojol.toolkit.ast.MoveFlowNode;
 import org.smojol.toolkit.task.*;
 

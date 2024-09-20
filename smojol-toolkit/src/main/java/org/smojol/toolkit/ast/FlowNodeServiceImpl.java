@@ -14,7 +14,7 @@ import java.util.List;
 
 public class FlowNodeServiceImpl implements FlowNodeService {
     int counter = 0;
-    private List<FlowNode> nodes = new ArrayList<>();
+    private final List<FlowNode> nodes = new ArrayList<>();
     private CobolEntityNavigator navigator;
     private final CobolDataStructure dataStructures;
     private final IdProvider idProvider;
@@ -35,6 +35,15 @@ public class FlowNodeServiceImpl implements FlowNodeService {
     public FlowNode node(ParseTree parseTree, FlowNode scope, StackFrames stackFrames) {
         if (parseTree == null) return new DummyFlowNode(this, stackFrames);
         FlowNode n = CobolFlowNodeFactory.newNode(parseTree, scope, this, stackFrames);
+        int index = nodes.indexOf(n);
+        if (index != -1) return nodes.get(index);
+        nodes.add(n);
+        return n;
+    }
+
+    public FlowNode unmodifiedNode(ParseTree parseTree, FlowNode scope, StackFrames stackFrames) {
+        if (parseTree == null) return new DummyFlowNode(this, stackFrames);
+        FlowNode n = CobolFlowNodeFactory.newUnmodifiedNode(parseTree, scope, this, stackFrames);
         int index = nodes.indexOf(n);
         if (index != -1) return nodes.get(index);
         nodes.add(n);

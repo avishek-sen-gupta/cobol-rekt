@@ -1,4 +1,4 @@
-package org.smojol.toolkit.intermediate;
+package org.smojol.toolkit.quad;
 
 import org.smojol.common.pseudocode.SymbolReference;
 

@@ -18,6 +18,7 @@ import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.toolkit.flowchart.FlowchartOutputWriter;
 import org.smojol.common.resource.ResourceOperations;
+import org.smojol.toolkit.intermediate.IntermediateASTNodeBuilder;
 
 import java.io.IOException;
 import java.util.List;
@@ -144,7 +145,7 @@ public class SmojolTasks {
     public AnalysisTask BUILD_TRANSPILER_MODEL = new AnalysisTask() {
         @Override
         public AnalysisTaskResult run() {
-            return new BuildTranspilerModelTask(flowRoot, dataStructures, symbolTable, transpilerModelOutputConfig, resourceOperations).run();
+            return new BuildTranspilerModelTask(rawAST, dataStructures, symbolTable, transpilerModelOutputConfig, resourceOperations).run();
         }
     };
 

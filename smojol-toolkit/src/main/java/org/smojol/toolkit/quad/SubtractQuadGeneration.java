@@ -1,7 +1,7 @@
-package org.smojol.toolkit.intermediate;
+package org.smojol.toolkit.quad;
 
 import org.smojol.common.pseudocode.*;
-import org.smojol.toolkit.intermediate.generators.QuadGeneration;
+import org.smojol.toolkit.quad.generators.QuadGeneration;
 
 public class SubtractQuadGeneration extends QuadGeneration {
     public SubtractQuadGeneration(PseudocodeGraph graph, SmojolSymbolTable symbolTable, SymbolReferenceBuilder symbolReferenceBuilder) {

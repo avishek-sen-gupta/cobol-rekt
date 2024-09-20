@@ -228,6 +228,10 @@ public class CobolFlowNode implements FlowNode {
         return commentBlocks;
     }
 
+    @Override
+    public void addChild(FlowNode child) {
+    }
+
     // Specifically to return if this node terminated further execution
     // Overrides of this might choose to continue based on specific signal
     // TODO: This should move to some sort of a state machine implementation

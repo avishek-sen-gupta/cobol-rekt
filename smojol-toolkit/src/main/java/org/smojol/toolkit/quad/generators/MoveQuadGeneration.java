@@ -1,4 +1,4 @@
-package org.smojol.toolkit.intermediate.generators;
+package org.smojol.toolkit.quad.generators;
 
 import com.google.common.collect.ImmutableList;
 import org.smojol.common.pseudocode.*;

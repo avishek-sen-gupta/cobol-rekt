@@ -41,7 +41,7 @@ public class TranspilerExpressionBuilder {
         else if (expression instanceof IsNumericCondition e) return new FunctionCallNode("isNumeric", ImmutableList.of(build(e.getExpression())));
         else if (expression instanceof IsAlphabeticCondition e) return new FunctionCallNode("isAlphanumeric", ImmutableList.of(build(e.getExpression())));
         // TODO: IDMS expressions not supported yet
-        throw new UnsupportedOperationException("Unknown expression type: " + expression.getClass());
+        throw new UnsupportedOperationException("Unknown expression type: " + expression);
     }
 
     private TranspilerNode explicitCondition(CobolExpression conditionalConstant, CobolDataStructure root) {

@@ -19,7 +19,7 @@ import java.util.logging.Logger;
 
 public class CompositeCobolFlowNode extends CobolFlowNode {
     private static final Logger logger = Logger.getLogger(CompositeCobolFlowNode.class.getName());
-    List<FlowNode> astChildren = new ArrayList<>();
+    private final List<FlowNode> astChildren = new ArrayList<>();
     public static FlowNodeCondition CHILD_IS_CONDITIONAL_STATEMENT = node -> SyntaxIdentity.isOfType(node.getExecutionContext(), CobolParser.ConditionalStatementCallContext.class);
     protected FlowNode internalTreeRoot;
 
@@ -84,11 +84,11 @@ public class CompositeCobolFlowNode extends CobolFlowNode {
         astChildren.forEach(FlowNode::buildControlFlow);
     }
 
-    @Override
-    public void resolve(SmojolSymbolTable symbolTable, CobolDataStructure dataStructures) {
-        astChildren.forEach(child -> child.resolve(symbolTable, dataStructures));
-    }
-
+//    @Override
+//    public void resolve(SmojolSymbolTable symbolTable, CobolDataStructure dataStructures) {
+//        astChildren.forEach(child -> child.resolve(symbolTable, dataStructures));
+//    }
+//
     @Override
     public FlowNode next(FlowNodeCondition nodeCondition, FlowNode startingNode, boolean isComplete) {
         logger.finer("Moved up to " + executionContext.getClass() + executionContext.getText());
@@ -119,6 +119,11 @@ public class CompositeCobolFlowNode extends CobolFlowNode {
     public CobolVmSignal acceptInterpreter(CobolInterpreter interpreter, FlowControl flowControl) {
         CobolVmSignal signal = acceptInterpreterForCompositeExecution(interpreter, flowControl);
         return flowControl.apply(() -> continueOrAbort(signal, interpreter, nodeService), signal);
+    }
+
+    @Override
+    public void addChild(FlowNode child) {
+        astChildren.add(child);
     }
 
     public CobolVmSignal acceptInterpreterForCompositeExecution(CobolInterpreter interpreter, FlowControl flowControl) {

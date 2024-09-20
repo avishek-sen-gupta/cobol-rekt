@@ -1,7 +1,6 @@
-package org.smojol.toolkit.intermediate.generators;
+package org.smojol.toolkit.quad.generators;
 
 import org.smojol.common.pseudocode.*;
-import org.smojol.toolkit.ast.IfThenFlowNode;
 
 public class IfThenQuadGeneration extends QuadGeneration {
     public IfThenQuadGeneration(PseudocodeGraph graph, SmojolSymbolTable symbolTable, SymbolReferenceBuilder symbolReferenceBuilder) {

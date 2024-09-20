@@ -12,7 +12,6 @@ public class FlowNodeSymbolExtractorVisitor extends FlowNodeASTVisitor<FlowNode>
         super(ancestor);
         this.symbolTable = symbolTable;
         this.dataStructures = dataStructures;
-        new CobolExpressionBuilder();
     }
 
     @Override

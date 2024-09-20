@@ -189,6 +189,11 @@ public class NullFlowNode implements FlowNode {
     }
 
     @Override
+    public void addChild(FlowNode child) {
+
+    }
+
+    @Override
     public String id() {
         return "NULL/" + uuid;
     }

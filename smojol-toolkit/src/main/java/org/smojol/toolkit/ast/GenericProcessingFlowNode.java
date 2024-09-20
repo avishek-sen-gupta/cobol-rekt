@@ -197,6 +197,11 @@ public class GenericProcessingFlowNode implements FlowNode {
     }
 
     @Override
+    public void addChild(FlowNode child) {
+
+    }
+
+    @Override
     public String id() {
         return name() + "/" + uuid;
     }

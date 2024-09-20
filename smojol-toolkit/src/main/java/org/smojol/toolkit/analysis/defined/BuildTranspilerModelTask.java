@@ -3,6 +3,7 @@ package org.smojol.toolkit.analysis.defined;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonWriter;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
@@ -16,6 +17,7 @@ import org.smojol.common.transpiler.*;
 import org.smojol.common.typeadapter.RuntimeTypeAdapterFactory;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.toolkit.analysis.pipeline.config.OutputArtifactConfig;
+import org.smojol.toolkit.intermediate.IntermediateASTNodeBuilder;
 import org.smojol.toolkit.task.*;
 import org.smojol.toolkit.transpiler.TranspilerLoopUpdate;
 import org.smojol.toolkit.transpiler.TranspilerTreeBuilder;
@@ -24,14 +26,14 @@ import java.io.IOException;
 import java.util.List;
 
 public class BuildTranspilerModelTask implements AnalysisTask {
-    private final FlowNode astRoot;
+    private final ParserRuleContext rawAST;
     private final CobolDataStructure dataStructures;
     private final SmojolSymbolTable symbolTable;
     private final OutputArtifactConfig transpilerModelOutputConfig;
     private final ResourceOperations resourceOperations;
 
-    public BuildTranspilerModelTask(FlowNode astRoot, CobolDataStructure dataStructures, SmojolSymbolTable symbolTable, OutputArtifactConfig transpilerModelOutputConfig, ResourceOperations resourceOperations) {
-        this.astRoot = astRoot;
+    public BuildTranspilerModelTask(ParserRuleContext rawAST, CobolDataStructure dataStructures, SmojolSymbolTable symbolTable, OutputArtifactConfig transpilerModelOutputConfig, ResourceOperations resourceOperations) {
+        this.rawAST = rawAST;
         this.dataStructures = dataStructures;
         this.symbolTable = symbolTable;
         this.transpilerModelOutputConfig = transpilerModelOutputConfig;
@@ -40,8 +42,9 @@ public class BuildTranspilerModelTask implements AnalysisTask {
 
     @Override
     public AnalysisTaskResult run() {
+        FlowNode flowRoot = new IntermediateASTNodeBuilder(rawAST, dataStructures, symbolTable).build();
 //        TranspilerSetup.buildSymbolTable(astRoot, dataStructures, symbolTable);
-        TranspilerNode transpilerTree = TranspilerTreeBuilder.flowToTranspiler(astRoot, dataStructures);
+        TranspilerNode transpilerTree = TranspilerTreeBuilder.flowToTranspiler(flowRoot, dataStructures);
         TranspilerInstructionGeneratorVisitor visitor = new TranspilerInstructionGeneratorVisitor(new IncrementingIdProvider());
         new AggregatingTranspilerNodeTraversal<List<TranspilerInstruction>>().accept(transpilerTree, visitor);
         List<TranspilerInstruction> instructions = visitor.result();

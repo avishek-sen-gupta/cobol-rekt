@@ -1,4 +1,4 @@
-package org.smojol.toolkit.intermediate.generators;
+package org.smojol.toolkit.quad.generators;
 
 import org.smojol.common.pseudocode.*;
 

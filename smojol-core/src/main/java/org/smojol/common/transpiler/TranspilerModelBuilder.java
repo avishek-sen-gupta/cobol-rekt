@@ -110,10 +110,10 @@ public class TranspilerModelBuilder {
             case NamedLocationNode n ->
                     instructions.stream().filter(instr -> instr.ref() instanceof LabelledTranspilerCodeBlockNode && instr.sentinel() == CodeSentinelType.ENTER && ((LabelledTranspilerCodeBlockNode) instr.ref()).getName().equals(n.getName())).findFirst().get().ref();
             case ProgramTerminalLocationNode n -> instructions.getLast().ref();
-//            case NextLocationNode n -> nextLocation(instructions, currentAddress);
+            case NextLocationNode n -> nextLocation(instructions, currentAddress);
             // TODO: Make sure that FlowNodes reflect the exact hierarchy of sentences, otherwise sentences will be lost
             // and we will have to resort to buggy half-fixes for NEXT SENTENCE
-            case NextLocationNode n -> instructions.get(currentAddress + 1).ref();
+//            case NextLocationNode n -> instructions.get(currentAddress + 1).ref();
             case ExitIterationScopeLocationNode s -> iterationExit(currentAddress, instructions);
             default -> new NullTranspilerNode();
         };
