@@ -3,12 +3,10 @@ package org.smojol.toolkit.intermediate;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.smojol.common.ast.FlowNode;
-import org.smojol.common.ast.FlowNodeASTTraversal;
 import org.smojol.common.ast.NullFlowNode;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.pseudocode.IncrementingIdProvider;
 import org.smojol.common.pseudocode.SmojolSymbolTable;
-import org.smojol.common.transpiler.TranspilerSetup;
 import org.smojol.common.vm.stack.StackFrames;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.toolkit.ast.CompositeCobolFlowNode;
@@ -17,7 +15,6 @@ import org.smojol.toolkit.interpreter.stack.CobolStackFrames;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 public class IntermediateASTNodeBuilder {
     private final CobolDataStructure dataRoot;
@@ -37,7 +34,8 @@ public class IntermediateASTNodeBuilder {
         FlowNode root = recursivelyVisit(codeRoot, null, stackFrames);
         root.buildTwin();
         root.buildControlFlow();
-        TranspilerSetup.buildSymbolTable(root, dataRoot, symbolTable);
+        root.resolve(symbolTable, dataRoot);
+//        new FlowNodeASTTraversal<FlowNode>().accept(astRoot, new FlowNodeSymbolExtractorVisitor(astRoot, dataStructRoot, symbolTable));
         return root;
     }
 

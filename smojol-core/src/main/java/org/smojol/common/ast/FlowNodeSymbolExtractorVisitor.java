@@ -1,7 +1,6 @@
 package org.smojol.common.ast;
 
 import org.smojol.common.pseudocode.SmojolSymbolTable;
-import org.smojol.common.vm.expression.CobolExpressionBuilder;
 import org.smojol.common.vm.structure.CobolDataStructure;
 
 public class FlowNodeSymbolExtractorVisitor extends FlowNodeASTVisitor<FlowNode> {
