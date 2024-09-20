@@ -53,7 +53,7 @@ public class BuildTranspilerModelTask implements AnalysisTask {
         Graph<TranspilerInstruction, DefaultEdge> jgraph = new DefaultDirectedGraph<>(DefaultEdge.class);
         instructions.forEach(jgraph::addVertex);
         model.instructionEdges().forEach(edge -> jgraph.addEdge(edge.from(), edge.to()));
-//        model.pruneUnreachables(jgraph);
+        model.pruneUnreachables(jgraph);
         MermaidGraph<TranspilerInstruction, DefaultEdge> mermaid = new MermaidGraph<>();
 
         try {

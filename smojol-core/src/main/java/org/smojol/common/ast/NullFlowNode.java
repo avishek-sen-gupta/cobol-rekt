@@ -12,7 +12,6 @@ import org.smojol.common.vm.structure.CobolDataStructure;
 import java.util.List;
 
 public class NullFlowNode implements FlowNode {
-
     private final String uuid;
 
     public NullFlowNode(FlowNodeService nodeService) {
@@ -190,6 +189,11 @@ public class NullFlowNode implements FlowNode {
 
     @Override
     public void addChild(FlowNode child) {
+
+    }
+
+    @Override
+    public void buildTwin() {
 
     }
 

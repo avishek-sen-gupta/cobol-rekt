@@ -11,11 +11,13 @@ import org.smojol.common.pseudocode.SmojolSymbolTable;
 import org.smojol.common.transpiler.TranspilerSetup;
 import org.smojol.common.vm.stack.StackFrames;
 import org.smojol.common.vm.structure.CobolDataStructure;
+import org.smojol.toolkit.ast.CompositeCobolFlowNode;
 import org.smojol.toolkit.ast.FlowNodeServiceImpl;
 import org.smojol.toolkit.interpreter.stack.CobolStackFrames;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class IntermediateASTNodeBuilder {
     private final CobolDataStructure dataRoot;
@@ -33,7 +35,7 @@ public class IntermediateASTNodeBuilder {
     public FlowNode build() {
         StackFrames stackFrames = new CobolStackFrames();
         FlowNode root = recursivelyVisit(codeRoot, null, stackFrames);
-        root.buildFlow();
+        root.buildTwin();
         root.buildControlFlow();
         TranspilerSetup.buildSymbolTable(root, dataRoot, symbolTable);
         return root;
@@ -42,12 +44,13 @@ public class IntermediateASTNodeBuilder {
     private FlowNode recursivelyVisit(ParseTree current, FlowNode parent, StackFrames stackFrames) {
         FlowNode intermediateNode = nodeService.unmodifiedNode(current, parent, stackFrames);
         if (intermediateNode instanceof NullFlowNode) return intermediateNode;
+        if (!(intermediateNode instanceof CompositeCobolFlowNode)) return intermediateNode;
         List<ParseTree> children = new ArrayList<>();
         for (int i = 0; i < current.getChildCount(); i++) {
             children.add(current.getChild(i));
         }
-        List<FlowNode> flowChildren = children.stream().map(child -> recursivelyVisit(child, intermediateNode, stackFrames.add(intermediateNode)))
-                .filter(n -> ! (n instanceof NullFlowNode)).toList();
+        List<FlowNode> flowNodeStream = children.stream().map(child -> recursivelyVisit(child, intermediateNode, stackFrames.add(intermediateNode))).toList();
+        List<FlowNode> flowChildren = flowNodeStream.stream().filter(n -> !(n instanceof NullFlowNode)).toList();
         flowChildren.forEach(intermediateNode::addChild);
         return intermediateNode;
     }

@@ -59,6 +59,9 @@ public class SyntaxIdentity<T> {
     }
 
     public T get() {
-        return (T) executionContext.getChild(0);
+        return switch (executionContext) {
+            case CobolParser.StatementContext statementContext -> (T) executionContext.getChild(0);
+            case null, default -> (T) executionContext;
+        };
     }
 }

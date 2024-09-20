@@ -202,6 +202,11 @@ public class GenericProcessingFlowNode implements FlowNode {
     }
 
     @Override
+    public void buildTwin() {
+
+    }
+
+    @Override
     public String id() {
         return name() + "/" + uuid;
     }

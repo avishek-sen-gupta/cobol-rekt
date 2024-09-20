@@ -91,6 +91,7 @@ public class SearchFlowNode extends CobolFlowNode {
     @Override
     public void resolve(SmojolSymbolTable symbolTable, CobolDataStructure dataStructures) {
         searchExpression = new CobolExpressionBuilder().identifier(searchTerm);
+        whenPhrases.forEach(w -> w.resolve(symbolTable, dataStructures));
     }
 
     @Override

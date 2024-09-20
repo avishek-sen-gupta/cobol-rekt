@@ -161,7 +161,6 @@ public class CobolFlowNode implements FlowNode {
 
     @Override
     public void resolve(SmojolSymbolTable symbolTable, CobolDataStructure dataStructures) {
-
     }
 
     public void acceptUnvisited(FlowNodeVisitor visitor, FlowNodeCondition stopCondition, int level) {
@@ -230,6 +229,11 @@ public class CobolFlowNode implements FlowNode {
 
     @Override
     public void addChild(FlowNode child) {
+    }
+
+    @Override
+    public void buildTwin() {
+        buildInternalFlow();
     }
 
     // Specifically to return if this node terminated further execution

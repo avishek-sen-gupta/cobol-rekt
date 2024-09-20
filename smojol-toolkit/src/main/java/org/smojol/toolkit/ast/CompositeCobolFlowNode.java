@@ -28,6 +28,11 @@ public class CompositeCobolFlowNode extends CobolFlowNode {
     }
 
     @Override
+    public void buildTwin() {
+        astChildren.forEach(FlowNode::buildTwin);
+    }
+
+    @Override
     public void buildInternalFlow() {
         logger.fine("Building internal flow for " + name());
         List<? extends ParseTree> children = getChildren();
@@ -44,6 +49,11 @@ public class CompositeCobolFlowNode extends CobolFlowNode {
             astChildren.add(successor);
         }
         internalTreeRoot.buildFlow();
+    }
+
+    @Override
+    public void resolve(SmojolSymbolTable symbolTable, CobolDataStructure dataStructures) {
+        astChildren.forEach(child -> child.resolve(symbolTable, dataStructures));
     }
 
     private boolean isNullDialectNode(FlowNode node) {

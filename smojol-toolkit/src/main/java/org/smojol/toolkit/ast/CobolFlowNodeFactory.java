@@ -94,9 +94,11 @@ public class CobolFlowNodeFactory {
     }
 
     public static FlowNode newUnmodifiedNode(ParseTree parseTree, FlowNode scope, FlowNodeService nodeService, StackFrames stackFrames) {
-        if (SyntaxIdentity.isOfType(parseTree, CobolParser.EvaluateStatementContext.class))
+        if (SyntaxIdentity.isOfType(parseTree, CobolParser.StatementContext.class))
+            return newUnmodifiedNode(parseTree.getChild(0), scope, nodeService, stackFrames);
+        else if (SyntaxIdentity.isOfType(parseTree, CobolParser.EvaluateStatementContext.class))
             return new EvaluateFlowNode(parseTree, scope, nodeService, stackFrames);
-        if (SyntaxIdentity.isOfType(parseTree, CobolParser.IfStatementContext.class))
+        else if (SyntaxIdentity.isOfType(parseTree, CobolParser.IfStatementContext.class))
             return new IfFlowNode(parseTree, scope, nodeService, stackFrames);
         else if (SyntaxIdentity.isOfType(parseTree, CobolParser.GoToStatementContext.class))
             return new GoToFlowNode(parseTree, scope, nodeService, stackFrames);
@@ -109,9 +111,10 @@ public class CobolFlowNodeFactory {
         else if (SyntaxIdentity.isOfType(parseTree, CobolParser.NextSentenceContext.class) ||
                 SyntaxIdentity.isOfType(parseTree, CobolParser.NextSentenceWrapperStatementContext.class))
             return new NextSentenceFlowNode(parseTree, scope, nodeService, stackFrames);
-        else if (SyntaxIdentity.satisfies(parseTree, SyntaxIdentity::PERFORM_PROCEDURE))
+//        else if (parseTree instanceof CobolParser.PerformStatementContext p && SyntaxIdentity.satisfies(parseTree, SyntaxIdentity::PERFORM_PROCEDURE))
+        else if (parseTree instanceof CobolParser.PerformStatementContext p && p.performProcedureStatement() != null)
             return new PerformProcedureFlowNode(parseTree, scope, nodeService, stackFrames);
-        else if (SyntaxIdentity.satisfies(parseTree, SyntaxIdentity::PERFORM_INLINE))
+        else if (parseTree instanceof CobolParser.PerformStatementContext p && p.performInlineStatement() != null)
             return new PerformInlineFlowNode(parseTree, scope, nodeService, stackFrames);
         else if (SyntaxIdentity.isOfType(parseTree, CobolParser.SearchStatementContext.class))
             return new SearchFlowNode(parseTree, scope, nodeService, stackFrames);
@@ -139,8 +142,6 @@ public class CobolFlowNodeFactory {
         else if (SyntaxIdentity.isOfType(parseTree, CobolParser.ConditionalStatementCallContext.class))
             return new ConditionalStatementFlowNode(parseTree, scope, nodeService, stackFrames);
         // This needs to come last in all the statement classifications, or things will break
-        else if (SyntaxIdentity.isOfType(parseTree, CobolParser.StatementContext.class))
-            return new GenericStatementFlowNode(parseTree, scope, nodeService, stackFrames);
 
         else if (SyntaxIdentity.isOfType(parseTree, CobolParser.PerformTypeContext.class))
             return new PerformTestFlowNode(parseTree, scope, nodeService, stackFrames);

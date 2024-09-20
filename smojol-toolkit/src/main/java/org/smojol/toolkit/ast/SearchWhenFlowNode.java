@@ -61,6 +61,7 @@ public class SearchWhenFlowNode extends CompositeCobolFlowNode {
         CobolParser.SearchWhenContext searchWhenStatementContext = (CobolParser.SearchWhenContext) executionContext;
         conditionExpression = new CobolExpressionBuilder().condition(searchWhenStatementContext.condition(), nodeService.getDataStructures());
         whenFlowNodes = searchWhenStatementContext.conditionalStatementCall().stream().map(stmt -> nodeService.node(stmt, this, staticFrameContext)).toList();
+        whenFlowNodes.forEach(stmt -> stmt.resolve(symbolTable, dataStructures));
     }
 
     @Override

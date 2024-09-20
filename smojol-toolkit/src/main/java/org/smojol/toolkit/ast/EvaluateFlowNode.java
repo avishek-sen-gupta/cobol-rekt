@@ -33,7 +33,7 @@ public class EvaluateFlowNode extends CobolFlowNode {
 
     @Override
     public void buildInternalFlow() {
-        CobolParser.EvaluateStatementContext whenStatement = new SyntaxIdentity<CobolParser.EvaluateStatementContext>(getExecutionContext()).get();
+        CobolParser.EvaluateStatementContext whenStatement = new SyntaxIdentity<CobolParser.EvaluateStatementContext>(executionContext).get();
         evaluationChannels.add(whenStatement.evaluateSelect());
         evaluationChannels.addAll(whenStatement.evaluateAlsoSelect().stream().map(CobolParser.EvaluateAlsoSelectContext::evaluateSelect).toList());
         whenPhrases = whenStatement.evaluateWhenPhrase().stream().map(ewp -> new EvaluateBranchFlowNode(ewp, this, nodeService, staticFrameContext)).toList();

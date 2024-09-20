@@ -53,4 +53,6 @@ public interface FlowNode extends FlowNodeLike {
     List<CommentBlock> getCommentBlocks();
 
     void addChild(FlowNode child);
+
+    void buildTwin();
 }

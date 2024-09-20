@@ -71,5 +71,6 @@ public class GenericOnClauseFlowNode extends CobolFlowNode {
     @Override
     public void resolve(SmojolSymbolTable symbolTable, CobolDataStructure dataStructures) {
         condition.resolve(symbolTable, dataStructures);
+        onClauseBlock.resolve(symbolTable, dataStructures);
     }
 }
