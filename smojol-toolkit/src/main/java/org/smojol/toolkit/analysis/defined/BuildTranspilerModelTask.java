@@ -43,7 +43,6 @@ public class BuildTranspilerModelTask implements AnalysisTask {
     @Override
     public AnalysisTaskResult run() {
         FlowNode flowRoot = new IntermediateASTNodeBuilder(rawAST, dataStructures, symbolTable).build();
-//        TranspilerSetup.buildSymbolTable(astRoot, dataStructures, symbolTable);
         TranspilerNode transpilerTree = TranspilerTreeBuilder.flowToTranspiler(flowRoot, dataStructures);
         TranspilerInstructionGeneratorVisitor visitor = new TranspilerInstructionGeneratorVisitor(new IncrementingIdProvider());
         new AggregatingTranspilerNodeTraversal<List<TranspilerInstruction>>().accept(transpilerTree, visitor);
@@ -113,6 +112,7 @@ public class BuildTranspilerModelTask implements AnalysisTask {
                 .registerSubtype(ProgramTerminalLocationNode.class, "terminal_location")
                 .registerSubtype(PlaceholderTranspilerNode.class, "placeholder")
                 .registerSubtype(NullTranspilerNode.class, "null_node")
+                .registerSubtype(ExitTranspilerNode.class, "exit")
                 ;
         return new GsonBuilder().setPrettyPrinting().registerTypeAdapterFactory(runtimeTypeAdapterFactory).create();
     }

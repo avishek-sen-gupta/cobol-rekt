@@ -32,7 +32,8 @@ public class TranspilerCodeBlock extends TranspilerNode {
     }
 
     public TranspilerNode unwrap() {
-        return childTranspilerNodes.size() != 1 ? this : childTranspilerNodes.getFirst();
+        return this;
+//        return childTranspilerNodes.size() != 1 ? this : childTranspilerNodes.getFirst();
     }
 
     @Override

@@ -41,15 +41,37 @@
            EXIT.
        A1 SECTION.
        A1A.
-        DISPLAY "A1A".
+           BIND RUN-UNIT.
+           BIND DB-FIELD-1
+              ON ANY-ERROR-STATUS
+                DISPLAY "TEST1"
+                 GO TO A1Z.
+           BIND DB-FIELD-2
+              ON ANY-ERROR-STATUS
+                DISPLAY "TEST2"
+                 GO TO A1Z.
+           BIND DB-FIELD-3
+              ON ANY-ERROR-STATUS
+                DISPLAY "TEST3"
+                 GO TO A1Z.
        A1Z.
            EXIT.
        E1 SECTION.
        E1A.
            DISPLAY "E1A"
+           OBTAIN CALC DB-FIELD-1
+              ON RECORD-NOT-FOUND
+                DISPLAY "TEST4"
+                 GO TO E1Z.
            IF STATE-1 = ZERO
               GO TO E1Z.
+           OBTAIN FIRST DB-FIELD-2 WITHIN DB-SET-2
+             ON DB-READ-END
+                 GO TO E1Z.
        E1B.
+           OBTAIN NEXT DB-FIELD-3 WITHIN DB-SET-3
+              ON DB-READ-END
+                 GO TO E1Z.
            IF   DB-STATE = STATE-1
                 DISPLAY "TEST5"
            ELSE

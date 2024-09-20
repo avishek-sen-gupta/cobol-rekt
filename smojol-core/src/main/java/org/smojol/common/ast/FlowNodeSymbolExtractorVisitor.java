@@ -3,6 +3,7 @@ package org.smojol.common.ast;
 import org.smojol.common.pseudocode.SmojolSymbolTable;
 import org.smojol.common.vm.structure.CobolDataStructure;
 
+@Deprecated
 public class FlowNodeSymbolExtractorVisitor extends FlowNodeASTVisitor<FlowNode> {
     private final SmojolSymbolTable symbolTable;
     private final CobolDataStructure dataStructures;
