@@ -13,7 +13,7 @@ public class MultiplyTranspilerNodeBuilder {
         TranspilerNode from = nodeBuilder.build(n.getSourceExpressions().getFirst());
         TranspilerNode product = n.getSourceExpressions().stream().map(nodeBuilder::build).reduce(MultiplyNode::new).get();
         if (!n.isGiving())
-            return new TranspilerCodeBlock(n.getDestinationExpressions().stream().map(dst -> (TranspilerNode) new SetTranspilerNode(product, nodeBuilder.build(dst))).toList()).unwrap();
-        return new TranspilerCodeBlock(n.getDestinationExpressions().stream().map(dst -> (TranspilerNode) new SetTranspilerNode(product, nodeBuilder.build(dst))).toList()).unwrap();
+            return new TranspilerCodeBlock(n.getDestinationExpressions().stream().map(dst -> (TranspilerNode) new SetTranspilerNode(product, nodeBuilder.build(dst))).toList());
+        return new TranspilerCodeBlock(n.getDestinationExpressions().stream().map(dst -> (TranspilerNode) new SetTranspilerNode(product, nodeBuilder.build(dst))).toList());
     }
 }

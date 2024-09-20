@@ -14,6 +14,6 @@ public class SetTranspilerNodeBuilder {
         TranspilerExpressionBuilder nodeBuilder = new TranspilerExpressionBuilder(dataStructures);
         List<TranspilerNode> tos = n.getToExpressions().stream().map(nodeBuilder::build).toList();
         TranspilerNode from = new ValueOfNode(nodeBuilder.build(n.getFromExpression()));
-        return new TranspilerCodeBlock(tos.stream().map(to -> (TranspilerNode) new SetTranspilerNode(from, to)).toList()).unwrap();
+        return new TranspilerCodeBlock(tos.stream().map(to -> (TranspilerNode) new SetTranspilerNode(from, to)).toList());
     }
 }

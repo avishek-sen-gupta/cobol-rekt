@@ -11,7 +11,7 @@ public class AddTranspilerNodeBuilder {
     public static TranspilerNode build(AddFlowNode n, CobolDataStructure dataStructures) {
         TranspilerExpressionBuilder nodeBuilder = new TranspilerExpressionBuilder(dataStructures);
         TranspilerNode fromSum = n.getSourceExpressions().stream().map(nodeBuilder::build).reduce(AddNode::new).get();
-        return new TranspilerCodeBlock(n.getDestinationExpressions().stream().map(to -> (TranspilerNode) new SetTranspilerNode(fromSum, nodeBuilder.build(to))).toList()).unwrap();
+        return new TranspilerCodeBlock(n.getDestinationExpressions().stream().map(to -> (TranspilerNode) new SetTranspilerNode(fromSum, nodeBuilder.build(to))).toList());
 
 //        if (!n.isGiving())
 //            return new TranspilerCodeBlock(zip(n.getDestinationExpressions().stream().map(nodeBuilder::build), differences.stream(), (dst, src) -> (TranspilerNode) new SetTranspilerNode(src, dst)).toList()).unwrap();

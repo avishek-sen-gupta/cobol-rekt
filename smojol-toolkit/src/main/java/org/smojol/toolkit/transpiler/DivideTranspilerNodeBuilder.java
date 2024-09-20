@@ -21,7 +21,7 @@ public class DivideTranspilerNodeBuilder {
 
     private static TranspilerNode setTranspilerNode(DivideFlowNode n, TranspilerExpressionBuilder nodeBuilder, List<DivideNode> quotients) {
         if (!n.isGiving())
-            return new TranspilerCodeBlock(zip(n.getDestinationExpressions().stream().map(nodeBuilder::build), quotients.stream(), (dst, src) -> (TranspilerNode) new SetTranspilerNode(src, dst)).toList()).unwrap();
-        return new TranspilerCodeBlock(n.getDestinationExpressions().stream().map(dst -> (TranspilerNode) new SetTranspilerNode(quotients.getFirst(), nodeBuilder.build(dst))).toList()).unwrap();
+            return new TranspilerCodeBlock(zip(n.getDestinationExpressions().stream().map(nodeBuilder::build), quotients.stream(), (dst, src) -> (TranspilerNode) new SetTranspilerNode(src, dst)).toList());
+        return new TranspilerCodeBlock(n.getDestinationExpressions().stream().map(dst -> (TranspilerNode) new SetTranspilerNode(quotients.getFirst(), nodeBuilder.build(dst))).toList());
     }
 }

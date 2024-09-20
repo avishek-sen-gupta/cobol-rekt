@@ -26,10 +26,10 @@ public class TranspilerCodeBlockNodeBuilder {
     }
 
     public static TranspilerNode build(ParagraphsFlowNode n, CobolDataStructure dataStructures) {
-        return block(n, dataStructures).unwrap();
+        return block(n, dataStructures);
     }
 
     public static TranspilerNode build(SentenceFlowNode n, CobolDataStructure dataStructures) {
-        return block(n, dataStructures, ImmutableMap.of("type", FlowNodeType.SENTENCE)).unwrap();
+        return block(n, dataStructures, ImmutableMap.of("type", FlowNodeType.SENTENCE));
     }
 }
