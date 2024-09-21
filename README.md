@@ -26,8 +26,8 @@ You can see the current backlog [here](https://github.com/users/avishek-sen-gupt
     - [Code Pattern Recognition](#code-pattern-recognition)
 - [Building Glossaries](#building-glossaries-alpha)
 - [Building Capability Maps](#building-capability-maps-alpha)
-- [Control Flow Analysis](#control-flow-analysis)
-  - TranspilerNode format
+- [Control Flow Analysis](#control-flow-analysis-and-transpilation-experiments)
+  - [Intermediate Transpilation Model](#exposing-a-basic-transpilation-model)
   - [Reducibility Testing](#testing-reducibility-experimental-feature)
   - [Basic Block Analysis](#basic-blocks-experimental-feature)
 - [How to Build](#how-to-build)
@@ -61,6 +61,7 @@ Cobol-REKT is an evolving toolkit of capabilities helpful for reverse engineerin
 - Injecting inter-program dependencies into Neo4J (with export to JSON)
 - Paragraph similarity map (Java / Python)
 - Code Pattern Detection (Neo4J / NetworkX)
+- **(WIP)** Exposing a basic transpilation model which is not tied to the COBOL syntax.
 - **(WIP)** Exposing Basic Blocks which are a useful first step in raw transpilation
 - **(WIP)** Analysing whether the control flow graph is reducible or not: a proxy for how well-structured the program is, and how amenable it is to direct transpilation to structured program languages (without arbitrary GOTOs)
 
@@ -357,13 +358,38 @@ This will take a little time, depending upon the number of paragraphs and their 
 
 ![Capability Map Neo4J](documentation/capability-graph-neo4j.png)
 
-## Control Flow Analysis
+## Control Flow Analysis and Transpilation Experiments
+
+### Exposing a basic Transpilation Model
+
+This target exposes a basic transpilation model which is not tied to the COBOL syntax. It uses only assignments, loops, conditions, and jumps to represent most of COBOL syntax. The result may not still be well-structured because of arbitrary GOTOs. This will be the input for further control flow analysis tasks.
+
+The model currently consists of the following:
+
+- **The transpiler syntax tree:** The original intermediate tree representation from which instructions and the control flow graph are generated.
+- **Transpiler instructions:** This has the instructions laid out serially. It is primarily used to resolve locations for instructions like ```break``` and ```NEXT SENTENCE```. Note that sentinel instructions are present in this sequence, like ```ENTER```, ```EXIT```, and ```BODY```.
+- **Transpiler instruction Control Flow Graph**: This is generated from the instruction sequence above, and thus the nodes are the transpiler instructions (including sentinel instructions).
+
+The screenshot below shows a part of an example transpiler model flowgraph.
+
+![Part of an Example Transpiler Model CFG](documentation/transpiler-model-cfg.png)
+
+### Details of the Intermediate Transpiler Tree
+
+- ```SEARCH-WHEN``` statements are translated into collection iterations (with breaks) and conditions.
+- ```EVALUATE``` statements are translated into loops and conditions.
+- ```NEXT SENTENCE```, ```GO TO```s (conditional and unconditional) are translated into static jumps with appropriate conditionals.
+- ```PERFORM INLINE``` statments are translated into code blocks (enclosed in loops if there is a ```VARYING``` clause).
+- ```PERFORM``` procedure calls are converted into jump calls which can contain a start and stop code block (for ```THROUGH``` clauses). Loops are added for ```VARYING``` clauses.
+- Sections and paragraphs are converted into labelled aggregate blocks of code. Sentences are converted into unlabelled code blocks, but with metadata identifying them as sentences (for purposes of resolving ````NEXT SENTENCE``` locations).
+- ```MOVE``` is converted into assignments.
+- Operations like ```COMPUTE```, ```ADD```, ```SUBTRACT```, ```MULTIPLY```, and ```DIVIDE``` are converted into sequences of expressions with explicit assignments (to account for ```GIVIING``` phrases).
+- Any instructions not currently supported are converted into placeholder nodes.
 
 ### Testing Reducibility (Experimental Feature)
 
 TODO...
 
-**NOTE**: This will be migrated soon to use the transpiler tree format.
 
 See [IntervalAnalysisMain.java](smojol-toolkit/src/main/java/org/smojol/toolkit/examples/IntervalAnalysisMain.java) for an example.
 
