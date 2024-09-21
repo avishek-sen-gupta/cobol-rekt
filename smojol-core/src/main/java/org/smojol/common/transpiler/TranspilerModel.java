@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public record TranspilerModel(TranspilerNode tree, List<TranspilerInstruction> instructions,
-                              List<TranspilerEdge> instructionEdges) {
-    public void pruneUnreachables(Graph<TranspilerInstruction, DefaultEdge> jgraph) {
+                              List<TranspilerEdge> instructionEdges, Graph<TranspilerInstruction, DefaultEdge> jgraph) {
+    public void pruneUnreachables() {
         do {
             System.out.println("Pruning...");
         } while (pruneOneRound(jgraph));

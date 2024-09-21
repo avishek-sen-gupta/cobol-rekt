@@ -4,8 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonWriter;
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.jgrapht.Graph;
-import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.TranspilerInstructionGeneratorVisitor;
@@ -49,10 +47,6 @@ public class BuildTranspilerModelTask implements AnalysisTask {
         List<TranspilerInstruction> instructions = visitor.result();
         TranspilerModel model = new TranspilerModelBuilder(instructions, transpilerTree).build();
 //        System.out.println(instructions);
-        Graph<TranspilerInstruction, DefaultEdge> jgraph = new DefaultDirectedGraph<>(DefaultEdge.class);
-        instructions.forEach(jgraph::addVertex);
-        model.instructionEdges().forEach(edge -> jgraph.addEdge(edge.from(), edge.to()));
-        model.pruneUnreachables(jgraph);
         MermaidGraph<TranspilerInstruction, DefaultEdge> mermaid = new MermaidGraph<>();
 
         try {
@@ -65,7 +59,7 @@ public class BuildTranspilerModelTask implements AnalysisTask {
             Gson gson = initGson();
             writer.setIndent("  ");
             gson.toJson(model, TranspilerModel.class, writer);
-            String draw = mermaid.draw(jgraph);
+            String draw = mermaid.draw(model.jgraph());
             return AnalysisTaskResult.OK(CommandLineAnalysisTask.BUILD_TRANSPILER_MODEL, model);
         } catch (IOException e) {
             return AnalysisTaskResult.ERROR(e, CommandLineAnalysisTask.BUILD_TRANSPILER_MODEL);

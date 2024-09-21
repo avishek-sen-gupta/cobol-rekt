@@ -2,6 +2,9 @@ package org.smojol.common.transpiler;
 
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
+import org.jgrapht.Graph;
+import org.jgrapht.graph.DefaultDirectedGraph;
+import org.jgrapht.graph.DefaultEdge;
 import org.smojol.common.ast.FlowNodeType;
 import org.smojol.common.pseudocode.CodeSentinelType;
 
@@ -26,7 +29,10 @@ public class TranspilerModelBuilder {
 
     public TranspilerModel build() {
         List<TranspilerEdge> instructionEdges = controlFlowEdges();
-        return new TranspilerModel(transpilerTree, instructions, instructionEdges);
+        Graph<TranspilerInstruction, DefaultEdge> jgraph = new DefaultDirectedGraph<>(DefaultEdge.class);
+        instructions.forEach(jgraph::addVertex);
+        instructionEdges.forEach(edge -> jgraph.addEdge(edge.from(), edge.to()));
+        return new TranspilerModel(transpilerTree, instructions, instructionEdges, jgraph);
     }
 
     private List<TranspilerEdge> controlFlowEdges() {
