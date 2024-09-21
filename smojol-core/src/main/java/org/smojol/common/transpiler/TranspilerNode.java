@@ -8,7 +8,6 @@ import org.smojol.common.id.Identifiable;
 import java.util.*;
 
 public abstract class TranspilerNode implements Identifiable {
-//    private final String nodeType = getClass().getSimpleName();
     protected final Map<String, Object> properties;
     private final List<SemanticCategory> categories;
     protected final List<TranspilerNode> childTranspilerNodes = new ArrayList<>();
@@ -23,6 +22,10 @@ public abstract class TranspilerNode implements Identifiable {
         this.properties = additionalAttributes;
         this.categories = categories;
         this.id = UUID.randomUUID().toString();
+    }
+
+    public <E> TranspilerNode(List<TranspilerNode> childTranspilerNodes, List<SemanticCategory> categories) {
+        this(childTranspilerNodes, ImmutableMap.of(), categories);
     }
 
     @Override
@@ -48,6 +51,6 @@ public abstract class TranspilerNode implements Identifiable {
     }
 
     public Collection<TranspilerNode> astChildren() {
-        return ImmutableList.of();
+        return childTranspilerNodes;
     }
 }

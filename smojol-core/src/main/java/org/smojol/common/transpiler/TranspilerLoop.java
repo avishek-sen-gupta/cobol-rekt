@@ -19,7 +19,7 @@ public final class TranspilerLoop extends TranspilerNode {
     public TranspilerLoop(TranspilerNode loopVariable, TranspilerNode initialValue, TranspilerNode maxValue,
                           TranspilerNode terminateCondition, TranspilerNode loopUpdate,
                           ConditionTestTime conditionTestTime, TranspilerNode body) {
-        super(ImmutableList.of(SemanticCategory.ITERATION));
+        super(ImmutableList.of(body), ImmutableList.of(SemanticCategory.ITERATION));
         this.loopVariable = loopVariable;
         this.initialValue = initialValue;
         this.maxValue = maxValue;
@@ -61,10 +61,5 @@ public final class TranspilerLoop extends TranspilerNode {
                 + "terminateCondition=" + terminateCondition.description() + ", "
                 + "loopUpdate=" + loopUpdate.description() + ", "
                 + "conditionTestTime=" + conditionTestTime.name() + "]";
-    }
-
-    @Override
-    public Collection<TranspilerNode> astChildren() {
-        return ImmutableList.of(body);
     }
 }
