@@ -3,6 +3,7 @@ package org.smojol.toolkit.analysis.defined;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
+import org.smojol.common.transpiler.FlowgraphReductionResult;
 import org.smojol.common.transpiler.FlowgraphTransformer;
 import org.smojol.common.transpiler.TranspilerInstruction;
 import org.smojol.common.transpiler.TranspilerModel;
@@ -24,10 +25,10 @@ public class IntervalAnalysisTask {
         model.pruneUnreachables(jgraph);
         FlowgraphTransformer<TranspilerInstruction, DefaultEdge> transformer = new FlowgraphTransformer<>(jgraph, (a, b) -> new DefaultEdge());
 
-        List<String> reductions = transformer.reduce();
+        FlowgraphReductionResult<TranspilerInstruction, DefaultEdge> reductions = transformer.reduce();
 
-        System.out.println(transformer.getEvolutions().getLast());
-        System.out.println(transformer.isReducible());
-        return AnalysisTaskResult.OK("INTERVAL_ANALYSIS", transformer);
+        System.out.println(reductions.evolutions().getLast());
+        System.out.println(reductions.isReducible());
+        return AnalysisTaskResult.OK("INTERVAL_ANALYSIS", reductions);
     }
 }

@@ -1,6 +1,5 @@
 package org.smojol.common.transpiler;
 
-import lombok.Getter;
 import org.jgrapht.Graph;
 import org.smojol.common.flowchart.MermaidGraph;
 import org.smojol.common.id.Identifiable;
@@ -14,7 +13,7 @@ public class FlowgraphTransformer<V extends Identifiable, E> {
     private static final java.util.logging.Logger LOGGER = Logger.getLogger(FlowgraphTransformer.class.getName());
     private final BiFunction<V, V, E> buildEdge;
     private final Graph<V, E> graph;
-    @Getter private final List<String> evolutions = new ArrayList<>();
+    private final List<String> evolutions = new ArrayList<>();
 
     public FlowgraphTransformer(Graph<V, E> graph, BiFunction<V, V, E> buildEdge) {
         this.buildEdge = buildEdge;
@@ -64,7 +63,7 @@ public class FlowgraphTransformer<V extends Identifiable, E> {
         graph.addEdge(from, to, buildEdge.apply(from, to));
     }
 
-    public List<String> reduce() {
+    public FlowgraphReductionResult<V, E> reduce() {
         evolutions.add(new MermaidGraph<V, E>().draw(graph));
         List<V> affectedNodes = new ArrayList<>();
         do {
@@ -75,11 +74,6 @@ public class FlowgraphTransformer<V extends Identifiable, E> {
             evolutions.add(new MermaidGraph<V, E>().draw(graph));
         } while (!affectedNodes.isEmpty());
 
-        return evolutions;
-    }
-
-    public boolean isReducible() {
-        reduce();
-        return graph.vertexSet().size() == 1;
+        return new FlowgraphReductionResult<>(graph, evolutions, graph.vertexSet().size() == 1);
     }
 }

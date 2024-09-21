@@ -66,7 +66,6 @@ public class BuildTranspilerModelTask implements AnalysisTask {
             writer.setIndent("  ");
             gson.toJson(model, TranspilerModel.class, writer);
             String draw = mermaid.draw(jgraph);
-            List<String> reductions = new FlowgraphTransformer<>(jgraph, (a, b) -> new DefaultEdge()).reduce();
             return AnalysisTaskResult.OK(CommandLineAnalysisTask.BUILD_TRANSPILER_MODEL, model);
         } catch (IOException e) {
             return AnalysisTaskResult.ERROR(e, CommandLineAnalysisTask.BUILD_TRANSPILER_MODEL);

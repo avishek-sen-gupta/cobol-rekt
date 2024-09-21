@@ -7,7 +7,7 @@ import org.smojol.common.flowchart.FlowchartOutputFormat;
 import org.smojol.common.id.UUIDProvider;
 import org.smojol.common.logging.LoggingConfig;
 import org.smojol.common.resource.LocalFilesystemOperations;
-import org.smojol.common.transpiler.FlowgraphTransformer;
+import org.smojol.common.transpiler.FlowgraphReductionResult;
 import org.smojol.common.transpiler.TranspilerInstruction;
 import org.smojol.toolkit.analysis.defined.IntervalAnalysisTask;
 import org.smojol.common.transpiler.TranspilerModel;
@@ -39,6 +39,6 @@ public class IntervalAnalysisMain {
         TranspilerModel model = ((AnalysisTaskResultOK) results.getFirst()).getDetail();
 
         AnalysisTaskResultOK intervalAnalysisResult = (AnalysisTaskResultOK) new IntervalAnalysisTask(model).run();
-        FlowgraphTransformer<TranspilerInstruction, DefaultEdge> transformer = intervalAnalysisResult.getDetail();
+        FlowgraphReductionResult<TranspilerInstruction, DefaultEdge> reductionResult = intervalAnalysisResult.getDetail();
     }
 }
