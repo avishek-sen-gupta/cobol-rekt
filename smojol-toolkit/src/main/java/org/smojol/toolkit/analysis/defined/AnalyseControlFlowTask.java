@@ -39,7 +39,7 @@ public class AnalyseControlFlowTask implements AnalysisTask {
 
     private AnalysisTaskResult analyse(PseudocodeGraph graph) {
         List<BasicBlock> basicBlocks = basicBlocks(graph);
-        return new AnalysisTaskResultOK(CommandLineAnalysisTask.ANALYSE_CONTROL_FLOW.name(), ImmutablePair.of(basicBlocks, graph));
+        return new AnalysisTaskResultOK(CommandLineAnalysisTask.BASIC_BLOCKS_TASK.name(), ImmutablePair.of(basicBlocks, graph));
     }
 
     private List<BasicBlock> basicBlocks(PseudocodeGraph graph) {

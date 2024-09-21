@@ -435,6 +435,7 @@ This command encapsulates almost all the tasks that you are likely to run. The d
 - ```WRITE_DATA_STRUCTURES```: This exports the data structure hierarchy of the program as JSON.
 - ```BUILD_PROGRAM_DEPENDENCIES``` (ALPHA): Builds direct program dependencies from ```CALL``` and IDMS ```TRANSFER CONTROL``` statements. Indirect dependencies are not traced. For tracing the full dependency graph, see the ```dependency``` task.
 - ```COMPARE_CODE``` (ALPHA): Builds a map of inter-paragraph similarity based on node edit distances (using the Zhang-Shasha algorithm). Work in Progress.
+- ```SUMMARISE_THROUGH_LLM```: Summarises nodes depth-first, but starting at the leaves using an LLM.
 
 For example, if you wanted to run all of the above, you could run the following command:
 

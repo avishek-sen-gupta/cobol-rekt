@@ -133,7 +133,7 @@ public class SmojolTasks {
         }
     };
 
-    public AnalysisTask ANALYSE_CONTROL_FLOW = new AnalysisTask() {
+    public AnalysisTask BASIC_BLOCKS_TASK = new AnalysisTask() {
         @Override
         public AnalysisTaskResult run() {
             return new AnalyseControlFlowTask(flowRoot, new BasicBlockFactory(idProvider), neo4JDriverBuilder).run();
@@ -218,7 +218,7 @@ public class SmojolTasks {
             case COMPARE_CODE -> COMPARE_CODE;
             case SUMMARISE_THROUGH_LLM -> SUMMARISE_THROUGH_LLM;
             case BUILD_PSEUDOCODE_GRAPH -> BUILD_PSEUDOCODE_GRAPH;
-            case ANALYSE_CONTROL_FLOW -> ANALYSE_CONTROL_FLOW;
+            case BASIC_BLOCKS_TASK -> BASIC_BLOCKS_TASK;
             case BUILD_TRANSPILER_MODEL -> BUILD_TRANSPILER_MODEL;
             case GENERATE_IR -> nullTask(CommandLineAnalysisTask.GENERATE_IR);
         });
