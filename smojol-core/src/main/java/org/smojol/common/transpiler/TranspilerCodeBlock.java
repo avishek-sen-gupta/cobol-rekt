@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import org.smojol.common.ast.SemanticCategory;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 

@@ -21,7 +21,8 @@ public class CobolFlowNodeFactory {
             return new GoToFlowNode(parseTree, scope, nodeService, stackFrames);
         else if (SyntaxIdentity.isStatementOfType(parseTree, CobolParser.CallStatementContext.class))
             return new CallFlowNode(parseTree, scope, nodeService, stackFrames);
-        else if (SyntaxIdentity.isStatementOfType(parseTree, CobolParser.ExitStatementContext.class))
+        else if (SyntaxIdentity.isStatementOfType(parseTree, CobolParser.ExitStatementContext.class) ||
+        SyntaxIdentity.isStatementOfType(parseTree, CobolParser.GobackStatementContext.class))
             return new ExitFlowNode(parseTree, scope, nodeService, stackFrames);
         else if (SyntaxIdentity.isStatementOfType(parseTree, CobolParser.StopStatementContext.class))
             return new StopFlowNode(parseTree, scope, nodeService, stackFrames);
@@ -104,7 +105,8 @@ public class CobolFlowNodeFactory {
             return new GoToFlowNode(parseTree, scope, nodeService, stackFrames);
         else if (SyntaxIdentity.isOfType(parseTree, CobolParser.CallStatementContext.class))
             return new CallFlowNode(parseTree, scope, nodeService, stackFrames);
-        else if (SyntaxIdentity.isOfType(parseTree, CobolParser.ExitStatementContext.class))
+        else if (SyntaxIdentity.isOfType(parseTree, CobolParser.ExitStatementContext.class) ||
+                SyntaxIdentity.isOfType(parseTree, CobolParser.GobackStatementContext.class))
             return new ExitFlowNode(parseTree, scope, nodeService, stackFrames);
         else if (SyntaxIdentity.isOfType(parseTree, CobolParser.StopStatementContext.class))
             return new StopFlowNode(parseTree, scope, nodeService, stackFrames);

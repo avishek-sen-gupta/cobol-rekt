@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableList;
 import org.smojol.common.ast.SemanticCategory;
 import org.smojol.common.vm.expression.ConditionTestTime;
 
-import java.util.Collection;
 import java.util.Objects;
 
 public final class TranspilerLoop extends TranspilerNode {

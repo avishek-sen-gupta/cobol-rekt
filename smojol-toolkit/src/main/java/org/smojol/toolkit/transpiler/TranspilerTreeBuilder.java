@@ -30,6 +30,7 @@ public class TranspilerTreeBuilder {
             case PerformInlineFlowNode n -> PerformProcedureNodeBuilder.build(n, dataStructures);
             case NextSentenceFlowNode n -> new JumpTranspilerNode(new NextLocationNode());
             case ExitFlowNode n -> new ExitTranspilerNode();
+            case StopFlowNode n -> new JumpTranspilerNode(new ProgramTerminalLocationNode());
             default -> new PlaceholderTranspilerNode(node.originalText());
         };
     }
