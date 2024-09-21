@@ -16,10 +16,10 @@ public class JumpNodeBuilder {
     }
 
     private static TranspilerNode ladder(GoToFlowNode n, ValueOfNode factorValue, int index) {
-        if (index == n.callTargets().size() - 1) return new IfTranspilerNode(new EqualToNode(factorValue, new PrimitiveValueNode(TypedRecord.typedNumber(index + 1))),
+        if (index == n.callTargets().size() - 1) return new IfTranspilerNode(new EqualToNode(factorValue, new PrimitiveValueTranspilerNode(TypedRecord.typedNumber(index + 1))),
                 new TranspilerCodeBlock(ImmutableList.of(new JumpTranspilerNode(new NamedLocationNode(n.callTargets().get(index).name())))),
                 new TranspilerCodeBlock());
-        return new IfTranspilerNode(new EqualToNode(factorValue, new PrimitiveValueNode(TypedRecord.typedNumber(index + 1))),
+        return new IfTranspilerNode(new EqualToNode(factorValue, new PrimitiveValueTranspilerNode(TypedRecord.typedNumber(index + 1))),
                 new TranspilerCodeBlock(ImmutableList.of(new JumpTranspilerNode(new NamedLocationNode(n.callTargets().get(index).name())))),
                 new TranspilerCodeBlock(ladder(n, factorValue, index + 1)));
     }

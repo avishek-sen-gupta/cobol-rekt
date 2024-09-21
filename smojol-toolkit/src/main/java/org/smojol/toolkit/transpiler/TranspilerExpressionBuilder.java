@@ -25,12 +25,12 @@ public class TranspilerExpressionBuilder {
         else if (expression instanceof ExponentExpression e)
             return new ExponentNode(build(e.getBasis()), build(e.getBasis()));
         else if (expression instanceof NegativeExpression e) return new NegativeNode(build(e.getExpression()));
-        else if (expression instanceof PrimitiveCobolExpression e) return new PrimitiveValueNode(e.data());
+        else if (expression instanceof PrimitiveCobolExpression e) return new PrimitiveValueTranspilerNode(e.data());
         else if (expression instanceof FunctionCallExpression e)
             return new FunctionCallNode(e.getFunctionName(), e.getArguments().stream().map(this::build).toList());
-        else if (expression instanceof NotExpression e) return new NotNode(build(e.getExpression()));
-        else if (expression instanceof AndExpression e) return new AndNode(build(e.getLhs()), build(e.getRhs()));
-        else if (expression instanceof OrExpression e) return new OrNode(build(e.getLhs()), build(e.getRhs()));
+        else if (expression instanceof NotExpression e) return new NotTranspilerNode(build(e.getExpression()));
+        else if (expression instanceof AndExpression e) return new AndTranspilerNode(build(e.getLhs()), build(e.getRhs()));
+        else if (expression instanceof OrExpression e) return new OrTranspilerNode(build(e.getLhs()), build(e.getRhs()));
         else if (expression instanceof NestedConditionExpression e) return new NestedConditionNode(build(e.getExpression()));
         else if (expression instanceof SimpleConditionExpression e) {
             if (e.getComparison() == null) return explicitCondition(e.getLhs(), dataStructures);

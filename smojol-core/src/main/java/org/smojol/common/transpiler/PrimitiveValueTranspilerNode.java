@@ -4,10 +4,10 @@ import com.google.common.collect.ImmutableList;
 import org.smojol.common.ast.SemanticCategory;
 import org.smojol.common.vm.type.TypedRecord;
 
-public class PrimitiveValueNode extends TranspilerNode {
+public class PrimitiveValueTranspilerNode extends TranspilerNode {
     private final TypedRecord value;
 
-    public PrimitiveValueNode(TypedRecord value) {
+    public PrimitiveValueTranspilerNode(TypedRecord value) {
         super(ImmutableList.of(SemanticCategory.REFERENCE));
         this.value = value;
     }

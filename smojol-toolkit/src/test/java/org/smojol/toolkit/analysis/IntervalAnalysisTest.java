@@ -4,6 +4,7 @@ import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.junit.jupiter.api.Test;
 import org.smojol.common.id.Identifiable;
+import org.smojol.common.transpiler.FlowgraphReductionResult;
 import org.smojol.common.transpiler.FlowgraphTransformer;
 
 import java.util.List;
@@ -27,7 +28,7 @@ public class IntervalAnalysisTest {
         transformer.addEdge(node("3"), node("2"));
         transformer.addEdge(node("2"), node("4"));
         transformer.addEdge(node("3"), node("5"));
-        List<String> evolutions = transformer.reduce();
+        FlowgraphReductionResult<TestNode, String> evolutions = transformer.reduce();
     }
 
     private static TestNode node(String id) {
