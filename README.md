@@ -381,7 +381,7 @@ The screenshot below shows a part of an example transpiler model flowgraph.
 - ```NEXT SENTENCE```, ```GO TO```s (conditional and unconditional) are translated into static jumps with appropriate conditionals.
 - ```PERFORM INLINE``` statments are translated into code blocks (enclosed in loops if there is a ```VARYING``` clause).
 - ```PERFORM``` procedure calls are converted into jump calls which can contain a start and stop code block (for ```THROUGH``` clauses). Loops are added for ```VARYING``` clauses.
-- Sections and paragraphs are converted into labelled aggregate blocks of code. Sentences are converted into unlabelled code blocks, but with metadata identifying them as sentences (for purposes of resolving ````NEXT SENTENCE``` locations).
+- Sections and paragraphs are converted into labelled aggregate blocks of code. Sentences are converted into unlabelled code blocks, but with metadata identifying them as sentences (for purposes of resolving ```NEXT SENTENCE``` locations).
 - ```MOVE``` is converted into assignments.
 - Operations like ```COMPUTE```, ```ADD```, ```SUBTRACT```, ```MULTIPLY```, and ```DIVIDE``` are converted into sequences of expressions with explicit assignments (to account for ```GIVIING``` phrases).
 - Any instructions not currently supported are converted into placeholder nodes.
