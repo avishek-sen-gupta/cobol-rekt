@@ -22,7 +22,6 @@ public class IntervalAnalysisTask {
         Graph<TranspilerInstruction, DefaultEdge> jgraph = new DefaultDirectedGraph<>(DefaultEdge.class);
         model.instructions().forEach(jgraph::addVertex);
         model.instructionEdges().forEach(edge -> jgraph.addEdge(edge.from(), edge.to()));
-        model.pruneUnreachables(jgraph);
         FlowgraphTransformer<TranspilerInstruction, DefaultEdge> transformer = new FlowgraphTransformer<>(jgraph, (a, b) -> new DefaultEdge());
 
         FlowgraphReductionResult<TranspilerInstruction, DefaultEdge> reductions = transformer.reduce();
