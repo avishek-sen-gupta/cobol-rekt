@@ -37,7 +37,7 @@ public class TranspilerCodeBlock extends TranspilerNode {
     @Override
     public String description() {
 //        return "CODE_BLOCK: " + id;
-        return truncate("CODE_BLOCK: " + String.join("\n", childTranspilerNodes.stream().map(TranspilerNode::description).toList()), 70);
+        return "CODE_BLOCK: " + String.join("\n", childTranspilerNodes.stream().map(TranspilerNode::description).toList());
     }
 
     public void add(TranspilerNode node) {

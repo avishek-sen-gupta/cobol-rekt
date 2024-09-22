@@ -5,11 +5,13 @@ import org.smojol.common.dialect.LanguageDialect;
 import org.smojol.common.flowchart.FlowchartOutputFormat;
 import org.smojol.common.id.UUIDProvider;
 import org.smojol.common.resource.LocalFilesystemOperations;
+import org.smojol.common.transpiler.TranspilerModel;
 import org.smojol.toolkit.analysis.defined.CodeTaskRunner;
 import org.smojol.toolkit.analysis.pipeline.ProgramSearch;
 import org.smojol.toolkit.interpreter.FullProgram;
 import org.smojol.toolkit.interpreter.structure.OccursIgnoringFormat1DataStructureBuilder;
 import org.smojol.toolkit.task.AnalysisTaskResult;
+import org.smojol.toolkit.task.AnalysisTaskResultOK;
 import org.smojol.toolkit.task.CommandLineAnalysisTask;
 
 import java.io.File;
@@ -25,6 +27,7 @@ public class TranspilerBuildMain {
                 "/Users/asgupta/code/smojol/che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar",
                 LanguageDialect.IDMS, new FullProgram(FlowchartOutputFormat.MERMAID), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder(), new ProgramSearch(), new LocalFilesystemOperations())
                 .runForPrograms(ImmutableList.of(CommandLineAnalysisTask.BUILD_TRANSPILER_MODEL), ImmutableList.of("test-exp.cbl"));
+        TranspilerModel model = ((AnalysisTaskResultOK) result.values().stream().findFirst().get().getFirst()).getDetail();
         System.out.println("DONE");
     }
 }

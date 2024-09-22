@@ -7,6 +7,8 @@ import org.smojol.common.ast.SemanticCategory;
 import java.util.List;
 import java.util.Map;
 
+import static org.apache.commons.lang3.StringUtils.truncate;
+
 public class LabelledTranspilerCodeBlockNode extends TranspilerNode {
     @Getter private final String name;
 
@@ -17,6 +19,7 @@ public class LabelledTranspilerCodeBlockNode extends TranspilerNode {
 
     @Override
     public String description() {
-        return String.format("[%s]", name);
+        return String.format("[CODE_BLOCK: %s] : ", name) + String.join("\n", childTranspilerNodes.stream().map(TranspilerNode::description).toList());
+//        return String.format("[%s]", name);
     }
 }
