@@ -136,7 +136,7 @@ public class SmojolTasks {
     public AnalysisTask BASIC_BLOCKS_TASK = new AnalysisTask() {
         @Override
         public AnalysisTaskResult run() {
-            return new AnalyseControlFlowTask(flowRoot, new BasicBlockFactory(idProvider), neo4JDriverBuilder).run();
+            return new AnalyseBasicBlocksTask(flowRoot, new BasicBlockFactory(idProvider), neo4JDriverBuilder).run();
         }
     };
 

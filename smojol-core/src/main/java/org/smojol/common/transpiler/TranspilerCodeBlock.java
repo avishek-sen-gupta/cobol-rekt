@@ -7,8 +7,6 @@ import org.smojol.common.ast.SemanticCategory;
 import java.util.List;
 import java.util.Map;
 
-import static org.apache.commons.lang3.StringUtils.truncate;
-
 public class TranspilerCodeBlock extends TranspilerNode {
     public TranspilerCodeBlock(List<TranspilerNode> children) {
         super(children, ImmutableMap.of(), ImmutableList.of(SemanticCategory.CODE_BLOCK));

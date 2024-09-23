@@ -17,12 +17,12 @@ import org.smojol.toolkit.task.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AnalyseControlFlowTask implements AnalysisTask {
+public class AnalyseBasicBlocksTask implements AnalysisTask {
     private final FlowNode astRoot;
     private final BasicBlockFactory basicBlockFactory;
     private final Neo4JDriverBuilder neo4JDriverBuilder;
 
-    public AnalyseControlFlowTask(FlowNode astRoot, BasicBlockFactory basicBlockFactory, Neo4JDriverBuilder neo4JDriverBuilder) {
+    public AnalyseBasicBlocksTask(FlowNode astRoot, BasicBlockFactory basicBlockFactory, Neo4JDriverBuilder neo4JDriverBuilder) {
         this.astRoot = astRoot;
         this.basicBlockFactory = basicBlockFactory;
         this.neo4JDriverBuilder = neo4JDriverBuilder;
