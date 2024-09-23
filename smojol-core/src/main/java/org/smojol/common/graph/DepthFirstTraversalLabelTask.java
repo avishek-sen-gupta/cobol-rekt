@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DepthFirstTraversalLabelTask {
+    public static final String DFS_NUM = "DFS_NUM";
     private final List<GraphNodeLike> depthFirstSpanningTreeOrder = new ArrayList<>();
     private final GraphNodeLike root;
     private final Graph<GraphNodeLike, DefaultEdge> graph;
@@ -27,7 +28,7 @@ public class DepthFirstTraversalLabelTask {
     }
 
     public void run(GraphNodeLike current) {
-        current.setProperty("DFS_NUM", currentDfsNumber);
+        current.setProperty(DFS_NUM, currentDfsNumber);
         depthFirstSpanningTreeOrder.add(current);
         currentDfsNumber++;
         List<GraphNodeLike> unvisitedChildren = graph.outgoingEdgesOf(current).stream()

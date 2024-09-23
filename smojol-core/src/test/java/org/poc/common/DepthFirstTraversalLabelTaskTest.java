@@ -10,6 +10,7 @@ import org.smojol.common.graph.DepthFirstTraversalLabelTask;
 import org.smojol.common.graph.GraphNodeLike;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.smojol.common.graph.DepthFirstTraversalLabelTask.DFS_NUM;
 
 public class DepthFirstTraversalLabelTaskTest {
     @Test
@@ -25,9 +26,9 @@ public class DepthFirstTraversalLabelTaskTest {
         graph.addEdge(va, vc);
         DepthFirstTraversalLabelTask task = new DepthFirstTraversalLabelTask(va, graph);
         task.run();
-        assertEquals(0, va.getProperty("DFS_NUM", Integer.class));
-        assertEquals(1, vb.getProperty("DFS_NUM", Integer.class));
-        assertEquals(2, vc.getProperty("DFS_NUM", Integer.class));
+        assertEquals(0, va.getProperty(DFS_NUM, Integer.class));
+        assertEquals(1, vb.getProperty(DFS_NUM, Integer.class));
+        assertEquals(2, vc.getProperty(DFS_NUM, Integer.class));
         assertEquals(3, task.max());
     }
 
@@ -67,14 +68,14 @@ public class DepthFirstTraversalLabelTaskTest {
 
         DepthFirstTraversalLabelTask task = new DepthFirstTraversalLabelTask(v0, graph);
         task.run();
-        assertEquals(0, v0.getProperty("DFS_NUM", Integer.class));
-        assertEquals(1, v1.getProperty("DFS_NUM", Integer.class));
-        assertEquals(5, v2.getProperty("DFS_NUM", Integer.class));
-        assertEquals(2, v3.getProperty("DFS_NUM", Integer.class));
-        assertEquals(3, v4.getProperty("DFS_NUM", Integer.class));
-        assertEquals(4, v5.getProperty("DFS_NUM", Integer.class));
-        assertEquals(6, v6.getProperty("DFS_NUM", Integer.class));
-        assertEquals(7, v7.getProperty("DFS_NUM", Integer.class));
+        assertEquals(0, v0.getProperty(DFS_NUM, Integer.class));
+        assertEquals(1, v1.getProperty(DFS_NUM, Integer.class));
+        assertEquals(5, v2.getProperty(DFS_NUM, Integer.class));
+        assertEquals(2, v3.getProperty(DFS_NUM, Integer.class));
+        assertEquals(3, v4.getProperty(DFS_NUM, Integer.class));
+        assertEquals(4, v5.getProperty(DFS_NUM, Integer.class));
+        assertEquals(6, v6.getProperty(DFS_NUM, Integer.class));
+        assertEquals(7, v7.getProperty(DFS_NUM, Integer.class));
         assertEquals(8, task.max());
     }
 
@@ -125,14 +126,14 @@ public class DepthFirstTraversalLabelTaskTest {
 
         DepthFirstTraversalLabelTask task = new DepthFirstTraversalLabelTask(v1, graph, 1);
         task.run();
-        assertEquals(1, v1.getProperty("DFS_NUM", Integer.class));
-        assertEquals(2, v2.getProperty("DFS_NUM", Integer.class));
-        assertEquals(3, v3.getProperty("DFS_NUM", Integer.class));
-        assertEquals(4, v4.getProperty("DFS_NUM", Integer.class));
-        assertEquals(5, v5.getProperty("DFS_NUM", Integer.class));
-        assertEquals(6, v6.getProperty("DFS_NUM", Integer.class));
-        assertEquals(7, v7.getProperty("DFS_NUM", Integer.class));
-        assertEquals(8, v8.getProperty("DFS_NUM", Integer.class));
+        assertEquals(1, v1.getProperty(DFS_NUM, Integer.class));
+        assertEquals(2, v2.getProperty(DFS_NUM, Integer.class));
+        assertEquals(3, v3.getProperty(DFS_NUM, Integer.class));
+        assertEquals(4, v4.getProperty(DFS_NUM, Integer.class));
+        assertEquals(5, v5.getProperty(DFS_NUM, Integer.class));
+        assertEquals(6, v6.getProperty(DFS_NUM, Integer.class));
+        assertEquals(7, v7.getProperty(DFS_NUM, Integer.class));
+        assertEquals(8, v8.getProperty(DFS_NUM, Integer.class));
         assertEquals(9, task.max());
         assertEquals(ImmutableList.of(v1, v2, v3, v4, v5, v6, v7, v8), task.preOrder());
         assertEquals(ImmutableList.of(v8, v7, v6, v5, v4, v3, v2, v1), task.postOrder());
