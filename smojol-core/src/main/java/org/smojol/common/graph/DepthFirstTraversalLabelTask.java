@@ -65,7 +65,6 @@ public class DepthFirstTraversalLabelTask {
         tail.forEach(node -> dominators.put(node, new HashSet<>(order)));
 
         do {
-
         } while (tail.stream().map(n -> {
             Set<GraphNodeLike> predecessors = graph.incomingEdgesOf(n).stream().map(graph::getEdgeSource).collect(Collectors.toUnmodifiableSet());
             Set<GraphNodeLike> dominatorSet = new HashSet<>();
@@ -94,19 +93,19 @@ public class DepthFirstTraversalLabelTask {
         return allDominators.entrySet().stream().map(e -> ImmutablePair.of(e.getKey(), uniqueImmediateDominator(e.getKey(), e.getValue(), dominances))).toList();
     }
 
-    private GraphNodeLike uniqueImmediateDominator(GraphNodeLike node, Set<GraphNodeLike> potentialImmediateDominators, List<Pair<GraphNodeLike, GraphNodeLike>> dominances) {
-        if (node == root) return node;
-        HashSet<GraphNodeLike> xxxx = new HashSet<>(potentialImmediateDominators);
+    private GraphNodeLike uniqueImmediateDominator(GraphNodeLike dominated, Set<GraphNodeLike> potentialImmediateDominators, List<Pair<GraphNodeLike, GraphNodeLike>> dominances) {
+        if (dominated == root) return dominated;
+        HashSet<GraphNodeLike> potentialImmediateDominatorsWithoutSelf = new HashSet<>(potentialImmediateDominators);
         List<GraphNodeLike> removals = new ArrayList<>();
-        xxxx.remove(node);
-        for (GraphNodeLike d1 : xxxx) {
-            for (GraphNodeLike d2 : xxxx) {
+        potentialImmediateDominatorsWithoutSelf.remove(dominated);
+        for (GraphNodeLike d1 : potentialImmediateDominatorsWithoutSelf) {
+            for (GraphNodeLike d2 : potentialImmediateDominatorsWithoutSelf) {
                 if (d1 == d2) continue;
                 if (dominances.contains(ImmutablePair.of(d1, d2))) removals.add(d1);
             }
         }
 
-        removals.forEach(xxxx::remove);
-        return xxxx.stream().findFirst().get();
+        removals.forEach(potentialImmediateDominatorsWithoutSelf::remove);
+        return potentialImmediateDominatorsWithoutSelf.stream().findFirst().get();
     }
 }
