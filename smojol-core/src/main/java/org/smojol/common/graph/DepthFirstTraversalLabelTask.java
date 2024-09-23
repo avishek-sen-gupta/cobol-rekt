@@ -3,9 +3,11 @@ package org.smojol.common.graph;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DepthFirstTraversalLabelTask {
+    private final List<GraphNodeLike> depthFirstSpanningTreeOrder = new ArrayList<>();
     private final GraphNodeLike root;
     private final Graph<GraphNodeLike, DefaultEdge> graph;
     private int currentDfsNumber = 0;
@@ -25,7 +27,9 @@ public class DepthFirstTraversalLabelTask {
     }
 
     public void run(GraphNodeLike current) {
-        current.setProperty("DFS_NUM", currentDfsNumber++);
+        current.setProperty("DFS_NUM", currentDfsNumber);
+        depthFirstSpanningTreeOrder.add(current);
+        currentDfsNumber++;
         List<GraphNodeLike> unvisitedChildren = graph.outgoingEdgesOf(current).stream()
                 .map(graph::getEdgeTarget).toList();
         for (GraphNodeLike child : unvisitedChildren) {
@@ -36,5 +40,13 @@ public class DepthFirstTraversalLabelTask {
 
     public int max() {
         return currentDfsNumber;
+    }
+
+    public List<GraphNodeLike> preOrder() {
+        return depthFirstSpanningTreeOrder;
+    }
+
+    public List<GraphNodeLike> postOrder() {
+        return depthFirstSpanningTreeOrder.reversed();
     }
 }

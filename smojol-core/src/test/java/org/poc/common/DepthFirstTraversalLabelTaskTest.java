@@ -1,5 +1,6 @@
 package org.poc.common;
 
+import com.google.common.collect.ImmutableList;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
@@ -133,5 +134,7 @@ public class DepthFirstTraversalLabelTaskTest {
         assertEquals(7, v7.getProperty("DFS_NUM", Integer.class));
         assertEquals(8, v8.getProperty("DFS_NUM", Integer.class));
         assertEquals(9, task.max());
+        assertEquals(ImmutableList.of(v1, v2, v3, v4, v5, v6, v7, v8), task.preOrder());
+        assertEquals(ImmutableList.of(v8, v7, v6, v5, v4, v3, v2, v1), task.postOrder());
     }
 }
