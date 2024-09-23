@@ -11,8 +11,13 @@ public class DepthFirstTraversalLabelTask {
     private int currentDfsNumber = 0;
 
     public DepthFirstTraversalLabelTask(GraphNodeLike root, Graph<GraphNodeLike, DefaultEdge> graph) {
+        this(root, graph, 0);
+    }
+
+    public DepthFirstTraversalLabelTask(GraphNodeLike root, Graph<GraphNodeLike, DefaultEdge> graph, int startNumber) {
         this.root = root;
         this.graph = graph;
+        this.currentDfsNumber = startNumber;
     }
 
     public void run() {
@@ -22,9 +27,11 @@ public class DepthFirstTraversalLabelTask {
     public void run(GraphNodeLike current) {
         current.setProperty("DFS_NUM", currentDfsNumber++);
         List<GraphNodeLike> unvisitedChildren = graph.outgoingEdgesOf(current).stream()
-                .map(graph::getEdgeTarget)
-                .filter(n -> n.getProperty("DFS_NUM", Integer.class) == null).toList();
-        unvisitedChildren.forEach(this::run);
+                .map(graph::getEdgeTarget).toList();
+        for (GraphNodeLike child : unvisitedChildren) {
+            if (child.getProperty("DFS_NUM", Integer.class) != null) continue;
+            run(child);
+        }
     }
 
     public int max() {

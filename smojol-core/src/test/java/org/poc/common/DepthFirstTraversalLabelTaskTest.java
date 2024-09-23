@@ -27,7 +27,7 @@ public class DepthFirstTraversalLabelTaskTest {
         assertEquals(0, va.getProperty("DFS_NUM", Integer.class));
         assertEquals(1, vb.getProperty("DFS_NUM", Integer.class));
         assertEquals(2, vc.getProperty("DFS_NUM", Integer.class));
-        assertEquals(2, task.max());
+        assertEquals(3, task.max());
     }
 
     @Test
@@ -75,5 +75,63 @@ public class DepthFirstTraversalLabelTaskTest {
         assertEquals(6, v6.getProperty("DFS_NUM", Integer.class));
         assertEquals(7, v7.getProperty("DFS_NUM", Integer.class));
         assertEquals(8, task.max());
+    }
+
+    /*
+     1
+    / \
+   2   7
+  ||   |
+   3   |
+  ||  / \
+ /  \/   8
+ |   4   |
+ |   |   8
+ ----6
+     */
+    @Test
+    public void canLabelDFSOrderForSimpleGraphWithBackEdges() {
+        Graph<GraphNodeLike, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
+        CodeGraphNode v1 = new CodeGraphNode("1");
+        CodeGraphNode v2 = new CodeGraphNode("2");
+        CodeGraphNode v3 = new CodeGraphNode("3");
+        CodeGraphNode v4 = new CodeGraphNode("4");
+        CodeGraphNode v5 = new CodeGraphNode("5");
+        CodeGraphNode v6 = new CodeGraphNode("6");
+        CodeGraphNode v7 = new CodeGraphNode("7");
+        CodeGraphNode v8 = new CodeGraphNode("8");
+
+        graph.addVertex(v1);
+        graph.addVertex(v2);
+        graph.addVertex(v3);
+        graph.addVertex(v4);
+        graph.addVertex(v5);
+        graph.addVertex(v6);
+        graph.addVertex(v7);
+        graph.addVertex(v8);
+
+        graph.addEdge(v1, v2);
+        graph.addEdge(v1, v6);
+        graph.addEdge(v2, v3);
+        graph.addEdge(v3, v2);
+        graph.addEdge(v6, v4);
+        graph.addEdge(v6, v7);
+        graph.addEdge(v3, v4);
+        graph.addEdge(v3, v5);
+        graph.addEdge(v4, v5);
+        graph.addEdge(v7, v8);
+        graph.addEdge(v8, v7);
+
+        DepthFirstTraversalLabelTask task = new DepthFirstTraversalLabelTask(v1, graph, 1);
+        task.run();
+        assertEquals(1, v1.getProperty("DFS_NUM", Integer.class));
+        assertEquals(2, v2.getProperty("DFS_NUM", Integer.class));
+        assertEquals(3, v3.getProperty("DFS_NUM", Integer.class));
+        assertEquals(4, v4.getProperty("DFS_NUM", Integer.class));
+        assertEquals(5, v5.getProperty("DFS_NUM", Integer.class));
+        assertEquals(6, v6.getProperty("DFS_NUM", Integer.class));
+        assertEquals(7, v7.getProperty("DFS_NUM", Integer.class));
+        assertEquals(8, v8.getProperty("DFS_NUM", Integer.class));
+        assertEquals(9, task.max());
     }
 }
