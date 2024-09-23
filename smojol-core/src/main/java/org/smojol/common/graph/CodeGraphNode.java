@@ -3,6 +3,8 @@ package org.smojol.common.graph;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.smojol.common.graph.DepthFirstTraversalLabelTask.DFS_NUM;
+
 public class CodeGraphNode implements GraphNodeLike {
     private final Map<String, Object> properties = new HashMap<>();
     private final String id;
@@ -29,6 +31,6 @@ public class CodeGraphNode implements GraphNodeLike {
 
     @Override
     public String toString() {
-        return getProperty("DFS_NUM", Integer.class).toString();
+        return getProperty(DFS_NUM, Integer.class).toString();
     }
 }

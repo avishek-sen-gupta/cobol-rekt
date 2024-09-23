@@ -38,7 +38,7 @@ public class DepthFirstTraversalLabelTask {
         List<GraphNodeLike> unvisitedChildren = graph.outgoingEdgesOf(current).stream()
                 .map(graph::getEdgeTarget).toList();
         for (GraphNodeLike child : unvisitedChildren) {
-            if (child.getProperty("DFS_NUM", Integer.class) != null) continue;
+            if (child.getProperty(DFS_NUM, Integer.class) != null) continue;
             run(child);
         }
     }
