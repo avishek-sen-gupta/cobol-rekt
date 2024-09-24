@@ -1,5 +1,6 @@
 package org.smojol.common.graph;
 
+import com.google.common.collect.Sets;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;
@@ -25,20 +26,12 @@ public class BuildDominatorsTask {
             LOGGER.finer("Building Dominators...");
         } while (tail.stream().map(n -> {
             Set<GraphNodeLike> predecessors = g.incomingEdgesOf(n).stream().map(g::getEdgeSource).collect(Collectors.toUnmodifiableSet());
-            Set<GraphNodeLike> dominatorSet = new HashSet<>();
-            dominatorSet.add(n);
-            List<Set<GraphNodeLike>> predDominators = predecessors.stream().map(dominators::get).toList();
-            Set<GraphNodeLike> finalIntersection = predDominators.stream().reduce(allNodes, (a, b) -> {
-                HashSet<GraphNodeLike> intersection = new HashSet<>(a);
-                intersection.retainAll(b);
-                return intersection;
-            });
-            dominatorSet.addAll(finalIntersection);
-            if (dominatorSet.equals(dominators.get(n))) {
-                dominators.put(n, dominatorSet);
-                return false;
-            }
-            dominators.put(n, dominatorSet);
+            List<Set<GraphNodeLike>> predecessorDominators = predecessors.stream().map(dominators::get).toList();
+            Set<GraphNodeLike> finalIntersection = predecessorDominators.stream().reduce(allNodes, Sets::intersection);
+            Set<GraphNodeLike> updatedDominatorSet = Sets.union(finalIntersection, Set.of(n));
+            Set<GraphNodeLike> originalDominatorSet = dominators.get(n);
+            if (updatedDominatorSet.equals(originalDominatorSet)) return false;
+            dominators.put(n, updatedDominatorSet);
             return true;
         }).reduce(false, (a, b) -> a || b));
 
@@ -51,19 +44,19 @@ public class BuildDominatorsTask {
         return allDominators.entrySet().stream().map(e -> ImmutablePair.of(e.getKey(), uniqueImmediateDominator(e.getKey(), e.getValue(), dominances, root))).toList();
     }
 
-    private GraphNodeLike uniqueImmediateDominator(GraphNodeLike dominated, Set<GraphNodeLike> potentialImmediateDominators, List<Pair<GraphNodeLike, GraphNodeLike>> dominances, GraphNodeLike root) {
+    private GraphNodeLike uniqueImmediateDominator(GraphNodeLike dominated, Set<GraphNodeLike> potentialImmediateDominators, List<Pair<GraphNodeLike, GraphNodeLike>> individualDominances, GraphNodeLike root) {
         if (dominated == root) return dominated;
         HashSet<GraphNodeLike> potentialImmediateDominatorsWithoutSelf = new HashSet<>(potentialImmediateDominators);
-        List<GraphNodeLike> removals = new ArrayList<>();
+        List<GraphNodeLike> nonImmediateDominatorNodes = new ArrayList<>();
         potentialImmediateDominatorsWithoutSelf.remove(dominated);
         for (GraphNodeLike d1 : potentialImmediateDominatorsWithoutSelf) {
             for (GraphNodeLike d2 : potentialImmediateDominatorsWithoutSelf) {
                 if (d1 == d2) continue;
-                if (dominances.contains(ImmutablePair.of(d1, d2))) removals.add(d1);
+                if (individualDominances.contains(ImmutablePair.of(d1, d2))) nonImmediateDominatorNodes.add(d1);
             }
         }
 
-        removals.forEach(potentialImmediateDominatorsWithoutSelf::remove);
+        nonImmediateDominatorNodes.forEach(potentialImmediateDominatorsWithoutSelf::remove);
         return potentialImmediateDominatorsWithoutSelf.stream().findFirst().get();
     }
 }
