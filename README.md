@@ -388,7 +388,7 @@ For example, if we have a ```EVALUATE``` statment like the following:
             END-EVALUATE
 ```
 
-Then, the following is an example of the text representation of transpiler tree of the above statement (formatted for clarity):
+Then, the following is an example of the text representation of the transpiler tree of the above statement (formatted for clarity):
 
 ```
 if(and(eq(primitive(true), lt(add(ref('SCALED'), ref('RESULT')), primitive(10.0))), eq(primitive(true), eq(ref('INVOICE-AMOUNT'), primitive(10.0))))) 
@@ -415,6 +415,8 @@ else
 The screenshot below shows a part of an example transpiler model flowgraph.
 
 ![Part of an Example Transpiler Model CFG](documentation/transpiler-model-cfg.png)
+
+See [TranspilerBuildMain.java](smojol-toolkit/src/main/java/org/smojol/toolkit/examples/TranspilerBuildMain.java) for an example.
 
 ### Details of the Intermediate Transpiler Tree
 
@@ -685,6 +687,9 @@ Programmatic examples are provided in the following classes.
 - See ```GraphExplorerMain.java``` for an example of how to inject ASTs, data structures, and CFGs into Neo4J.
 - See ```DependencyBuildMain.java``` for an example how inter-program dependencies can be injected into Neo4J.
 - See ```ValidateProgramMain.java``` for an example of how to run validation through code.
+- See ```IntervalAnalysisMain.java``` for an example of how the T1-T2 analysis is run.
+- See ```TranspilerBuildMain.java``` for an example of how the T1-T2 analysis is run.
+- See ```DominatorAnalysisMain.java``` for an example of how dominator analysis is run (WIP).
 - More detailed guides on programmatic use are on the way.
 
 ## Logging Settings
