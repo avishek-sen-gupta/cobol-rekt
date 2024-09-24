@@ -26,7 +26,7 @@ You can see the current backlog [here](https://github.com/users/avishek-sen-gupt
     - [Code Pattern Recognition](#code-pattern-recognition)
 - [Building Glossaries](#building-glossaries-alpha)
 - [Building Capability Maps](#building-capability-maps-alpha)
-- [Control Flow Analysis](#control-flow-analysis-and-transpilation-experiments)
+- [Control Flow Analysis and Transpilation Experiments](#control-flow-analysis-and-transpilation-experiments)
   - [Intermediate Transpilation Model](#exposing-a-basic-transpilation-model)
   - [Reducibility Testing](#reducibility-testing-experimental-feature)
   - [Basic Block Analysis](#basic-blocks-experimental-feature)
