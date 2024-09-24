@@ -26,7 +26,7 @@ public class DepthFirstTraversalLabelTask {
         run(root);
     }
 
-    public void run(GraphNodeLike current) {
+    private void run(GraphNodeLike current) {
         current.setProperty(DFS_NUM, currentDfsNumber);
         depthFirstSpanningTreeOrder.add(current);
         currentDfsNumber++;

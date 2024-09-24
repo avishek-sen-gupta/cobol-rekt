@@ -1,15 +1,20 @@
 package org.smojol.toolkit.examples;
 
 import com.google.common.collect.ImmutableList;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.jgrapht.Graph;
+import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.smojol.common.dialect.LanguageDialect;
 import org.smojol.common.flowchart.FlowchartOutputFormat;
+import org.smojol.common.graph.BuildDominatorsTask;
+import org.smojol.common.graph.CodeGraphNode;
+import org.smojol.common.graph.DepthFirstTraversalLabelTask;
+import org.smojol.common.graph.GraphNodeLike;
 import org.smojol.common.id.UUIDProvider;
 import org.smojol.common.logging.LoggingConfig;
 import org.smojol.common.resource.LocalFilesystemOperations;
-import org.smojol.common.transpiler.FlowgraphReductionResult;
 import org.smojol.common.transpiler.TranspilerInstruction;
-import org.smojol.toolkit.analysis.defined.IntervalAnalysisTask;
 import org.smojol.common.transpiler.TranspilerModel;
 import org.smojol.toolkit.analysis.defined.CodeTaskRunner;
 import org.smojol.toolkit.analysis.pipeline.ProgramSearch;
@@ -24,7 +29,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-public class IntervalAnalysisMain {
+public class DominatorAnalysisMain {
     public static void main(String[] args) throws IOException, InterruptedException {
         LoggingConfig.setupLogging();
         String programName = "flowgraph.cbl";
@@ -40,7 +45,15 @@ public class IntervalAnalysisMain {
         model.pruneUnreachables();
         System.out.println("Number of nodes = " + model.jgraph().vertexSet().size());
 
-        AnalysisTaskResultOK intervalAnalysisResult = (AnalysisTaskResultOK) new IntervalAnalysisTask(model).run();
-        FlowgraphReductionResult<TranspilerInstruction, DefaultEdge> reductionResult = intervalAnalysisResult.getDetail();
+        DefaultDirectedGraph<GraphNodeLike, DefaultEdge> graphForDominators = new DefaultDirectedGraph<>(DefaultEdge.class);
+        Graph<TranspilerInstruction, DefaultEdge> jgraph = model.jgraph();
+        List<CodeGraphNode> xvs = jgraph.vertexSet().stream().map(v -> new CodeGraphNode(v.id())).toList();
+        xvs.forEach(graphForDominators::addVertex);
+        jgraph.edgeSet().forEach(edge -> graphForDominators.addEdge(new CodeGraphNode(jgraph.getEdgeSource(edge).id()), new CodeGraphNode(jgraph.getEdgeTarget(edge).id())));
+        CodeGraphNode dfsRoot = new CodeGraphNode(model.instructions().getFirst().id());
+        DepthFirstTraversalLabelTask dfsTask = new DepthFirstTraversalLabelTask(dfsRoot, graphForDominators);
+        dfsTask.run();
+        List<GraphNodeLike> ordered = dfsTask.preOrder();
+        List<ImmutablePair<GraphNodeLike, GraphNodeLike>> immediateDominators = new BuildDominatorsTask().immediateDominators(ordered, graphForDominators, dfsRoot);
     }
 }
