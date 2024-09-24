@@ -31,9 +31,9 @@ You can see the current backlog [here](https://github.com/users/avishek-sen-gupt
   - [Reducibility Testing](#reducibility-testing-experimental-feature)
   - [Basic Block Analysis](#basic-blocks-experimental-feature)
   - [Dominator Analysis](#dominator-analysis)
-- [How to Build](#how-to-build)
 - [Running against AWS Card Demo](#running-against-aws-card-demo)
 - [Developer Guide](#developer-guide)
+  - [How to Build](#how-to-build)
   - [CLI Usage](#cli-usage)
   - [Programmatic Usage](#programmatic-usage)
   - [Logging Settings](#logging-settings)
@@ -450,7 +450,19 @@ TODO...
 
 See [DominatorAnalysisMain.java](smojol-toolkit/src/main/java/org/smojol/toolkit/examples/DominatorAnalysisMain.java) for an example.
 
-## How to Build
+## Running against AWS Card Demo
+
+The library has been tested (validation, flowchart generation, AST generation, Unified Model generation) against the [AWS Card Demo](https://github.com/aws-samples/aws-mainframe-modernization-carddemo) codebase. To run it against that codebase, do the following:
+
+- Clone the repository
+- Create an empty file ```app/cpy/DFHAID```
+- Create an empty file ```app/cpy/DFHBMSCA```
+
+Now run your commands as usual.
+
+## Developer Guide
+
+### How to Build
 
 The toolkit uses JDK 21 features; so you'll need the appropriate JDK set up.
 
@@ -472,18 +484,6 @@ Before using any of the Python components, you will need to install dependencies
 cd smojol_python
 pip install -r requirements.txt
 ```
-
-## Running against AWS Card Demo
-
-The library has been tested (validation, flowchart generation, AST generation, Unified Model generation) against the [AWS Card Demo](https://github.com/aws-samples/aws-mainframe-modernization-carddemo) codebase. To run it against that codebase, do the following:
-
-- Clone the repository
-- Create an empty file ```app/cpy/DFHAID```
-- Create an empty file ```app/cpy/DFHBMSCA```
-
-Now run your commands as usual.
-
-## Developer Guide
 
 ### CLI Usage
 The individual functionalities in the Java component can be invoked using different commands. Further tasks / commands will be added.
