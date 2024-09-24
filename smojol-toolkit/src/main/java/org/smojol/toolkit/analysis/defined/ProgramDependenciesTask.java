@@ -3,9 +3,7 @@ package org.smojol.toolkit.analysis.defined;
 import com.google.gson.annotations.Expose;
 import lombok.Getter;
 import org.smojol.common.ast.*;
-import org.smojol.common.flowchart.ConsoleColors;
 import org.smojol.common.id.UUIDProvider;
-import org.smojol.common.program.TransferControlCollectorVisitor;
 import org.smojol.common.pseudocode.PseudocodeInstruction;
 import org.smojol.toolkit.task.CommandLineAnalysisTask;
 import org.smojol.toolkit.task.AnalysisTask;
@@ -25,17 +23,6 @@ public class ProgramDependenciesTask implements AnalysisTask {
     public ProgramDependenciesTask(FlowNode root, String programName) {
         this.root = root;
         this.programName = programName;
-    }
-
-    private List<ExternalControlFlowNode> transfersOfControl() {
-        TransferControlCollectorVisitor visitor = new TransferControlCollectorVisitor();
-        root.accept(visitor, -1);
-        List<ExternalControlFlowNode> transfers = visitor.getTransfers();
-        if (transfers.isEmpty()) {
-            LOGGER.warning(ConsoleColors.green("No transfers found!"));
-            return transfers;
-        }
-        return transfers;
     }
 
     public boolean isEmpty() {

@@ -126,13 +126,6 @@ public class SmojolTasks {
         }
     };
 
-    public AnalysisTask BUILD_PSEUDOCODE_GRAPH = new AnalysisTask() {
-        @Override
-        public AnalysisTaskResult run() {
-            return new BuildPseudocodeGraphTask(flowRoot, true).run();
-        }
-    };
-
     public AnalysisTask BASIC_BLOCKS_TASK = new AnalysisTask() {
         @Override
         public AnalysisTaskResult run() {
@@ -148,13 +141,6 @@ public class SmojolTasks {
         @Override
         public AnalysisTaskResult run() {
             return new BuildTranspilerModelTask(rawAST, dataStructures, symbolTable, transpilerModelOutputConfig, resourceOperations).run();
-        }
-    };
-
-    public AnalysisTask GENERATE_IR = new AnalysisTask() {
-        @Override
-        public AnalysisTaskResult run() {
-            return new GenerateIntermediateRepresentationTask(flowRoot, dataStructures, idProvider, neo4JDriverBuilder).run();
         }
     };
 
@@ -221,7 +207,6 @@ public class SmojolTasks {
             case EXPORT_UNIFIED_TO_JSON -> EXPORT_UNIFIED_TO_JSON;
             case COMPARE_CODE -> COMPARE_CODE;
             case SUMMARISE_THROUGH_LLM -> SUMMARISE_THROUGH_LLM;
-            case BUILD_PSEUDOCODE_GRAPH -> BUILD_PSEUDOCODE_GRAPH;
             case BASIC_BLOCKS_TASK -> BASIC_BLOCKS_TASK;
             case BUILD_TRANSPILER_MODEL -> BUILD_TRANSPILER_MODEL;
             case GENERATE_IR -> nullTask(CommandLineAnalysisTask.GENERATE_IR);

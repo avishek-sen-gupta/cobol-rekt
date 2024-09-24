@@ -9,7 +9,6 @@ import java.util.List;
 import static org.smojol.common.pseudocode.CodeSentinelType.*;
 
 public class PseudocodeInstructionGenerator {
-
     public static List<PseudocodeInstruction> visiting(FlowNode node, IdProvider uuidProvider) {
         return ImmutableList.of(new PseudocodeInstruction(node, BODY, uuidProvider.next()));
     }

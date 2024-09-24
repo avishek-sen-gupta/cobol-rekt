@@ -8,6 +8,7 @@ import org.jgrapht.graph.DefaultEdge;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.TranspilerInstructionGeneratorVisitor;
 import org.smojol.common.flowchart.MermaidGraph;
+import org.smojol.common.id.IncrementingIdProvider;
 import org.smojol.common.navigation.AggregatingTranspilerNodeTraversal;
 import org.smojol.common.pseudocode.*;
 import org.smojol.common.resource.ResourceOperations;

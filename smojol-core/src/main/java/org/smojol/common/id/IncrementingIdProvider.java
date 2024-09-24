@@ -1,6 +1,4 @@
-package org.smojol.common.pseudocode;
-
-import org.smojol.common.id.IdProvider;
+package org.smojol.common.id;
 
 public class IncrementingIdProvider implements IdProvider {
     int count = 1;
