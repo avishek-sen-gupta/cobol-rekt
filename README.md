@@ -36,7 +36,7 @@ You can see the current backlog [here](https://github.com/users/avishek-sen-gupt
 - [Developer Guide](#developer-guide)
   - [CLI Usage](#cli-usage)
   - [Programmatic Usage](#programmatic-usage)
-- [Logging Settings](#logging-settings)
+  - [Logging Settings](#logging-settings)
 - [A Note on Copyright](#a-note-on-copyright)
 - [Caveats](#caveats)
 - [Known Issues](#known-issues)
