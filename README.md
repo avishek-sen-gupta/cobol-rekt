@@ -61,9 +61,11 @@ Cobol-REKT is an evolving toolkit of capabilities helpful for reverse engineerin
 - Injecting inter-program dependencies into Neo4J (with export to JSON)
 - Paragraph similarity map (Java / Python)
 - Code Pattern Detection (Neo4J / NetworkX)
-- **(WIP)** Exposing a basic transpilation model which is not tied to the COBOL syntax.
-- **(WIP)** Exposing Basic Blocks which are a useful first step in raw transpilation
-- **(WIP)** Analysing whether the control flow graph is reducible or not: a proxy for how well-structured the program is, and how amenable it is to direct transpilation to structured program languages (without arbitrary GOTOs)
+- **(WIP)** Transpilation and Control Flow Analysis capabilities:
+  - **Exposing a basic transpilation model** which is not tied to the COBOL syntax.
+  - **Exposing Basic Blocks** which are a useful first step in raw transpilation
+  - Calculating **limit flow graphs** using T1-T2 reductions: Analyse whether the control flow graph is reducible or not. This is a proxy for how well-structured the program is, and how amenable it is to direct transpilation to structured programming languages (without arbitrary GOTOs)
+  - **Dominator Analysis:** This is the first step which forms the basis for techniques like detecting implicit loops, and correct scoping of any potential transpiled code in structured programming languages.
 
 
 Cobol-REKT is more of a library of useful things intended to be embedded in more formal reverse engineering workflows/pipelines, rather than being a standalone tool (though you can certainly use it as such). Many of the higher-level wrappers are merely sensible defaults; you are encouraged to modify them to suit your needs.
@@ -360,7 +362,9 @@ This will take a little time, depending upon the number of paragraphs and their 
 
 ## Control Flow Analysis and Transpilation Experiments
 
-### Exposing a basic Transpilation Model
+Most of the tasks in this category are meant to be used as part of a larger analysis workflow, and thus do not have any filesystem outputs.
+
+### Exposing a basic transpilation Model
 
 This target exposes a basic transpilation model which is not tied to the COBOL syntax. It uses only assignments, loops, conditions, and jumps to represent most of COBOL syntax. The result may not still be well-structured because of arbitrary GOTOs. This will be the input for further control flow analysis tasks.
 
@@ -369,6 +373,43 @@ The model currently consists of the following:
 - **The transpiler syntax tree:** The original intermediate tree representation from which instructions and the control flow graph are generated.
 - **Transpiler instructions:** This has the instructions laid out serially. It is primarily used to resolve locations for instructions like ```break``` and ```NEXT SENTENCE```. Note that sentinel instructions are present in this sequence, like ```ENTER```, ```EXIT```, and ```BODY```.
 - **Transpiler instruction Control Flow Graph**: This is generated from the instruction sequence above, and thus the nodes are the transpiler instructions (including sentinel instructions).
+
+For example, if we have a ```EVALUATE``` statment like the following:
+```
+        EVALUATE TRUE ALSO TRUE
+              WHEN SCALED + RESULT < 10 ALSO INVOICE-AMOUNT = 10
+                MOVE "CASE 1" TO SOMETHING
+              WHEN SCALED + RESULT > 50 ALSO
+                INVOICE-AMOUNT = ( SOMETEXT + RESULT ) / SCALED
+                MOVE "CASE 2" TO SOMETHING
+              WHEN OTHER
+                MOVE "CASE OTHER" TO SOMETHING
+            END-EVALUATE
+```
+
+Then, the following is an example of the text representation of transpiler tree of the above statement (formatted for clarity):
+
+```
+if(and(eq(primitive(true), lt(add(ref('SCALED'), ref('RESULT')), primitive(10.0))), eq(primitive(true), eq(ref('INVOICE-AMOUNT'), primitive(10.0))))) 
+ then 
+{
+	CODE_BLOCK: CODE_BLOCK: set(ref('SOMETHING'), value(primitive("CASE 1"))) 
+}
+ 
+else 
+{
+	if(and(eq(primitive(true), gt(add(ref('SCALED'), ref('RESULT')), primitive(50.0))), eq(primitive(true), eq(ref('INVOICE-AMOUNT'), divide(add(ref('SOMETEXT'), ref('RESULT')), ref('SCALED')))))) 
+	 then 
+	{
+		 CODE_BLOCK: CODE_BLOCK: set(ref('SOMETHING'), value(primitive("CASE 2"))) 
+	}
+	 
+	else 
+	{
+		 CODE_BLOCK: CODE_BLOCK: set(ref('SOMETHING'), value(primitive("CASE OTHER"))) 
+	}
+}
+```
 
 The screenshot below shows a part of an example transpiler model flowgraph.
 
@@ -386,10 +427,9 @@ The screenshot below shows a part of an example transpiler model flowgraph.
 - Operations like ```COMPUTE```, ```ADD```, ```SUBTRACT```, ```MULTIPLY```, and ```DIVIDE``` are converted into sequences of expressions with explicit assignments (to account for ```GIVIING``` phrases).
 - Any instructions not currently supported are converted into placeholder nodes.
 
-### Testing Reducibility (Experimental Feature)
+### Reducibility Testing (Experimental Feature)
 
-TODO...
-
+Reducibility is tested using interval analysis, specifically using the **repeated T1-T2 transform method**.
 
 See [IntervalAnalysisMain.java](smojol-toolkit/src/main/java/org/smojol/toolkit/examples/IntervalAnalysisMain.java) for an example.
 
@@ -399,14 +439,13 @@ Basic Blocks are useful for analysing flow of the code without worrying about th
 
 **NOTE**: This will be migrated soon to use the transpiler tree format.
 
-~~Exposing basic blocks is done through the ```AnalyseControlFlowTask``` task. Note that this task does not actually output any artifacts, because it is intended for more internal analysis and transpilation (if I get to it at some point). It can be triggered through the ```CodeTaskRunner``` API just like many of the tasks. The return value on success is a pair.~~
+Exposing basic blocks is done through the ```AnalyseBasicBlocksTask``` task. Note that this task does not actually output any artifacts, because it is intended for more internal analysis and transpilation (if I get to it at some point).
 
-- ~~The first item is a list of ```BasicBlock``` objects. These objects in turn contain lists of ```PseudocodeInstruction```s. These instructions represent a linear translation of the code (like bytecode, but still very COBOL-specific) with extra sentinel instructions (ENTER/EXIT, etc.) inserted for more hook points.~~
-- ~~The second item is an object which contains two thing: a complete list of ```PseudocodeInstruction```s which the basic blocks are derived from, and all the edges between these instructions which represent possible control flows (sequential as well as jumps). If you choose to inject this graph into Neo4J, you will see that most of the graph is a linear chain of nodes, unlike the ```FlowNode``` representation which continues to maintain a syntactical hierarchy. ```PseudocodeInstruction``` objects do contain ```FlowNode``` objects internally for maintaining links with the original parse tree.~~
+### Dominator Analysis
 
-~~A sequence of ```PseudocodeInstruction```s look something like below:~~
+TODO...
 
-![Pseudocode example](documentation/psuedocode-example.png)
+See [DominatorAnalysisMain.java](smojol-toolkit/src/main/java/org/smojol/toolkit/examples/DominatorAnalysisMain.java) for an example.
 
 ## How to Build
 
