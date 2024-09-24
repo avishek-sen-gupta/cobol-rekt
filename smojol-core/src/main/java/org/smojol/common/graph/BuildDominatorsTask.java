@@ -12,6 +12,9 @@ import java.util.stream.Collectors;
 
 import static org.smojol.common.list.ConsCar.tail;
 
+/*
+Algorithm based on the paper 'Graph-Theoretic Constructs for Program Control Flow Analysis' by Allen and Cocke (1972)
+ */
 public class BuildDominatorsTask {
     private static final Logger LOGGER = Logger.getLogger(BuildDominatorsTask.class.getName());
 
