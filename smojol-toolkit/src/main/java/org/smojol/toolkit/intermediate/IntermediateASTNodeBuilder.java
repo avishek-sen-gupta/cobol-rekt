@@ -2,6 +2,7 @@ package org.smojol.toolkit.intermediate;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.NullFlowNode;
 import org.smojol.common.navigation.CobolEntityNavigator;
@@ -42,7 +43,8 @@ public class IntermediateASTNodeBuilder {
         FlowNode intermediateNode = nodeService.unmodifiedNode(current, parent, stackFrames);
         if (intermediateNode instanceof NullFlowNode) return intermediateNode;
         if (!(intermediateNode instanceof CompositeCobolFlowNode)) return intermediateNode;
-        List<ParseTree> children = IntStream.range(0, current.getChildCount()).mapToObj(current::getChild).toList();
+        ParseTree actualContext = intermediateNode.getExecutionContext();
+        List<ParseTree> children = IntStream.range(0, actualContext.getChildCount()).mapToObj(actualContext::getChild).toList();
         List<FlowNode> flowChildren = children.stream().map(child -> recursivelyBuildIntermediateNode(child, intermediateNode, stackFrames.add(intermediateNode))).toList();
         List<FlowNode> validFlowChildren = flowChildren.stream().filter(n -> !(n instanceof NullFlowNode)).toList();
         validFlowChildren.forEach(intermediateNode::addChild);

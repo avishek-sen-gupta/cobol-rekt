@@ -412,6 +412,27 @@ else
 }
 ```
 
+As another example, let's take a ```PERFORM INLINE``` statement which looks like so:
+
+```
+PERFORM TEST BEFORE VARYING SOME-PART-1 FROM 1 BY 1
+UNTIL SOME-PART-1 > 10
+AFTER SOME-PART-2 FROM 1 BY 1 UNTIL SOME-PART-2 > 10
+    DISPLAY "GOING " SOME-PART-1 " AND " SOME-PART-2
+END-PERFORM.
+```
+The intermediate representation looks like the following:
+
+```
+loop[loopVariable=ref('SOME-PART-1'), initialValue=primitive(1.0), maxValue=NULL, terminateCondition=gt(ref('SOME-PART-1'), primitive(10.0)), loopUpdate=primitive(1.0), conditionTestTime=BEFORE] 
+{
+	loop[loopVariable=ref('SOME-PART-2'), initialValue=primitive(1.0), maxValue=NULL, terminateCondition=gt(ref('SOME-PART-2'), primitive(10.0)), loopUpdate=primitive(1.0), conditionTestTime=BEFORE] 
+	{
+		CODE_BLOCK: print(value(primitive("GOING ")), value(ref('SOME-PART-1')), value(primitive(" AND ")), value(ref('SOME-PART-2')))
+	}
+}
+```
+
 The screenshot below shows a part of an example transpiler model flowgraph.
 
 ![Part of an Example Transpiler Model CFG](documentation/transpiler-model-cfg.png)

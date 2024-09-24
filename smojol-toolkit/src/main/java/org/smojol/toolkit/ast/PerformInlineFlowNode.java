@@ -16,9 +16,10 @@ import java.util.List;
 import static guru.nidi.graphviz.model.Factory.mutGraph;
 import static guru.nidi.graphviz.model.Factory.mutNode;
 
-public class PerformInlineFlowNode extends CompositeCobolFlowNode {
+public class PerformInlineFlowNode extends CobolFlowNode {
     private FlowNode condition;
     @Getter private List<FlowIteration> nestedLoops;
+    private List<FlowNode> bodyStatements;
 
     public PerformInlineFlowNode(ParseTree parseTree, FlowNode scope, FlowNodeService nodeService, StackFrames stackFrames) {
         super(parseTree, scope, nodeService, stackFrames);
@@ -28,10 +29,11 @@ public class PerformInlineFlowNode extends CompositeCobolFlowNode {
     public void buildInternalFlow() {
         CobolParser.PerformStatementContext performStatement = new SyntaxIdentity<CobolParser.PerformStatementContext>(getExecutionContext()).get();
         CobolParser.PerformInlineStatementContext x = performStatement.performInlineStatement();
+        bodyStatements = x.conditionalStatementCall().stream().map(stmt -> nodeService.node(stmt, this, staticFrameContext)).toList();
         if (isVarying(x)) {
             condition = nodeService.node(x.performType(), this, staticFrameContext);
         }
-        super.buildInternalFlow();
+        bodyStatements.forEach(FlowNode::buildInternalFlow);
     }
 
     private boolean isVarying(CobolParser.PerformInlineStatementContext performStatement) {
@@ -85,5 +87,11 @@ public class PerformInlineFlowNode extends CompositeCobolFlowNode {
         CobolParser.PerformStatementContext performStatement = new SyntaxIdentity<CobolParser.PerformStatementContext>(getExecutionContext()).get();
         CobolParser.PerformInlineStatementContext performInlineStatementContext = performStatement.performInlineStatement();
         nestedLoops = FlowIterationBuilder.build(performInlineStatementContext.performType(), dataStructures);
+        bodyStatements.forEach(stmt -> stmt.resolve(symbolTable, dataStructures));
+    }
+
+    @Override
+    public List<FlowNode> astChildren() {
+        return bodyStatements;
     }
 }
