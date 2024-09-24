@@ -692,7 +692,7 @@ Programmatic examples are provided in the following classes.
 - See ```DominatorAnalysisMain.java``` for an example of how dominator analysis is run (WIP).
 - More detailed guides on programmatic use are on the way.
 
-## Logging Settings
+#### Logging Settings
 
 You can specify a custom logging settings file by adding ```-Djava.util.logging.config.file``` option. if not specified, a default ```logging.properties``` will be loaded, with ```INFO``` as the default level.
 
