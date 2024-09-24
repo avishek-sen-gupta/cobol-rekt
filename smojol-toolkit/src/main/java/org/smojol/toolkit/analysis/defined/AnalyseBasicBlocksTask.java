@@ -3,12 +3,14 @@ package org.smojol.toolkit.analysis.defined;
 import com.mojo.woof.EdgeType;
 import com.mojo.woof.GraphSDK;
 import com.mojo.woof.Neo4JDriverBuilder;
+import com.mojo.woof.NodeRelations;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.neo4j.driver.Record;
-import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.FlowNodeLike;
-import org.smojol.common.ast.InstructionEdge;
 import org.smojol.common.pseudocode.*;
+import org.smojol.common.transpiler.TranspilerInstructionEdge;
+import org.smojol.common.transpiler.TranspilerInstruction;
+import org.smojol.common.transpiler.TranspilerModel;
 import org.smojol.toolkit.analysis.graph.NamespaceQualifier;
 import org.smojol.toolkit.analysis.graph.NodeSpecBuilder;
 import org.smojol.toolkit.analysis.graph.NodeToWoof;
@@ -18,51 +20,43 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AnalyseBasicBlocksTask implements AnalysisTask {
-    private final FlowNode astRoot;
-    private final BasicBlockFactory basicBlockFactory;
+    private final BasicBlockFactory<TranspilerInstruction> basicBlockFactory;
     private final Neo4JDriverBuilder neo4JDriverBuilder;
+    private final TranspilerModel model;
 
-    public AnalyseBasicBlocksTask(FlowNode astRoot, BasicBlockFactory basicBlockFactory, Neo4JDriverBuilder neo4JDriverBuilder) {
-        this.astRoot = astRoot;
+    public AnalyseBasicBlocksTask(TranspilerModel model, BasicBlockFactory<TranspilerInstruction> basicBlockFactory, Neo4JDriverBuilder neo4JDriverBuilder) {
+        this.model = model;
         this.basicBlockFactory = basicBlockFactory;
         this.neo4JDriverBuilder = neo4JDriverBuilder;
     }
 
     @Override
     public AnalysisTaskResult run() {
-        AnalysisTaskResult result = new BuildPseudocodeGraphTask(astRoot, true).run();
-        return switch (result) {
-            case AnalysisTaskResultError analysisTaskResultError -> analysisTaskResultError;
-            case AnalysisTaskResultOK analysisTaskResultOK -> analyse(analysisTaskResultOK.getDetail());
-        };
+        List<BasicBlock<TranspilerInstruction>> basicBlocks = basicBlocks(model);
+        return new AnalysisTaskResultOK(CommandLineAnalysisTask.BASIC_BLOCKS_TASK.name(), ImmutablePair.of(basicBlocks, model));
     }
 
-    private AnalysisTaskResult analyse(PseudocodeGraph graph) {
-        List<BasicBlock> basicBlocks = basicBlocks(graph);
-        return new AnalysisTaskResultOK(CommandLineAnalysisTask.BASIC_BLOCKS_TASK.name(), ImmutablePair.of(basicBlocks, graph));
-    }
-
-    private List<BasicBlock> basicBlocks(PseudocodeGraph graph) {
-        BasicBlock currentBlock = basicBlockFactory.block();
-        List<BasicBlock> stack = new ArrayList<>();
-        for (int i = 0; i < graph.instructions().size(); i++) {
-            PseudocodeInstruction instruction = graph.instructions().get(i);
-            if (isJoinPoint(instruction, graph)) {
+    private List<BasicBlock<TranspilerInstruction>> basicBlocks(TranspilerModel model) {
+        List<TranspilerInstruction> instructions = model.instructions();
+        BasicBlock<TranspilerInstruction> currentBlock = basicBlockFactory.block();
+        List<BasicBlock<TranspilerInstruction>> stack = new ArrayList<>();
+        for (TranspilerInstruction instruction : instructions) {
+            if (isJoinPoint(instruction)) {
                 if (currentBlock.isEmpty()) currentBlock.add(instruction);
                 else {
                     stack.add(currentBlock);
                     currentBlock = basicBlockFactory.block();
                     currentBlock.add(instruction);
                 }
-            } else if (isBranchPoint(instruction, graph)) {
+            } else if (isBranchPoint(instruction)) {
                 currentBlock.add(instruction);
                 stack.add(currentBlock);
                 currentBlock = basicBlockFactory.block();
-            } else if (instruction.isJump() && instruction.codeSentinelType() == CodeSentinelType.BODY) {
+            } else if (instruction.isJump() && instruction.sentinel() == CodeSentinelType.BODY) {
                 currentBlock.add(instruction);
                 stack.add(currentBlock);
                 currentBlock = basicBlockFactory.block();
-            } else if (instruction.isCondition() && instruction.codeSentinelType() == CodeSentinelType.BODY) {
+            } else if (instruction.isCondition() && instruction.sentinel() == CodeSentinelType.BODY) {
                 currentBlock.add(instruction);
                 stack.add(currentBlock);
                 currentBlock = basicBlockFactory.block();
@@ -72,24 +66,24 @@ public class AnalyseBasicBlocksTask implements AnalysisTask {
         return stack;
     }
 
-    private boolean isBranchPoint(PseudocodeInstruction instruction, PseudocodeGraph graph) {
-        return graph.edges().stream().filter(e -> e.getFrom() == instruction).count() > 1;
+    private boolean isBranchPoint(TranspilerInstruction instruction) {
+        return model.jgraph().outgoingEdgesOf(instruction).size() > 1;
     }
 
-    private boolean isJoinPoint(PseudocodeInstruction instruction, PseudocodeGraph graph) {
-        return graph.edges().stream().filter(e -> e.getTo() == instruction).count() > 1;
+    private boolean isJoinPoint(TranspilerInstruction instruction) {
+        return model.jgraph().incomingEdgesOf(instruction).size() > 1;
     }
 
-    private void injectIntoNeo4J(List<FlowNodeLike> nodes, List<InstructionEdge> edges) {
+    private void injectIntoNeo4J(List<FlowNodeLike> nodes, List<TranspilerInstructionEdge> edges) {
         GraphSDK graphSDK = new GraphSDK(neo4JDriverBuilder.fromEnv());
         NodeSpecBuilder specBuilder = new NodeSpecBuilder(new NamespaceQualifier("SOME"));
         nodes.forEach(n -> graphSDK.createNode(NodeToWoof.toWoofNode(n, specBuilder)));
         edges.forEach(e -> {
-            PseudocodeInstruction from = e.getFrom();
-            PseudocodeInstruction to = e.getTo();
+            TranspilerInstruction from = e.from();
+            TranspilerInstruction to = e.to();
             Record recordFrom = NodeToWoof.existingCFGNode(from, specBuilder, graphSDK);
             Record recordTo = NodeToWoof.existingCFGNode(to, specBuilder, graphSDK);
-            graphSDK.connect(recordFrom, recordTo, e.getEdgeType().name(), EdgeType.FLOW);
+            graphSDK.connect(recordFrom, recordTo, NodeRelations.JUMPS_TO, EdgeType.FLOW);
         });
     }
 }

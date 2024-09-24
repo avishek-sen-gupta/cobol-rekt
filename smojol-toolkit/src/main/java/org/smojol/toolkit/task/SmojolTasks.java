@@ -136,7 +136,11 @@ public class SmojolTasks {
     public AnalysisTask BASIC_BLOCKS_TASK = new AnalysisTask() {
         @Override
         public AnalysisTaskResult run() {
-            return new AnalyseBasicBlocksTask(flowRoot, new BasicBlockFactory(idProvider), neo4JDriverBuilder).run();
+            AnalysisTaskResult result = new BuildTranspilerModelTask(rawAST, dataStructures, symbolTable, transpilerModelOutputConfig, resourceOperations).run();
+            return switch (result) {
+                case AnalysisTaskResultError e -> AnalysisTaskResult.ERROR(e.getException(), CommandLineAnalysisTask.BASIC_BLOCKS_TASK);
+                case AnalysisTaskResultOK o -> new AnalyseBasicBlocksTask(o.getDetail(), new BasicBlockFactory<>(idProvider), neo4JDriverBuilder).run();
+            };
         }
     };
 

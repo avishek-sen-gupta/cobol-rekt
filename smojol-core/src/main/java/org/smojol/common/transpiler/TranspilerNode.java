@@ -2,6 +2,7 @@ package org.smojol.common.transpiler;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import lombok.Getter;
 import org.smojol.common.ast.SemanticCategory;
 import org.smojol.common.id.Identifiable;
 
@@ -9,7 +10,7 @@ import java.util.*;
 
 public abstract class TranspilerNode implements Identifiable {
     protected final Map<String, Object> properties;
-    private final List<SemanticCategory> categories;
+    @Getter private final List<SemanticCategory> categories;
     protected final List<TranspilerNode> childTranspilerNodes = new ArrayList<>();
     protected final String id;
 

@@ -18,7 +18,7 @@ public class TranspilerModelBuilder {
     private final List<TranspilerInstruction> instructions;
     private final TranspilerNode transpilerTree;
     private final Map<TranspilerNode, Triple<Integer, Integer, Integer>> transpilerNodeMap;
-    private final List<TranspilerEdge> edges;
+    private final List<TranspilerInstructionEdge> edges;
 
     public TranspilerModelBuilder(List<TranspilerInstruction> instructions, TranspilerNode transpilerTree) {
         this.instructions = instructions;
@@ -28,14 +28,14 @@ public class TranspilerModelBuilder {
     }
 
     public TranspilerModel build() {
-        List<TranspilerEdge> instructionEdges = controlFlowEdges();
+        List<TranspilerInstructionEdge> instructionEdges = controlFlowEdges();
         Graph<TranspilerInstruction, DefaultEdge> jgraph = new DefaultDirectedGraph<>(DefaultEdge.class);
         instructions.forEach(jgraph::addVertex);
         instructionEdges.forEach(edge -> jgraph.addEdge(edge.from(), edge.to()));
         return new TranspilerModel(transpilerTree, instructions, instructionEdges, jgraph);
     }
 
-    private List<TranspilerEdge> controlFlowEdges() {
+    private List<TranspilerInstructionEdge> controlFlowEdges() {
         for (int i = 0; i < instructions.size() - 1; i++) {
             TranspilerInstruction currentInstruction = instructions.get(i);
             TranspilerInstruction nextInstruction = instructions.get(i + 1);
@@ -81,7 +81,7 @@ public class TranspilerModelBuilder {
 
     private void addEdge(TranspilerInstruction from, TranspilerInstruction to) {
         if (from == TranspilerInstruction.NULL || to == TranspilerInstruction.NULL) return;
-        edges.add(new TranspilerEdge(from, to));
+        edges.add(new TranspilerInstructionEdge(from, to));
     }
 
     private TranspilerNode iterationExit(int currentAddress, List<TranspilerInstruction> instructions) {

@@ -2,7 +2,7 @@ package org.smojol.common.pseudocode;
 
 import org.smojol.common.id.IdProvider;
 
-public class BasicBlockFactory {
+public class BasicBlockFactory<T> {
     private final IdProvider idProvider;
 
     public BasicBlockFactory(IdProvider idProvider) {
@@ -10,7 +10,7 @@ public class BasicBlockFactory {
     }
 
 
-    public BasicBlock block() {
-        return new BasicBlock(idProvider.next());
+    public BasicBlock<T> block() {
+        return new BasicBlock<T>(idProvider.next());
     }
 }
