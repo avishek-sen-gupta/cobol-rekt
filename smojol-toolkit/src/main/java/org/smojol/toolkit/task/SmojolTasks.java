@@ -209,7 +209,6 @@ public class SmojolTasks {
             case SUMMARISE_THROUGH_LLM -> SUMMARISE_THROUGH_LLM;
             case BASIC_BLOCKS_TASK -> BASIC_BLOCKS_TASK;
             case BUILD_TRANSPILER_MODEL -> BUILD_TRANSPILER_MODEL;
-            case GENERATE_IR -> nullTask(CommandLineAnalysisTask.GENERATE_IR);
         });
     }
 

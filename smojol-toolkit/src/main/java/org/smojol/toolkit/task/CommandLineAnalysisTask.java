@@ -16,5 +16,4 @@ public enum CommandLineAnalysisTask {
     SUMMARISE_THROUGH_LLM,
     BASIC_BLOCKS_TASK,
     BUILD_TRANSPILER_MODEL,
-    GENERATE_IR
 }
