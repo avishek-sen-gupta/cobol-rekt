@@ -721,6 +721,7 @@ You can specify a custom logging settings file by adding ```-Djava.util.logging.
 
 - This toolkit is distributed under the MIT License. However, the Eclipse Cobol Parser project is distributed under the Eclipse Public License V2. Accordingly, all modifications to the parser fall under the EPL v2 license, while the toolkit proper falls under the MIT License.
 - The gSpan algorithm implementation is taken from [https://github.com/betterenvi/gSpan](https://github.com/betterenvi/gSpan), which is also under the MIT License.
+- The ```RuntimeTypeAdapterFactory``` class code is taken from Google's gson-extras repository. It is under the Apache License v2.0.
 
 ## Caveats
 
