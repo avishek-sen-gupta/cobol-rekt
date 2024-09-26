@@ -18,7 +18,7 @@ public class EvaluateNodeTranslator {
     public static TranspilerNode build(EvaluateFlowNode n, CobolDataStructure dataStructures) {
         ExpandedEvaluation deconstructedRepresentation = n.getDeconstructedRepresentation();
         List<TestActionPair> clauses = deconstructedRepresentation.testActionPairs();
-        TranspilerCodeBlock elseBody = new TranspilerCodeBlock(deconstructedRepresentation.elseBody().stream().map(stmt -> TranspilerTreeBuilder.flowToTranspiler(stmt, dataStructures)).toList());
+        TranspilerCodeBlock elseBody = new DetachedTranspilerCodeBlock(deconstructedRepresentation.elseBody().stream().map(stmt -> TranspilerTreeBuilder.flowToTranspiler(stmt, dataStructures)).toList());
         return recursiveOr(head(clauses), tail(clauses), dataStructures, elseBody);
     }
 
@@ -26,7 +26,7 @@ public class EvaluateNodeTranslator {
         TranspilerExpressionBuilder builder = new TranspilerExpressionBuilder(dataStructures);
         CobolExpression test = current.get().test();
         List<FlowNode> bodyStatements = current.get().actions();
-        TranspilerCodeBlock transpilerBody = new TranspilerCodeBlock(bodyStatements.stream().map(stmt -> TranspilerTreeBuilder.flowToTranspiler(stmt, dataStructures)).toList());
+        TranspilerCodeBlock transpilerBody = new DetachedTranspilerCodeBlock(bodyStatements.stream().map(stmt -> TranspilerTreeBuilder.flowToTranspiler(stmt, dataStructures)).toList());
         if (remaining.isEmpty()) return new IfTranspilerNode(builder.build(test), transpilerBody, elseBody);
         return new IfTranspilerNode(builder.build(test), transpilerBody, recursiveOr(head(remaining), tail(remaining), dataStructures, elseBody));
     }

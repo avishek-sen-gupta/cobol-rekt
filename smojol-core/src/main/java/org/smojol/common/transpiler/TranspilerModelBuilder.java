@@ -54,20 +54,28 @@ public class TranspilerModelBuilder {
                     addEdge(ifElseExit, currentExit);
                 }
                 case JumpTranspilerNode j when currentInstruction.sentinel() == CodeSentinelType.BODY -> {
-                    TranspilerInstruction forwardTarget = j.getStart() instanceof ExitIterationScopeLocationNode
-                            ? exit(resolveNode(j.getStart(), instructions, i), transpilerNodeMap, instructions)
-                            : entry(resolveNode(j.getStart(), instructions, i), transpilerNodeMap, instructions);
+                    TranspilerInstruction forwardTarget = switch(j.getStart()) {
+                        case ExitIterationScopeLocationNode n -> exit(resolveNode(j.getStart(), instructions, i), transpilerNodeMap, instructions);
+                        case ProgramTerminalLocationNode n -> exit(resolveNode(j.getStart(), instructions, i), transpilerNodeMap, instructions);
+                        default -> entry(resolveNode(j.getStart(), instructions, i), transpilerNodeMap, instructions);
+                    };
+//                    TranspilerInstruction forwardTarget = j.getStart() instanceof ExitIterationScopeLocationNode
+//                            ? exit(resolveNode(j.getStart(), instructions, i), transpilerNodeMap, instructions)
+//                            : entry(resolveNode(j.getStart(), instructions, i), transpilerNodeMap, instructions);
                     TranspilerInstruction returnCallSite = exit(resolveNode(j.getEnd(), instructions, i), transpilerNodeMap, instructions);
                     addEdge(body(current, transpilerNodeMap, instructions), forwardTarget);
                     addEdge(returnCallSite, exit(current, transpilerNodeMap, instructions));
                 }
                 case TranspilerLoop transpilerLoop when currentInstruction.sentinel() == CodeSentinelType.EXIT -> {
-                    addEdge(currentInstruction, body(current, transpilerNodeMap, instructions));
+                    addEdge(currentInstruction, entry(current, transpilerNodeMap, instructions));
                     addEdge(currentInstruction, nextInstruction);
                 }
                 case ListIterationTranspilerNode listIterationTranspilerNode when currentInstruction.sentinel() == CodeSentinelType.EXIT -> {
-                    addEdge(currentInstruction, body(current, transpilerNodeMap, instructions));
+                    addEdge(currentInstruction, entry(current, transpilerNodeMap, instructions));
                     addEdge(currentInstruction, nextInstruction);
+                }
+                case DetachedTranspilerCodeBlock x when currentInstruction.sentinel() == CodeSentinelType.EXIT -> {
+                    // Don't do anything
                 }
                 default -> {
                     System.out.println("Unknown instruction: " + currentInstruction.ref());

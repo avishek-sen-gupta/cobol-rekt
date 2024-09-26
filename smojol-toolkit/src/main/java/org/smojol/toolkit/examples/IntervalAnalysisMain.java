@@ -27,7 +27,7 @@ import java.util.Map;
 public class IntervalAnalysisMain {
     public static void main(String[] args) throws IOException, InterruptedException {
         LoggingConfig.setupLogging();
-        String programName = "flowgraph.cbl";
+        String programName = "simple-nonreducible-perform.cbl";
         Map<String, List<AnalysisTaskResult>> result = new CodeTaskRunner("/Users/asgupta/code/smojol/smojol-test-code",
                 "/Users/asgupta/code/smojol/out/report",
                 ImmutableList.of(new File("/Users/asgupta/code/smojol/smojol-test-code")),

@@ -121,6 +121,7 @@ public class BuildTranspilerModelTask implements AnalysisTask {
                 .registerSubtype(ListIterationTranspilerNode.class, "list_iterate")
                 .registerSubtype(ExitIterationScopeLocationNode.class, "break")
                 .registerSubtype(TranspilerCodeBlock.class, "block")
+                .registerSubtype(DetachedTranspilerCodeBlock.class, "detachedBlock")
                 .registerSubtype(SymbolReferenceNode.class, "symbol_reference")
                 .registerSubtype(LabelledTranspilerCodeBlockNode.class, "labelled_block")
                 .registerSubtype(NestedConditionNode.class, "nested_condition")

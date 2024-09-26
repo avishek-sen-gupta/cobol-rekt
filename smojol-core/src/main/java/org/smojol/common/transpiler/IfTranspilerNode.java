@@ -20,7 +20,7 @@ public class IfTranspilerNode extends TranspilerNode {
     }
 
     public IfTranspilerNode(TranspilerNode condition, TranspilerNode ifThenBlock) {
-        this(condition, ifThenBlock, new TranspilerCodeBlock());
+        this(condition, ifThenBlock, new DetachedTranspilerCodeBlock());
     }
 
     @Override
