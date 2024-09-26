@@ -3,9 +3,12 @@ package org.smojol.common.transpiler;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import org.smojol.common.ast.SemanticCategory;
+import org.smojol.common.format.TextFormat;
 
 import java.util.List;
 import java.util.Map;
+
+import static org.smojol.common.format.TextFormat.truncated;
 
 public class TranspilerCodeBlock extends TranspilerNode {
     public TranspilerCodeBlock(List<TranspilerNode> children) {
@@ -40,5 +43,10 @@ public class TranspilerCodeBlock extends TranspilerNode {
 
     public void add(TranspilerNode node) {
         childTranspilerNodes.add(node);
+    }
+
+    @Override
+    public String shortDescription() {
+        return truncated(description(), 30);
     }
 }

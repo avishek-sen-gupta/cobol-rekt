@@ -3,6 +3,8 @@ package org.smojol.common.transpiler;
 import com.google.common.collect.ImmutableList;
 import org.smojol.common.ast.SemanticCategory;
 
+import java.util.Collection;
+
 public class SetTranspilerNode extends TranspilerNode {
     private final TranspilerNode source;
     private final TranspilerNode destination;
@@ -16,5 +18,10 @@ public class SetTranspilerNode extends TranspilerNode {
     @Override
     public String description() {
         return String.format("set(%s, %s)", destination.description(), source.description());
+    }
+
+    @Override
+    public Collection<TranspilerNode> internalElements() {
+        return ImmutableList.of(source, destination);
     }
 }

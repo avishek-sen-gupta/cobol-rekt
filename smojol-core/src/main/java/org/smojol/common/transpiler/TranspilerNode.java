@@ -58,4 +58,8 @@ public abstract class TranspilerNode implements Identifiable {
     public Collection<TranspilerNode> internalElements() {
         return ImmutableList.of();
     }
+
+    public String shortDescription() {
+        return description();
+    }
 }

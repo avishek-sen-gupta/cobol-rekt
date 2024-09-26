@@ -13,7 +13,7 @@ public record TranspilerInstruction(TranspilerNode ref, CodeSentinelType sentine
 
     @Override
     public String label() {
-        return String.format("[%s] %s", sentinel.name(), ref.description());
+        return String.format("[%s] %s", sentinel.name(), ref.shortDescription());
     }
 
     @Override
