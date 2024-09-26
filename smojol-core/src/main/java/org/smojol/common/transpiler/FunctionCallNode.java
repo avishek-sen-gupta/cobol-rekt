@@ -3,6 +3,7 @@ package org.smojol.common.transpiler;
 import com.google.common.collect.ImmutableList;
 import org.smojol.common.ast.SemanticCategory;
 
+import java.util.Collection;
 import java.util.List;
 
 public class FunctionCallNode extends TranspilerNode {
@@ -18,5 +19,10 @@ public class FunctionCallNode extends TranspilerNode {
     @Override
     public String description() {
         return String.format("%s(%s)", functionName, String.join(", ", arguments.stream().map(TranspilerNode::description).toList()));
+    }
+
+    @Override
+    public Collection<TranspilerNode> internalElements() {
+        return arguments;
     }
 }

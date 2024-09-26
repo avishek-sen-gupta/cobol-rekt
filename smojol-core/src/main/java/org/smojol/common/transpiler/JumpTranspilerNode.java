@@ -4,6 +4,8 @@ import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 import org.smojol.common.ast.SemanticCategory;
 
+import java.util.Collection;
+
 @Getter
 public class JumpTranspilerNode extends TranspilerNode {
     private final LocationNode start;
@@ -22,5 +24,10 @@ public class JumpTranspilerNode extends TranspilerNode {
     @Override
     public String description() {
         return String.format("jump(%s)", start.description());
+    }
+
+    @Override
+    public Collection<TranspilerNode> internalElements() {
+        return ImmutableList.of(start, end);
     }
 }

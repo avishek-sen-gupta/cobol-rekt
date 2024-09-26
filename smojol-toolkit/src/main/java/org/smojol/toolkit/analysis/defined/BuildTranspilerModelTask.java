@@ -3,8 +3,11 @@ package org.smojol.toolkit.analysis.defined;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonWriter;
+import com.mojo.woof.GraphSDK;
+import com.mojo.woof.Neo4JDriverBuilder;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.jgrapht.graph.DefaultEdge;
+import org.neo4j.driver.Record;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.TranspilerInstructionGeneratorVisitor;
 import org.smojol.common.flowchart.MermaidGraph;
@@ -15,6 +18,9 @@ import org.smojol.common.resource.ResourceOperations;
 import org.smojol.common.transpiler.*;
 import org.smojol.common.typeadapter.RuntimeTypeAdapterFactory;
 import org.smojol.common.vm.structure.CobolDataStructure;
+import org.smojol.toolkit.analysis.graph.NamespaceQualifier;
+import org.smojol.toolkit.analysis.graph.NodeSpecBuilder;
+import org.smojol.toolkit.analysis.graph.NodeToWoof;
 import org.smojol.toolkit.analysis.pipeline.config.OutputArtifactConfig;
 import org.smojol.toolkit.intermediate.IntermediateASTNodeBuilder;
 import org.smojol.toolkit.task.*;
@@ -30,13 +36,15 @@ public class BuildTranspilerModelTask implements AnalysisTask {
     private final SmojolSymbolTable symbolTable;
     private final OutputArtifactConfig transpilerModelOutputConfig;
     private final ResourceOperations resourceOperations;
+    private final Neo4JDriverBuilder neo4JDriverBuilder;
 
-    public BuildTranspilerModelTask(ParserRuleContext rawAST, CobolDataStructure dataStructures, SmojolSymbolTable symbolTable, OutputArtifactConfig transpilerModelOutputConfig, ResourceOperations resourceOperations) {
+    public BuildTranspilerModelTask(ParserRuleContext rawAST, CobolDataStructure dataStructures, SmojolSymbolTable symbolTable, OutputArtifactConfig transpilerModelOutputConfig, ResourceOperations resourceOperations, Neo4JDriverBuilder neo4JDriverBuilder) {
         this.rawAST = rawAST;
         this.dataStructures = dataStructures;
         this.symbolTable = symbolTable;
         this.transpilerModelOutputConfig = transpilerModelOutputConfig;
         this.resourceOperations = resourceOperations;
+        this.neo4JDriverBuilder = neo4JDriverBuilder;
     }
 
     @Override
@@ -61,10 +69,31 @@ public class BuildTranspilerModelTask implements AnalysisTask {
             writer.setIndent("  ");
             gson.toJson(model, TranspilerModel.class, writer);
             String draw = mermaid.draw(model.jgraph());
+            injectIntoNeo4J(model.tree());
             return AnalysisTaskResult.OK(CommandLineAnalysisTask.BUILD_TRANSPILER_MODEL, model);
         } catch (IOException e) {
             return AnalysisTaskResult.ERROR(e, CommandLineAnalysisTask.BUILD_TRANSPILER_MODEL);
         }
+    }
+
+    private void injectIntoNeo4J(TranspilerNode current) {
+        GraphSDK graphSDK = new GraphSDK(neo4JDriverBuilder.fromEnv());
+        NodeSpecBuilder specBuilder = new NodeSpecBuilder(new NamespaceQualifier("SOME"));
+        recursivelyInject(current, graphSDK, specBuilder);
+    }
+
+    private Record recursivelyInject(TranspilerNode current, GraphSDK graphSDK, NodeSpecBuilder specBuilder) {
+        System.out.println("CREATING " + current);
+        Record nodeEntry = graphSDK.createNode(NodeToWoof.toWoofNode(current, specBuilder));
+        List<Record> childRecords = current.astChildren().stream().map(c -> recursivelyInject(c, graphSDK, specBuilder)).toList();
+        List<Record> internalRecords = current.internalElements().stream().map(c -> recursivelyInject(c, graphSDK, specBuilder)).toList();
+        for (Record child : childRecords) {
+            graphSDK.connect(nodeEntry, child, "CONTAINS", "TRANSPILER_AST");
+        }
+        for (Record child : internalRecords) {
+            graphSDK.connect(nodeEntry, child, "CONTAINS", "INTERNAL_ELEMENT");
+        }
+        return nodeEntry;
     }
 
     private static Gson initGson() {

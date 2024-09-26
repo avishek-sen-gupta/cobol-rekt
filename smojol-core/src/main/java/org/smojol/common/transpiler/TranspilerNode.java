@@ -54,4 +54,8 @@ public abstract class TranspilerNode implements Identifiable {
     public Collection<TranspilerNode> astChildren() {
         return childTranspilerNodes;
     }
+
+    public Collection<TranspilerNode> internalElements() {
+        return ImmutableList.of();
+    }
 }

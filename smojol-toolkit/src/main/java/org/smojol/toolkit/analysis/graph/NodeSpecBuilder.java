@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.mojo.woof.NodeSpec;
 import org.smojol.common.ast.FlowNodeLike;
 import org.smojol.common.pseudocode.CodeSentinelType;
+import org.smojol.common.transpiler.TranspilerNode;
 import org.smojol.toolkit.analysis.graph.graphml.TypedCodeVertex;
 import org.smojol.toolkit.analysis.graph.graphml.TypedDataStructureVertex;
 import org.smojol.toolkit.analysis.graph.graphml.TypedGraphEdge;
@@ -148,6 +149,20 @@ public class NodeSpecBuilder {
                         TYPE, program.getCallTarget().getProgramReferenceType().name(),
                         ENTITY_TYPE, PROGRAM_NODE,
                         ENTITY_CATEGORIES, ImmutableList.of(PROGRAM.name()),
+                        NAMESPACE, namespaceQualifier.getNamespace()
+                ));
+    }
+
+    public NodeSpec newTranspilerNode(TranspilerNode node) {
+        return new NodeSpec(ImmutableList.of("TRANSPILER_NODE"),
+                Map.of(ID, idProvider.next(),
+                        INTERNAL_ID, node.id(),
+                        NAME, node.label(),
+                        TEXT, node.description(),
+                        TYPE, "TRANSPILER_NODE",
+                        ENTITY_TYPE, "TRANSPILER_NODE",
+                        ENTITY_CATEGORIES, node.getCategories().stream().map(Enum::name).toList(),
+                        CODE_SENTINEL_TYPE, "BODY",
                         NAMESPACE, namespaceQualifier.getNamespace()
                 ));
     }

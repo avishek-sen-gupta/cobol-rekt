@@ -3,6 +3,7 @@ package org.smojol.common.transpiler;
 import com.google.common.collect.ImmutableList;
 import org.smojol.common.ast.SemanticCategory;
 
+import java.util.Collection;
 import java.util.List;
 
 public class PrintTranspilerNode extends TranspilerNode {
@@ -16,5 +17,10 @@ public class PrintTranspilerNode extends TranspilerNode {
     @Override
     public String description() {
         return String.format("print(%s)", String.join(", ", operands.stream().map(TranspilerNode::description).toList()));
+    }
+
+    @Override
+    public Collection<TranspilerNode> internalElements() {
+        return operands;
     }
 }

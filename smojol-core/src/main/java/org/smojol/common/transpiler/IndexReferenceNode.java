@@ -3,6 +3,8 @@ package org.smojol.common.transpiler;
 import com.google.common.collect.ImmutableList;
 import org.smojol.common.ast.SemanticCategory;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class IndexReferenceNode extends TranspilerNode {
@@ -18,5 +20,13 @@ public class IndexReferenceNode extends TranspilerNode {
     @Override
     public String description() {
         return String.format("index(%s, %s)", root.description(), String.join(", ", indexes.stream().map(TranspilerNode::description).toList()));
+    }
+
+    @Override
+    public Collection<TranspilerNode> internalElements() {
+        List<TranspilerNode> internals = new ArrayList<>();
+        internals.add(root);
+        internals.addAll(indexes);
+        return internals;
     }
 }

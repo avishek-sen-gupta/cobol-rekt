@@ -68,4 +68,9 @@ public final class TranspilerLoop extends TranspilerNode {
     public Collection<TranspilerNode> astChildren() {
         return ImmutableList.of(body);
     }
+
+    @Override
+    public Collection<TranspilerNode> internalElements() {
+        return ImmutableList.of(loopVariable, initialValue, maxValue, terminateCondition, loopUpdate, body);
+    }
 }

@@ -7,6 +7,7 @@ import org.neo4j.driver.Record;
 import org.smojol.common.ast.FlowNodeLike;
 import org.smojol.common.program.CobolProgram;
 import org.smojol.common.ast.CommentBlock;
+import org.smojol.common.transpiler.TranspilerNode;
 import org.smojol.common.vm.structure.CobolDataStructure;
 
 public class NodeToWoof {
@@ -37,5 +38,9 @@ public class NodeToWoof {
 
     public static WoofNode programToWoof(CobolProgram cobolProgram, NodeSpecBuilder qualifier) {
         return new WoofNode(qualifier.program(cobolProgram));
+    }
+
+    public static WoofNode toWoofNode(TranspilerNode node, NodeSpecBuilder qualifier) {
+        return new WoofNode(qualifier.newTranspilerNode(node));
     }
 }

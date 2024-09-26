@@ -5,6 +5,8 @@ import org.smojol.common.ast.SemanticCategory;
 import org.smojol.common.vm.expression.ComparisonOperator;
 import org.smojol.common.vm.expression.RelationalOperation;
 
+import java.util.Collection;
+
 public abstract class TranspilerComparisonOperator extends TranspilerNode {
     protected final TranspilerNode lhs;
     protected final TranspilerNode rhs;
@@ -24,5 +26,10 @@ public abstract class TranspilerComparisonOperator extends TranspilerNode {
         else if (comparison == RelationalOperation.LESS_THAN_OR_EQUAL) return new LessThanOrEqualToNode(lhs, rhs);
 
         throw new UnsupportedOperationException("This is not a valid comparison operator: " + comparison);
+    }
+
+    @Override
+    public Collection<TranspilerNode> internalElements() {
+        return ImmutableList.of(lhs, rhs);
     }
 }
