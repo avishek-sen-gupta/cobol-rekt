@@ -7,7 +7,10 @@ import org.smojol.common.transpiler.TranspilerInstruction;
 import org.smojol.common.transpiler.TranspilerModel;
 import org.smojol.toolkit.task.AnalysisTaskResult;
 
+import java.util.logging.Logger;
+
 public class IntervalAnalysisTask {
+    private static final java.util.logging.Logger LOGGER = Logger.getLogger(IntervalAnalysisTask.class.getName());
     private final TranspilerModel model;
 
     public IntervalAnalysisTask(TranspilerModel model) {
@@ -19,8 +22,8 @@ public class IntervalAnalysisTask {
         FlowgraphTransformer<TranspilerInstruction, DefaultEdge> transformer = new FlowgraphTransformer<>(model.jgraph(), (a, b) -> new DefaultEdge());
         FlowgraphReductionResult<TranspilerInstruction, DefaultEdge> reductions = transformer.reduce();
 
-        System.out.println(reductions.evolutions().getLast());
-        System.out.println(reductions.isReducible());
+        LOGGER.info(reductions.evolutions().getLast());
+        LOGGER.info("" + reductions.isReducible());
         return AnalysisTaskResult.OK("INTERVAL_ANALYSIS", reductions);
     }
 }

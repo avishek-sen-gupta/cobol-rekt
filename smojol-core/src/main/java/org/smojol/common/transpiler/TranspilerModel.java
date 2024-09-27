@@ -6,12 +6,14 @@ import org.smojol.common.ast.FlowNodeType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public record TranspilerModel(TranspilerNode tree, List<TranspilerInstruction> instructions,
                               List<TranspilerInstructionEdge> instructionEdges, Graph<TranspilerInstruction, DefaultEdge> jgraph) {
+    private static final java.util.logging.Logger LOGGER = Logger.getLogger(TranspilerModel.class.getName());
     public void pruneUnreachables() {
         do {
-            System.out.println("Pruning...");
+            LOGGER.info("Pruning...");
         } while (pruneOneRound(jgraph));
     }
 

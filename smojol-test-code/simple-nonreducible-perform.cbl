@@ -47,13 +47,16 @@
        SECTION-A SECTION.
         P2.
             DISPLAY "IN P2, ABOUT TO PERFORM P3...".
-            PERFORM P3.
-            DISPLAY "IN P2, ABOUT TO JUMP TO P4...".
-            GO TO P4.
+            PERFORM P4.
+            DISPLAY "IN P2, ABOUT TO JUMP TO P5...".
+            IF V1
+                GO TO P5.
        SECTION-B SECTION.
         P3.
            DISPLAY "EXECUTING P3...".
         P4.
+           DISPLAY "EXECUTING P4...".
+        P5.
            DISPLAY "EXITING..."
            STOP RUN.
 

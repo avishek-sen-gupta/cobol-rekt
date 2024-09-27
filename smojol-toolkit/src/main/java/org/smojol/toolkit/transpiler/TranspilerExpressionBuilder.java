@@ -5,7 +5,10 @@ import org.smojol.common.transpiler.*;
 import org.smojol.common.vm.expression.*;
 import org.smojol.common.vm.structure.CobolDataStructure;
 
+import java.util.logging.Logger;
+
 public class TranspilerExpressionBuilder {
+    private static final java.util.logging.Logger LOGGER = Logger.getLogger(TranspilerExpressionBuilder.class.getName());
     private final CobolDataStructure dataStructures;
 
     public TranspilerExpressionBuilder(CobolDataStructure dataStructures) {
@@ -45,7 +48,7 @@ public class TranspilerExpressionBuilder {
     }
 
     private TranspilerNode explicitCondition(CobolExpression conditionalConstant, CobolDataStructure root) {
-        System.out.println("Resolving conditional constant: " + conditionalConstant.description());
+        LOGGER.finest("Resolving conditional constant: " + conditionalConstant.description());
         if (conditionalConstant instanceof IdmsExpression) return new FunctionCallNode("idms_placeholder_function", ImmutableList.of(new SymbolReferenceNode(conditionalConstant.description())));
         CobolDataStructure range = root.reference(((VariableExpression) conditionalConstant).getName());
         CobolDataStructure actualVariable = range.parent();

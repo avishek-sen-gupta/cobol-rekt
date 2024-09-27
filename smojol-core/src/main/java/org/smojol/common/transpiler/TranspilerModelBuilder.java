@@ -13,8 +13,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.logging.Logger;
 
 public class TranspilerModelBuilder {
+    private static final java.util.logging.Logger LOGGER = Logger.getLogger(TranspilerModelBuilder.class.getName());
     private final List<TranspilerInstruction> instructions;
     private final TranspilerNode transpilerTree;
     private final Map<TranspilerNode, Triple<Integer, Integer, Integer>> transpilerNodeMap;
@@ -80,7 +82,7 @@ public class TranspilerModelBuilder {
                     // Don't do anything
                 }
                 default -> {
-                    System.out.println("Unknown instruction: " + currentInstruction.ref());
+                    LOGGER.finer("Unknown instruction: " + currentInstruction.ref());
                     addEdge(currentInstruction, nextInstruction);
                 }
             }
