@@ -3,7 +3,6 @@ package org.smojol.common.transpiler;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import org.smojol.common.ast.SemanticCategory;
-import org.smojol.common.format.TextFormat;
 
 import java.util.List;
 import java.util.Map;

@@ -54,9 +54,11 @@ public class TranspilerModelBuilder {
                     addEdge(ifElseExit, currentExit);
                 }
                 case JumpTranspilerNode j when currentInstruction.sentinel() == CodeSentinelType.BODY -> {
-                    TranspilerInstruction forwardTarget = switch(j.getStart()) {
-                        case ExitIterationScopeLocationNode n -> exit(resolveNode(j.getStart(), instructions, i), transpilerNodeMap, instructions);
-                        case ProgramTerminalLocationNode n -> exit(resolveNode(j.getStart(), instructions, i), transpilerNodeMap, instructions);
+                    TranspilerInstruction forwardTarget = switch (j.getStart()) {
+                        case ExitIterationScopeLocationNode n ->
+                                exit(resolveNode(j.getStart(), instructions, i), transpilerNodeMap, instructions);
+                        case ProgramTerminalLocationNode n ->
+                                exit(resolveNode(j.getStart(), instructions, i), transpilerNodeMap, instructions);
                         default -> entry(resolveNode(j.getStart(), instructions, i), transpilerNodeMap, instructions);
                     };
 //                    TranspilerInstruction forwardTarget = j.getStart() instanceof ExitIterationScopeLocationNode
