@@ -7,7 +7,7 @@ import org.smojol.common.ast.SemanticCategory;
 import java.util.List;
 import java.util.Map;
 
-import static org.smojol.common.format.TextFormat.truncated;
+import static org.apache.commons.lang3.StringUtils.truncate;
 
 public class TranspilerCodeBlock extends TranspilerNode {
     public TranspilerCodeBlock(List<TranspilerNode> children) {
@@ -46,6 +46,6 @@ public class TranspilerCodeBlock extends TranspilerNode {
 
     @Override
     public String shortDescription() {
-        return truncated(description(), 30);
+        return truncate(description(), 30);
     }
 }

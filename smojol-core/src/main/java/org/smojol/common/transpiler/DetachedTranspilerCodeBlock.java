@@ -4,7 +4,8 @@ import com.google.common.collect.ImmutableList;
 
 import java.util.List;
 
-import static org.smojol.common.format.TextFormat.truncated;
+import static org.apache.commons.lang3.StringUtils.truncate;
+
 
 public class DetachedTranspilerCodeBlock extends TranspilerCodeBlock {
     public DetachedTranspilerCodeBlock(List<TranspilerNode> children) {
@@ -39,6 +40,6 @@ public class DetachedTranspilerCodeBlock extends TranspilerCodeBlock {
 
     @Override
     public String shortDescription() {
-        return truncated(description(), 30);
+        return truncate(description(), 30);
     }
 }
