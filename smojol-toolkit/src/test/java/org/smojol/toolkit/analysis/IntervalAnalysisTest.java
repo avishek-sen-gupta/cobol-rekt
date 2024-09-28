@@ -7,7 +7,6 @@ import org.smojol.common.id.Identifiable;
 import org.smojol.common.transpiler.FlowgraphReductionResult;
 import org.smojol.common.transpiler.FlowgraphTransformer;
 
-import java.util.List;
 import java.util.function.BiFunction;
 
 public class IntervalAnalysisTest {
