@@ -2,6 +2,7 @@ package org.smojol.toolkit.ast;
 
 import com.google.common.collect.ImmutableList;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.ast.*;
 import org.smojol.common.vm.stack.StackFrames;
 
