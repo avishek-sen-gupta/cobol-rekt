@@ -8,15 +8,18 @@ import org.junit.jupiter.api.Test;
 import org.smojol.common.id.Identifiable;
 import org.smojol.common.transpiler.FlowgraphReductionResult;
 import org.smojol.common.transpiler.FlowgraphTransformer;
+import org.smojol.common.transpiler.TranspilerInstruction;
+import org.smojol.toolkit.analysis.defined.IntervalAnalysisTask;
 import org.smojol.toolkit.analysis.defined.IrreducibleRegionsTask;
 import org.smojol.toolkit.task.AnalysisTaskResult;
 import org.smojol.toolkit.task.AnalysisTaskResultOK;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiFunction;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class IntervalAnalysisTest {
     @Test
@@ -50,6 +53,34 @@ public class IntervalAnalysisTest {
         AnalysisTaskResult result = new IrreducibleRegionsTask<TestNode, DefaultEdge>().run(nonReducibleGraph);
         List<Pair<Graph<TestNode, DefaultEdge>, Set<DefaultEdge>>> badSCCs = ((AnalysisTaskResultOK) result).getDetail();
         assertEquals(1, badSCCs.size());
+    }
+
+    @Test
+    public void testNonReducibleFlowgraphWithUsingIntervalNalaysisAndStronglyConnectedComponents() {
+        Graph<TestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
+        TestNode node1 = node("1");
+        TestNode node2 = node("2");
+        TestNode node3 = node("3");
+        TestNode node4 = node("4");
+        TestNode node5 = node("5");
+
+        graph.addVertex(node1);
+        graph.addVertex(node2);
+        graph.addVertex(node3);
+        graph.addVertex(node4);
+        graph.addVertex(node5);
+        graph.addEdge(node1, node2);
+        graph.addEdge(node2, node3);
+        graph.addEdge(node3, node4);
+        graph.addEdge(node4, node1);
+        graph.addEdge(node1, node5);
+        graph.addEdge(node5, node2);
+        AnalysisTaskResult result = new IrreducibleRegionsTask<TestNode, DefaultEdge>().run(graph);
+        List<Pair<Graph<TestNode, DefaultEdge>, Set<DefaultEdge>>> badSCCs = ((AnalysisTaskResultOK) result).getDetail();
+        assertEquals(0, badSCCs.size());
+        AnalysisTaskResult secondReducibleTest = new IntervalAnalysisTask<>(graph, n -> n.equals(node1), (a, b) -> new DefaultEdge()).run();
+        FlowgraphReductionResult<TranspilerInstruction, DefaultEdge> reductions = ((AnalysisTaskResultOK) secondReducibleTest).getDetail();
+        assertTrue(reductions.isReducible());
     }
 
     private static Graph<TestNode, DefaultEdge> nonReducibleGraph2() {
@@ -94,5 +125,17 @@ record TestNode(String id) implements Identifiable {
     @Override
     public String label() {
         return id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TestNode testNode)) return false;
+        return Objects.equals(id, testNode.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }

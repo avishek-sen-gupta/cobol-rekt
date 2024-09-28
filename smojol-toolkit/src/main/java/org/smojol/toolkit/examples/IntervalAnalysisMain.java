@@ -37,10 +37,10 @@ public class IntervalAnalysisMain {
         System.out.println("DONE");
         List<AnalysisTaskResult> results = result.get(programName);
         TranspilerModel model = ((AnalysisTaskResultOK) results.getFirst()).getDetail();
-//        model.pruneUnreachables();
         System.out.println("Number of nodes = " + model.jgraph().vertexSet().size());
 
-        AnalysisTaskResultOK intervalAnalysisResult = (AnalysisTaskResultOK) new IntervalAnalysisTask(model).run();
+        model.pruneUnreachables();
+        AnalysisTaskResultOK intervalAnalysisResult = (AnalysisTaskResultOK) new IntervalAnalysisTask<>(model.jgraph(), IntervalAnalysisTask.IS_ROOT, IntervalAnalysisTask.NEW_DEFAULT_EDGE).run();
         FlowgraphReductionResult<TranspilerInstruction, DefaultEdge> reductionResult = intervalAnalysisResult.getDetail();
     }
 }
