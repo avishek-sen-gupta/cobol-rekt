@@ -6,7 +6,6 @@ import org.jgrapht.Graph;
 import org.jgrapht.alg.connectivity.KosarajuStrongConnectivityInspector;
 import org.jgrapht.alg.interfaces.StrongConnectivityAlgorithm;
 import org.smojol.common.id.Identifiable;
-import org.smojol.common.transpiler.TranspilerModel;
 import org.smojol.toolkit.task.AnalysisTaskResult;
 
 import java.util.List;
@@ -18,11 +17,6 @@ import static org.apache.commons.lang3.StringUtils.truncate;
 
 public class IrreducibleRegionsTask<V extends Identifiable, E> {
     private static final Logger LOGGER = Logger.getLogger(IrreducibleRegionsTask.class.getName());
-    private final TranspilerModel model;
-
-    public IrreducibleRegionsTask(TranspilerModel model) {
-        this.model = model;
-    }
 
 //    public AnalysisTaskResult run() {
 //        model.pruneUnreachables();
@@ -44,7 +38,6 @@ public class IrreducibleRegionsTask<V extends Identifiable, E> {
 //    }
 
     public AnalysisTaskResult run(Graph<V, E> originalGraph) {
-        model.pruneUnreachables();
         StrongConnectivityAlgorithm<V, E> scAlg = new KosarajuStrongConnectivityInspector<>(originalGraph);
         List<Graph<V, E>> stronglyConnectedComponents = scAlg.getStronglyConnectedComponents();
 
@@ -58,7 +51,7 @@ public class IrreducibleRegionsTask<V extends Identifiable, E> {
         System.out.println("Number of improper SCCs = " + sccMultipleEdgePairs.size());
 
         sccMultipleEdgePairs.forEach(scc -> System.out.printf("SCC [%s]%n----------------------%nEntries are: %s%n======================%n", String.join(",", edgeDescriptions2(scc.getLeft().edgeSet(), originalGraph)), nodeDescriptions2(scc.getRight().stream().map(originalGraph::getEdgeSource).collect(Collectors.toUnmodifiableSet()))));
-        return AnalysisTaskResult.OK("INTERVAL_ANALYSIS", sccMultipleEdgePairs);
+        return AnalysisTaskResult.OK("IRREDUCIBLE_REGIONS_TASK", sccMultipleEdgePairs);
     }
 
 //    private static List<String> nodeDescriptions(Set<TranspilerInstruction> vertices) {
