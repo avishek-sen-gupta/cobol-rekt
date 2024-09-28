@@ -1,6 +1,7 @@
 package org.smojol.toolkit.analysis.defined;
 
 import org.jgrapht.graph.DefaultEdge;
+import org.smojol.common.ast.FlowNodeType;
 import org.smojol.common.transpiler.FlowgraphReductionResult;
 import org.smojol.common.transpiler.FlowgraphTransformer;
 import org.smojol.common.transpiler.TranspilerInstruction;
@@ -19,7 +20,8 @@ public class IntervalAnalysisTask {
 
     public AnalysisTaskResult run() {
         model.pruneUnreachables();
-        FlowgraphTransformer<TranspilerInstruction, DefaultEdge> transformer = new FlowgraphTransformer<>(model.jgraph(), (a, b) -> new DefaultEdge());
+        FlowgraphTransformer<TranspilerInstruction, DefaultEdge> transformer = new FlowgraphTransformer<>(model.jgraph(), (a, b) -> new DefaultEdge(),
+                instr -> FlowNodeType.PROCEDURE_DIVISION_BODY.equals(instr.ref().getProperty("type")));
         FlowgraphReductionResult<TranspilerInstruction, DefaultEdge> reductions = transformer.reduce();
 
         LOGGER.info(reductions.evolutions().getLast());

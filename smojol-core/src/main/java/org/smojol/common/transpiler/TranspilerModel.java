@@ -22,7 +22,7 @@ public record TranspilerModel(TranspilerNode tree, List<TranspilerInstruction> i
         List<TranspilerInstruction> allNodes = new ArrayList<>(jgraph.vertexSet());
         for (TranspilerInstruction node : allNodes) {
             if (FlowNodeType.PROCEDURE_DIVISION_BODY.equals(node.ref().getProperty("type"))
-                    || jgraph.incomingEdgesOf(node).stream().distinct().count() > 0) continue;
+                    || jgraph.incomingEdgesOf(node).stream().distinct().findAny().isPresent()) continue;
             jgraph.removeVertex(node);
             modified = true;
         }

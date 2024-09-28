@@ -14,7 +14,7 @@ public class IntervalAnalysisTest {
     public void canMergeNodes() {
         Graph<TestNode, String> graph = new DefaultDirectedGraph<>(String.class);
         BiFunction<TestNode, TestNode, String> buildEdge = (v1, v2) -> String.format("(%s, %s)", v1, v2);
-        FlowgraphTransformer<TestNode, String> transformer = new FlowgraphTransformer<>(graph, buildEdge);
+        FlowgraphTransformer<TestNode, String> transformer = new FlowgraphTransformer<>(graph, buildEdge, v -> v.label().equals("1"));
         transformer.addVertex(node("1"));
         transformer.addVertex(node("2"));
         transformer.addVertex(node("3"));
