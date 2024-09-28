@@ -5,7 +5,9 @@ import org.smojol.common.flowchart.MermaidGraph;
 import org.smojol.common.id.Identifiable;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.logging.Logger;
@@ -34,8 +36,9 @@ public class FlowgraphTransformer<V extends Identifiable, E> {
     public void applyT2(V node, List<V> affectedNodes) {
         List<V> incomingVertices = incomingVertices(node);
         if (isRoot.apply(node)) return;
-        if (incomingVertices.stream().distinct().findAny().isEmpty()) throw new RuntimeException("This cannot happen!");
-        if (incomingVertices.stream().distinct().count() != 1) return;
+        Set<V> incomingVertexSet = new HashSet<>(incomingVertices);
+        if (incomingVertexSet.isEmpty()) throw new RuntimeException("This cannot happen!");
+        if (incomingVertexSet.size() != 1) return;
         merge(incomingVertices.getFirst(), node);
         affectedNodes.add(node);
 //        evolutions.add(new MermaidGraph<V, E>().draw(graph));

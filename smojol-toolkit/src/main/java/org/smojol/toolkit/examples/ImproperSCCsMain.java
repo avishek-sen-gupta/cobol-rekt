@@ -41,7 +41,7 @@ public class ImproperSCCsMain {
         TranspilerModel model = ((AnalysisTaskResultOK) results.getFirst()).getDetail();
         System.out.println("Number of nodes = " + model.jgraph().vertexSet().size());
 
-        AnalysisTaskResult irreducibleRegionsResult = new IrreducibleRegionsTask(model).run();
+        AnalysisTaskResult irreducibleRegionsResult = new IrreducibleRegionsTask<TranspilerInstruction, DefaultEdge>(model).run(model.jgraph());
         List<Pair<Graph<TranspilerInstruction, DefaultEdge>, Set<DefaultEdge>>> irreducibleRegions = ((AnalysisTaskResultOK) irreducibleRegionsResult).getDetail();
     }
 }

@@ -48,4 +48,9 @@ public record TranspilerInstruction(TranspilerNode ref, CodeSentinelType sentine
     public boolean isCondition() {
         return ref instanceof IfTranspilerNode;
     }
+
+    @Override
+    public String toString() {
+        return String.format("[%s] (%s) %s", sentinel.name(), id, ref.description());
+    }
 }
