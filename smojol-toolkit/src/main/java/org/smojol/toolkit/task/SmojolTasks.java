@@ -181,7 +181,7 @@ public class SmojolTasks {
 
     public SmojolTasks build() throws IOException {
         navigator = pipeline.parse();
-        rawAST = (ParserRuleContext) navigator.procedureBodyRoot();
+        rawAST = navigator.procedureDivisionBody(navigator.getRoot());
         dataStructures = pipeline.getDataStructures();
         FlowchartBuilder flowcharter = pipeline.flowcharter();
         symbolTable = new SmojolSymbolTable(dataStructures, new SymbolReferenceBuilder(idProvider));

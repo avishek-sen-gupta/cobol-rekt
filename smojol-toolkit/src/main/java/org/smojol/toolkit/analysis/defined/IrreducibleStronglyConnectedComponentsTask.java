@@ -15,8 +15,8 @@ import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.StringUtils.truncate;
 
-public class IrreducibleRegionsTask<V extends Identifiable, E> {
-    private static final Logger LOGGER = Logger.getLogger(IrreducibleRegionsTask.class.getName());
+public class IrreducibleStronglyConnectedComponentsTask<V extends Identifiable, E> {
+    private static final Logger LOGGER = Logger.getLogger(IrreducibleStronglyConnectedComponentsTask.class.getName());
 
     public AnalysisTaskResult run(Graph<V, E> graph) {
         StrongConnectivityAlgorithm<V, E> scAlg = new KosarajuStrongConnectivityInspector<>(graph);
@@ -28,40 +28,17 @@ public class IrreducibleRegionsTask<V extends Identifiable, E> {
             return Pair.of(scc, externalEdgesIntoSCC);
         }).toList();
 
+        System.out.println("Number of SCCs = " + sccIncomingEdgePairs.size());
+        for (Pair<Graph<V, E>, Set<E>> sccIncomingEdgePair : sccIncomingEdgePairs) {
+            System.out.println("SCC has " + sccIncomingEdgePair.getLeft().vertexSet().size() + " vertices");
+        }
+
         List<Pair<Graph<V, E>, Set<E>>> sccMultipleEdgePairs = sccIncomingEdgePairs.stream().filter(p -> p.getRight().stream().map(graph::getEdgeTarget).collect(Collectors.toUnmodifiableSet()).size() > 1).toList();
         System.out.println("Number of improper SCCs = " + sccMultipleEdgePairs.size());
 
         sccMultipleEdgePairs.forEach(scc -> System.out.printf("SCC [%s]%n----------------------%nEntries are: %s%n======================%n", String.join(",", edgeDescriptions(scc.getLeft().edgeSet(), graph)), nodeDescriptions(scc.getRight().stream().map(graph::getEdgeSource).collect(Collectors.toUnmodifiableSet()))));
 
-        boolean reducible = isReducible(stronglyConnectedComponents, graph);
-        System.out.println("Reducible = " + reducible);
-
         return AnalysisTaskResult.OK("IRREDUCIBLE_REGIONS_TASK", sccMultipleEdgePairs);
-    }
-
-    private boolean isReducible(List<Graph<V, E>> stronglyConnectedComponents, Graph<V, E> graph) {
-        for (Graph<V, E> scc : stronglyConnectedComponents) {
-            if (hasMultipleEntryPoints(graph, scc)) {
-                return false;  // Graph is irreducible if any SCC has multiple entry points
-            }
-        }
-        return true;
-    }
-
-    private boolean hasMultipleEntryPoints(Graph<V, E> graph, Graph<V, E> scc) {
-        int entryPointCount = 0;
-        for (V node : scc.vertexSet()) {
-            Set<E> incomingEdges = graph.incomingEdgesOf(node);
-            for (E edge : incomingEdges) {
-                if (!scc.containsEdge(edge)) {
-                    entryPointCount++;
-                    if (entryPointCount > 1) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
     }
 
     private List<String> nodeDescriptions(Set<V> vertices) {

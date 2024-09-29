@@ -32,7 +32,7 @@ public class CobolDataStructureBuilder {
 
     public CobolDataStructure build() {
         zerothStructure = new Format1DataStructure(0, unresolvedReferenceStrategy);
-        ParseTree dataDivision = navigator.dataDivisionBodyRoot();
+        ParseTree dataDivision = navigator.dataDivisionBody(navigator.getRoot());
         CobolParser.DataDivisionContext dataDivisionBody = (CobolParser.DataDivisionContext) dataDivision;
         extractFromWorkingStorage(dataDivisionBody);
         extractFromLinkage(dataDivisionBody);

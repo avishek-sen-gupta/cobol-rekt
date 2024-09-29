@@ -2,6 +2,7 @@ package org.smojol.toolkit.ast;
 
 import com.google.common.collect.ImmutableList;
 import lombok.Getter;
+import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.ast.*;
@@ -43,8 +44,8 @@ public class GoToFlowNode extends CobolFlowNode implements InternalControlFlowNo
     public void buildControlFlow() {
         CobolParser.GoToStatementContext goToStatement = new SyntaxIdentity<CobolParser.GoToStatementContext>(getExecutionContext()).get();
         List<CobolParser.ProcedureNameContext> procedureNames = goToStatement.procedureName();
-        logger.finer("Found a GO TO, routing to " + procedureNames);
-        destinationNodes = procedureNames.stream().map(p -> nodeService.sectionOrParaWithName(p.paragraphName().getText())).collect(Collectors.toList());
+        logger.finer("Found a GO TO, routing to " + String.join(",", procedureNames.stream().map(RuleContext::getText).toList()));
+        destinationNodes = procedureNames.stream().map(p -> nodeService.sectionOrParaWithName(p.paragraphName().getText())).toList();
         if (dependsUponFactor()) dependingFactor = new CobolExpressionBuilder().identifier(goToStatement.generalIdentifier());
     }
 

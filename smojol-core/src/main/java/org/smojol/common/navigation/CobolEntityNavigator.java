@@ -1,11 +1,9 @@
 package org.smojol.common.navigation;
 
 import lombok.Getter;
-import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.ast.NodeText;
-import org.smojol.common.ast.SyntaxIdentity;
 import org.smojol.common.idms.IdmsContainerNode;
 
 import java.util.ArrayList;
@@ -17,16 +15,12 @@ import java.util.function.Function;
 import java.util.regex.Pattern;
 
 public class CobolEntityNavigator {
-    private final CobolParser.ProcedureDivisionBodyContext procedureBodyRoot;
-    @Getter private final ParserRuleContext fullProgramTree;
-    private final CobolParser.DataDivisionContext dataDivisionBody;
+    @Getter private final ParseTree root;
     private List<ParseTree> dialectNodes;
     private Map<String, String> symbolText;
 
-    public CobolEntityNavigator(ParserRuleContext fullProgramTree) {
-        this.fullProgramTree = fullProgramTree;
-        this.procedureBodyRoot = procedureDivisionBody(fullProgramTree);
-        this.dataDivisionBody = dataDivisionBody(fullProgramTree);
+    public CobolEntityNavigator(ParseTree root) {
+        this.root = root;
     }
 
     public CobolParser.ProcedureDivisionBodyContext procedureDivisionBody(ParseTree tree) {
@@ -38,15 +32,7 @@ public class CobolEntityNavigator {
     }
 
     public ParseTree target(String procedureName) {
-        return findTargetRecursive(procedureName, procedureBodyRoot);
-    }
-
-    public ParseTree procedureBodyRoot() {
-        return procedureBodyRoot;
-    }
-
-    public ParseTree dataDivisionBodyRoot() {
-        return dataDivisionBody;
+        return findTargetRecursive(procedureName, root);
     }
 
     public ParseTree findByCondition(ParseTree searchRoot, ParseTreeSearchCondition c, int maxLevel) {
@@ -64,20 +50,11 @@ public class CobolEntityNavigator {
     }
 
     public ParseTree findByCondition(ParseTreeSearchCondition c) {
-        return findByCondition(fullProgramTree, c);
-    }
-
-    public List<ParseTree> statementsContaining(String symbol, ParseTree scope) {
-        List<ParseTree> trees = new ArrayList<>();
-        findAllByConditionRecursive(scope, trees, n ->
-//                !StatementIdentity.isOneOfTypes(n, ImmutableList.of(CobolParser.ParagraphContext.class, CobolParser.ProcedureSectionContext.class)) &&
-                SyntaxIdentity.isOfType(n, CobolParser.StatementContext.class)
-                        && n.getText().contains(symbol), 1, -1);
-        return trees;
+        return findByCondition(root, c);
     }
 
     public List<ParseTree> findAllByCondition(ParseTreeSearchCondition c) {
-        return this.findAllByCondition(c, fullProgramTree);
+        return this.findAllByCondition(c, root);
     }
 
     public List<ParseTree> findAllByCondition(ParseTreeSearchCondition c, ParseTree scope) {
@@ -91,14 +68,13 @@ public class CobolEntityNavigator {
     }
 
     public void buildDialectNodeRepository() {
-        dialectNodes = findAllByCondition(t -> t.getClass() == CobolParser.DialectNodeFillerContext.class, fullProgramTree);
+        dialectNodes = findAllByCondition(t -> t.getClass() == CobolParser.DialectNodeFillerContext.class, root);
         Pattern dialectMarkerPattern = Pattern.compile("_DIALECT_ ([0-9]+)", Pattern.MULTILINE);
 
         symbolText = new HashMap<>();
         dialectNodes.forEach(n -> {
             String markerID = "_DIALECT_ " + n.getChild(1).getText();
             ParseTree idmsContainer = findByCondition(n, c -> c.getClass() == IdmsContainerNode.class, 1);
-            Function<String, String> passthrough;
             String text = NodeText.originalText(idmsContainer.getChild(0), NodeText::PASSTHROUGH);
             symbolText.put(markerID, text);
         });
@@ -167,7 +143,7 @@ public class CobolEntityNavigator {
     }
 
     public ParseTree findNarrowestByCondition(ParseTreeSearchCondition c) {
-        return findNarrowestByConditionRecursive(fullProgramTree, c);
+        return findNarrowestByConditionRecursive(root, c);
     }
 
     private ParseTree findNarrowestByConditionRecursive(ParseTree currentNode, ParseTreeSearchCondition c) {

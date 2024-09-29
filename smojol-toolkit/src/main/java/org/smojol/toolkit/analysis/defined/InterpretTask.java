@@ -9,7 +9,6 @@ import org.smojol.common.flowchart.FlowchartBuilder;
 import org.smojol.common.id.UUIDProvider;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.navigation.EntityNavigatorBuilder;
-import org.smojol.common.pseudocode.*;
 import org.smojol.common.resource.ResourceOperations;
 import org.smojol.common.vm.interpreter.Breakpointer;
 import org.smojol.common.vm.interpreter.ConditionResolver;
@@ -24,7 +23,6 @@ import org.smojol.toolkit.ast.FlowchartBuilderImpl;
 import org.smojol.toolkit.interpreter.interpreter.CobolBreakpointer;
 import org.smojol.toolkit.interpreter.interpreter.CobolInterpreterFactory;
 import org.smojol.toolkit.interpreter.interpreter.RunLogger;
-import org.smojol.common.ast.FlowNodeASTTraversal;
 import org.smojol.toolkit.interpreter.structure.DefaultFormat1DataStructureBuilder;
 import org.smojol.toolkit.task.*;
 
@@ -54,7 +52,7 @@ public class InterpretTask implements AnalysisTask {
             CobolEntityNavigator navigator = pipeline.parse();
             FlowchartBuilder flowcharter = pipeline.flowcharter();
             CobolDataStructure dataStructures = pipeline.getDataStructures();
-            ParseTree procedure = navigator.procedureBodyRoot();
+            ParseTree procedure = navigator.procedureDivisionBody(navigator.getRoot());
             flowcharter.buildFlowAST(procedure).buildControlFlow().buildOverlay();
             FlowNode root = flowcharter.getRoot();
 //            new FlowNodeASTTraversal<FlowNode>().accept(root, new FlowNodeSymbolExtractorVisitor(root, dataStructures, new SmojolSymbolTable(dataStructures, new SymbolReferenceBuilder(new UUIDProvider()))));

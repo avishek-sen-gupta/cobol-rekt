@@ -27,7 +27,7 @@ public class DrawFlowchartTask implements AnalysisTask {
 
     @Override
     public AnalysisTaskResult run() {
-        ParseTree root = navigator.procedureBodyRoot();
+        ParseTree root = navigator.procedureDivisionBody(navigator.getRoot());
         try {
             flowchartOutputWriter.createOutputDirs();
             flowchartOutputWriter.draw(navigator, root, sourceConfig, flowcharter);

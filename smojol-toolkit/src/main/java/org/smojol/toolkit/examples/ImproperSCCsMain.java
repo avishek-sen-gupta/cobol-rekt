@@ -12,7 +12,7 @@ import org.smojol.common.resource.LocalFilesystemOperations;
 import org.smojol.common.transpiler.TranspilerInstruction;
 import org.smojol.common.transpiler.TranspilerModel;
 import org.smojol.toolkit.analysis.defined.CodeTaskRunner;
-import org.smojol.toolkit.analysis.defined.IrreducibleRegionsTask;
+import org.smojol.toolkit.analysis.defined.IrreducibleStronglyConnectedComponentsTask;
 import org.smojol.toolkit.analysis.pipeline.ProgramSearch;
 import org.smojol.toolkit.interpreter.FullProgram;
 import org.smojol.toolkit.interpreter.structure.OccursIgnoringFormat1DataStructureBuilder;
@@ -42,7 +42,7 @@ public class ImproperSCCsMain {
         System.out.println("Number of nodes = " + model.jgraph().vertexSet().size());
 
         model.pruneUnreachables();
-        AnalysisTaskResult irreducibleRegionsResult = new IrreducibleRegionsTask<TranspilerInstruction, DefaultEdge>().run(model.jgraph());
+        AnalysisTaskResult irreducibleRegionsResult = new IrreducibleStronglyConnectedComponentsTask<TranspilerInstruction, DefaultEdge>().run(model.jgraph());
         List<Pair<Graph<TranspilerInstruction, DefaultEdge>, Set<DefaultEdge>>> irreducibleRegions = ((AnalysisTaskResultOK) irreducibleRegionsResult).getDetail();
     }
 }

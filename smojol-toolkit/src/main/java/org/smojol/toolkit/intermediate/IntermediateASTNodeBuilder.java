@@ -1,8 +1,6 @@
 package org.smojol.toolkit.intermediate;
 
-import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.NullFlowNode;
 import org.smojol.common.navigation.CobolEntityNavigator;
@@ -19,11 +17,11 @@ import java.util.stream.IntStream;
 
 public class IntermediateASTNodeBuilder {
     private final CobolDataStructure dataRoot;
-    private final ParserRuleContext codeRoot;
+    private final ParseTree codeRoot;
     private final SmojolSymbolTable symbolTable;
     private final FlowNodeServiceImpl nodeService;
 
-    public IntermediateASTNodeBuilder(ParserRuleContext codeRoot, CobolDataStructure dataRoot, SmojolSymbolTable symbolTable) {
+    public IntermediateASTNodeBuilder(ParseTree codeRoot, CobolDataStructure dataRoot, SmojolSymbolTable symbolTable) {
         this.dataRoot = dataRoot;
         this.codeRoot = codeRoot;
         this.symbolTable = symbolTable;

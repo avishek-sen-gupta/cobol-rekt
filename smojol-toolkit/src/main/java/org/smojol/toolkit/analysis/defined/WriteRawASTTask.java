@@ -1,6 +1,6 @@
 package org.smojol.toolkit.analysis.defined;
 
-import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.smojol.common.flowchart.ConsoleColors;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.resource.ResourceOperations;
@@ -14,13 +14,13 @@ import java.util.logging.Logger;
 
 public class WriteRawASTTask implements AnalysisTask {
     private static final Logger LOGGER = Logger.getLogger(WriteRawASTTask.class.getName());
-    private final ParserRuleContext tree;
+    private final ParseTree tree;
     private final CobolEntityNavigator navigator;
     private final RawASTOutputConfig rawAstOutputConfig;
     private final ResourceOperations resourceOperations;
 
     public WriteRawASTTask(CobolEntityNavigator navigator, RawASTOutputConfig rawAstOutputConfig, ResourceOperations resourceOperations) {
-        this.tree = navigator.getFullProgramTree();
+        this.tree = navigator.getRoot();
         this.navigator = navigator;
         this.rawAstOutputConfig = rawAstOutputConfig;
         this.resourceOperations = resourceOperations;

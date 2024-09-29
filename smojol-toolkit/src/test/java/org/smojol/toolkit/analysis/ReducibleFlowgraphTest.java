@@ -10,7 +10,7 @@ import org.smojol.common.transpiler.FlowgraphReductionResult;
 import org.smojol.common.transpiler.FlowgraphTransformer;
 import org.smojol.common.transpiler.TranspilerInstruction;
 import org.smojol.toolkit.analysis.defined.IntervalAnalysisTask;
-import org.smojol.toolkit.analysis.defined.IrreducibleRegionsTask;
+import org.smojol.toolkit.analysis.defined.IrreducibleStronglyConnectedComponentsTask;
 import org.smojol.toolkit.task.AnalysisTaskResult;
 import org.smojol.toolkit.task.AnalysisTaskResultOK;
 
@@ -68,7 +68,7 @@ public class ReducibleFlowgraphTest {
     }
 
     private static void testReducibilityUsingBothMethods(Graph<TestNode, DefaultEdge> graph, boolean shouldBeReducible) {
-        AnalysisTaskResult result = new IrreducibleRegionsTask<TestNode, DefaultEdge>().run(graph);
+        AnalysisTaskResult result = new IrreducibleStronglyConnectedComponentsTask<TestNode, DefaultEdge>().run(graph);
         List<Pair<Graph<TestNode, DefaultEdge>, Set<DefaultEdge>>> badSCCs = ((AnalysisTaskResultOK) result).getDetail();
         assertEquals(shouldBeReducible, badSCCs.isEmpty());
         AnalysisTaskResult secondReducibleTest = new IntervalAnalysisTask<>(graph, n -> n.equals(node("1")), (a, b) -> new DefaultEdge()).run();

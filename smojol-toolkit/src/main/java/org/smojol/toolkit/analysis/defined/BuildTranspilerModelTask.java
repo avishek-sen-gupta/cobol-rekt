@@ -6,6 +6,8 @@ import com.google.gson.stream.JsonWriter;
 import com.mojo.woof.GraphSDK;
 import com.mojo.woof.Neo4JDriverBuilder;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.eclipse.lsp.cobol.core.CobolParser;
 import org.jgrapht.graph.DefaultEdge;
 import org.neo4j.driver.Record;
 import org.smojol.common.ast.FlowNode;
@@ -13,6 +15,7 @@ import org.smojol.common.ast.TranspilerInstructionGeneratorVisitor;
 import org.smojol.common.flowchart.MermaidGraph;
 import org.smojol.common.id.IncrementingIdProvider;
 import org.smojol.common.navigation.AggregatingTranspilerNodeTraversal;
+import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.pseudocode.*;
 import org.smojol.common.resource.ResourceOperations;
 import org.smojol.common.transpiler.*;
@@ -31,7 +34,7 @@ import java.io.IOException;
 import java.util.List;
 
 public class BuildTranspilerModelTask implements AnalysisTask {
-    private final ParserRuleContext rawAST;
+    private final ParseTree rawAST;
     private final CobolDataStructure dataStructures;
     private final SmojolSymbolTable symbolTable;
     private final OutputArtifactConfig transpilerModelOutputConfig;
