@@ -48,12 +48,23 @@ public class ReducibleFlowgraphTest {
         testReducibilityUsingBothMethods(reducibleGraph(), true);
         testReducibilityUsingBothMethods(multipleEntryMultiplePredecessorSCC(), false);
         testReducibilityUsingBothMethods(gotoIntoLoop(), false);
+        testReducibilityUsingBothMethods(simpleNonReducibleGraph(), false);
     }
 
-    private static void testNonReducibleFlowgraph(Graph<TestNode, DefaultEdge> nonReducibleGraph) {
-        AnalysisTaskResult result = new IrreducibleRegionsTask<TestNode, DefaultEdge>().run(nonReducibleGraph);
-        List<Pair<Graph<TestNode, DefaultEdge>, Set<DefaultEdge>>> badSCCs = ((AnalysisTaskResultOK) result).getDetail();
-        assertEquals(1, badSCCs.size());
+    private Graph<TestNode, DefaultEdge> simpleNonReducibleGraph() {
+        Graph<TestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
+        graph.addVertex(node("1"));
+        graph.addVertex(node("2"));
+        graph.addVertex(node("3"));
+        graph.addVertex(node("4"));
+        graph.addVertex(node("5"));
+        graph.addEdge(node("1"), node("2"));
+        graph.addEdge(node("2"), node("3"));
+        graph.addEdge(node("3"), node("4"));
+        graph.addEdge(node("4"), node("5"));
+        graph.addEdge(node("1"), node("3"));
+        graph.addEdge(node("4"), node("2"));
+        return graph;
     }
 
     private static void testReducibilityUsingBothMethods(Graph<TestNode, DefaultEdge> graph, boolean shouldBeReducible) {
