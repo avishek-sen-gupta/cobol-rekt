@@ -21,7 +21,7 @@ import java.util.function.BiFunction;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class IntervalAnalysisTest {
+public class ReducibleFlowgraphTest {
     @Test
     public void canMergeNodes() {
         Graph<TestNode, String> graph = new DefaultDirectedGraph<>(String.class);
@@ -43,10 +43,11 @@ public class IntervalAnalysisTest {
     }
 
     @Test
-    public void findsImproperRegionsUsingStronglyConnectedComponents() {
-        testNonReducibleFlowgraph(nonReducibleGraph1());
-        testNonReducibleFlowgraph(nonReducibleGraph2());
-
+    public void testReducibilityOfFlowgraphUsingIntervalAnalysisAndStronglyConnectedComponents() {
+        testReducibilityUsingBothMethods(nonReducibleGraph1(), false);
+        testReducibilityUsingBothMethods(reducibleGraph(), true);
+        testReducibilityUsingBothMethods(multipleEntryMultiplePredecessorSCC(), false);
+        testReducibilityUsingBothMethods(gotoIntoLoop(), false);
     }
 
     private static void testNonReducibleFlowgraph(Graph<TestNode, DefaultEdge> nonReducibleGraph) {
@@ -55,8 +56,30 @@ public class IntervalAnalysisTest {
         assertEquals(1, badSCCs.size());
     }
 
-    @Test
-    public void testNonReducibleFlowgraphWithUsingIntervalNalaysisAndStronglyConnectedComponents() {
+    private static void testReducibilityUsingBothMethods(Graph<TestNode, DefaultEdge> graph, boolean shouldBeReducible) {
+        AnalysisTaskResult result = new IrreducibleRegionsTask<TestNode, DefaultEdge>().run(graph);
+        List<Pair<Graph<TestNode, DefaultEdge>, Set<DefaultEdge>>> badSCCs = ((AnalysisTaskResultOK) result).getDetail();
+        assertEquals(shouldBeReducible, badSCCs.isEmpty());
+        AnalysisTaskResult secondReducibleTest = new IntervalAnalysisTask<>(graph, n -> n.equals(node("1")), (a, b) -> new DefaultEdge()).run();
+        FlowgraphReductionResult<TranspilerInstruction, DefaultEdge> reductions = ((AnalysisTaskResultOK) secondReducibleTest).getDetail();
+        assertEquals(shouldBeReducible, reductions.isReducible());
+    }
+
+    private static Graph<TestNode, DefaultEdge> gotoIntoLoop() {
+        Graph<TestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
+        graph.addVertex(node("1"));
+        graph.addVertex(node("2"));
+        graph.addVertex(node("3"));
+        graph.addVertex(node("4"));
+        graph.addEdge(node("1"), node("2"));
+        graph.addEdge(node("2"), node("3"));
+        graph.addEdge(node("2"), node("4"));
+        graph.addEdge(node("3"), node("2"));
+        graph.addEdge(node("1"), node("3"));
+        return graph;
+    }
+
+    private static Graph<TestNode, DefaultEdge> reducibleGraph() {
         Graph<TestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
         TestNode node1 = node("1");
         TestNode node2 = node("2");
@@ -75,28 +98,32 @@ public class IntervalAnalysisTest {
         graph.addEdge(node4, node1);
         graph.addEdge(node1, node5);
         graph.addEdge(node5, node2);
-        AnalysisTaskResult result = new IrreducibleRegionsTask<TestNode, DefaultEdge>().run(graph);
-        List<Pair<Graph<TestNode, DefaultEdge>, Set<DefaultEdge>>> badSCCs = ((AnalysisTaskResultOK) result).getDetail();
-        assertEquals(0, badSCCs.size());
-        AnalysisTaskResult secondReducibleTest = new IntervalAnalysisTask<>(graph, n -> n.equals(node1), (a, b) -> new DefaultEdge()).run();
-        FlowgraphReductionResult<TranspilerInstruction, DefaultEdge> reductions = ((AnalysisTaskResultOK) secondReducibleTest).getDetail();
-        assertTrue(reductions.isReducible());
+        return graph;
     }
 
-    private static Graph<TestNode, DefaultEdge> nonReducibleGraph2() {
+    private static Graph<TestNode, DefaultEdge> multipleEntryMultiplePredecessorSCC() {
         Graph<TestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
-        graph.addVertex(node("1"));
-        graph.addVertex(node("2"));
-        graph.addVertex(node("3"));
-        graph.addVertex(node("4"));
-        graph.addVertex(node("5"));
-        graph.addEdge(node("1"), node("2"));
-        graph.addEdge(node("2"), node("3"));
-        graph.addEdge(node("3"), node("4"));
-        graph.addEdge(node("4"), node("1"));
-        graph.addEdge(node("2"), node("4"));
-        graph.addEdge(node("5"), node("1"));
-        graph.addEdge(node("5"), node("2"));
+        TestNode node1 = node("1");
+        TestNode node2 = node("2");
+        TestNode node3 = node("3");
+        TestNode node4 = node("4");
+        TestNode node5 = node("5");
+        TestNode node6 = node("6");
+
+        graph.addVertex(node1);
+        graph.addVertex(node2);
+        graph.addVertex(node3);
+        graph.addVertex(node4);
+        graph.addVertex(node5);
+        graph.addVertex(node6);
+
+        graph.addEdge(node1, node2);
+        graph.addEdge(node1, node3);
+        graph.addEdge(node2, node4);
+        graph.addEdge(node3, node5);
+        graph.addEdge(node4, node5);
+        graph.addEdge(node5, node6);
+        graph.addEdge(node6, node4);
         return graph;
     }
 
