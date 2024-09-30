@@ -49,6 +49,23 @@ public class ReducibleFlowgraphTest {
         testReducibilityUsingBothMethods(multipleEntryMultiplePredecessorSCC(), false);
         testReducibilityUsingBothMethods(gotoIntoLoop(), false);
         testReducibilityUsingBothMethods(simpleNonReducibleGraph(), false);
+        testReducibilityUsingBothMethods(counterExample(), true, false);
+    }
+
+    private Graph<TestNode, DefaultEdge> counterExample() {
+        Graph<TestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
+        graph.addVertex(node("1"));
+        graph.addVertex(node("2"));
+        graph.addVertex(node("3"));
+        graph.addVertex(node("4"));
+        graph.addEdge(node("1"), node("2"));
+        graph.addEdge(node("2"), node("3"));
+        graph.addEdge(node("3"), node("2"));
+        graph.addEdge(node("2"), node("4"));
+        graph.addEdge(node("4"), node("2"));
+        graph.addEdge(node("3"), node("4"));
+        graph.addEdge(node("4"), node("3"));
+        return graph;
     }
 
     private Graph<TestNode, DefaultEdge> simpleNonReducibleGraph() {
@@ -68,9 +85,12 @@ public class ReducibleFlowgraphTest {
     }
 
     private static void testReducibilityUsingBothMethods(Graph<TestNode, DefaultEdge> graph, boolean shouldBeReducible) {
+        testReducibilityUsingBothMethods(graph, shouldBeReducible, shouldBeReducible);
+    }
+    private static void testReducibilityUsingBothMethods(Graph<TestNode, DefaultEdge> graph, boolean noImproperSCCs, boolean shouldBeReducible) {
         AnalysisTaskResult result = new IrreducibleStronglyConnectedComponentsTask<TestNode, DefaultEdge>().run(graph);
         List<Pair<Graph<TestNode, DefaultEdge>, Set<DefaultEdge>>> badSCCs = ((AnalysisTaskResultOK) result).getDetail();
-        assertEquals(shouldBeReducible, badSCCs.isEmpty());
+        assertEquals(noImproperSCCs, badSCCs.isEmpty());
         AnalysisTaskResult secondReducibleTest = new IntervalAnalysisTask<>(graph, n -> n.equals(node("1")), (a, b) -> new DefaultEdge()).run();
         FlowgraphReductionResult<TranspilerInstruction, DefaultEdge> reductions = ((AnalysisTaskResultOK) secondReducibleTest).getDetail();
         assertEquals(shouldBeReducible, reductions.isReducible());
