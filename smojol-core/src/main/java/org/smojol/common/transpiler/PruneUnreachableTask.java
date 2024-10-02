@@ -23,7 +23,6 @@ public class PruneUnreachableTask {
     }
 
     public static void pruneUnreachableInstructions(TranspilerFlowgraph transpilerFlowgraph) {
-        TranspilerInstructionModel instructionModel = transpilerFlowgraph.transpilerInstructionModel();
-        pruneUnreachables(instructionModel.instructionFlowgraph(), instr -> instr == instructionModel.instructions().getFirst());
+        pruneUnreachables(transpilerFlowgraph.instructionFlowgraph(), instr -> instr == transpilerFlowgraph.instructions().getFirst());
     }
 }

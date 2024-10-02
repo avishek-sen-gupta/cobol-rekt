@@ -38,8 +38,8 @@ public class TranspilerBuildMain {
                 .runForPrograms(ImmutableList.of(CommandLineAnalysisTask.BUILD_TRANSPILER_FLOWGRAPH), ImmutableList.of(programName));
         List<AnalysisTaskResult> results = result.get(programName);
         TranspilerFlowgraph transpilerFlowgraph = ((AnalysisTaskResultOK) results.getFirst()).getDetail();
-        List<TranspilerInstruction> instructions = transpilerFlowgraph.transpilerInstructionModel().instructions();
-        Graph<BasicBlock<TranspilerInstruction>, DefaultEdge> blockGraph = transpilerFlowgraph.blockFlowgraph();
+        List<TranspilerInstruction> instructions = transpilerFlowgraph.instructions();
+        Graph<BasicBlock<TranspilerInstruction>, DefaultEdge> blockGraph = transpilerFlowgraph.basicBlockFlowgraph();
 
         Function<BasicBlock<TranspilerInstruction>, Boolean> IS_ROOT = block -> block.contains(instructions.getFirst());
         BiFunction<BasicBlock<TranspilerInstruction>, BasicBlock<TranspilerInstruction>, DefaultEdge> DEFAULT_EDGE = (b1, b2) -> new DefaultEdge();

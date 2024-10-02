@@ -49,34 +49,50 @@ public class BuildTranspilerFlowgraphTask implements AnalysisTask {
         this.neo4JDriverBuilder = neo4JDriverBuilder;
     }
 
-    @Override
-    public AnalysisTaskResult run() {
+    private static List<TranspilerInstruction> generateTranspilerInstructions(ParseTree rawAST, CobolDataStructure dataStructures, SmojolSymbolTable symbolTable) {
         FlowNode flowRoot = new IntermediateASTNodeBuilder(rawAST, dataStructures, symbolTable).build();
         TranspilerNode transpilerTree = TranspilerTreeBuilder.flowToTranspiler(flowRoot, dataStructures);
         TranspilerInstructionGeneratorVisitor visitor = new TranspilerInstructionGeneratorVisitor(new IncrementingIdProvider());
         new AggregatingTranspilerNodeTraversal<List<TranspilerInstruction>>().accept(transpilerTree, visitor);
-        List<TranspilerInstruction> instructions = visitor.result();
-        TranspilerInstructionModel instructionModel = new TranspilerModelBuilder(instructions, transpilerTree).build();
-        Graph<BasicBlock<TranspilerInstruction>, DefaultEdge> blockGraph = new AnalyseBasicBlocksTask(instructionModel, new BasicBlockFactory<>(new IncrementingIdProvider()), neo4JDriverBuilder).run();
+        return visitor.result();
+
+    }
+
+    @Override
+    public AnalysisTaskResult run() {
+        TranspilerNode transpilerTree = buildTranspilerTree(rawAST, dataStructures, symbolTable);
+        List<TranspilerInstruction> instructions = generateTranspilerInstructions(rawAST, dataStructures, symbolTable);
+//        TranspilerInstructionGeneratorVisitor visitor = new TranspilerInstructionGeneratorVisitor(new IncrementingIdProvider());
+//        new AggregatingTranspilerNodeTraversal<List<TranspilerInstruction>>().accept(transpilerTree, visitor);
+//        List<TranspilerInstruction> instructions = visitor.result();
+        Graph<TranspilerInstruction, DefaultEdge> instructionFlowgraph = new BuildInstructionFlowgraphTask(instructions, transpilerTree).run();
+        Graph<BasicBlock<TranspilerInstruction>, DefaultEdge> blockGraph = new AnalyseBasicBlocksTask(instructions, instructionFlowgraph, new BasicBlockFactory<>(new IncrementingIdProvider()), neo4JDriverBuilder).run();
 //        System.out.println(instructions);
         MermaidGraph<TranspilerInstruction, DefaultEdge> mermaid = new MermaidGraph<>();
+        return AnalysisTaskResult.OK(CommandLineAnalysisTask.BUILD_TRANSPILER_FLOWGRAPH, new TranspilerFlowgraph(blockGraph, instructionFlowgraph, transpilerTree, instructions));
 
-        try {
-            resourceOperations.createDirectories(transpilerModelOutputConfig.outputDir());
-        } catch (IOException e) {
-            return AnalysisTaskResult.ERROR(e, CommandLineAnalysisTask.BUILD_TRANSPILER_FLOWGRAPH);
-        }
+//        try {
+//            resourceOperations.createDirectories(transpilerModelOutputConfig.outputDir());
+//        } catch (IOException e) {
+//            return AnalysisTaskResult.ERROR(e, CommandLineAnalysisTask.BUILD_TRANSPILER_FLOWGRAPH);
+//        }
+//
+//        try (JsonWriter writer = new JsonWriter(resourceOperations.fileWriter(transpilerModelOutputConfig.fullPath()))) {
+//            Gson gson = initGson();
+//            writer.setIndent("  ");
+//            gson.toJson(instructionFlowgraph, TranspilerInstructionModel.class, writer);
+//            String draw = mermaid.draw(instructionFlowgraph.instructionFlowgraph());
+////            injectIntoNeo4J(instructionFlowgraph.tree());
+//            return AnalysisTaskResult.OK(CommandLineAnalysisTask.BUILD_TRANSPILER_FLOWGRAPH, new TranspilerFlowgraph(blockGraph, instructionFlowgraph));
+//        } catch (IOException e) {
+//            return AnalysisTaskResult.ERROR(e, CommandLineAnalysisTask.BUILD_TRANSPILER_FLOWGRAPH);
+//        }
+    }
 
-        try (JsonWriter writer = new JsonWriter(resourceOperations.fileWriter(transpilerModelOutputConfig.fullPath()))) {
-            Gson gson = initGson();
-            writer.setIndent("  ");
-            gson.toJson(instructionModel, TranspilerInstructionModel.class, writer);
-            String draw = mermaid.draw(instructionModel.instructionFlowgraph());
-//            injectIntoNeo4J(instructionFlowgraph.tree());
-            return AnalysisTaskResult.OK(CommandLineAnalysisTask.BUILD_TRANSPILER_FLOWGRAPH, new TranspilerFlowgraph(blockGraph, instructionModel));
-        } catch (IOException e) {
-            return AnalysisTaskResult.ERROR(e, CommandLineAnalysisTask.BUILD_TRANSPILER_FLOWGRAPH);
-        }
+    private static TranspilerNode buildTranspilerTree(ParseTree rawAST, CobolDataStructure dataStructures, SmojolSymbolTable symbolTable) {
+        FlowNode flowRoot = new IntermediateASTNodeBuilder(rawAST, dataStructures, symbolTable).build();
+        TranspilerNode transpilerTree = TranspilerTreeBuilder.flowToTranspiler(flowRoot, dataStructures);
+        return transpilerTree;
     }
 
     private void injectIntoNeo4J(TranspilerNode current) {

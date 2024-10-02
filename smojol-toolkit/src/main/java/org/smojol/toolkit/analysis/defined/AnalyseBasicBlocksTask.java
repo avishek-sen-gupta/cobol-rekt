@@ -13,7 +13,6 @@ import org.smojol.common.pseudocode.*;
 import org.smojol.common.transpiler.PruneUnreachableTask;
 import org.smojol.common.transpiler.TranspilerInstructionEdge;
 import org.smojol.common.transpiler.TranspilerInstruction;
-import org.smojol.common.transpiler.TranspilerInstructionModel;
 import org.smojol.toolkit.analysis.graph.NamespaceQualifier;
 import org.smojol.toolkit.analysis.graph.NodeSpecBuilder;
 import org.smojol.toolkit.analysis.graph.NodeToWoof;
@@ -27,30 +26,28 @@ import java.util.function.Function;
 public class AnalyseBasicBlocksTask {
     private final BasicBlockFactory<TranspilerInstruction> basicBlockFactory;
     private final Neo4JDriverBuilder neo4JDriverBuilder;
-    private final TranspilerInstructionModel transpilerInstructionModel;
     private final Map<TranspilerInstruction, BasicBlock<TranspilerInstruction>> instructionToBlockMap = new HashMap<>();
+    private final List<TranspilerInstruction> instructions;
+    private final Graph<TranspilerInstruction, DefaultEdge> instructionFlowgraph;
 
-    public AnalyseBasicBlocksTask(TranspilerInstructionModel instructionModel, BasicBlockFactory<TranspilerInstruction> basicBlockFactory, Neo4JDriverBuilder neo4JDriverBuilder) {
-        this.transpilerInstructionModel = instructionModel;
+    public AnalyseBasicBlocksTask(List<TranspilerInstruction> instructions, Graph<TranspilerInstruction, DefaultEdge> instructionFlowgraph, BasicBlockFactory<TranspilerInstruction> basicBlockFactory, Neo4JDriverBuilder neo4JDriverBuilder) {
+        this.instructions = instructions;
+        this.instructionFlowgraph = instructionFlowgraph;
         this.basicBlockFactory = basicBlockFactory;
         this.neo4JDriverBuilder = neo4JDriverBuilder;
     }
 
     public Graph<BasicBlock<TranspilerInstruction>, DefaultEdge> run() {
-        List<BasicBlock<TranspilerInstruction>> basicBlocks = basicBlocks(transpilerInstructionModel);
-        Graph<TranspilerInstruction, DefaultEdge> jgraph = transpilerInstructionModel.instructionFlowgraph();
+        List<BasicBlock<TranspilerInstruction>> basicBlocks = basicBlocks(instructions);
         Graph<BasicBlock<TranspilerInstruction>, DefaultEdge> blockGraph = new DefaultDirectedGraph<>(DefaultEdge.class);
         basicBlocks.forEach(blockGraph::addVertex);
         basicBlocks.forEach(bb -> {
             TranspilerInstruction instruction = bb.lastInstruction();
-            jgraph.outgoingEdgesOf(instruction).stream()
-                    .map(jgraph::getEdgeTarget)
+            instructionFlowgraph.outgoingEdgesOf(instruction).stream()
+                    .map(instructionFlowgraph::getEdgeTarget)
                     .map(instructionToBlockMap::get)
-                    .forEach(targetBB -> {
-                        blockGraph.addEdge(bb, targetBB);
-                    });
+                    .forEach(targetBB -> blockGraph.addEdge(bb, targetBB));
         });
-        List<TranspilerInstruction> instructions = transpilerInstructionModel.instructions();
         Function<BasicBlock<TranspilerInstruction>, Boolean> IS_ROOT = block -> block == basicBlocks.getFirst();
         PruneUnreachableTask.pruneUnreachables(blockGraph, IS_ROOT);
 //        while (pruneUnreachables(blockGraph, IS_ROOT)) {
@@ -68,8 +65,7 @@ public class AnalyseBasicBlocksTask {
 //        return !verticesToRemove.isEmpty();
 //    }
 
-    private List<BasicBlock<TranspilerInstruction>> basicBlocks(TranspilerInstructionModel model) {
-        List<TranspilerInstruction> instructions = model.instructions();
+    private List<BasicBlock<TranspilerInstruction>> basicBlocks(List<TranspilerInstruction> instructions) {
         BasicBlock<TranspilerInstruction> currentBlock = basicBlockFactory.block();
         List<BasicBlock<TranspilerInstruction>> allBasicBlocks = new ArrayList<>();
         for (TranspilerInstruction instruction : instructions) {
@@ -109,11 +105,11 @@ public class AnalyseBasicBlocksTask {
     }
 
     private boolean isBranchPoint(TranspilerInstruction instruction) {
-        return transpilerInstructionModel.instructionFlowgraph().outgoingEdgesOf(instruction).size() > 1;
+        return instructionFlowgraph.outgoingEdgesOf(instruction).size() > 1;
     }
 
     private boolean isJoinPoint(TranspilerInstruction instruction) {
-        return transpilerInstructionModel.instructionFlowgraph().incomingEdgesOf(instruction).size() > 1;
+        return instructionFlowgraph.incomingEdgesOf(instruction).size() > 1;
     }
 
     private void injectIntoNeo4J(List<FlowNodeLike> nodes, List<TranspilerInstructionEdge> edges) {

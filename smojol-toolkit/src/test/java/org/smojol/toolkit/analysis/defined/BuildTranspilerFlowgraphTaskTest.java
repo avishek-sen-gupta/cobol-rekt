@@ -2,7 +2,6 @@ package org.smojol.toolkit.analysis.defined;
 
 import org.junit.jupiter.api.Test;
 import org.smojol.common.transpiler.TranspilerFlowgraph;
-import org.smojol.common.transpiler.TranspilerInstructionModel;
 import org.smojol.toolkit.task.AnalysisTaskResult;
 import org.smojol.toolkit.task.AnalysisTaskResultOK;
 import org.smojol.toolkit.task.CommandLineAnalysisTask;
@@ -18,6 +17,5 @@ class BuildTranspilerFlowgraphTaskTest {
                 .runTask(CommandLineAnalysisTask.BUILD_TRANSPILER_FLOWGRAPH);
         assertTrue(taskResult.isSuccess());
         TranspilerFlowgraph transpilerFlowgraph = ((AnalysisTaskResultOK) taskResult).getDetail();
-        TranspilerInstructionModel model = transpilerFlowgraph.transpilerInstructionModel();
     }
 }

@@ -15,26 +15,27 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.logging.Logger;
 
-public class TranspilerModelBuilder {
-    private static final java.util.logging.Logger LOGGER = Logger.getLogger(TranspilerModelBuilder.class.getName());
+public class BuildInstructionFlowgraphTask {
+    private static final java.util.logging.Logger LOGGER = Logger.getLogger(BuildInstructionFlowgraphTask.class.getName());
     private final List<TranspilerInstruction> instructions;
     private final TranspilerNode transpilerTree;
     private final Map<TranspilerNode, Triple<Integer, Integer, Integer>> transpilerNodeMap;
     private final List<TranspilerInstructionEdge> edges;
 
-    public TranspilerModelBuilder(List<TranspilerInstruction> instructions, TranspilerNode transpilerTree) {
+    public BuildInstructionFlowgraphTask(List<TranspilerInstruction> instructions, TranspilerNode transpilerTree) {
         this.instructions = instructions;
         this.transpilerTree = transpilerTree;
         transpilerNodeMap = buildTranspilerNodeMap(instructions);
         edges = new ArrayList<>();
     }
 
-    public TranspilerInstructionModel build() {
+    public Graph<TranspilerInstruction, DefaultEdge> run() {
         List<TranspilerInstructionEdge> instructionEdges = controlFlowEdges();
         Graph<TranspilerInstruction, DefaultEdge> jgraph = new DefaultDirectedGraph<>(DefaultEdge.class);
         instructions.forEach(jgraph::addVertex);
         instructionEdges.forEach(edge -> jgraph.addEdge(edge.from(), edge.to()));
-        return new TranspilerInstructionModel(transpilerTree, instructions, instructionEdges, jgraph);
+        return jgraph;
+//        return new TranspilerInstructionModel(transpilerTree, instructions, instructionEdges, jgraph);
     }
 
     private List<TranspilerInstructionEdge> controlFlowEdges() {

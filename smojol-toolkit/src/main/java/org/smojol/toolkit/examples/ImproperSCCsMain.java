@@ -12,7 +12,6 @@ import org.smojol.common.resource.LocalFilesystemOperations;
 import org.smojol.common.transpiler.PruneUnreachableTask;
 import org.smojol.common.transpiler.TranspilerFlowgraph;
 import org.smojol.common.transpiler.TranspilerInstruction;
-import org.smojol.common.transpiler.TranspilerInstructionModel;
 import org.smojol.toolkit.analysis.defined.CodeTaskRunner;
 import org.smojol.toolkit.analysis.defined.IrreducibleStronglyConnectedComponentsTask;
 import org.smojol.toolkit.analysis.pipeline.ProgramSearch;
@@ -41,12 +40,11 @@ public class ImproperSCCsMain {
         System.out.println("DONE");
         List<AnalysisTaskResult> results = result.get(programName);
         TranspilerFlowgraph transpilerFlowgraph = ((AnalysisTaskResultOK) results.getFirst()).getDetail();
-        TranspilerInstructionModel model = transpilerFlowgraph.transpilerInstructionModel();
-        System.out.println("Number of nodes = " + model.instructionFlowgraph().vertexSet().size());
+        System.out.println("Number of nodes = " + transpilerFlowgraph.instructionFlowgraph().vertexSet().size());
 
         PruneUnreachableTask.pruneUnreachableInstructions(transpilerFlowgraph);
 //        model.pruneUnreachables();
-        AnalysisTaskResult irreducibleRegionsResult = new IrreducibleStronglyConnectedComponentsTask<TranspilerInstruction, DefaultEdge>().run(model.instructionFlowgraph());
+        AnalysisTaskResult irreducibleRegionsResult = new IrreducibleStronglyConnectedComponentsTask<TranspilerInstruction, DefaultEdge>().run(transpilerFlowgraph.instructionFlowgraph());
         List<Pair<Graph<TranspilerInstruction, DefaultEdge>, Set<DefaultEdge>>> irreducibleRegions = ((AnalysisTaskResultOK) irreducibleRegionsResult).getDetail();
     }
 }

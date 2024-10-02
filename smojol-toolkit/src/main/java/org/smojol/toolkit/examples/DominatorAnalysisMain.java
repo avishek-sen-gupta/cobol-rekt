@@ -17,7 +17,6 @@ import org.smojol.common.resource.LocalFilesystemOperations;
 import org.smojol.common.transpiler.PruneUnreachableTask;
 import org.smojol.common.transpiler.TranspilerFlowgraph;
 import org.smojol.common.transpiler.TranspilerInstruction;
-import org.smojol.common.transpiler.TranspilerInstructionModel;
 import org.smojol.toolkit.analysis.defined.CodeTaskRunner;
 import org.smojol.toolkit.analysis.pipeline.ProgramSearch;
 import org.smojol.toolkit.interpreter.FullProgram;
@@ -44,17 +43,16 @@ public class DominatorAnalysisMain {
         System.out.println("DONE");
         List<AnalysisTaskResult> results = result.get(programName);
         TranspilerFlowgraph transpilerFlowgraph = ((AnalysisTaskResultOK) results.getFirst()).getDetail();
-        TranspilerInstructionModel model = transpilerFlowgraph.transpilerInstructionModel();
         PruneUnreachableTask.pruneUnreachableInstructions(transpilerFlowgraph);
 //        model.pruneUnreachables();
-        System.out.println("Number of nodes = " + model.instructionFlowgraph().vertexSet().size());
+        System.out.println("Number of nodes = " + transpilerFlowgraph.instructionFlowgraph().vertexSet().size());
 
         DefaultDirectedGraph<GraphNodeLike, DefaultEdge> graphForDominators = new DefaultDirectedGraph<>(DefaultEdge.class);
-        Graph<TranspilerInstruction, DefaultEdge> jgraph = model.instructionFlowgraph();
+        Graph<TranspilerInstruction, DefaultEdge> jgraph = transpilerFlowgraph.instructionFlowgraph();
         List<CodeGraphNode> xvs = jgraph.vertexSet().stream().map(v -> new CodeGraphNode(v.id())).toList();
         xvs.forEach(graphForDominators::addVertex);
         jgraph.edgeSet().forEach(edge -> graphForDominators.addEdge(new CodeGraphNode(jgraph.getEdgeSource(edge).id()), new CodeGraphNode(jgraph.getEdgeTarget(edge).id())));
-        CodeGraphNode dfsRoot = new CodeGraphNode(model.instructions().getFirst().id());
+        CodeGraphNode dfsRoot = new CodeGraphNode(transpilerFlowgraph.instructions().getFirst().id());
         DepthFirstTraversalLabelTask dfsTask = new DepthFirstTraversalLabelTask(dfsRoot, graphForDominators);
         dfsTask.run();
         List<GraphNodeLike> ordered = dfsTask.preOrder();

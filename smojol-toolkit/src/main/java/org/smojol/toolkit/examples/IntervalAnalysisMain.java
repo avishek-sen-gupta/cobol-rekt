@@ -35,12 +35,11 @@ public class IntervalAnalysisMain {
         System.out.println("DONE");
         List<AnalysisTaskResult> results = result.get(programName);
         TranspilerFlowgraph transpilerFlowgraph = ((AnalysisTaskResultOK) results.getFirst()).getDetail();
-        TranspilerInstructionModel model = transpilerFlowgraph.transpilerInstructionModel();
-        System.out.println("Number of nodes = " + model.instructionFlowgraph().vertexSet().size());
+        System.out.println("Number of nodes = " + transpilerFlowgraph.instructionFlowgraph().vertexSet().size());
 
         PruneUnreachableTask.pruneUnreachableInstructions(transpilerFlowgraph);
 //        model.pruneUnreachables();
-        AnalysisTaskResultOK intervalAnalysisResult = (AnalysisTaskResultOK) new IntervalAnalysisTask<>(model.instructionFlowgraph(), IntervalAnalysisTask.IS_ROOT, IntervalAnalysisTask.NEW_DEFAULT_EDGE).run();
+        AnalysisTaskResultOK intervalAnalysisResult = (AnalysisTaskResultOK) new IntervalAnalysisTask<>(transpilerFlowgraph.instructionFlowgraph(), IntervalAnalysisTask.IS_ROOT, IntervalAnalysisTask.NEW_DEFAULT_EDGE).run();
         FlowgraphReductionResult<TranspilerInstruction, DefaultEdge> reductionResult = intervalAnalysisResult.getDetail();
     }
 }
