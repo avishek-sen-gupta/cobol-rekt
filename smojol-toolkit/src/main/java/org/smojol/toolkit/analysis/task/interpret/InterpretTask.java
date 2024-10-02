@@ -27,8 +27,10 @@ import org.smojol.toolkit.interpreter.structure.DefaultFormat1DataStructureBuild
 import org.smojol.toolkit.task.*;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 public class InterpretTask implements AnalysisTask {
+    private static final java.util.logging.Logger LOGGER = Logger.getLogger(InterpretTask.class.getName());
     private static final String INTERPRET_SOURCE = "INTERPRET_SOURCE";
     private final SourceConfig sourceConfig;
     private final LanguageDialect dialect;
@@ -56,9 +58,9 @@ public class InterpretTask implements AnalysisTask {
             flowcharter.buildFlowAST(procedure).buildControlFlow().buildOverlay();
             FlowNode root = flowcharter.getRoot();
 //            new FlowNodeASTTraversal<FlowNode>().accept(root, new FlowNodeSymbolExtractorVisitor(root, dataStructures, new SmojolSymbolTable(dataStructures, new SymbolReferenceBuilder(new UUIDProvider()))));
-            System.out.println("DATA STRUCTURES\n--------------------------------\n");
+            LOGGER.info("DATA STRUCTURES\n--------------------------------\n");
             dataStructures.report();
-            System.out.println("INTERPRETING\n--------------------------------\n");
+            LOGGER.info("INTERPRETING\n--------------------------------\n");
             Breakpointer bp = new CobolBreakpointer();
             bp.addBreakpoint(n -> n.getClass() == DisplayFlowNode.class && n.originalText().contains("SOMETEXT"));
             root.acceptInterpreter(CobolInterpreterFactory.executingInterpreter(conditionResolver, dataStructures, ImmutableList.of(), new ExecutionListeners(ImmutableList.of(new RunLogger("/Users/asgupta/code/smojol/out/report.md"))), bp), FlowControl::CONTINUE);
