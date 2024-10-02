@@ -9,7 +9,6 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
 import org.neo4j.driver.Record;
-import org.smojol.common.ast.FlowNode;
 import org.smojol.common.flowchart.MermaidGraph;
 import org.smojol.common.id.IncrementingIdProvider;
 import org.smojol.common.pseudocode.*;
@@ -21,10 +20,8 @@ import org.smojol.toolkit.analysis.graph.NamespaceQualifier;
 import org.smojol.toolkit.analysis.graph.NodeSpecBuilder;
 import org.smojol.toolkit.analysis.graph.NodeToWoof;
 import org.smojol.toolkit.analysis.pipeline.config.OutputArtifactConfig;
-import org.smojol.toolkit.intermediate.IntermediateASTNodeBuilder;
 import org.smojol.toolkit.task.*;
 import org.smojol.toolkit.transpiler.TranspilerLoopUpdate;
-import org.smojol.toolkit.transpiler.TranspilerTreeBuilder;
 
 import java.util.List;
 
@@ -45,10 +42,9 @@ public class BuildTranspilerFlowgraphTask implements AnalysisTask {
         this.neo4JDriverBuilder = neo4JDriverBuilder;
     }
 
-
     @Override
     public AnalysisTaskResult run() {
-        TranspilerNode transpilerTree = buildTranspilerTree(rawAST, dataStructures, symbolTable);
+        TranspilerNode transpilerTree = new BuildTranspilerASTTask(rawAST, dataStructures, symbolTable).run();
         List<TranspilerInstruction> instructions = new BuildTranspilerInstructionsFromTreeTask(rawAST, dataStructures, symbolTable).run();
         Graph<TranspilerInstruction, DefaultEdge> instructionFlowgraph = new BuildInstructionFlowgraphTask(instructions, transpilerTree).run();
         Graph<BasicBlock<TranspilerInstruction>, DefaultEdge> basicBlockGraph = new AnalyseBasicBlocksTask(instructions, instructionFlowgraph, new BasicBlockFactory<>(new IncrementingIdProvider()), neo4JDriverBuilder).run();
@@ -73,11 +69,6 @@ public class BuildTranspilerFlowgraphTask implements AnalysisTask {
 //        }
     }
 
-    private static TranspilerNode buildTranspilerTree(ParseTree rawAST, CobolDataStructure dataStructures, SmojolSymbolTable symbolTable) {
-        FlowNode flowRoot = new IntermediateASTNodeBuilder(rawAST, dataStructures, symbolTable).build();
-        TranspilerNode transpilerTree = TranspilerTreeBuilder.flowToTranspiler(flowRoot, dataStructures);
-        return transpilerTree;
-    }
 
     private void injectIntoNeo4J(TranspilerNode current) {
         GraphSDK graphSDK = new GraphSDK(neo4JDriverBuilder.fromEnv());
