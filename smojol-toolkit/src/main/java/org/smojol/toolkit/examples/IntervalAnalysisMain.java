@@ -7,10 +7,8 @@ import org.smojol.common.flowchart.FlowchartOutputFormat;
 import org.smojol.common.id.UUIDProvider;
 import org.smojol.common.logging.LoggingConfig;
 import org.smojol.common.resource.LocalFilesystemOperations;
-import org.smojol.common.transpiler.FlowgraphReductionResult;
-import org.smojol.common.transpiler.TranspilerInstruction;
+import org.smojol.common.transpiler.*;
 import org.smojol.toolkit.analysis.defined.IntervalAnalysisTask;
-import org.smojol.common.transpiler.TranspilerInstructionModel;
 import org.smojol.toolkit.analysis.defined.CodeTaskRunner;
 import org.smojol.toolkit.analysis.pipeline.ProgramSearch;
 import org.smojol.toolkit.interpreter.FullProgram;
@@ -36,10 +34,12 @@ public class IntervalAnalysisMain {
                 .runForPrograms(ImmutableList.of(CommandLineAnalysisTask.BUILD_TRANSPILER_FLOWGRAPH), ImmutableList.of(programName));
         System.out.println("DONE");
         List<AnalysisTaskResult> results = result.get(programName);
-        TranspilerInstructionModel model = ((AnalysisTaskResultOK) results.getFirst()).getDetail();
+        TranspilerFlowgraph transpilerFlowgraph = ((AnalysisTaskResultOK) results.getFirst()).getDetail();
+        TranspilerInstructionModel model = transpilerFlowgraph.transpilerInstructionModel();
         System.out.println("Number of nodes = " + model.instructionFlowgraph().vertexSet().size());
 
-        model.pruneUnreachables();
+        PruneUnreachableTask.pruneUnreachableInstructions(transpilerFlowgraph);
+//        model.pruneUnreachables();
         AnalysisTaskResultOK intervalAnalysisResult = (AnalysisTaskResultOK) new IntervalAnalysisTask<>(model.instructionFlowgraph(), IntervalAnalysisTask.IS_ROOT, IntervalAnalysisTask.NEW_DEFAULT_EDGE).run();
         FlowgraphReductionResult<TranspilerInstruction, DefaultEdge> reductionResult = intervalAnalysisResult.getDetail();
     }

@@ -10,6 +10,7 @@ import org.jgrapht.graph.DefaultEdge;
 import org.neo4j.driver.Record;
 import org.smojol.common.ast.FlowNodeLike;
 import org.smojol.common.pseudocode.*;
+import org.smojol.common.transpiler.PruneUnreachableTask;
 import org.smojol.common.transpiler.TranspilerInstructionEdge;
 import org.smojol.common.transpiler.TranspilerInstruction;
 import org.smojol.common.transpiler.TranspilerInstructionModel;
@@ -50,21 +51,22 @@ public class AnalyseBasicBlocksTask {
                     });
         });
         List<TranspilerInstruction> instructions = transpilerInstructionModel.instructions();
-        Function<BasicBlock<TranspilerInstruction>, Boolean> IS_ROOT = block -> block.contains(instructions.getFirst());
-        while (pruneUnreachables(blockGraph, IS_ROOT)) {
-            System.out.println("PRUNED...");
-        }
+        Function<BasicBlock<TranspilerInstruction>, Boolean> IS_ROOT = block -> block == basicBlocks.getFirst();
+        PruneUnreachableTask.pruneUnreachables(blockGraph, IS_ROOT);
+//        while (pruneUnreachables(blockGraph, IS_ROOT)) {
+//            System.out.println("PRUNED...");
+//        }
 
         return blockGraph;
     }
 
-    private static boolean pruneUnreachables(Graph<BasicBlock<TranspilerInstruction>, DefaultEdge> blockGraph, Function<BasicBlock<TranspilerInstruction>, Boolean> isRoot) {
-        List<BasicBlock<TranspilerInstruction>> verticesToRemove = blockGraph.vertexSet().stream()
-                .filter(v -> !isRoot.apply(v) && blockGraph.incomingEdgesOf(v).isEmpty())
-                .toList();
-        verticesToRemove.forEach(blockGraph::removeVertex);
-        return !verticesToRemove.isEmpty();
-    }
+//    private static boolean pruneUnreachables(Graph<BasicBlock<TranspilerInstruction>, DefaultEdge> blockGraph, Function<BasicBlock<TranspilerInstruction>, Boolean> isRoot) {
+//        List<BasicBlock<TranspilerInstruction>> verticesToRemove = blockGraph.vertexSet().stream()
+//                .filter(v -> !isRoot.apply(v) && blockGraph.incomingEdgesOf(v).isEmpty())
+//                .toList();
+//        verticesToRemove.forEach(blockGraph::removeVertex);
+//        return !verticesToRemove.isEmpty();
+//    }
 
     private List<BasicBlock<TranspilerInstruction>> basicBlocks(TranspilerInstructionModel model) {
         List<TranspilerInstruction> instructions = model.instructions();

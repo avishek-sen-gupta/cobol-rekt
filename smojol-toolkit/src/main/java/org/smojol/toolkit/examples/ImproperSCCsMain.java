@@ -9,6 +9,7 @@ import org.smojol.common.flowchart.FlowchartOutputFormat;
 import org.smojol.common.id.UUIDProvider;
 import org.smojol.common.logging.LoggingConfig;
 import org.smojol.common.resource.LocalFilesystemOperations;
+import org.smojol.common.transpiler.PruneUnreachableTask;
 import org.smojol.common.transpiler.TranspilerFlowgraph;
 import org.smojol.common.transpiler.TranspilerInstruction;
 import org.smojol.common.transpiler.TranspilerInstructionModel;
@@ -43,7 +44,8 @@ public class ImproperSCCsMain {
         TranspilerInstructionModel model = transpilerFlowgraph.transpilerInstructionModel();
         System.out.println("Number of nodes = " + model.instructionFlowgraph().vertexSet().size());
 
-        model.pruneUnreachables();
+        PruneUnreachableTask.pruneUnreachableInstructions(transpilerFlowgraph);
+//        model.pruneUnreachables();
         AnalysisTaskResult irreducibleRegionsResult = new IrreducibleStronglyConnectedComponentsTask<TranspilerInstruction, DefaultEdge>().run(model.instructionFlowgraph());
         List<Pair<Graph<TranspilerInstruction, DefaultEdge>, Set<DefaultEdge>>> irreducibleRegions = ((AnalysisTaskResultOK) irreducibleRegionsResult).getDetail();
     }

@@ -14,6 +14,7 @@ import org.smojol.common.graph.GraphNodeLike;
 import org.smojol.common.id.UUIDProvider;
 import org.smojol.common.logging.LoggingConfig;
 import org.smojol.common.resource.LocalFilesystemOperations;
+import org.smojol.common.transpiler.PruneUnreachableTask;
 import org.smojol.common.transpiler.TranspilerFlowgraph;
 import org.smojol.common.transpiler.TranspilerInstruction;
 import org.smojol.common.transpiler.TranspilerInstructionModel;
@@ -44,7 +45,8 @@ public class DominatorAnalysisMain {
         List<AnalysisTaskResult> results = result.get(programName);
         TranspilerFlowgraph transpilerFlowgraph = ((AnalysisTaskResultOK) results.getFirst()).getDetail();
         TranspilerInstructionModel model = transpilerFlowgraph.transpilerInstructionModel();
-        model.pruneUnreachables();
+        PruneUnreachableTask.pruneUnreachableInstructions(transpilerFlowgraph);
+//        model.pruneUnreachables();
         System.out.println("Number of nodes = " + model.instructionFlowgraph().vertexSet().size());
 
         DefaultDirectedGraph<GraphNodeLike, DefaultEdge> graphForDominators = new DefaultDirectedGraph<>(DefaultEdge.class);
