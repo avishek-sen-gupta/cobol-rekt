@@ -43,7 +43,6 @@ public class ImproperSCCsMain {
         System.out.println("Number of nodes = " + transpilerFlowgraph.instructionFlowgraph().vertexSet().size());
 
         PruneUnreachableTask.pruneUnreachableInstructions(transpilerFlowgraph);
-//        model.pruneUnreachables();
         AnalysisTaskResult irreducibleRegionsResult = new IrreducibleStronglyConnectedComponentsTask<>(transpilerFlowgraph.instructionFlowgraph()).run();
         List<Pair<Graph<TranspilerInstruction, DefaultEdge>, Set<DefaultEdge>>> irreducibleRegions = ((AnalysisTaskResultOK) irreducibleRegionsResult).getDetail();
     }

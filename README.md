@@ -9,7 +9,7 @@ You can see the current backlog [here](https://github.com/users/avishek-sen-gupt
 - [Introduction](#introduction)
 - [Major Dependencies](#major-dependencies)
 - [Reverse Engineering Use Cases](#reverse-engineering-use-cases)
-- [Planned Capabilities](#planned-capabilities-andor-experiments)
+- [Roadmap](#roadmap)
 - [Flowchart Generation](#flowchart-generation)
 - [Parse Tree Generation](#parse-tree-generation)
 - [Control Flow Generation](#control-flow-generation)
@@ -105,12 +105,12 @@ Some reverse engineering use cases are listed below. Descriptions of the capabil
 - Try out new rules?
 - Identify different flows in the report - use cases for forward engineering
 
-## Planned Capabilities and/or Experiments
+## Roadmap
 
 - Integrating Domain Knowledge
 - IDMS Identify UI interactions and participants (```INSPECT```, ```MAP IN```, ```INQUIRE MAP```, Panel Definition parsing)
-- Reducibility analysis for Control Flow Graphs
-- Quad Generation (WIP): This is a WIP experiment to generate Instruction Quads (a sort of language-independent Intermediate Representation described in the Dragon Book (Compilers: Principles, Techniques, and Tools by Aho, Sethi, Ullman).
+- Eliminate GO TO's in intermediate representation, to enable transformation into structured programming constructs.
+- Deeper Dataflow Analysis
 
 ## Flowchart Generation
 

@@ -52,6 +52,12 @@ public class ReducibleFlowgraphTest {
         testReducibilityUsingBothMethods(counterExample(), true, false);
     }
 
+    /*
+         ┌-----------┐
+         ▼           ▼
+    1 -> 2 <-> 3 <-> 4
+
+     */
     private Graph<TestNode, DefaultEdge> counterExample() {
         Graph<TestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
         graph.addVertex(node("1"));
