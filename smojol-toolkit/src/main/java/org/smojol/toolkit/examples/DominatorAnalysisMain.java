@@ -2,7 +2,6 @@ package org.smojol.toolkit.examples;
 
 import com.google.common.collect.ImmutableList;
 import org.apache.commons.lang3.tuple.Pair;
-import org.jgrapht.graph.DefaultEdge;
 import org.smojol.common.dialect.LanguageDialect;
 import org.smojol.common.flowchart.FlowchartOutputFormat;
 import org.smojol.common.graph.*;
@@ -11,8 +10,7 @@ import org.smojol.common.logging.LoggingConfig;
 import org.smojol.common.resource.LocalFilesystemOperations;
 import org.smojol.common.transpiler.PruneUnreachableTask;
 import org.smojol.common.transpiler.TranspilerFlowgraph;
-import org.smojol.common.transpiler.TranspilerInstruction;
-import org.smojol.toolkit.analysis.defined.CodeTaskRunner;
+import org.smojol.toolkit.analysis.task.CodeTaskRunner;
 import org.smojol.toolkit.analysis.pipeline.ProgramSearch;
 import org.smojol.toolkit.interpreter.FullProgram;
 import org.smojol.toolkit.interpreter.structure.OccursIgnoringFormat1DataStructureBuilder;

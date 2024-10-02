@@ -3,7 +3,6 @@ package org.smojol.toolkit.analysis.graph;
 import com.google.common.collect.ImmutableList;
 import com.mojo.woof.*;
 import org.neo4j.driver.Record;
-import org.smojol.toolkit.analysis.defined.ProgramDependenciesTask;
 
 import java.util.List;
 import java.util.logging.Logger;

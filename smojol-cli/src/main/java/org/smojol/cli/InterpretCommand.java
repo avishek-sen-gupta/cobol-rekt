@@ -4,7 +4,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.smojol.common.dialect.LanguageDialect;
 import org.smojol.common.logging.LoggingConfig;
 import org.smojol.common.resource.LocalFilesystemOperations;
-import org.smojol.toolkit.analysis.defined.InterpretTask;
+import org.smojol.toolkit.analysis.task.InterpretTask;
 import org.smojol.toolkit.analysis.pipeline.ProgramSearch;
 import org.smojol.toolkit.analysis.pipeline.config.SourceConfig;
 import org.smojol.toolkit.interpreter.interpreter.CobolConditionResolver;

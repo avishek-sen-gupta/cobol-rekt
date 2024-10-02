@@ -2,7 +2,6 @@ package org.smojol.toolkit.ast;
 
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.eclipse.lsp.cobol.core.CobolParserBaseListener;
-import org.smojol.toolkit.analysis.defined.ProgramDependenciesTask;
 
 import java.util.logging.Logger;
 

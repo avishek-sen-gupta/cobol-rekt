@@ -9,8 +9,8 @@ import org.smojol.common.id.Identifiable;
 import org.smojol.common.transpiler.FlowgraphReductionResult;
 import org.smojol.common.transpiler.FlowgraphTransformer;
 import org.smojol.common.transpiler.TranspilerInstruction;
-import org.smojol.toolkit.analysis.defined.IntervalAnalysisTask;
-import org.smojol.toolkit.analysis.defined.IrreducibleStronglyConnectedComponentsTask;
+import org.smojol.toolkit.analysis.task.transpiler.IntervalAnalysisTask;
+import org.smojol.toolkit.analysis.task.transpiler.IrreducibleStronglyConnectedComponentsTask;
 import org.smojol.toolkit.task.AnalysisTaskResult;
 import org.smojol.toolkit.task.AnalysisTaskResultOK;
 

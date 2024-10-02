@@ -5,7 +5,6 @@ import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.flowchart.FlowchartBuilder;
 import org.smojol.common.flowchart.FlowchartOutputFormat;
 import org.smojol.common.navigation.CobolEntityNavigator;
-import org.smojol.toolkit.analysis.defined.ProgramDependenciesTask;
 
 import java.io.IOException;
 import java.nio.file.Path;

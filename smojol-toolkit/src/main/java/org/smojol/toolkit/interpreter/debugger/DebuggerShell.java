@@ -5,7 +5,6 @@ import org.jline.reader.LineReaderBuilder;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 import org.smojol.common.vm.stack.ExecutionContext;
-import org.smojol.toolkit.analysis.defined.ProgramDependenciesTask;
 
 import java.io.IOException;
 import java.util.logging.Logger;

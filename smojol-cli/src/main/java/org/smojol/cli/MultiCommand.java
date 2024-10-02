@@ -2,7 +2,7 @@ package org.smojol.cli;
 
 import org.smojol.common.logging.LoggingConfig;
 import org.smojol.common.resource.LocalFilesystemOperations;
-import org.smojol.toolkit.analysis.defined.CodeTaskRunner;
+import org.smojol.toolkit.analysis.task.CodeTaskRunner;
 import org.smojol.toolkit.analysis.validation.DataStructureValidation;
 import org.smojol.toolkit.task.AnalysisTaskResult;
 import org.smojol.common.validation.ProgramValidationErrors;

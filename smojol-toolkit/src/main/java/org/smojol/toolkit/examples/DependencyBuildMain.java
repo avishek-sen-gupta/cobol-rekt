@@ -3,7 +3,7 @@ package org.smojol.toolkit.examples;
 import com.google.common.collect.ImmutableList;
 import org.smojol.common.dialect.LanguageDialect;
 import org.smojol.common.resource.LocalFilesystemOperations;
-import org.smojol.toolkit.analysis.defined.AnalyseProgramDependenciesTask;
+import org.smojol.toolkit.analysis.task.analysis.AnalyseProgramDependenciesTask;
 import org.smojol.toolkit.task.AnalysisTaskResult;
 import org.smojol.toolkit.task.AnalysisTaskResultError;
 import org.smojol.toolkit.task.AnalysisTaskResultOK;

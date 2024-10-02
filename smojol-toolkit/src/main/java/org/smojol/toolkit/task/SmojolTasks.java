@@ -4,7 +4,7 @@ import com.mojo.woof.Neo4JDriverBuilder;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.smojol.common.pseudocode.SmojolSymbolTable;
 import org.smojol.common.pseudocode.SymbolReferenceBuilder;
-import org.smojol.toolkit.analysis.defined.*;
+import org.smojol.toolkit.analysis.task.*;
 import org.smojol.toolkit.analysis.pipeline.ParsePipeline;
 import org.smojol.toolkit.analysis.graph.NamespaceQualifier;
 import org.smojol.toolkit.analysis.graph.NodeSpecBuilder;
@@ -14,6 +14,8 @@ import org.smojol.common.flowchart.*;
 import org.smojol.common.id.IdProvider;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.vm.structure.CobolDataStructure;
+import org.smojol.toolkit.analysis.task.analysis.AttachCommentsTask;
+import org.smojol.toolkit.analysis.task.transpiler.BuildTranspilerFlowgraphTask;
 import org.smojol.toolkit.flowchart.FlowchartOutputWriter;
 import org.smojol.common.resource.ResourceOperations;
 

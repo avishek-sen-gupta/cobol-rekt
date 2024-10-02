@@ -6,7 +6,7 @@ import org.smojol.common.flowchart.FlowchartOutputFormat;
 import org.smojol.common.id.UUIDProvider;
 import org.smojol.common.logging.LoggingConfig;
 import org.smojol.common.resource.LocalFilesystemOperations;
-import org.smojol.toolkit.analysis.defined.CodeTaskRunner;
+import org.smojol.toolkit.analysis.task.CodeTaskRunner;
 import org.smojol.toolkit.task.AnalysisTaskResult;
 import org.smojol.toolkit.task.CommandLineAnalysisTask;
 import org.smojol.toolkit.analysis.pipeline.ProgramSearch;
