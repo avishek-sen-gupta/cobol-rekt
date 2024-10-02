@@ -6,6 +6,7 @@ import com.mojo.woof.GraphSDK;
 import com.mojo.woof.Neo4JDriverBuilder;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
 import org.neo4j.driver.Record;
@@ -47,9 +48,10 @@ public class BuildTranspilerFlowgraphTask implements AnalysisTask {
         TranspilerNode transpilerTree = new BuildTranspilerASTTask(rawAST, dataStructures, symbolTable).run();
         List<TranspilerInstruction> instructions = new BuildTranspilerInstructionsFromTreeTask(rawAST, dataStructures, symbolTable).run();
         Graph<TranspilerInstruction, DefaultEdge> instructionFlowgraph = new BuildInstructionFlowgraphTask(instructions, transpilerTree).run();
-        Graph<BasicBlock<TranspilerInstruction>, DefaultEdge> basicBlockGraph = new BuildBasicBlocksTask(instructions, instructionFlowgraph, new BasicBlockFactory<>(new IncrementingIdProvider()), neo4JDriverBuilder).run();
+        Pair<Graph<BasicBlock<TranspilerInstruction>, DefaultEdge>, List<BasicBlock<TranspilerInstruction>>> basicBlockModel = new BuildBasicBlocksTask(instructions, instructionFlowgraph, new BasicBlockFactory<>(new IncrementingIdProvider()), neo4JDriverBuilder).run();
+        Graph<BasicBlock<TranspilerInstruction>, DefaultEdge> basicBlockGraph = basicBlockModel.getLeft();
         MermaidGraph<TranspilerInstruction, DefaultEdge> mermaid = new MermaidGraph<>();
-        return AnalysisTaskResult.OK(CommandLineAnalysisTask.BUILD_TRANSPILER_FLOWGRAPH, new TranspilerFlowgraph(basicBlockGraph, instructionFlowgraph, transpilerTree, instructions));
+        return AnalysisTaskResult.OK(CommandLineAnalysisTask.BUILD_TRANSPILER_FLOWGRAPH, new TranspilerFlowgraph(basicBlockGraph, instructionFlowgraph, transpilerTree, instructions, basicBlockModel.getRight()));
 
 //        try {
 //            resourceOperations.createDirectories(transpilerModelOutputConfig.outputDir());

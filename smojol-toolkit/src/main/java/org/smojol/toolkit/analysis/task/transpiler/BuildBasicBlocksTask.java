@@ -4,6 +4,8 @@ import com.mojo.woof.EdgeType;
 import com.mojo.woof.GraphSDK;
 import com.mojo.woof.Neo4JDriverBuilder;
 import com.mojo.woof.NodeRelations;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
@@ -37,7 +39,7 @@ public class BuildBasicBlocksTask {
         this.neo4JDriverBuilder = neo4JDriverBuilder;
     }
 
-    public Graph<BasicBlock<TranspilerInstruction>, DefaultEdge> run() {
+    public Pair<Graph<BasicBlock<TranspilerInstruction>, DefaultEdge>, List<BasicBlock<TranspilerInstruction>>> run() {
         List<BasicBlock<TranspilerInstruction>> basicBlocks = basicBlocks(instructions);
         Graph<BasicBlock<TranspilerInstruction>, DefaultEdge> blockGraph = new DefaultDirectedGraph<>(DefaultEdge.class);
         basicBlocks.forEach(blockGraph::addVertex);
@@ -54,7 +56,7 @@ public class BuildBasicBlocksTask {
 //            System.out.println("PRUNED...");
 //        }
 
-        return blockGraph;
+        return ImmutablePair.of(blockGraph, basicBlocks);
     }
 
 //    private static boolean pruneUnreachables(Graph<BasicBlock<TranspilerInstruction>, DefaultEdge> blockGraph, Function<BasicBlock<TranspilerInstruction>, Boolean> isRoot) {

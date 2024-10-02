@@ -39,8 +39,4 @@ public class BasicBlock<T> implements Identifiable {
         return id;
 //        return String.join("\n", instructions.stream().map(Object::toString).toList());
     }
-
-    public Boolean contains(T instruction) {
-        return instructions.contains(instruction);
-    }
 }
