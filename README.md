@@ -30,6 +30,7 @@ You can see the current backlog [here](https://github.com/users/avishek-sen-gupt
   - [Intermediate Transpilation Model](#exposing-a-basic-transpilation-model)
   - [Reducibility Testing](#reducibility-testing-experimental-feature)
   - [Basic Block Analysis](#basic-blocks-experimental-feature)
+  - [Improper Loop Detection]()
   - [Dominator Analysis](#dominator-analysis)
 - [Running against AWS Card Demo](#running-against-aws-card-demo)
 - [Developer Guide](#developer-guide)
@@ -144,6 +145,8 @@ This capability can be used by specifiying the ```WRITE_RAW_AST``` task.
 This capability allows the engineer to produce a control flow tree for the Cobol source. This can be used for straight-up visualisation (the flowchart capability actually uses the control flow tree behind the scenes), or more dynamic analysis through an interpreter. See [SMOJOL (SMol Java-powered CobOL Interpreter)](#smojol-smol-java-powered-cobol-interpreter) for a description of how this can help.
 
 The CFG generation is part of the ```INJECT_INTO_NEO4J``` task.
+
+Note that this is not the same control flow model which is used in the transpiler tasks. For that, see [Experiments in Transpilation](#control-flow-analysis-and-transpilation-experiments).
 
 ## Neo4J Integration
 
@@ -374,6 +377,7 @@ The model currently consists of the following:
 - **The transpiler syntax tree:** The original intermediate tree representation from which instructions and the control flow graph are generated.
 - **Transpiler instructions:** This has the instructions laid out serially. It is primarily used to resolve locations for instructions like ```break``` and ```NEXT SENTENCE```. Note that sentinel instructions are present in this sequence, like ```ENTER```, ```EXIT```, and ```BODY```.
 - **Transpiler instruction Control Flow Graph**: This is generated from the instruction sequence above, and thus the nodes are the transpiler instructions (including sentinel instructions).
+- **List of Basic Blocks**: This is generated from the instruction sequence, and represent blocks of code where the only join point is (possibly) the first instruction in the block, and the only join point is (possibly) the last instruction in the block. For more information, see [Basic Blocks](#basic-blocks-experimental-feature).
 
 For example, if we have a ```EVALUATE``` statment like the following:
 ```
@@ -461,13 +465,18 @@ See [IntervalAnalysisMain.java](smojol-toolkit/src/main/java/org/smojol/toolkit/
 
 Basic Blocks are useful for analysing flow of the code without worrying about the specific computational details of the code. They are also useful (and the more pertinent use-case in our case) for rewriting / transpiling potential unstructured COBOL code (code with possibly arbitrary GOTOs) into a structured form / language (i.e., without GOTOs).
 
-**NOTE**: This will be migrated soon to use the transpiler tree format.
+Exposing basic blocks is done through the ```BuildBasicBlocksTask``` task. Note that this task does not actually output any artifacts, because it is intended for more internal analysis and transpilation (if I get to it at some point).
 
-Exposing basic blocks is done through the ```AnalyseBasicBlocksTask``` task. Note that this task does not actually output any artifacts, because it is intended for more internal analysis and transpilation (if I get to it at some point).
+### Improper Loop Detection
+
 
 ### Dominator Analysis
 
-TODO...
+Three tasks are required to be run to do dominator analysis.
+
+- ```BuildTranspilerFlowgraphTask```: This creates the intermediate AST, instructions, and the basic block tree.
+- ```DepthFirstTraversalLabelTask```: This creates the actual depth-first post order labelling that will be used to build dominator lists. Note that task can be applied either to the raw ```TranspilerInstruction``` flowgraph, or the ```BasicBlock``` one, depending upon your preference.
+- ```BuildDominatorsTask```: This creates the actual dominator lists. Immediate dominators can be accessed using the ```immediateDominators()``` method. All possible dominators for all the nodes in the flowgraph can be accessed using the ```allDominators()``` method.
 
 See [DominatorAnalysisMain.java](smojol-toolkit/src/main/java/org/smojol/toolkit/examples/DominatorAnalysisMain.java) for an example.
 

@@ -44,7 +44,7 @@ public class ImproperSCCsMain {
 
         PruneUnreachableTask.pruneUnreachableInstructions(transpilerFlowgraph);
 //        model.pruneUnreachables();
-        AnalysisTaskResult irreducibleRegionsResult = new IrreducibleStronglyConnectedComponentsTask<TranspilerInstruction, DefaultEdge>().run(transpilerFlowgraph.instructionFlowgraph());
+        AnalysisTaskResult irreducibleRegionsResult = new IrreducibleStronglyConnectedComponentsTask<>(transpilerFlowgraph.instructionFlowgraph()).run();
         List<Pair<Graph<TranspilerInstruction, DefaultEdge>, Set<DefaultEdge>>> irreducibleRegions = ((AnalysisTaskResultOK) irreducibleRegionsResult).getDetail();
     }
 }

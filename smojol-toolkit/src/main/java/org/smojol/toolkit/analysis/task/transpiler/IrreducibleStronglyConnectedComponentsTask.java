@@ -17,13 +17,18 @@ import static org.apache.commons.lang3.StringUtils.truncate;
 
 public class IrreducibleStronglyConnectedComponentsTask<V extends Identifiable, E> {
     private static final Logger LOGGER = Logger.getLogger(IrreducibleStronglyConnectedComponentsTask.class.getName());
+    private final Graph<V, E> flowgraph;
 
-    public AnalysisTaskResult run(Graph<V, E> graph) {
-        StrongConnectivityAlgorithm<V, E> scAlg = new KosarajuStrongConnectivityInspector<>(graph);
+    public IrreducibleStronglyConnectedComponentsTask(Graph<V, E> flowgraph) {
+        this.flowgraph = flowgraph;
+    }
+
+    public AnalysisTaskResult run() {
+        StrongConnectivityAlgorithm<V, E> scAlg = new KosarajuStrongConnectivityInspector<>(flowgraph);
         List<Graph<V, E>> stronglyConnectedComponents = scAlg.getStronglyConnectedComponents();
 
         List<Pair<Graph<V, E>, Set<E>>> sccIncomingEdgePairs = stronglyConnectedComponents.stream().map(scc -> {
-            Set<E> allIncomingEdges = scc.vertexSet().stream().flatMap(v -> graph.incomingEdgesOf(v).stream()).collect(Collectors.toUnmodifiableSet());
+            Set<E> allIncomingEdges = scc.vertexSet().stream().flatMap(v -> flowgraph.incomingEdgesOf(v).stream()).collect(Collectors.toUnmodifiableSet());
             Set<E> externalEdgesIntoSCC = Sets.difference(allIncomingEdges, scc.edgeSet());
             return Pair.of(scc, externalEdgesIntoSCC);
         }).toList();
@@ -33,10 +38,10 @@ public class IrreducibleStronglyConnectedComponentsTask<V extends Identifiable, 
             System.out.println("SCC has " + sccIncomingEdgePair.getLeft().vertexSet().size() + " vertices");
         }
 
-        List<Pair<Graph<V, E>, Set<E>>> sccMultipleEdgePairs = sccIncomingEdgePairs.stream().filter(p -> p.getRight().stream().map(graph::getEdgeTarget).collect(Collectors.toUnmodifiableSet()).size() > 1).toList();
+        List<Pair<Graph<V, E>, Set<E>>> sccMultipleEdgePairs = sccIncomingEdgePairs.stream().filter(p -> p.getRight().stream().map(flowgraph::getEdgeTarget).collect(Collectors.toUnmodifiableSet()).size() > 1).toList();
         System.out.println("Number of improper SCCs = " + sccMultipleEdgePairs.size());
 
-        sccMultipleEdgePairs.forEach(scc -> System.out.printf("SCC [%s]%n----------------------%nEntries are: %s%n======================%n", String.join(",", edgeDescriptions(scc.getLeft().edgeSet(), graph)), nodeDescriptions(scc.getRight().stream().map(graph::getEdgeSource).collect(Collectors.toUnmodifiableSet()))));
+        sccMultipleEdgePairs.forEach(scc -> System.out.printf("SCC [%s]%n----------------------%nEntries are: %s%n======================%n", String.join(",", edgeDescriptions(scc.getLeft().edgeSet(), flowgraph)), nodeDescriptions(scc.getRight().stream().map(flowgraph::getEdgeSource).collect(Collectors.toUnmodifiableSet()))));
 
         return AnalysisTaskResult.OK("IRREDUCIBLE_REGIONS_TASK", sccMultipleEdgePairs);
     }

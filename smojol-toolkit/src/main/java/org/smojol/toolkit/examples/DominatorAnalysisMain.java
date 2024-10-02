@@ -37,17 +37,9 @@ public class DominatorAnalysisMain {
         List<AnalysisTaskResult> results = result.get(programName);
         TranspilerFlowgraph transpilerFlowgraph = ((AnalysisTaskResultOK) results.getFirst()).getDetail();
         PruneUnreachableTask.pruneUnreachableInstructions(transpilerFlowgraph);
-//        model.pruneUnreachables();
         System.out.println("Number of nodes = " + transpilerFlowgraph.instructionFlowgraph().vertexSet().size());
-
-//        DefaultDirectedGraph<GraphNodeLike, DefaultEdge> graphForDominators = new DefaultDirectedGraph<>(DefaultEdge.class);
-//        Graph<TranspilerInstruction, DefaultEdge> jgraph = transpilerFlowgraph.instructionFlowgraph();
-//        List<CodeGraphNode> xvs = jgraph.vertexSet().stream().map(v -> new CodeGraphNode(v.id())).toList();
-//        xvs.forEach(graphForDominators::addVertex);
-//        jgraph.edgeSet().forEach(edge -> graphForDominators.addEdge(new CodeGraphNode(jgraph.getEdgeSource(edge).id()), new CodeGraphNode(jgraph.getEdgeTarget(edge).id())));
-//        CodeGraphNode dfsRoot = new CodeGraphNode(transpilerFlowgraph.instructions().getFirst().id());
-//        DepthFirstTraversalLabelTask dfsTask = new DepthFirstTraversalLabelTask(dfsRoot, graphForDominators);
         DepthFirstSpanningTree spanningTree = new DepthFirstTraversalLabelTask<>(transpilerFlowgraph.instructionFlowgraph(), transpilerFlowgraph.instructions().getFirst()).run();
-        List<Pair<GraphNodeLike, GraphNodeLike>> immediateDominators = new BuildDominatorsTask().immediateDominators(spanningTree);
+        DepthFirstSpanningTree blockSpanningTree = new DepthFirstTraversalLabelTask<>(transpilerFlowgraph.basicBlockFlowgraph(), transpilerFlowgraph.basicBlocks().getFirst()).run();
+        List<Pair<GraphNodeLike, GraphNodeLike>> immediateDominators = new BuildDominatorsTask().immediateDominators(blockSpanningTree);
     }
 }

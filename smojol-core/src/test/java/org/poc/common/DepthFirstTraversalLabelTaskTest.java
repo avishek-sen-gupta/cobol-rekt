@@ -6,6 +6,7 @@ import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.junit.jupiter.api.Test;
 import org.smojol.common.graph.CodeGraphNode;
+import org.smojol.common.graph.DepthFirstSpanningTree;
 import org.smojol.common.graph.DepthFirstTraversalLabelTask;
 import org.smojol.common.graph.GraphNodeLike;
 
@@ -131,7 +132,7 @@ public class DepthFirstTraversalLabelTaskTest {
         graph.addEdge(v8, v7);
 
         DepthFirstTraversalLabelTask task = new DepthFirstTraversalLabelTask(v1, graph, 1);
-        task.run();
+        DepthFirstSpanningTree spanningTree = task.run();
         assertEquals(1, v1.getProperty(DFS_NUM, Integer.class));
         assertEquals(2, v2.getProperty(DFS_NUM, Integer.class));
         assertEquals(3, v3.getProperty(DFS_NUM, Integer.class));
@@ -141,7 +142,7 @@ public class DepthFirstTraversalLabelTaskTest {
         assertEquals(7, v7.getProperty(DFS_NUM, Integer.class));
         assertEquals(8, v8.getProperty(DFS_NUM, Integer.class));
         assertEquals(9, task.max());
-        assertEquals(ImmutableList.of(v1, v2, v3, v4, v5, v6, v7, v8), task.preOrder());
-        assertEquals(ImmutableList.of(v8, v7, v6, v5, v4, v3, v2, v1), task.postOrder());
+        assertEquals(ImmutableList.of(v1, v2, v3, v4, v5, v6, v7, v8), spanningTree.preOrder());
+        assertEquals(ImmutableList.of(v8, v7, v6, v5, v4, v3, v2, v1), spanningTree.postOrder());
     }
 }

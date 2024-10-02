@@ -88,7 +88,7 @@ public class ReducibleFlowgraphTest {
         testReducibilityUsingBothMethods(graph, shouldBeReducible, shouldBeReducible);
     }
     private static void testReducibilityUsingBothMethods(Graph<TestNode, DefaultEdge> graph, boolean noImproperSCCs, boolean shouldBeReducible) {
-        AnalysisTaskResult result = new IrreducibleStronglyConnectedComponentsTask<TestNode, DefaultEdge>().run(graph);
+        AnalysisTaskResult result = new IrreducibleStronglyConnectedComponentsTask<>(graph).run();
         List<Pair<Graph<TestNode, DefaultEdge>, Set<DefaultEdge>>> badSCCs = ((AnalysisTaskResultOK) result).getDetail();
         assertEquals(noImproperSCCs, badSCCs.isEmpty());
         AnalysisTaskResult secondReducibleTest = new IntervalAnalysisTask<>(graph, n -> n.equals(node("1")), (a, b) -> new DefaultEdge()).run();
