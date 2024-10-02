@@ -29,7 +29,7 @@ import java.util.function.Function;
 
 public class BasicBlockIntervalAnalysisMain {
     public static void main(String[] args) throws IOException, InterruptedException {
-        String programName = "test-exp.cbl";
+        String programName = "simple-nonreducible-perform.cbl";
         Map<String, List<AnalysisTaskResult>> result = new CodeTaskRunner("/Users/asgupta/code/smojol/smojol-test-code",
                 "/Users/asgupta/code/smojol/out/report",
                 ImmutableList.of(new File("/Users/asgupta/code/smojol/smojol-test-code")),

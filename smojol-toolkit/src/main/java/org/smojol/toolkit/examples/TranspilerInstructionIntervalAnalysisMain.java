@@ -38,7 +38,6 @@ public class TranspilerInstructionIntervalAnalysisMain {
         System.out.println("Number of nodes = " + transpilerFlowgraph.instructionFlowgraph().vertexSet().size());
 
         PruneUnreachableTask.pruneUnreachableInstructions(transpilerFlowgraph);
-//        model.pruneUnreachables();
         AnalysisTaskResultOK intervalAnalysisResult = (AnalysisTaskResultOK) new IntervalAnalysisTask<>(transpilerFlowgraph.instructionFlowgraph(), IntervalAnalysisTask.IS_ROOT, IntervalAnalysisTask.NEW_DEFAULT_EDGE).run();
         FlowgraphReductionResult<TranspilerInstruction, DefaultEdge> reductionResult = intervalAnalysisResult.getDetail();
     }

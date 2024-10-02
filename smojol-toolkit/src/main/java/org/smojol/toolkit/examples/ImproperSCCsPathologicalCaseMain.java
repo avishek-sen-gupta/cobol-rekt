@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class ImproperSCCsMain {
+public class ImproperSCCsPathologicalCaseMain {
     public static void main(String[] args) throws IOException, InterruptedException {
         LoggingConfig.setupLogging();
         String programName = "simple-nonreducible-perform.cbl";
