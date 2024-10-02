@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-public class IntervalAnalysisMain {
+public class TranspilerInstructionIntervalAnalysisMain {
     public static void main(String[] args) throws IOException, InterruptedException {
         LoggingConfig.setupLogging();
         String programName = "simple-nonreducible-perform.cbl";

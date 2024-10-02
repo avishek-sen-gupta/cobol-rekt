@@ -14,7 +14,10 @@ You can see the current backlog [here](https://github.com/users/avishek-sen-gupt
 - [Parse Tree Generation](#parse-tree-generation)
 - [Control Flow Generation](#control-flow-generation)
 - [Neo4J Integration](#neo4j-integration)
-- [OpenAI integration](#openai-integration)
+- [LLM-augmented Analysis](#llm-augmented-analysis)
+  - [Depth-First Summarisation](#depth-first-summarisation)
+  - [Building Glossaries](#building-glossaries-alpha)
+  - [Building Capability Maps](#building-capability-maps-alpha)
 - [Data Dependency Generation](#data-dependency-graph)
 - [Comments integration](#comments-integration)
 - [SMOJOL (SMol Java-powered CobOL) Interpreter](#smojol-smol-java-powered-cobol-interpreter)
@@ -24,13 +27,11 @@ You can see the current backlog [here](https://github.com/users/avishek-sen-gupt
 - [Analysis through NetworkX](#analysis-through-networkx)
     - [Code Similarity](#code-similarity)
     - [Code Pattern Recognition](#code-pattern-recognition)
-- [Building Glossaries](#building-glossaries-alpha)
-- [Building Capability Maps](#building-capability-maps-alpha)
 - [Control Flow Analysis and Transpilation Experiments](#control-flow-analysis-and-transpilation-experiments)
   - [Intermediate Transpilation Model](#exposing-a-basic-transpilation-model)
   - [Reducibility Testing](#reducibility-testing-experimental-feature)
-  - [Basic Block Analysis](#basic-blocks-experimental-feature)
-  - [Improper Loop Detection]()
+  - [Exposing Basic Blocks](#basic-blocks-experimental-feature)
+  - [Improper Loop Detection](#improper-loop-detection)
   - [Dominator Analysis](#dominator-analysis)
 - [Running against AWS Card Demo](#running-against-aws-card-demo)
 - [Developer Guide](#developer-guide)
@@ -161,13 +162,62 @@ This can be done by specifiying the ```INJECT_INTO)NEO4J``` task.
 
 ![Unified AST-CFG-Data Graph](documentation/unified-ast-cfg-dependency.png)
 
-## OpenAI integration
+## LLM-augmented Analysis
+
+### Depth-First Summarisation
 
 The OpenAI integration can be leveraged to summarise nodes in a bottom-up fashion (i.e., summarise leaf nodes first, then use those summaries to generate summarise the parent nodes, and so on).
 
 The following diagram shows the AST, the Control Flow Graph, and the data structures graph. The yellow nodes are the summary nodes (generated through an LLM) attached to the AST (to provide explanations) and the data structures (to infer domains).
 
 ![ast-cfg-structs-graph](documentation/ast-and-cfg-structs-graph.png)
+
+### Building Glossaries **(ALPHA)**
+
+The toolkit supports building glossaries of variables given the data structures in a program. This capability is provided through Python in the ```smojol_python``` component.
+To use this facility, start by exporting the data structures to JSON, through the JAR, like so:
+
+```
+java -jar smojol-cli/target/smojol-cli.jar run YOUR_PROGRAM --commands="WRITE_DATA_STRUCTURES" --srcDir /path/to/sources --copyBooksDir /path/to/copybooks --dialectJarPath che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar --dialect IDMS --reportDir /path/to/report/dir
+```
+
+This will generate a JSON file in ```/path/to/report/dir```. After this, you can run:
+
+```
+cd smojol_python
+python -m src.llm.glossary_builder.main /path/to/report/dir/program-data.json out/glossary.md
+```
+
+This will generate the glossary in ```out/glossary.md```. Integrating other out-of-band data sources is a work in progress.
+
+### Building Capability Maps **(ALPHA)**
+
+The toolkit supports extracting a capability map from the paragraphs of a source. For this, you need to generate both the AST in Neo4J, as well as the data structures JSON, you can do this via:
+
+```
+java -jar smojol-cli/target/smojol-cli.jar run YOUR_PROGRAM --commands="INJECT_INTO_NEO4J WRITE_DATA_STRUCTURES" --srcDir /path/to/sources --copyBooksDir /path/to/copybooks --dialectJarPath che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar --dialect IDMS --reportDir /path/to/report/dir
+```
+After this, you will want to extract the paragraph capabilities, like so:
+
+```
+python -m src.llm.capability_extractor.paragraph_capabilities /path/to/data/structures/json /paragraph/capabilities/output/path ../paragraph/variables/explanation/output/path
+```
+
+This will generate the capabilities in ```/paragraph/capabilities/output/path```. At this point, you may need to clean parts of the output manually, if some entries do not correpond to a comma-separated list of domain terms (efforts to eliminate this manual process are in progress).
+
+The final step is to actually generate the capability map:
+
+```
+python -m src.llm.capability_extractor.capabilities_graph /paragraph/capabilities/output/path
+```
+
+![Capability Map Extraction Screenshot](documentation/capability-extraction-progress-screenshot.png)
+
+This will take a little time, depending upon the number of paragraphs and their sizes. At the end, it will generate a dendrogram visualisation, as will as the capability map in Neo4J, as illustrated below (for a 10000+ line COBOL program).
+
+![Capability Map Dendrogram](documentation/capability-map-dendrogram.png)
+
+![Capability Map Neo4J](documentation/capability-graph-neo4j.png)
 
 ## Data Dependency Graph
 
@@ -317,53 +367,6 @@ You can match patterns pretty easily through Cypher. See ```neo4j_pattern_matche
 
 You can find some useful Neo4J-based analysis queries in [Analysis](neo4j-analysis.md)
 
-## Building Glossaries **(ALPHA)**
-
-The toolkit supports building glossaries of variables given the data structures in a program. This capability is provided through Python in the ```smojol_python``` component.
-To use this facility, start by exporting the data structures to JSON, through the JAR, like so:
-
-```
-java -jar smojol-cli/target/smojol-cli.jar run YOUR_PROGRAM --commands="WRITE_DATA_STRUCTURES" --srcDir /path/to/sources --copyBooksDir /path/to/copybooks --dialectJarPath che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar --dialect IDMS --reportDir /path/to/report/dir
-```
-
-This will generate a JSON file in ```/path/to/report/dir```. After this, you can run:
-
-```
-cd smojol_python
-python -m src.llm.glossary_builder.main /path/to/report/dir/program-data.json out/glossary.md
-```
-
-This will generate the glossary in ```out/glossary.md```. Integrating other out-of-band data sources is a work in progress.
-
-## Building Capability Maps **(ALPHA)**
-
-The toolkit supports extracting a capability map from the paragraphs of a source. For this, you need to generate both the AST in Neo4J, as well as the data structures JSON, you can do this via:
-
-```
-java -jar smojol-cli/target/smojol-cli.jar run YOUR_PROGRAM --commands="INJECT_INTO_NEO4J WRITE_DATA_STRUCTURES" --srcDir /path/to/sources --copyBooksDir /path/to/copybooks --dialectJarPath che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar --dialect IDMS --reportDir /path/to/report/dir
-```
-After this, you will want to extract the paragraph capabilities, like so:
-
-```
-python -m src.llm.capability_extractor.paragraph_capabilities /path/to/data/structures/json /paragraph/capabilities/output/path ../paragraph/variables/explanation/output/path
-```
-
-This will generate the capabilities in ```/paragraph/capabilities/output/path```. At this point, you may need to clean parts of the output manually, if some entries do not correpond to a comma-separated list of domain terms (efforts to eliminate this manual process are in progress).
-
-The final step is to actually generate the capability map:
-
-```
-python -m src.llm.capability_extractor.capabilities_graph /paragraph/capabilities/output/path
-```
-
-![Capability Map Extraction Screenshot](documentation/capability-extraction-progress-screenshot.png)
-
-This will take a little time, depending upon the number of paragraphs and their sizes. At the end, it will generate a dendrogram visualisation, as will as the capability map in Neo4J, as illustrated below (for a 10000+ line COBOL program).
-
-![Capability Map Dendrogram](documentation/capability-map-dendrogram.png)
-
-![Capability Map Neo4J](documentation/capability-graph-neo4j.png)
-
 ## Control Flow Analysis and Transpilation Experiments
 
 Most of the tasks in this category are meant to be used as part of a larger analysis workflow, and thus do not have any filesystem outputs.
@@ -465,10 +468,19 @@ See [IntervalAnalysisMain.java](smojol-toolkit/src/main/java/org/smojol/toolkit/
 
 Basic Blocks are useful for analysing flow of the code without worrying about the specific computational details of the code. They are also useful (and the more pertinent use-case in our case) for rewriting / transpiling potential unstructured COBOL code (code with possibly arbitrary GOTOs) into a structured form / language (i.e., without GOTOs).
 
-Exposing basic blocks is done through the ```BuildBasicBlocksTask``` task. Note that this task does not actually output any artifacts, because it is intended for more internal analysis and transpilation (if I get to it at some point).
+Exposing basic blocks is done through the ```BuildBasicBlocksTask``` task. Note that this task does not actually output any artifacts, because it is intended for more internal analysis and transpilation (if I get to it at some point). Each ```BasicBlock``` contains a list of straight-line ```TranspilerInstruction```s.
 
 ### Improper Loop Detection
 
+**Strongly Connected Components** in a flowgraph represent the most general representation of looping constructs. Proper SCC's have only one node in them that can be the entry point for any incoming edge from outside the SCC. These are **natural loops**. Having multiple entry points implies that there are arbitrary jumps into the body of the loop from outside the loop, which makes the loop improper, and consequently the graph, irreducible.
+
+It is important to note that even if no improper SCC's are detected, it does not imply that the flowgraph is reducible. See the flowgraph built in ```counterExample()``` in ```ReducibleFlowgraphTest``` for an example of such pathological graphs.
+
+Proper SCC's are a necessary condition for a reducible flowgraph, but not a sufficient condition. The sufficient condition is that no **strongly connected subgraph** be improper. SCC's are **maximal strongly connected subgraphs**.
+
+This is, however, a good test which can surface loop-specific reducibility problems.
+
+This test is done using the ```IrreducibleStronglyConnectedComponentsTask``` task.
 
 ### Dominator Analysis
 
@@ -712,15 +724,14 @@ If you want more fine-grained control of the location of output artifacts, you c
 
 Programmatic examples are provided in the following classes.
 
-- See ```FlowChartBuildMain.java``` for examples of how flowcharts are created.
-- See ```InterpreterMain.java``` for an example of how to run the interpreter on your code, as well as inject execution traces into Neo4J.
-- See ```GraphExplorerMain.java``` for an example of how to inject ASTs, data structures, and CFGs into Neo4J.
-- See ```DependencyBuildMain.java``` for an example how inter-program dependencies can be injected into Neo4J.
-- See ```ValidateProgramMain.java``` for an example of how to run validation through code.
-- See ```IntervalAnalysisMain.java``` for an example of how the T1-T2 analysis is run.
-- See ```TranspilerBuildMain.java``` for an example of how the T1-T2 analysis is run.
-- See ```DominatorAnalysisMain.java``` for an example of how dominator analysis is run (WIP).
-- More detailed guides on programmatic use are on the way.
+- See ```FlowChartBuildMain``` for examples of how flowcharts are created.
+- See ```InterpreterMain``` for an example of how to run the interpreter on your code, as well as inject execution traces into Neo4J.
+- See ```GraphExplorerMain``` for an example of how to inject ASTs, data structures, and CFGs into Neo4J.
+- See ```DependencyBuildMain``` for an example how inter-program dependencies can be injected into Neo4J.
+- See ```ValidateProgramMain``` for an example of how to run validation through code.
+- See ```TranspilerInstructionIntervalAnalysisMain``` and ```BasicBlockIntervalAnalysisMain``` for examples of how T1-T2 analysis is run on ```TranspilerInstruction```s and ```BasicBlock```s, respectively.
+- See ```DominatorAnalysisMain``` for an example of how dominator analysis is run.
+- See ```ImproperSCCsMain``` for an example of how detection of improper Strongly Connected Components is run.
 
 #### Logging Settings
 

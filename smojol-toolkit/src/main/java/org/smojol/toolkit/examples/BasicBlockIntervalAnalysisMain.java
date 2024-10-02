@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-public class TranspilerBuildMain {
+public class BasicBlockIntervalAnalysisMain {
     public static void main(String[] args) throws IOException, InterruptedException {
         String programName = "test-exp.cbl";
         Map<String, List<AnalysisTaskResult>> result = new CodeTaskRunner("/Users/asgupta/code/smojol/smojol-test-code",
