@@ -7,7 +7,7 @@ import com.mojo.woof.GraphSDK;
 import com.mojo.woof.Neo4JDriverBuilder;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.eclipse.lsp.cobol.core.CobolParser;
+import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
 import org.neo4j.driver.Record;
 import org.smojol.common.ast.FlowNode;
@@ -15,7 +15,6 @@ import org.smojol.common.ast.TranspilerInstructionGeneratorVisitor;
 import org.smojol.common.flowchart.MermaidGraph;
 import org.smojol.common.id.IncrementingIdProvider;
 import org.smojol.common.navigation.AggregatingTranspilerNodeTraversal;
-import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.pseudocode.*;
 import org.smojol.common.resource.ResourceOperations;
 import org.smojol.common.transpiler.*;
@@ -33,7 +32,7 @@ import org.smojol.toolkit.transpiler.TranspilerTreeBuilder;
 import java.io.IOException;
 import java.util.List;
 
-public class BuildTranspilerModelTask implements AnalysisTask {
+public class BuildTranspilerFlowgraphTask implements AnalysisTask {
     private final ParseTree rawAST;
     private final CobolDataStructure dataStructures;
     private final SmojolSymbolTable symbolTable;
@@ -41,7 +40,7 @@ public class BuildTranspilerModelTask implements AnalysisTask {
     private final ResourceOperations resourceOperations;
     private final Neo4JDriverBuilder neo4JDriverBuilder;
 
-    public BuildTranspilerModelTask(ParserRuleContext rawAST, CobolDataStructure dataStructures, SmojolSymbolTable symbolTable, OutputArtifactConfig transpilerModelOutputConfig, ResourceOperations resourceOperations, Neo4JDriverBuilder neo4JDriverBuilder) {
+    public BuildTranspilerFlowgraphTask(ParserRuleContext rawAST, CobolDataStructure dataStructures, SmojolSymbolTable symbolTable, OutputArtifactConfig transpilerModelOutputConfig, ResourceOperations resourceOperations, Neo4JDriverBuilder neo4JDriverBuilder) {
         this.rawAST = rawAST;
         this.dataStructures = dataStructures;
         this.symbolTable = symbolTable;
@@ -57,25 +56,26 @@ public class BuildTranspilerModelTask implements AnalysisTask {
         TranspilerInstructionGeneratorVisitor visitor = new TranspilerInstructionGeneratorVisitor(new IncrementingIdProvider());
         new AggregatingTranspilerNodeTraversal<List<TranspilerInstruction>>().accept(transpilerTree, visitor);
         List<TranspilerInstruction> instructions = visitor.result();
-        TranspilerModel model = new TranspilerModelBuilder(instructions, transpilerTree).build();
+        TranspilerInstructionModel instructionModel = new TranspilerModelBuilder(instructions, transpilerTree).build();
+        Graph<BasicBlock<TranspilerInstruction>, DefaultEdge> blockGraph = new AnalyseBasicBlocksTask(instructionModel, new BasicBlockFactory<>(new IncrementingIdProvider()), neo4JDriverBuilder).run();
 //        System.out.println(instructions);
         MermaidGraph<TranspilerInstruction, DefaultEdge> mermaid = new MermaidGraph<>();
 
         try {
             resourceOperations.createDirectories(transpilerModelOutputConfig.outputDir());
         } catch (IOException e) {
-            return AnalysisTaskResult.ERROR(e, CommandLineAnalysisTask.BUILD_TRANSPILER_MODEL);
+            return AnalysisTaskResult.ERROR(e, CommandLineAnalysisTask.BUILD_TRANSPILER_FLOWGRAPH);
         }
 
         try (JsonWriter writer = new JsonWriter(resourceOperations.fileWriter(transpilerModelOutputConfig.fullPath()))) {
             Gson gson = initGson();
             writer.setIndent("  ");
-            gson.toJson(model, TranspilerModel.class, writer);
-            String draw = mermaid.draw(model.jgraph());
-//            injectIntoNeo4J(model.tree());
-            return AnalysisTaskResult.OK(CommandLineAnalysisTask.BUILD_TRANSPILER_MODEL, model);
+            gson.toJson(instructionModel, TranspilerInstructionModel.class, writer);
+            String draw = mermaid.draw(instructionModel.instructionFlowgraph());
+//            injectIntoNeo4J(instructionFlowgraph.tree());
+            return AnalysisTaskResult.OK(CommandLineAnalysisTask.BUILD_TRANSPILER_FLOWGRAPH, new TranspilerFlowgraph(blockGraph, instructionModel));
         } catch (IOException e) {
-            return AnalysisTaskResult.ERROR(e, CommandLineAnalysisTask.BUILD_TRANSPILER_MODEL);
+            return AnalysisTaskResult.ERROR(e, CommandLineAnalysisTask.BUILD_TRANSPILER_FLOWGRAPH);
         }
     }
 

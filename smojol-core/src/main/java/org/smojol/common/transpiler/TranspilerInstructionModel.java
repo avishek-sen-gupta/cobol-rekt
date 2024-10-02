@@ -7,15 +7,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-public record TranspilerModel(TranspilerNode tree, List<TranspilerInstruction> instructions,
-                              List<TranspilerInstructionEdge> instructionEdges,
-                              Graph<TranspilerInstruction, DefaultEdge> jgraph) {
-    private static final java.util.logging.Logger LOGGER = Logger.getLogger(TranspilerModel.class.getName());
+public record TranspilerInstructionModel(TranspilerNode tree, List<TranspilerInstruction> instructions,
+                                         List<TranspilerInstructionEdge> instructionEdges,
+                                         Graph<TranspilerInstruction, DefaultEdge> instructionFlowgraph) {
+    private static final java.util.logging.Logger LOGGER = Logger.getLogger(TranspilerInstructionModel.class.getName());
 
     public void pruneUnreachables() {
         do {
             LOGGER.info("Pruning...");
-        } while (pruneOneRound(jgraph, instructions));
+        } while (pruneOneRound(instructionFlowgraph, instructions));
     }
 
     private static boolean pruneOneRound(Graph<TranspilerInstruction, DefaultEdge> jgraph, List<TranspilerInstruction> instructions) {

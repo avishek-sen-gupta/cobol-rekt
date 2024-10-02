@@ -14,8 +14,9 @@ import org.smojol.common.graph.GraphNodeLike;
 import org.smojol.common.id.UUIDProvider;
 import org.smojol.common.logging.LoggingConfig;
 import org.smojol.common.resource.LocalFilesystemOperations;
+import org.smojol.common.transpiler.TranspilerFlowgraph;
 import org.smojol.common.transpiler.TranspilerInstruction;
-import org.smojol.common.transpiler.TranspilerModel;
+import org.smojol.common.transpiler.TranspilerInstructionModel;
 import org.smojol.toolkit.analysis.defined.CodeTaskRunner;
 import org.smojol.toolkit.analysis.pipeline.ProgramSearch;
 import org.smojol.toolkit.interpreter.FullProgram;
@@ -38,15 +39,16 @@ public class DominatorAnalysisMain {
                 ImmutableList.of(new File("/Users/asgupta/code/smojol/smojol-test-code")),
                 "/Users/asgupta/code/smojol/che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar",
                 LanguageDialect.IDMS, new FullProgram(FlowchartOutputFormat.MERMAID), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder(), new ProgramSearch(), new LocalFilesystemOperations())
-                .runForPrograms(ImmutableList.of(CommandLineAnalysisTask.BUILD_TRANSPILER_MODEL), ImmutableList.of(programName));
+                .runForPrograms(ImmutableList.of(CommandLineAnalysisTask.BUILD_TRANSPILER_FLOWGRAPH), ImmutableList.of(programName));
         System.out.println("DONE");
         List<AnalysisTaskResult> results = result.get(programName);
-        TranspilerModel model = ((AnalysisTaskResultOK) results.getFirst()).getDetail();
+        TranspilerFlowgraph transpilerFlowgraph = ((AnalysisTaskResultOK) results.getFirst()).getDetail();
+        TranspilerInstructionModel model = transpilerFlowgraph.transpilerInstructionModel();
         model.pruneUnreachables();
-        System.out.println("Number of nodes = " + model.jgraph().vertexSet().size());
+        System.out.println("Number of nodes = " + model.instructionFlowgraph().vertexSet().size());
 
         DefaultDirectedGraph<GraphNodeLike, DefaultEdge> graphForDominators = new DefaultDirectedGraph<>(DefaultEdge.class);
-        Graph<TranspilerInstruction, DefaultEdge> jgraph = model.jgraph();
+        Graph<TranspilerInstruction, DefaultEdge> jgraph = model.instructionFlowgraph();
         List<CodeGraphNode> xvs = jgraph.vertexSet().stream().map(v -> new CodeGraphNode(v.id())).toList();
         xvs.forEach(graphForDominators::addVertex);
         jgraph.edgeSet().forEach(edge -> graphForDominators.addEdge(new CodeGraphNode(jgraph.getEdgeSource(edge).id()), new CodeGraphNode(jgraph.getEdgeTarget(edge).id())));

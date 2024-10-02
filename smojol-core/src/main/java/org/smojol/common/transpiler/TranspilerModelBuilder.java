@@ -29,12 +29,12 @@ public class TranspilerModelBuilder {
         edges = new ArrayList<>();
     }
 
-    public TranspilerModel build() {
+    public TranspilerInstructionModel build() {
         List<TranspilerInstructionEdge> instructionEdges = controlFlowEdges();
         Graph<TranspilerInstruction, DefaultEdge> jgraph = new DefaultDirectedGraph<>(DefaultEdge.class);
         instructions.forEach(jgraph::addVertex);
         instructionEdges.forEach(edge -> jgraph.addEdge(edge.from(), edge.to()));
-        return new TranspilerModel(transpilerTree, instructions, instructionEdges, jgraph);
+        return new TranspilerInstructionModel(transpilerTree, instructions, instructionEdges, jgraph);
     }
 
     private List<TranspilerInstructionEdge> controlFlowEdges() {

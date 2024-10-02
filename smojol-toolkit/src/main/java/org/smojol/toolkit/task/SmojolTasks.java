@@ -2,7 +2,6 @@ package org.smojol.toolkit.task;
 
 import com.mojo.woof.Neo4JDriverBuilder;
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.smojol.common.pseudocode.BasicBlockFactory;
 import org.smojol.common.pseudocode.SmojolSymbolTable;
 import org.smojol.common.pseudocode.SymbolReferenceBuilder;
 import org.smojol.toolkit.analysis.defined.*;
@@ -126,21 +125,10 @@ public class SmojolTasks {
         }
     };
 
-    public AnalysisTask BASIC_BLOCKS_TASK = new AnalysisTask() {
+    public AnalysisTask BUILD_TRANSPILER_FLOWGRAPH = new AnalysisTask() {
         @Override
         public AnalysisTaskResult run() {
-            AnalysisTaskResult result = new BuildTranspilerModelTask(rawAST, dataStructures, symbolTable, transpilerModelOutputConfig, resourceOperations, neo4JDriverBuilder).run();
-            return switch (result) {
-                case AnalysisTaskResultError e -> AnalysisTaskResult.ERROR(e.getException(), CommandLineAnalysisTask.BASIC_BLOCKS_TASK);
-                case AnalysisTaskResultOK o -> new AnalyseBasicBlocksTask(o.getDetail(), new BasicBlockFactory<>(idProvider), neo4JDriverBuilder).run();
-            };
-        }
-    };
-
-    public AnalysisTask BUILD_TRANSPILER_MODEL = new AnalysisTask() {
-        @Override
-        public AnalysisTaskResult run() {
-            return new BuildTranspilerModelTask(rawAST, dataStructures, symbolTable, transpilerModelOutputConfig, resourceOperations, neo4JDriverBuilder).run();
+            return new BuildTranspilerFlowgraphTask(rawAST, dataStructures, symbolTable, transpilerModelOutputConfig, resourceOperations, neo4JDriverBuilder).run();
         }
     };
 
@@ -207,8 +195,7 @@ public class SmojolTasks {
             case EXPORT_UNIFIED_TO_JSON -> EXPORT_UNIFIED_TO_JSON;
             case COMPARE_CODE -> COMPARE_CODE;
             case SUMMARISE_THROUGH_LLM -> SUMMARISE_THROUGH_LLM;
-            case BASIC_BLOCKS_TASK -> BASIC_BLOCKS_TASK;
-            case BUILD_TRANSPILER_MODEL -> BUILD_TRANSPILER_MODEL;
+            case BUILD_TRANSPILER_FLOWGRAPH -> BUILD_TRANSPILER_FLOWGRAPH;
         });
     }
 
