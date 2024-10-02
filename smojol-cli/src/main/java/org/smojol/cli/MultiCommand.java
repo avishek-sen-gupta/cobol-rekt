@@ -68,7 +68,7 @@ public class MultiCommand implements Callable<Integer> {
 
     @Option(names = {"-g", "--generation"},
             defaultValue = "PROGRAM",
-            description = "The flowchart generation strategy. Valid values are SECTION, PROGRAM, and NODRAW")
+            description = "The flowchart generation strategy. Valid values are PARAGRAPH, SECTION, PROGRAM, and NODRAW")
     private String flowchartGenerationStrategy;
 
     @Option(names = {"-v", "--validate"},
