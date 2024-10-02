@@ -3,10 +3,10 @@ package org.smojol.toolkit.examples;
 import com.google.common.collect.ImmutableList;
 import org.smojol.common.dialect.LanguageDialect;
 import org.smojol.common.resource.LocalFilesystemOperations;
-import org.smojol.toolkit.analysis.task.InterpretTask;
 import org.smojol.toolkit.analysis.pipeline.config.SourceConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.smojol.toolkit.analysis.task.interpret.InterpretTask;
 import org.smojol.toolkit.interpreter.interpreter.CobolConditionResolver;
 import org.smojol.toolkit.task.AnalysisTaskResult;
 
