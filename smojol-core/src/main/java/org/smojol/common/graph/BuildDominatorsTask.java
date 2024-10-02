@@ -2,6 +2,7 @@ package org.smojol.common.graph;
 
 import com.google.common.collect.Sets;
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
 
@@ -45,15 +46,15 @@ public class BuildDominatorsTask {
         return dominators;
     }
 
-    public List<ImmutablePair<GraphNodeLike, GraphNodeLike>> immediateDominators(List<GraphNodeLike> dfsOrdered, Graph<GraphNodeLike, DefaultEdge> g, GraphNodeLike root) {
-        Map<GraphNodeLike, Set<GraphNodeLike>> allDominators = allDominators(dfsOrdered, g);
+    public List<Pair<GraphNodeLike, GraphNodeLike>> immediateDominators(DepthFirstSpanningTree dfsTree) {
+        Map<GraphNodeLike, Set<GraphNodeLike>> allDominators = allDominators(dfsTree.preOrder(), dfsTree.graph());
         LOGGER.info("Building Immediate Dominators >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
         Map<GraphNodeLike, List<GraphNodeLike>> dominances = new HashMap<>();
         allDominators.forEach((dominated, dominators) -> dominators.forEach(dominator -> {
             if (!dominances.containsKey(dominator)) dominances.put(dominator, new ArrayList<>());
             dominances.get(dominator).add(dominated);
         }));
-        return allDominators.entrySet().stream().map(e -> ImmutablePair.of(e.getKey(), uniqueImmediateDominator(e.getKey(), e.getValue(), root, dominances))).toList();
+        return allDominators.entrySet().stream().map(e -> (Pair<GraphNodeLike, GraphNodeLike>) ImmutablePair.of(e.getKey(), uniqueImmediateDominator(e.getKey(), e.getValue(), dfsTree.root(), dominances))).toList();
     }
 
     private GraphNodeLike uniqueImmediateDominator(GraphNodeLike dominated, Set<GraphNodeLike> potentialImmediateDominators, GraphNodeLike root, Map<GraphNodeLike, List<GraphNodeLike>> allDominances) {

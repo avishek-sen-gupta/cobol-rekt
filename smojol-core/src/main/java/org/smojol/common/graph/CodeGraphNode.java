@@ -20,6 +20,11 @@ public class CodeGraphNode implements GraphNodeLike {
     }
 
     @Override
+    public String label() {
+        return id;
+    }
+
+    @Override
     public <T> T getProperty(String key, Class<T> type) {
         if (!properties.containsKey(key)) return null;
         return (T) properties.get(key);

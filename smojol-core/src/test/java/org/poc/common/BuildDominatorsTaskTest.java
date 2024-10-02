@@ -2,14 +2,13 @@ package org.poc.common;
 
 import com.google.common.collect.ImmutableSet;
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.junit.jupiter.api.Test;
-import org.smojol.common.graph.BuildDominatorsTask;
-import org.smojol.common.graph.CodeGraphNode;
-import org.smojol.common.graph.DepthFirstTraversalLabelTask;
-import org.smojol.common.graph.GraphNodeLike;
+import org.smojol.common.graph.*;
+import org.smojol.common.transpiler.TranspilerInstruction;
 
 import java.util.List;
 import java.util.Map;
@@ -59,10 +58,10 @@ public class BuildDominatorsTaskTest {
         graph.addEdge(v6, v7);
         graph.addEdge(v7, v5);
 
-        DepthFirstTraversalLabelTask dfsTask = new DepthFirstTraversalLabelTask(v0, graph);
-        dfsTask.run();
+        DepthFirstTraversalLabelTask<TranspilerInstruction, DefaultEdge> dfsTask = new DepthFirstTraversalLabelTask<>(v0, graph);
+        DepthFirstSpanningTree spanningTree = dfsTask.run();
 
-        Map<GraphNodeLike, Set<GraphNodeLike>> dominatorSets = new BuildDominatorsTask().allDominators(dfsTask.preOrder(), graph);
+        Map<GraphNodeLike, Set<GraphNodeLike>> dominatorSets = new BuildDominatorsTask().allDominators(spanningTree.preOrder(), graph);
         assertEquals(ImmutableSet.of(v0), dominatorSets.get(v0));
         assertEquals(ImmutableSet.of(v0, v1), dominatorSets.get(v1));
         assertEquals(ImmutableSet.of(v0, v1, v2), dominatorSets.get(v2));
@@ -113,10 +112,10 @@ public class BuildDominatorsTaskTest {
         graph.addEdge(v6, v7);
         graph.addEdge(v7, v5);
 
-        DepthFirstTraversalLabelTask dfsTask = new DepthFirstTraversalLabelTask(v0, graph);
-        dfsTask.run();
+        DepthFirstTraversalLabelTask<TranspilerInstruction, DefaultEdge> dfsTask = new DepthFirstTraversalLabelTask<>(v0, graph);
+        DepthFirstSpanningTree spanningTree = dfsTask.run();
 
-        List<ImmutablePair<GraphNodeLike, GraphNodeLike>> immediateDominators = new BuildDominatorsTask().immediateDominators(dfsTask.preOrder(), graph, v0);
+        List<Pair<GraphNodeLike, GraphNodeLike>> immediateDominators = new BuildDominatorsTask().immediateDominators(spanningTree);
         assertTrue(immediateDominators.contains(ImmutablePair.of(v0, v0)));
         assertTrue(immediateDominators.contains(ImmutablePair.of(v1, v0)));
         assertTrue(immediateDominators.contains(ImmutablePair.of(v2, v1)));

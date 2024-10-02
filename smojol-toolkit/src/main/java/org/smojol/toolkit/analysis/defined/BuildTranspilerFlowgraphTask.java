@@ -2,7 +2,6 @@ package org.smojol.toolkit.analysis.defined;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.stream.JsonWriter;
 import com.mojo.woof.GraphSDK;
 import com.mojo.woof.Neo4JDriverBuilder;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -11,10 +10,8 @@ import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
 import org.neo4j.driver.Record;
 import org.smojol.common.ast.FlowNode;
-import org.smojol.common.ast.TranspilerInstructionGeneratorVisitor;
 import org.smojol.common.flowchart.MermaidGraph;
 import org.smojol.common.id.IncrementingIdProvider;
-import org.smojol.common.navigation.AggregatingTranspilerNodeTraversal;
 import org.smojol.common.pseudocode.*;
 import org.smojol.common.resource.ResourceOperations;
 import org.smojol.common.transpiler.*;
@@ -29,7 +26,6 @@ import org.smojol.toolkit.task.*;
 import org.smojol.toolkit.transpiler.TranspilerLoopUpdate;
 import org.smojol.toolkit.transpiler.TranspilerTreeBuilder;
 
-import java.io.IOException;
 import java.util.List;
 
 public class BuildTranspilerFlowgraphTask implements AnalysisTask {
@@ -49,27 +45,15 @@ public class BuildTranspilerFlowgraphTask implements AnalysisTask {
         this.neo4JDriverBuilder = neo4JDriverBuilder;
     }
 
-    private static List<TranspilerInstruction> generateTranspilerInstructions(ParseTree rawAST, CobolDataStructure dataStructures, SmojolSymbolTable symbolTable) {
-        FlowNode flowRoot = new IntermediateASTNodeBuilder(rawAST, dataStructures, symbolTable).build();
-        TranspilerNode transpilerTree = TranspilerTreeBuilder.flowToTranspiler(flowRoot, dataStructures);
-        TranspilerInstructionGeneratorVisitor visitor = new TranspilerInstructionGeneratorVisitor(new IncrementingIdProvider());
-        new AggregatingTranspilerNodeTraversal<List<TranspilerInstruction>>().accept(transpilerTree, visitor);
-        return visitor.result();
-
-    }
 
     @Override
     public AnalysisTaskResult run() {
         TranspilerNode transpilerTree = buildTranspilerTree(rawAST, dataStructures, symbolTable);
-        List<TranspilerInstruction> instructions = generateTranspilerInstructions(rawAST, dataStructures, symbolTable);
-//        TranspilerInstructionGeneratorVisitor visitor = new TranspilerInstructionGeneratorVisitor(new IncrementingIdProvider());
-//        new AggregatingTranspilerNodeTraversal<List<TranspilerInstruction>>().accept(transpilerTree, visitor);
-//        List<TranspilerInstruction> instructions = visitor.result();
+        List<TranspilerInstruction> instructions = new BuildTranspilerInstructionsFromTreeTask(rawAST, dataStructures, symbolTable).run();
         Graph<TranspilerInstruction, DefaultEdge> instructionFlowgraph = new BuildInstructionFlowgraphTask(instructions, transpilerTree).run();
-        Graph<BasicBlock<TranspilerInstruction>, DefaultEdge> blockGraph = new AnalyseBasicBlocksTask(instructions, instructionFlowgraph, new BasicBlockFactory<>(new IncrementingIdProvider()), neo4JDriverBuilder).run();
-//        System.out.println(instructions);
+        Graph<BasicBlock<TranspilerInstruction>, DefaultEdge> basicBlockGraph = new AnalyseBasicBlocksTask(instructions, instructionFlowgraph, new BasicBlockFactory<>(new IncrementingIdProvider()), neo4JDriverBuilder).run();
         MermaidGraph<TranspilerInstruction, DefaultEdge> mermaid = new MermaidGraph<>();
-        return AnalysisTaskResult.OK(CommandLineAnalysisTask.BUILD_TRANSPILER_FLOWGRAPH, new TranspilerFlowgraph(blockGraph, instructionFlowgraph, transpilerTree, instructions));
+        return AnalysisTaskResult.OK(CommandLineAnalysisTask.BUILD_TRANSPILER_FLOWGRAPH, new TranspilerFlowgraph(basicBlockGraph, instructionFlowgraph, transpilerTree, instructions));
 
 //        try {
 //            resourceOperations.createDirectories(transpilerModelOutputConfig.outputDir());
@@ -83,7 +67,7 @@ public class BuildTranspilerFlowgraphTask implements AnalysisTask {
 //            gson.toJson(instructionFlowgraph, TranspilerInstructionModel.class, writer);
 //            String draw = mermaid.draw(instructionFlowgraph.instructionFlowgraph());
 ////            injectIntoNeo4J(instructionFlowgraph.tree());
-//            return AnalysisTaskResult.OK(CommandLineAnalysisTask.BUILD_TRANSPILER_FLOWGRAPH, new TranspilerFlowgraph(blockGraph, instructionFlowgraph));
+//            return AnalysisTaskResult.OK(CommandLineAnalysisTask.BUILD_TRANSPILER_FLOWGRAPH, new TranspilerFlowgraph(basicBlockGraph, instructionFlowgraph));
 //        } catch (IOException e) {
 //            return AnalysisTaskResult.ERROR(e, CommandLineAnalysisTask.BUILD_TRANSPILER_FLOWGRAPH);
 //        }

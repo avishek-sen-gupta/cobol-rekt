@@ -1,16 +1,11 @@
 package org.smojol.toolkit.examples;
 
 import com.google.common.collect.ImmutableList;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.jgrapht.Graph;
-import org.jgrapht.graph.DefaultDirectedGraph;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.graph.DefaultEdge;
 import org.smojol.common.dialect.LanguageDialect;
 import org.smojol.common.flowchart.FlowchartOutputFormat;
-import org.smojol.common.graph.BuildDominatorsTask;
-import org.smojol.common.graph.CodeGraphNode;
-import org.smojol.common.graph.DepthFirstTraversalLabelTask;
-import org.smojol.common.graph.GraphNodeLike;
+import org.smojol.common.graph.*;
 import org.smojol.common.id.UUIDProvider;
 import org.smojol.common.logging.LoggingConfig;
 import org.smojol.common.resource.LocalFilesystemOperations;
@@ -47,15 +42,14 @@ public class DominatorAnalysisMain {
 //        model.pruneUnreachables();
         System.out.println("Number of nodes = " + transpilerFlowgraph.instructionFlowgraph().vertexSet().size());
 
-        DefaultDirectedGraph<GraphNodeLike, DefaultEdge> graphForDominators = new DefaultDirectedGraph<>(DefaultEdge.class);
-        Graph<TranspilerInstruction, DefaultEdge> jgraph = transpilerFlowgraph.instructionFlowgraph();
-        List<CodeGraphNode> xvs = jgraph.vertexSet().stream().map(v -> new CodeGraphNode(v.id())).toList();
-        xvs.forEach(graphForDominators::addVertex);
-        jgraph.edgeSet().forEach(edge -> graphForDominators.addEdge(new CodeGraphNode(jgraph.getEdgeSource(edge).id()), new CodeGraphNode(jgraph.getEdgeTarget(edge).id())));
-        CodeGraphNode dfsRoot = new CodeGraphNode(transpilerFlowgraph.instructions().getFirst().id());
-        DepthFirstTraversalLabelTask dfsTask = new DepthFirstTraversalLabelTask(dfsRoot, graphForDominators);
-        dfsTask.run();
-        List<GraphNodeLike> ordered = dfsTask.preOrder();
-        List<ImmutablePair<GraphNodeLike, GraphNodeLike>> immediateDominators = new BuildDominatorsTask().immediateDominators(ordered, graphForDominators, dfsRoot);
+//        DefaultDirectedGraph<GraphNodeLike, DefaultEdge> graphForDominators = new DefaultDirectedGraph<>(DefaultEdge.class);
+//        Graph<TranspilerInstruction, DefaultEdge> jgraph = transpilerFlowgraph.instructionFlowgraph();
+//        List<CodeGraphNode> xvs = jgraph.vertexSet().stream().map(v -> new CodeGraphNode(v.id())).toList();
+//        xvs.forEach(graphForDominators::addVertex);
+//        jgraph.edgeSet().forEach(edge -> graphForDominators.addEdge(new CodeGraphNode(jgraph.getEdgeSource(edge).id()), new CodeGraphNode(jgraph.getEdgeTarget(edge).id())));
+//        CodeGraphNode dfsRoot = new CodeGraphNode(transpilerFlowgraph.instructions().getFirst().id());
+//        DepthFirstTraversalLabelTask dfsTask = new DepthFirstTraversalLabelTask(dfsRoot, graphForDominators);
+        DepthFirstSpanningTree spanningTree = new DepthFirstTraversalLabelTask<>(transpilerFlowgraph.instructionFlowgraph(), transpilerFlowgraph.instructions().getFirst()).run();
+        List<Pair<GraphNodeLike, GraphNodeLike>> immediateDominators = new BuildDominatorsTask().immediateDominators(spanningTree);
     }
 }
