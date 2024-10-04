@@ -9,6 +9,7 @@ import org.jgrapht.graph.DefaultEdge;
 import org.junit.jupiter.api.Test;
 import org.smojol.common.graph.*;
 import org.smojol.common.transpiler.TranspilerInstruction;
+import org.smojol.toolkit.analysis.task.transpiler.BuildDominatorsTask;
 
 import java.util.List;
 import java.util.Map;
