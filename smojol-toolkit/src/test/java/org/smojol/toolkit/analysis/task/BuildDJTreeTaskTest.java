@@ -16,8 +16,11 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BuildDJTreeTaskTest {
+    /**
+     *  @see <a href="documentation/dj-tree-unit-test-graph.png">Flowgraph for this test case</a>
+     */
     @Test
-    public void canBuildDominatorTree() {
+    public void canBuildDJTree() {
         Graph<DominatorTreeTestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
         DominatorTreeTestNode vSTART = node("START");
         DominatorTreeTestNode vEND = node("END");
