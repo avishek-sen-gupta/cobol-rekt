@@ -1,5 +1,6 @@
 package org.smojol.toolkit.analysis.task.transpiler;
 
+import com.google.common.collect.Sets;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
@@ -30,15 +31,8 @@ public class BuildDJTreeTask<V extends Identifiable, E> {
         Graph<V, E> dominatorGraph = dominatorTree.graph();
         sourceGraph.vertexSet().forEach(djTree::addVertex);
         dominatorGraph.edgeSet().forEach(edge -> djTree.addEdge(dominatorGraph.getEdgeSource(edge), dominatorGraph.getEdgeTarget(edge), new DominatorEdge()));
-        sourceGraph.edgeSet().forEach(edge -> djTree.addEdge(sourceGraph.getEdgeSource(edge), sourceGraph.getEdgeTarget(edge), new JoinEdge()));
+        Sets.difference(sourceGraph.edgeSet(), dominatorGraph.edgeSet()).forEach(edge -> djTree.addEdge(sourceGraph.getEdgeSource(edge), sourceGraph.getEdgeTarget(edge), new JoinEdge()));
+//        sourceGraph.edgeSet().forEach(edge -> djTree.addEdge(sourceGraph.getEdgeSource(edge), sourceGraph.getEdgeTarget(edge), new JoinEdge()));
         return new DJTree<>(spanningTree.sourceGraphRoot(), djTree);
     }
-}
-
-class DominatorEdge extends DefaultEdge {
-
-}
-
-class JoinEdge extends DefaultEdge {
-
 }

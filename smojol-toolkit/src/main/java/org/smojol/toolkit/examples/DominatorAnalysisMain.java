@@ -52,7 +52,6 @@ public class DominatorAnalysisMain {
         DepthFirstSpanningTree<TranspilerInstruction, DefaultEdge> spanningTree = new DepthFirstTraversalLabelTask<>(transpilerFlowgraph.instructions().getFirst(), transpilerFlowgraph.instructionFlowgraph()).run();
         DepthFirstSpanningTree<BasicBlock<TranspilerInstruction>, DefaultEdge> blockSpanningTree = new DepthFirstTraversalLabelTask<>(transpilerFlowgraph.basicBlocks().getFirst(), transpilerFlowgraph.basicBlockFlowgraph()).run();
         List<Pair<BasicBlock<TranspilerInstruction>, BasicBlock<TranspilerInstruction>>> immediateDominators = new BuildDominatorsTask<BasicBlock<TranspilerInstruction>, DefaultEdge>().immediateDominators(blockSpanningTree);
-//        List<Pair<Identifiable, Identifiable>> immediateDominatorPairs = immediateDominators.stream().map(dominatedDominatorPair -> asPair(ImmutablePair.of(identifiable(dominatedDominatorPair.getLeft()), identifiable(dominatedDominatorPair.getRight())))).toList();
         DominatorTree<BasicBlock<TranspilerInstruction>, DefaultEdge> dominatorTree = new BuildDominatorTreeTask<>(immediateDominators, blockSpanningTree.sourceGraphRoot(), DefaultEdge.class).run();
         DJTree<BasicBlock<TranspilerInstruction>> djTree = new BuildDJTreeTask<>(dominatorTree, blockSpanningTree).run();
         String draw = new MermaidGraph<BasicBlock<TranspilerInstruction>, DefaultEdge>().draw(djTree.graph());
