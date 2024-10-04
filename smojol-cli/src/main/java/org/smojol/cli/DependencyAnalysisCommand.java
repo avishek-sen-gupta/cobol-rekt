@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.logging.Logger;
 
-@Command(name = "dependency", mixinStandardHelpOptions = true, version = "graph 0.1",
+@Command(name = "dependency", mixinStandardHelpOptions = true, version = "sourceGraph 0.1",
         description = "Implements various operations useful for reverse engineering Cobol code")
 public class DependencyAnalysisCommand implements Callable<Integer> {
     private static final Logger LOGGER = Logger.getLogger(DependencyAnalysisCommand.class.getName());

@@ -48,14 +48,14 @@ public class BuildDominatorsTask<V extends Identifiable, E> {
     }
 
     public List<Pair<V, V>> immediateDominators(DepthFirstSpanningTree<V, E> dfsTree) {
-        Map<V, Set<V>> allDominators = allDominators(dfsTree.preOrder(), dfsTree.graph());
+        Map<V, Set<V>> allDominators = allDominators(dfsTree.preOrder(), dfsTree.sourceGraph());
         LOGGER.info("Building Immediate Dominators >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
         Map<V, List<V>> dominances = new HashMap<>();
         allDominators.forEach((dominated, dominators) -> dominators.forEach(dominator -> {
             if (!dominances.containsKey(dominator)) dominances.put(dominator, new ArrayList<>());
             dominances.get(dominator).add(dominated);
         }));
-        return allDominators.entrySet().stream().map(e -> (Pair<V, V>) ImmutablePair.of(e.getKey(), uniqueImmediateDominator(e.getKey(), e.getValue(), dfsTree.root(), dominances))).toList();
+        return allDominators.entrySet().stream().map(e -> (Pair<V, V>) ImmutablePair.of(e.getKey(), uniqueImmediateDominator(e.getKey(), e.getValue(), dfsTree.sourceGraphRoot(), dominances))).toList();
     }
 
     private V uniqueImmediateDominator(V dominated, Set<V> potentialImmediateDominators, V root, Map<V, List<V>> allDominances) {

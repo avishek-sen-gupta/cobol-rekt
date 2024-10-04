@@ -57,7 +57,7 @@ public class InterpretTask implements AnalysisTask {
             ParseTree procedure = navigator.procedureDivisionBody(navigator.getRoot());
             flowcharter.buildFlowAST(procedure).buildControlFlow().buildOverlay();
             FlowNode root = flowcharter.getRoot();
-//            new FlowNodeASTTraversal<FlowNode>().accept(root, new FlowNodeSymbolExtractorVisitor(root, dataStructures, new SmojolSymbolTable(dataStructures, new SymbolReferenceBuilder(new UUIDProvider()))));
+//            new FlowNodeASTTraversal<FlowNode>().accept(sourceGraphRoot, new FlowNodeSymbolExtractorVisitor(sourceGraphRoot, dataStructures, new SmojolSymbolTable(dataStructures, new SymbolReferenceBuilder(new UUIDProvider()))));
             LOGGER.info("DATA STRUCTURES\n--------------------------------\n");
             dataStructures.report();
             LOGGER.info("INTERPRETING\n--------------------------------\n");

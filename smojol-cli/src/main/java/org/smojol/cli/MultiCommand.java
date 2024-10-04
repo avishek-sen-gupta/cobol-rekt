@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.logging.Logger;
 
-@Command(name = "run", mixinStandardHelpOptions = true, version = "graph 0.1",
+@Command(name = "run", mixinStandardHelpOptions = true, version = "sourceGraph 0.1",
         description = "Implements various operations useful for reverse engineering Cobol code")
 public class MultiCommand implements Callable<Integer> {
     private static final Logger LOGGER = Logger.getLogger(MultiCommand.class.getName());

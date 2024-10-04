@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.logging.Logger;
 
-@Command(name = "validate", mixinStandardHelpOptions = true, version = "graph 0.1",
+@Command(name = "validate", mixinStandardHelpOptions = true, version = "sourceGraph 0.1",
         description = "Validates the candidate COBOL code")
 public class ValidateCommand implements Callable<Integer> {
     private static final Logger LOGGER = Logger.getLogger(ValidateCommand.class.getName());

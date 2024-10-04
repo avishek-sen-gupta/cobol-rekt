@@ -34,7 +34,7 @@ public class Neo4JGraphBuilder {
     }
 
     public void buildDataDependencies(FlowNode root) {
-//        new FlowNodeASTTraversal<Boolean>().build(root, this::buildDataDependency);
+//        new FlowNodeASTTraversal<Boolean>().build(sourceGraphRoot, this::buildDataDependency);
         new FlowNodeASTTraversal<Record>().accept(root, new Neo4JDataDependencyBuilderVisitor(data, sdk, qualifier, dependencyAttachmentStrategy));
     }
 }

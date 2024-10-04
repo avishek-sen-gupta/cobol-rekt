@@ -41,7 +41,7 @@ public class SearchWhenFlowNode extends CompositeCobolFlowNode {
     public void acceptUnvisited(FlowNodeVisitor visitor, int level) {
         super.acceptUnvisited(visitor, level);
         condition.acceptUnvisited(visitor, level);
-        // Condition is already shown in parent's label, so we don't need to explicitly visit (and create) a condition graph node
+        // Condition is already shown in parent's label, so we don't need to explicitly visit (and create) a condition sourceGraph node
 //        visitor.visitParentChildLink(this, condition, nodeService);
     }
 

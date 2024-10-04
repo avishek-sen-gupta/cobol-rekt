@@ -6,8 +6,8 @@ import org.smojol.common.id.Identifiable;
 
 import java.util.List;
 
-public record DepthFirstSpanningTree<V extends Identifiable, E>(List<V> depthFirstSpanningTreeOrder, V root,
-                                                                Graph<V, E> graph,
+public record DepthFirstSpanningTree<V extends Identifiable, E>(List<V> depthFirstSpanningTreeOrder, V sourceGraphRoot,
+                                                                Graph<V, E> sourceGraph,
                                                                 Graph<CodeGraphNode<V>, DefaultEdge> dfsLabelledTree,
                                                                 CodeGraphNode<V> dfsLabelledTreeRoot) {
 

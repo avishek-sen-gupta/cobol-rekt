@@ -17,7 +17,7 @@ public class JGraphTDataOperations {
     }
 
     public boolean addNode(CobolDataStructure node) {
-//        return graph.addVertex(new TypedDataStructureVertex(node));
+//        return sourceGraph.addVertex(new TypedDataStructureVertex(node));
         return graph.addVertex(qualifier.newDataVertex(node));
     }
 
@@ -28,12 +28,12 @@ public class JGraphTDataOperations {
         TypedGraphVertex vTo = qualifier.newDataVertex(to);
         if (!graph.containsVertex(vFrom)) graph.addVertex(vFrom);
         if (!graph.containsVertex(vTo)) graph.addVertex(vTo);
-//        return graph.addEdge(vFrom, vTo, new TypedGraphEdge(edgeType));
+//        return sourceGraph.addEdge(vFrom, vTo, new TypedGraphEdge(edgeType));
         return graph.addEdge(vFrom, vTo, qualifier.newEdge(edgeType));
     }
 
     public boolean containsVertex(CobolDataStructure structure) {
-//        return graph.containsVertex(new TypedDataStructureVertex(structure));
+//        return sourceGraph.containsVertex(new TypedDataStructureVertex(structure));
         return graph.containsVertex(qualifier.newDataVertex(structure));
     }
 
@@ -42,7 +42,7 @@ public class JGraphTDataOperations {
         TypedGraphVertex vFrom = qualifier.newCodeVertex(from);
 //        TypedGraphVertex vTo = new TypedDataStructureVertex(to);
         TypedGraphVertex vTo = qualifier.newDataVertex(to);
-//        return graph.addEdge(vFrom, vTo, new TypedGraphEdge(edgeType));
+//        return sourceGraph.addEdge(vFrom, vTo, new TypedGraphEdge(edgeType));
         try {
             return graph.addEdge(vFrom, vTo, qualifier.newEdge(edgeType));
         } catch (Exception e) {

@@ -47,7 +47,7 @@ public class SentenceFlowNode extends CompositeCobolFlowNode {
 //        return searchStatements(node, current);
     }
 
-    // TODO: Why does the recursive search through the outgoingNodes of the internalTreeRoot collapse the graph?
+    // TODO: Why does the recursive search through the outgoingNodes of the internalTreeRoot collapse the sourceGraph?
     private boolean searchStatements(FlowNode searchTarget, FlowNode current) {
         if (current == searchTarget) return true;
         List<FlowNode> outgoingNodes = current.getOutgoingNodes();

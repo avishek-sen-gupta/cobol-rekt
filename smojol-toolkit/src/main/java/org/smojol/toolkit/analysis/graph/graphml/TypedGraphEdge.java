@@ -1,9 +1,10 @@
 package org.smojol.toolkit.analysis.graph.graphml;
 
 import lombok.Getter;
+import org.jgrapht.graph.DefaultEdge;
 
 @Getter
-public class TypedGraphEdge extends org.jgrapht.graph.DefaultEdge {
+public class TypedGraphEdge extends DefaultEdge {
     private final String relationshipType;
     private final String namespace;
 

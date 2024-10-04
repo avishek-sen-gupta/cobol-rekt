@@ -33,6 +33,6 @@ public class GraphGenerator {
         Process p = new ProcessBuilder(graphGenerationCommand).inheritIO().start();
         int rc = p.waitFor();
 //        Process pr = rt.exec(graphGenerationCommand);
-        LOGGER.info("Completed graph generation");
+        LOGGER.info("Completed sourceGraph generation");
     }
 }

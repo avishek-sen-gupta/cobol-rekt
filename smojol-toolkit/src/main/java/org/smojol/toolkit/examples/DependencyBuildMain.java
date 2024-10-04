@@ -27,6 +27,6 @@ public class DependencyBuildMain {
         };
 
 //        new InjectProgramDependenciesIntoNeo4JTask(new NodeSpecBuilder(new NamespaceQualifier("DEP-GRAPH")),
-//                new GraphSDK(new Neo4JDriverBuilder().fromEnv())).run(root);
+//                new GraphSDK(new Neo4JDriverBuilder().fromEnv())).run(sourceGraphRoot);
     }
 }

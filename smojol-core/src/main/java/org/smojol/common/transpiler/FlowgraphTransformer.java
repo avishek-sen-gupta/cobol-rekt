@@ -42,7 +42,7 @@ public class FlowgraphTransformer<V extends Identifiable, E> {
         if (incomingVertexSet.size() != 1) return;
         merge(incomingVertices.getFirst(), node);
         affectedNodes.add(node);
-//        evolutions.add(new MermaidGraph<V, E>().draw(graph));
+//        evolutions.add(new MermaidGraph<V, E>().draw(sourceGraph));
     }
 
     private List<E> selfLoops(V node, Graph<V, E> graph) {
