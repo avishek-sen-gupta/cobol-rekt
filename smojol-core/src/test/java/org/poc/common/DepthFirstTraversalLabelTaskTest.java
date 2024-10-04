@@ -5,30 +5,31 @@ import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.junit.jupiter.api.Test;
-import org.smojol.common.graph.CodeGraphNode;
 import org.smojol.common.graph.DepthFirstSpanningTree;
 import org.smojol.common.graph.DepthFirstTraversalLabelTask;
+import org.smojol.common.id.Identifiable;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.smojol.common.graph.DepthFirstTraversalLabelTask.DFS_NUM;
 
 public class DepthFirstTraversalLabelTaskTest {
     @Test
     public void canLabelDFSOrderForSimpleGraphWithNoLoops() {
-        Graph<CodeGraphNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
-        CodeGraphNode va = new CodeGraphNode("A");
-        CodeGraphNode vb = new CodeGraphNode("B");
-        CodeGraphNode vc = new CodeGraphNode("C");
+        Graph<DFSTestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
+        DFSTestNode va = new DFSTestNode("A");
+        DFSTestNode vb = new DFSTestNode("B");
+        DFSTestNode vc = new DFSTestNode("C");
         graph.addVertex(va);
         graph.addVertex(vb);
         graph.addVertex(vc);
         graph.addEdge(va, vb);
         graph.addEdge(va, vc);
-        DepthFirstTraversalLabelTask<CodeGraphNode, DefaultEdge> task = new DepthFirstTraversalLabelTask<>(va, graph);
-        task.run();
-        assertEquals(0, va.getProperty(DFS_NUM, Integer.class));
-        assertEquals(1, vb.getProperty(DFS_NUM, Integer.class));
-        assertEquals(2, vc.getProperty(DFS_NUM, Integer.class));
+        DepthFirstTraversalLabelTask<DFSTestNode, DefaultEdge> task = new DepthFirstTraversalLabelTask<>(va, graph);
+        List<DFSTestNode> ordered = task.run().preOrder();
+        assertEquals(va, ordered.get(0));
+        assertEquals(vb, ordered.get(1));
+        assertEquals(vc, ordered.get(2));
         assertEquals(3, task.max());
     }
 
@@ -40,15 +41,15 @@ public class DepthFirstTraversalLabelTaskTest {
          |____|____|         |
               └---> 6 --> 7 -┘
      */
-        Graph<CodeGraphNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
-        CodeGraphNode v0 = new CodeGraphNode("0");
-        CodeGraphNode v1 = new CodeGraphNode("1");
-        CodeGraphNode v2 = new CodeGraphNode("2");
-        CodeGraphNode v3 = new CodeGraphNode("3");
-        CodeGraphNode v4 = new CodeGraphNode("4");
-        CodeGraphNode v5 = new CodeGraphNode("5");
-        CodeGraphNode v6 = new CodeGraphNode("6");
-        CodeGraphNode v7 = new CodeGraphNode("7");
+        Graph<DFSTestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
+        DFSTestNode v0 = new DFSTestNode("0");
+        DFSTestNode v1 = new DFSTestNode("1");
+        DFSTestNode v2 = new DFSTestNode("2");
+        DFSTestNode v3 = new DFSTestNode("3");
+        DFSTestNode v4 = new DFSTestNode("4");
+        DFSTestNode v5 = new DFSTestNode("5");
+        DFSTestNode v6 = new DFSTestNode("6");
+        DFSTestNode v7 = new DFSTestNode("7");
 
         graph.addVertex(v0);
         graph.addVertex(v1);
@@ -72,16 +73,16 @@ public class DepthFirstTraversalLabelTaskTest {
         graph.addEdge(v6, v7);
         graph.addEdge(v7, v5);
 
-        DepthFirstTraversalLabelTask<CodeGraphNode, DefaultEdge> task = new DepthFirstTraversalLabelTask<>(v0, graph);
-        task.run();
-        assertEquals(0, v0.getProperty(DFS_NUM, Integer.class));
-        assertEquals(1, v1.getProperty(DFS_NUM, Integer.class));
-        assertEquals(2, v2.getProperty(DFS_NUM, Integer.class));
-        assertEquals(3, v3.getProperty(DFS_NUM, Integer.class));
-        assertEquals(4, v4.getProperty(DFS_NUM, Integer.class));
-        assertEquals(5, v5.getProperty(DFS_NUM, Integer.class));
-        assertEquals(6, v6.getProperty(DFS_NUM, Integer.class));
-        assertEquals(7, v7.getProperty(DFS_NUM, Integer.class));
+        DepthFirstTraversalLabelTask<DFSTestNode, DefaultEdge> task = new DepthFirstTraversalLabelTask<>(v0, graph);
+        List<DFSTestNode> ordered = task.run().preOrder();
+        assertEquals(v0, ordered.get(0));
+        assertEquals(v1, ordered.get(1));
+        assertEquals(v2, ordered.get(2));
+        assertEquals(v3, ordered.get(3));
+        assertEquals(v4, ordered.get(4));
+        assertEquals(v5, ordered.get(5));
+        assertEquals(v6, ordered.get(6));
+        assertEquals(v7, ordered.get(7));
         assertEquals(8, task.max());
     }
 
@@ -99,15 +100,15 @@ public class DepthFirstTraversalLabelTaskTest {
      */
     @Test
     public void canLabelDFSOrderForSimpleGraphWithBackEdges() {
-        Graph<CodeGraphNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
-        CodeGraphNode v1 = new CodeGraphNode("1");
-        CodeGraphNode v2 = new CodeGraphNode("2");
-        CodeGraphNode v3 = new CodeGraphNode("3");
-        CodeGraphNode v4 = new CodeGraphNode("4");
-        CodeGraphNode v5 = new CodeGraphNode("5");
-        CodeGraphNode v6 = new CodeGraphNode("6");
-        CodeGraphNode v7 = new CodeGraphNode("7");
-        CodeGraphNode v8 = new CodeGraphNode("8");
+        Graph<DFSTestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
+        DFSTestNode v1 = new DFSTestNode("1");
+        DFSTestNode v2 = new DFSTestNode("2");
+        DFSTestNode v3 = new DFSTestNode("3");
+        DFSTestNode v4 = new DFSTestNode("4");
+        DFSTestNode v5 = new DFSTestNode("5");
+        DFSTestNode v6 = new DFSTestNode("6");
+        DFSTestNode v7 = new DFSTestNode("7");
+        DFSTestNode v8 = new DFSTestNode("8");
 
         graph.addVertex(v1);
         graph.addVertex(v2);
@@ -130,18 +131,17 @@ public class DepthFirstTraversalLabelTaskTest {
         graph.addEdge(v7, v8);
         graph.addEdge(v8, v7);
 
-        DepthFirstTraversalLabelTask<CodeGraphNode, DefaultEdge> task = new DepthFirstTraversalLabelTask<>(v1, graph, 1);
-        DepthFirstSpanningTree<CodeGraphNode, DefaultEdge> spanningTree = task.run();
-        assertEquals(1, v1.getProperty(DFS_NUM, Integer.class));
-        assertEquals(2, v2.getProperty(DFS_NUM, Integer.class));
-        assertEquals(3, v3.getProperty(DFS_NUM, Integer.class));
-        assertEquals(4, v4.getProperty(DFS_NUM, Integer.class));
-        assertEquals(5, v5.getProperty(DFS_NUM, Integer.class));
-        assertEquals(6, v6.getProperty(DFS_NUM, Integer.class));
-        assertEquals(7, v7.getProperty(DFS_NUM, Integer.class));
-        assertEquals(8, v8.getProperty(DFS_NUM, Integer.class));
+        DepthFirstTraversalLabelTask<DFSTestNode, DefaultEdge> task = new DepthFirstTraversalLabelTask<>(v1, graph, 1);
+        DepthFirstSpanningTree<DFSTestNode, DefaultEdge> spanningTree = task.run();
         assertEquals(9, task.max());
         assertEquals(ImmutableList.of(v1, v2, v3, v4, v5, v6, v7, v8), spanningTree.preOrder());
         assertEquals(ImmutableList.of(v8, v7, v6, v5, v4, v3, v2, v1), spanningTree.postOrder());
+    }
+}
+
+record DFSTestNode(String id) implements Identifiable {
+    @Override
+    public String label() {
+        return id;
     }
 }

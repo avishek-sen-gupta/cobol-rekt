@@ -15,11 +15,7 @@ public class CodeGraphNode<V extends Identifiable> implements Identifiable {
     @Getter private final V originalNode;
 
     public CodeGraphNode(V originalNode) {
-        this(originalNode, originalNode.id());
-    }
-
-    private CodeGraphNode(V node, String id) {
-        this.originalNode = node;
+        this.originalNode = originalNode;
         this.id = originalNode.id();
     }
 
