@@ -20,7 +20,7 @@ public class BuildDJTreeTaskTest {
      *  @see <a href="documentation/dj-tree-unit-test-graph.png">Flowgraph for this test case</a>
      */
     @Test
-    public void canBuildDJTree() {
+    public void canBuildDJTree1() {
         Graph<DominatorTreeTestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
         DominatorTreeTestNode vSTART = node("START");
         DominatorTreeTestNode vEND = node("END");
@@ -90,6 +90,52 @@ public class BuildDJTreeTaskTest {
         assertEdgeExistsOfType(vE, vF, djTree, JoinEdge.class);
         assertEdgeExistsOfType(vG, vD, djTree, JoinEdge.class);
         assertEdgeExistsOfType(vG, vH, djTree, JoinEdge.class);
+    }
+
+    /**
+     *  @see <a href="documentation/dj-tree-unit-test-graph-2.png">Flowgraph for this test case</a>
+     */
+    @Test
+    public void canBuildDJTree2() {
+        Graph<DominatorTreeTestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
+        DominatorTreeTestNode vA = node("A");
+        DominatorTreeTestNode vB = node("B");
+        DominatorTreeTestNode vC = node("C");
+        DominatorTreeTestNode vD = node("D");
+        DominatorTreeTestNode vE = node("E");
+
+        graph.addVertex(vA);
+        graph.addVertex(vB);
+        graph.addVertex(vC);
+        graph.addVertex(vD);
+        graph.addVertex(vE);
+
+        graph.addEdge(vA, vB);
+        graph.addEdge(vA, vC);
+        graph.addEdge(vB, vC);
+        graph.addEdge(vC, vB);
+        graph.addEdge(vB, vD);
+        graph.addEdge(vD, vB);
+        graph.addEdge(vC, vE);
+        graph.addEdge(vE, vC);
+
+        DepthFirstTraversalLabelTask<DominatorTreeTestNode, DefaultEdge> dfsTask = new DepthFirstTraversalLabelTask<>(vA, graph);
+        DepthFirstSpanningTree<DominatorTreeTestNode, DefaultEdge> spanningTree = dfsTask.run();
+
+        List<Pair<DominatorTreeTestNode, DominatorTreeTestNode>> immediateDominators = new BuildDominatorsTask<DominatorTreeTestNode, DefaultEdge>().immediateDominators(spanningTree);
+        DominatorTree<DominatorTreeTestNode, DefaultEdge> dominatorTree = new BuildDominatorTreeTask<>(immediateDominators, spanningTree.sourceGraphRoot(), DefaultEdge.class).run();
+        DJTree<DominatorTreeTestNode> djTree = new BuildDJTreeTask<>(dominatorTree, spanningTree).run();
+        assertEquals(4, djTree.graph().edgeSet().stream().filter(e -> e instanceof DominatorEdge).count());
+        assertEdgeExistsOfType(vA, vB, djTree, DominatorEdge.class);
+        assertEdgeExistsOfType(vA, vC, djTree, DominatorEdge.class);
+        assertEdgeExistsOfType(vB, vD, djTree, DominatorEdge.class);
+        assertEdgeExistsOfType(vC, vE, djTree, DominatorEdge.class);
+
+        assertEquals(4, djTree.graph().edgeSet().stream().filter(e -> e instanceof JoinEdge).count());
+        assertEdgeExistsOfType(vB, vC, djTree, JoinEdge.class);
+        assertEdgeExistsOfType(vC, vB, djTree, JoinEdge.class);
+        assertEdgeExistsOfType(vD, vB, djTree, JoinEdge.class);
+        assertEdgeExistsOfType(vE, vC, djTree, JoinEdge.class);
     }
 
     private void assertEdgeExistsOfType(DominatorTreeTestNode from, DominatorTreeTestNode to, DJTree<DominatorTreeTestNode> dominatorTree, Class<? extends DefaultEdge> edgeClass) {
