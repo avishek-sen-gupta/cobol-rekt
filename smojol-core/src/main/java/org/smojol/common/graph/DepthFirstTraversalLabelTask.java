@@ -37,7 +37,7 @@ public class DepthFirstTraversalLabelTask<V extends Identifiable, E> {
 
     public DepthFirstSpanningTree<V, E> run() {
         run(sourceGraphRoot);
-        return new DepthFirstSpanningTree<>(depthFirstOrderedNodes, sourceGraphRoot, sourceGraph, discoveryTimes);
+        return new DepthFirstSpanningTree<>(depthFirstOrderedNodes, sourceGraphRoot, sourceGraph, discoveryTimes, spanningTree);
     }
 
     private void run(V current) {
