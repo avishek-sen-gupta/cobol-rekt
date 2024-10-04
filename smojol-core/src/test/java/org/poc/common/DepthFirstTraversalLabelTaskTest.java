@@ -5,6 +5,7 @@ import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.junit.jupiter.api.Test;
+import org.smojol.common.graph.ClassifiedEdges;
 import org.smojol.common.graph.DepthFirstSpanningTree;
 import org.smojol.common.graph.DepthFirstTraversalLabelTask;
 import org.smojol.common.id.Identifiable;
@@ -153,6 +154,65 @@ public class DepthFirstTraversalLabelTaskTest {
         assertEquals(17, task.currentClock());
         assertEquals(ImmutableList.of(v1, v2, v3, v4, v5, v6, v7, v8), spanningTree.preOrder());
         assertEquals(ImmutableList.of(v8, v7, v6, v5, v4, v3, v2, v1), spanningTree.postOrder());
+    }
+
+    @Test
+    public void canClassifyEdges() {
+        Graph<DFSTestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
+        DFSTestNode vS = new DFSTestNode("S");
+        DFSTestNode vA = new DFSTestNode("A");
+        DFSTestNode vB = new DFSTestNode("B");
+        DFSTestNode vC = new DFSTestNode("C");
+        DFSTestNode vD = new DFSTestNode("D");
+        DFSTestNode vE = new DFSTestNode("E");
+        DFSTestNode vF = new DFSTestNode("F");
+        DFSTestNode vG = new DFSTestNode("G");
+        DFSTestNode vH = new DFSTestNode("H");
+        DFSTestNode vI = new DFSTestNode("I");
+        DFSTestNode vJ = new DFSTestNode("J");
+        DFSTestNode vK = new DFSTestNode("K");
+
+        graph.addVertex(vS);
+        graph.addVertex(vA);
+        graph.addVertex(vB);
+        graph.addVertex(vC);
+        graph.addVertex(vD);
+        graph.addVertex(vE);
+        graph.addVertex(vF);
+        graph.addVertex(vG);
+        graph.addVertex(vH);
+        graph.addVertex(vI);
+        graph.addVertex(vJ);
+        graph.addVertex(vK);
+
+        graph.addEdge(vS, vB);
+        graph.addEdge(vS, vC);
+        graph.addEdge(vB, vA);
+        graph.addEdge(vB, vD);
+        graph.addEdge(vB, vE);
+        graph.addEdge(vA, vD);
+        graph.addEdge(vD, vH);
+        graph.addEdge(vE, vH);
+        graph.addEdge(vH, vK);
+        graph.addEdge(vH, vB);
+        graph.addEdge(vK, vS);
+
+        graph.addEdge(vC, vF);
+        graph.addEdge(vC, vG);
+        graph.addEdge(vF, vI);
+        graph.addEdge(vG, vI);
+        graph.addEdge(vG, vJ);
+        graph.addEdge(vJ, vI);
+        graph.addEdge(vI, vK);
+        graph.addEdge(vI, vS);
+
+        DepthFirstTraversalLabelTask<DFSTestNode, DefaultEdge> task = new DepthFirstTraversalLabelTask<>(vS, graph, 1, DefaultEdge.class);
+        DepthFirstSpanningTree<DFSTestNode, DefaultEdge> spanningTree = task.run();
+        ClassifiedEdges<DefaultEdge> classifiedEdges = spanningTree.classifiedEdges();
+        assertEquals(11, classifiedEdges.treeEdges().size());
+        assertEquals(3, classifiedEdges.backEdges().size());
+        assertEquals(1, classifiedEdges.forwardEdges().size());
+        assertEquals(4, classifiedEdges.crossEdges().size());
     }
 }
 
