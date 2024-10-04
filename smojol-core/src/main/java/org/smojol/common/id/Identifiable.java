@@ -1,8 +1,13 @@
 package org.smojol.common.id;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 public interface Identifiable {
+    static <X, Y> Pair<X, Y> pair(X left, Y right) {
+        return ImmutablePair.of(left, right);
+    }
+
     String id();
     String label();
 

@@ -6,6 +6,7 @@ import org.jgrapht.graph.DefaultEdge;
 import org.smojol.common.id.Identifiable;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class DepthFirstTraversalLabelTask<V extends Identifiable, E> {
     public static final String DFS_NUM = "DFS_NUM";
@@ -27,17 +28,9 @@ public class DepthFirstTraversalLabelTask<V extends Identifiable, E> {
     }
 
     private static <V extends Identifiable, E> Graph<CodeGraphNode<V>, DefaultEdge> unorderedGraph(Graph<V, E> sourceGraph) {
-        DefaultDirectedGraph<CodeGraphNode<V>, DefaultEdge> graphForDominators = new DefaultDirectedGraph<>(DefaultEdge.class);
-        Map<V, CodeGraphNode<V>> sourceToDFSNodeMap = new HashMap<>();
-//        List<CodeGraphNode<V>> xvs = sourceGraph.vertexSet().stream().map(CodeGraphNode::new).toList();
-        sourceGraph.vertexSet().forEach(sourceVertex -> {
-            CodeGraphNode<V> dfsLabelledVertex = new CodeGraphNode<>(sourceVertex);
-            graphForDominators.addVertex(dfsLabelledVertex);
-            sourceToDFSNodeMap.put(sourceVertex, dfsLabelledVertex);
-        });
-
-//        jgraph.edgeSet().forEach(edge -> graphForDominators.addEdge(new CodeGraphNode<>(jgraph.getEdgeSource(edge)), new CodeGraphNode<>(jgraph.getEdgeTarget(edge))));
-//        sourceGraph.edgeSet().forEach(edge -> graphForDominators.addEdge(find(sourceGraph.getEdgeSource(edge), xvs), find(sourceGraph.getEdgeTarget(edge), xvs)));
+        Graph<CodeGraphNode<V>, DefaultEdge> graphForDominators = new DefaultDirectedGraph<>(DefaultEdge.class);
+        Map<V, CodeGraphNode<V>> sourceToDFSNodeMap = sourceGraph.vertexSet().stream().collect(Collectors.toMap(xv -> xv, CodeGraphNode::new));
+        sourceToDFSNodeMap.forEach((k, v) -> graphForDominators.addVertex(v));
         sourceGraph.edgeSet().forEach(edge -> graphForDominators.addEdge(sourceToDFSNodeMap.get(sourceGraph.getEdgeSource(edge)), sourceToDFSNodeMap.get(sourceGraph.getEdgeTarget(edge))));
         return graphForDominators;
     }
