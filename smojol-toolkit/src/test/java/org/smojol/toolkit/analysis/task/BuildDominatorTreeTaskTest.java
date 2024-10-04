@@ -11,6 +11,7 @@ import org.smojol.common.graph.DominatorTree;
 import org.smojol.common.id.Identifiable;
 import org.smojol.toolkit.analysis.task.transpiler.BuildDominatorTreeTask;
 import org.smojol.toolkit.analysis.task.transpiler.BuildDominatorsTask;
+import org.smojol.toolkit.analysis.task.transpiler.DominatorEdge;
 
 import java.util.List;
 
@@ -67,6 +68,8 @@ public class BuildDominatorTreeTaskTest {
 
         List<Pair<DominatorTreeTestNode, DominatorTreeTestNode>> immediateDominators = new BuildDominatorsTask<DominatorTreeTestNode, DefaultEdge>().immediateDominators(spanningTree);
         DominatorTree<DominatorTreeTestNode, DefaultEdge> dominatorTree = new BuildDominatorTreeTask<>(immediateDominators, spanningTree.sourceGraphRoot(), DefaultEdge.class).run();
+        assertEquals(9, dominatorTree.graph().edgeSet().size());
+        assertEdgeDoesNotExistOfType(vSTART, vSTART, dominatorTree);
         assertEdgeExistsOfType(vSTART, vEND, dominatorTree);
         assertEdgeExistsOfType(vSTART, vA, dominatorTree);
         assertEdgeExistsOfType(vA, vB, dominatorTree);
@@ -79,9 +82,17 @@ public class BuildDominatorTreeTaskTest {
     }
 
     private void assertEdgeExistsOfType(DominatorTreeTestNode from, DominatorTreeTestNode to, DominatorTree<DominatorTreeTestNode, DefaultEdge> dominatorTree) {
+        assertEdgeExistsOfType(from, to, dominatorTree, true);
+    }
+
+    private void assertEdgeDoesNotExistOfType(DominatorTreeTestNode from, DominatorTreeTestNode to, DominatorTree<DominatorTreeTestNode, DefaultEdge> dominatorTree) {
+        assertEdgeExistsOfType(from, to, dominatorTree, false);
+    }
+
+    private void assertEdgeExistsOfType(DominatorTreeTestNode from, DominatorTreeTestNode to, DominatorTree<DominatorTreeTestNode, DefaultEdge> dominatorTree, boolean exists) {
         Graph<DominatorTreeTestNode, DefaultEdge> dominatorGraph = dominatorTree.graph();
         List<DefaultEdge> matchingEdges = dominatorGraph.edgeSet().stream().filter(e -> e.getClass() == DefaultEdge.class && dominatorGraph.getEdgeSource(e) == from && dominatorGraph.getEdgeTarget(e) == to).toList();
-        assertEquals(1, matchingEdges.size());
+        assertEquals(exists ? 1 : 0, matchingEdges.size());
     }
 
     private static DominatorTreeTestNode node(String id) {

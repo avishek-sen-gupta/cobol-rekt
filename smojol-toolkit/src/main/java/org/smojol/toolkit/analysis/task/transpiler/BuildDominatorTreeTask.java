@@ -28,7 +28,10 @@ public class BuildDominatorTreeTask<V extends Identifiable, E> {
     public DominatorTree<V, E> run() {
         Graph<V, E> dominatorTree = new DefaultDirectedGraph<>(edgeClass);
         immediateDominators.forEach(pair -> dominatorTree.addVertex(pair.getLeft()));
-        immediateDominators.forEach(pair -> dominatorTree.addEdge(pair.getRight(), pair.getLeft()));
+        immediateDominators.forEach(pair -> {
+            if (pair.getRight() == null) return;
+            dominatorTree.addEdge(pair.getRight(), pair.getLeft());
+        });
         return new DominatorTree<>(root, dominatorTree);
     }
 }

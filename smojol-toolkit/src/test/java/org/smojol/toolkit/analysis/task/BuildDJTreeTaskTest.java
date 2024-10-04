@@ -68,6 +68,7 @@ public class BuildDJTreeTaskTest {
         DominatorTree<DominatorTreeTestNode, DefaultEdge> dominatorTree = new BuildDominatorTreeTask<>(immediateDominators, spanningTree.sourceGraphRoot(), DefaultEdge.class).run();
         DJTree<DominatorTreeTestNode> djTree = new BuildDJTreeTask<>(dominatorTree, spanningTree).run();
 
+        assertEquals(9, djTree.graph().edgeSet().stream().filter(e -> e instanceof DominatorEdge).count());
         assertEdgeExistsOfType(vSTART, vEND, djTree, DominatorEdge.class);
         assertEdgeExistsOfType(vSTART, vA, djTree, DominatorEdge.class);
         assertEdgeExistsOfType(vA, vB, djTree, DominatorEdge.class);
@@ -78,6 +79,7 @@ public class BuildDJTreeTaskTest {
         assertEdgeExistsOfType(vC, vE, djTree, DominatorEdge.class);
         assertEdgeExistsOfType(vD, vG, djTree, DominatorEdge.class);
 
+        assertEquals(10, djTree.graph().edgeSet().stream().filter(e -> e instanceof JoinEdge).count());
         assertEdgeExistsOfType(vH, vEND, djTree, JoinEdge.class);
         assertEdgeExistsOfType(vH, vA, djTree, JoinEdge.class);
         assertEdgeExistsOfType(vH, vC, djTree, JoinEdge.class);

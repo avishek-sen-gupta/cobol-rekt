@@ -15,8 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class BuildDominatorsTaskTest {
     @Test
@@ -63,7 +62,7 @@ public class BuildDominatorsTaskTest {
         DepthFirstSpanningTree<DominatorTestNode, DefaultEdge> spanningTree = dfsTask.run();
 
         Map<DominatorTestNode, Set<DominatorTestNode>> dominatorSets = new BuildDominatorsTask<DominatorTestNode, DefaultEdge>().allDominators(spanningTree.preOrder(), graph);
-        assertEquals(ImmutableSet.of(v0), dominatorSets.get(v0));
+        assertEquals(ImmutableSet.of(), dominatorSets.get(v0));
         assertEquals(ImmutableSet.of(v0, v1), dominatorSets.get(v1));
         assertEquals(ImmutableSet.of(v0, v1, v2), dominatorSets.get(v2));
         assertEquals(ImmutableSet.of(v0, v1, v3), dominatorSets.get(v3));
@@ -121,7 +120,8 @@ public class BuildDominatorsTaskTest {
         DepthFirstSpanningTree<DominatorTestNode, DefaultEdge> spanningTree = dfsTask.run();
 
         List<Pair<DominatorTestNode, DominatorTestNode>> immediateDominators = new BuildDominatorsTask<DominatorTestNode, DefaultEdge>().immediateDominators(spanningTree);
-        assertTrue(immediateDominators.contains(ImmutablePair.of(v0, v0)));
+        assertFalse(immediateDominators.contains(ImmutablePair.of(v0, v0)));
+        assertTrue(immediateDominators.contains(ImmutablePair.of(v0, null)));
         assertTrue(immediateDominators.contains(ImmutablePair.of(v1, v0)));
         assertTrue(immediateDominators.contains(ImmutablePair.of(v2, v1)));
         assertTrue(immediateDominators.contains(ImmutablePair.of(v3, v1)));

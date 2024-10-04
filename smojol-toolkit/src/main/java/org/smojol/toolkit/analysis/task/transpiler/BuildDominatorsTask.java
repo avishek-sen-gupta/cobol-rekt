@@ -44,6 +44,7 @@ public class BuildDominatorsTask<V extends Identifiable, E> {
             return true;
         }).reduce(false, (a, b) -> a || b));
 
+//        dominators.put(dfsOrdered.getFirst(), ImmutableSet.of());
         return dominators;
     }
 
@@ -59,7 +60,7 @@ public class BuildDominatorsTask<V extends Identifiable, E> {
     }
 
     private V uniqueImmediateDominator(V dominated, Set<V> potentialImmediateDominators, V root, Map<V, List<V>> allDominances) {
-        if (dominated == root) return dominated;
+        if (dominated == root) return null;
         Set<V> potentialImmediateDominatorsWithoutSelf = new HashSet<>(potentialImmediateDominators);
         List<V> nonImmediateDominatorNodes = new ArrayList<>();
         potentialImmediateDominatorsWithoutSelf.remove(dominated);
