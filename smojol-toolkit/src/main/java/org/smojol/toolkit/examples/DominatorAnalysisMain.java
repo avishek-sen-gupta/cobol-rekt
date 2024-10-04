@@ -29,6 +29,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class DominatorAnalysisMain {
     public static void main(String[] args) throws IOException, InterruptedException {
@@ -49,8 +50,9 @@ public class DominatorAnalysisMain {
         DepthFirstSpanningTree<TranspilerInstruction, DefaultEdge> spanningTree = new DepthFirstTraversalLabelTask<>(transpilerFlowgraph.instructions().getFirst(), transpilerFlowgraph.instructionFlowgraph(), DefaultEdge.class).run();
         DepthFirstSpanningTree<BasicBlock<TranspilerInstruction>, DefaultEdge> blockSpanningTree = new DepthFirstTraversalLabelTask<>(transpilerFlowgraph.basicBlocks().getFirst(), transpilerFlowgraph.basicBlockFlowgraph(), DefaultEdge.class).run();
         List<Pair<BasicBlock<TranspilerInstruction>, BasicBlock<TranspilerInstruction>>> immediateDominators = new BuildDominatorsTask<BasicBlock<TranspilerInstruction>, DefaultEdge>().immediateDominators(blockSpanningTree);
+        Map<BasicBlock<TranspilerInstruction>, Set<BasicBlock<TranspilerInstruction>>> allDominators = new BuildDominatorsTask<BasicBlock<TranspilerInstruction>, DefaultEdge>().allDominators(blockSpanningTree.preOrder(), blockSpanningTree.sourceGraph());
         DominatorTree<BasicBlock<TranspilerInstruction>, DefaultEdge> dominatorTree = new BuildDominatorTreeTask<>(immediateDominators, blockSpanningTree.sourceGraphRoot(), DefaultEdge.class).run();
-        DJTree<BasicBlock<TranspilerInstruction>> djTree = new BuildDJTreeTask<>(dominatorTree, blockSpanningTree).run();
+        DJTree<BasicBlock<TranspilerInstruction>> djTree = new BuildDJTreeTask<>(dominatorTree, blockSpanningTree, immediateDominators, allDominators).run();
         String draw = new MermaidGraph<BasicBlock<TranspilerInstruction>, DefaultEdge>().draw(djTree.graph());
     }
 }

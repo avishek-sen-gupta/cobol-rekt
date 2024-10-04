@@ -19,7 +19,7 @@ Algorithm based on the paper 'Graph-Theoretic Constructs for Program Control Flo
 public class BuildDominatorsTask<V extends Identifiable, E> {
     private static final Logger LOGGER = Logger.getLogger(BuildDominatorsTask.class.getName());
 
-    public Map<V, Set<V>> allDominators(List<V> dfsOrdered, Graph<V, E> g) {
+    public Map<V, Set<V>> allDominators(List<V> dfsOrdered, Graph<V, E> sourceGraph) {
         Set<V> allNodes = new HashSet<>(dfsOrdered);
         Map<V, Set<V>> dominators = new HashMap<>();
         dominators.put(dfsOrdered.getFirst(), Set.of(dfsOrdered.getFirst()));
@@ -29,7 +29,7 @@ public class BuildDominatorsTask<V extends Identifiable, E> {
         do {
             LOGGER.finer("Building Dominators...");
         } while (tail.stream().map(n -> {
-            Set<V> predecessors = g.incomingEdgesOf(n).stream().map(g::getEdgeSource).collect(Collectors.toUnmodifiableSet());
+            Set<V> predecessors = sourceGraph.incomingEdgesOf(n).stream().map(sourceGraph::getEdgeSource).collect(Collectors.toUnmodifiableSet());
             List<Set<V>> predecessorDominators = predecessors.stream().map(dominators::get).toList();
             Set<V> finalIntersection = predecessorDominators.stream().reduce(allNodes, Sets::intersection);
             Set<V> updatedDominatorSet = Sets.union(finalIntersection, Set.of(n));
