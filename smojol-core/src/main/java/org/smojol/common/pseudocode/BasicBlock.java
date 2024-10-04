@@ -5,7 +5,7 @@ import org.smojol.common.id.Identifiable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BasicBlock<T> implements Identifiable {
+public class BasicBlock<T extends Identifiable> implements Identifiable {
     private final List<T> instructions = new ArrayList<>();
     private final String id;
 

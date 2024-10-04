@@ -1,18 +1,19 @@
 package org.smojol.common.graph;
 
 import org.jgrapht.Graph;
+import org.smojol.common.id.Identifiable;
 
 import java.util.List;
 
-public record DepthFirstSpanningTree(GraphNodeLike root,
-                                     Graph<GraphNodeLike, org.jgrapht.graph.DefaultEdge> graph,
-                                     List<GraphNodeLike> depthFirstSpanningTreeOrder) {
+public record DepthFirstSpanningTree<V extends Identifiable, E>(V root,
+                                     Graph<V, E> graph,
+                                     List<V> depthFirstSpanningTreeOrder) {
 
-    public List<GraphNodeLike> preOrder() {
+    public List<V> preOrder() {
         return depthFirstSpanningTreeOrder;
     }
 
-    public List<GraphNodeLike> postOrder() {
+    public List<V> postOrder() {
         return depthFirstSpanningTreeOrder.reversed();
     }
 }

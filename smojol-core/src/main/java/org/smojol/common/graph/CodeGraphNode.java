@@ -1,17 +1,26 @@
 package org.smojol.common.graph;
 
+import lombok.Getter;
+import org.smojol.common.id.Identifiable;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 import static org.smojol.common.graph.DepthFirstTraversalLabelTask.DFS_NUM;
 
-public class CodeGraphNode implements GraphNodeLike {
+public class CodeGraphNode<V extends Identifiable> implements Identifiable {
     private final Map<String, Object> properties = new HashMap<>();
-    private final String id;
+    @Getter private final String id;
+    @Getter private final V originalNode;
 
-    public CodeGraphNode(String id) {
-        this.id = id;
+    public CodeGraphNode(V originalNode) {
+        this(originalNode, originalNode.id());
+    }
+
+    private CodeGraphNode(V node, String id) {
+        this.originalNode = node;
+        this.id = originalNode.id();
     }
 
     @Override
@@ -24,13 +33,11 @@ public class CodeGraphNode implements GraphNodeLike {
         return id;
     }
 
-    @Override
     public <T> T getProperty(String key, Class<T> type) {
         if (!properties.containsKey(key)) return null;
         return (T) properties.get(key);
     }
 
-    @Override
     public <T> void setProperty(String key, T value) {
         properties.put(key, value);
     }

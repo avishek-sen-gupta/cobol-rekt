@@ -1,17 +1,24 @@
 package org.smojol.toolkit.examples;
 
 import com.google.common.collect.ImmutableList;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.jgrapht.graph.DefaultEdge;
 import org.smojol.common.dialect.LanguageDialect;
 import org.smojol.common.flowchart.FlowchartOutputFormat;
+import org.smojol.common.flowchart.MermaidGraph;
 import org.smojol.common.graph.*;
+import org.smojol.common.id.Identifiable;
 import org.smojol.common.id.UUIDProvider;
 import org.smojol.common.logging.LoggingConfig;
+import org.smojol.common.pseudocode.BasicBlock;
 import org.smojol.common.resource.LocalFilesystemOperations;
 import org.smojol.common.transpiler.PruneUnreachableTask;
 import org.smojol.common.transpiler.TranspilerFlowgraph;
+import org.smojol.common.transpiler.TranspilerInstruction;
 import org.smojol.toolkit.analysis.pipeline.ProgramSearch;
 import org.smojol.toolkit.analysis.task.analysis.CodeTaskRunner;
+import org.smojol.toolkit.analysis.task.transpiler.BuildDominatorTreeTask;
 import org.smojol.toolkit.analysis.task.transpiler.BuildDominatorsTask;
 import org.smojol.toolkit.interpreter.FullProgram;
 import org.smojol.toolkit.interpreter.structure.OccursIgnoringFormat1DataStructureBuilder;
@@ -23,6 +30,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+
+import static org.smojol.common.id.Identifiable.asPair;
+import static org.smojol.common.id.Identifiable.identifiable;
 
 public class DominatorAnalysisMain {
     public static void main(String[] args) throws IOException, InterruptedException {
@@ -39,8 +49,11 @@ public class DominatorAnalysisMain {
         TranspilerFlowgraph transpilerFlowgraph = ((AnalysisTaskResultOK) results.getFirst()).getDetail();
         PruneUnreachableTask.pruneUnreachableInstructions(transpilerFlowgraph);
         System.out.println("Number of nodes = " + transpilerFlowgraph.instructionFlowgraph().vertexSet().size());
-        DepthFirstSpanningTree spanningTree = new DepthFirstTraversalLabelTask<>(transpilerFlowgraph.instructionFlowgraph(), transpilerFlowgraph.instructions().getFirst()).run();
-        DepthFirstSpanningTree blockSpanningTree = new DepthFirstTraversalLabelTask<>(transpilerFlowgraph.basicBlockFlowgraph(), transpilerFlowgraph.basicBlocks().getFirst()).run();
-        List<Pair<GraphNodeLike, GraphNodeLike>> immediateDominators = new BuildDominatorsTask().immediateDominators(blockSpanningTree);
+        DepthFirstSpanningTree<TranspilerInstruction, DefaultEdge> spanningTree = new DepthFirstTraversalLabelTask<>(transpilerFlowgraph.instructions().getFirst(), transpilerFlowgraph.instructionFlowgraph()).run();
+        DepthFirstSpanningTree<BasicBlock<TranspilerInstruction>, DefaultEdge> blockSpanningTree = new DepthFirstTraversalLabelTask<>(transpilerFlowgraph.basicBlocks().getFirst(), transpilerFlowgraph.basicBlockFlowgraph()).run();
+        List<Pair<BasicBlock<TranspilerInstruction>, BasicBlock<TranspilerInstruction>>> immediateDominators = new BuildDominatorsTask<BasicBlock<TranspilerInstruction>, DefaultEdge>().immediateDominators(blockSpanningTree);
+        List<Pair<Identifiable, Identifiable>> immediateDominatorPairs = immediateDominators.stream().map(dominatedDominatorPair -> asPair(ImmutablePair.of(identifiable(dominatedDominatorPair.getLeft()), identifiable(dominatedDominatorPair.getRight())))).toList();
+        DominatorTree dominatorTree = new BuildDominatorTreeTask(immediateDominatorPairs, blockSpanningTree.root()).run();
+        String draw = new MermaidGraph<Identifiable, DefaultEdge>().draw(dominatorTree.graph());
     }
 }

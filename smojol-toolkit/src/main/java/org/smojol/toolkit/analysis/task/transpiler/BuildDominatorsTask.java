@@ -4,9 +4,8 @@ import com.google.common.collect.Sets;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;
-import org.jgrapht.graph.DefaultEdge;
 import org.smojol.common.graph.DepthFirstSpanningTree;
-import org.smojol.common.graph.GraphNodeLike;
+import org.smojol.common.id.Identifiable;
 
 import java.util.*;
 import java.util.logging.Logger;
@@ -17,24 +16,24 @@ import static org.smojol.common.list.ConsCar.tail;
 /*
 Algorithm based on the paper 'Graph-Theoretic Constructs for Program Control Flow Analysis' by Allen and Cocke (1972)
  */
-public class BuildDominatorsTask {
+public class BuildDominatorsTask<V extends Identifiable, E> {
     private static final Logger LOGGER = Logger.getLogger(BuildDominatorsTask.class.getName());
 
-    public Map<GraphNodeLike, Set<GraphNodeLike>> allDominators(List<GraphNodeLike> dfsOrdered, Graph<GraphNodeLike, DefaultEdge> g) {
-        Set<GraphNodeLike> allNodes = new HashSet<>(dfsOrdered);
-        Map<GraphNodeLike, Set<GraphNodeLike>> dominators = new HashMap<>();
+    public Map<V, Set<V>> allDominators(List<V> dfsOrdered, Graph<V, E> g) {
+        Set<V> allNodes = new HashSet<>(dfsOrdered);
+        Map<V, Set<V>> dominators = new HashMap<>();
         dominators.put(dfsOrdered.getFirst(), Set.of(dfsOrdered.getFirst()));
-        List<GraphNodeLike> tail = tail(dfsOrdered);
+        List<V> tail = tail(dfsOrdered);
         tail.forEach(node -> dominators.put(node, new HashSet<>(dfsOrdered)));
 
         do {
             LOGGER.finer("Building Dominators...");
         } while (tail.stream().map(n -> {
-            Set<GraphNodeLike> predecessors = g.incomingEdgesOf(n).stream().map(g::getEdgeSource).collect(Collectors.toUnmodifiableSet());
-            List<Set<GraphNodeLike>> predecessorDominators = predecessors.stream().map(dominators::get).toList();
-            Set<GraphNodeLike> finalIntersection = predecessorDominators.stream().reduce(allNodes, Sets::intersection);
-            Set<GraphNodeLike> updatedDominatorSet = Sets.union(finalIntersection, Set.of(n));
-            Set<GraphNodeLike> originalDominatorSet = dominators.get(n);
+            Set<V> predecessors = g.incomingEdgesOf(n).stream().map(g::getEdgeSource).collect(Collectors.toUnmodifiableSet());
+            List<Set<V>> predecessorDominators = predecessors.stream().map(dominators::get).toList();
+            Set<V> finalIntersection = predecessorDominators.stream().reduce(allNodes, Sets::intersection);
+            Set<V> updatedDominatorSet = Sets.union(finalIntersection, Set.of(n));
+            Set<V> originalDominatorSet = dominators.get(n);
             LOGGER.finest(String.format("Comparing %s with %s", updatedDominatorSet, originalDominatorSet));
             if (updatedDominatorSet.equals(originalDominatorSet)) {
                 LOGGER.finest("Were not equal, returning false");
@@ -48,24 +47,24 @@ public class BuildDominatorsTask {
         return dominators;
     }
 
-    public List<Pair<GraphNodeLike, GraphNodeLike>> immediateDominators(DepthFirstSpanningTree dfsTree) {
-        Map<GraphNodeLike, Set<GraphNodeLike>> allDominators = allDominators(dfsTree.preOrder(), dfsTree.graph());
+    public List<Pair<V, V>> immediateDominators(DepthFirstSpanningTree<V, E> dfsTree) {
+        Map<V, Set<V>> allDominators = allDominators(dfsTree.preOrder(), dfsTree.graph());
         LOGGER.info("Building Immediate Dominators >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-        Map<GraphNodeLike, List<GraphNodeLike>> dominances = new HashMap<>();
+        Map<V, List<V>> dominances = new HashMap<>();
         allDominators.forEach((dominated, dominators) -> dominators.forEach(dominator -> {
             if (!dominances.containsKey(dominator)) dominances.put(dominator, new ArrayList<>());
             dominances.get(dominator).add(dominated);
         }));
-        return allDominators.entrySet().stream().map(e -> (Pair<GraphNodeLike, GraphNodeLike>) ImmutablePair.of(e.getKey(), uniqueImmediateDominator(e.getKey(), e.getValue(), dfsTree.root(), dominances))).toList();
+        return allDominators.entrySet().stream().map(e -> (Pair<V, V>) ImmutablePair.of(e.getKey(), uniqueImmediateDominator(e.getKey(), e.getValue(), dfsTree.root(), dominances))).toList();
     }
 
-    private GraphNodeLike uniqueImmediateDominator(GraphNodeLike dominated, Set<GraphNodeLike> potentialImmediateDominators, GraphNodeLike root, Map<GraphNodeLike, List<GraphNodeLike>> allDominances) {
+    private V uniqueImmediateDominator(V dominated, Set<V> potentialImmediateDominators, V root, Map<V, List<V>> allDominances) {
         if (dominated == root) return dominated;
-        HashSet<GraphNodeLike> potentialImmediateDominatorsWithoutSelf = new HashSet<>(potentialImmediateDominators);
-        List<GraphNodeLike> nonImmediateDominatorNodes = new ArrayList<>();
+        Set<V> potentialImmediateDominatorsWithoutSelf = new HashSet<>(potentialImmediateDominators);
+        List<V> nonImmediateDominatorNodes = new ArrayList<>();
         potentialImmediateDominatorsWithoutSelf.remove(dominated);
-        for (GraphNodeLike d1 : potentialImmediateDominatorsWithoutSelf) {
-            for (GraphNodeLike d2 : potentialImmediateDominatorsWithoutSelf) {
+        for (V d1 : potentialImmediateDominatorsWithoutSelf) {
+            for (V d2 : potentialImmediateDominatorsWithoutSelf) {
                 if (d1 == d2) continue;
                 if (allDominances.get(d1).contains(d2)) nonImmediateDominatorNodes.add(d1);
             }
