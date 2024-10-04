@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import static org.smojol.common.graph.DepthFirstTraversalLabelTask.DFS_NUM;
+import static org.smojol.common.graph.DepthFirstTraversalLabelTask.DFS_DISCOVERY_START;
 
 public class CodeGraphNode<V extends Identifiable> implements Identifiable {
     private final Map<String, Object> properties = new HashMap<>();
@@ -40,7 +40,7 @@ public class CodeGraphNode<V extends Identifiable> implements Identifiable {
 
     @Override
     public String toString() {
-        return getProperty(DFS_NUM, Integer.class).toString();
+        return getProperty(DFS_DISCOVERY_START, Integer.class).toString();
     }
 
     @Override

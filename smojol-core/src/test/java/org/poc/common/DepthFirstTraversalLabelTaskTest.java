@@ -11,7 +11,7 @@ import org.smojol.common.id.Identifiable;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DepthFirstTraversalLabelTaskTest {
     @Test
@@ -26,11 +26,15 @@ public class DepthFirstTraversalLabelTaskTest {
         graph.addEdge(va, vb);
         graph.addEdge(va, vc);
         DepthFirstTraversalLabelTask<DFSTestNode, DefaultEdge> task = new DepthFirstTraversalLabelTask<>(va, graph);
-        List<DFSTestNode> ordered = task.run().preOrder();
+        DepthFirstSpanningTree<DFSTestNode, DefaultEdge> spanningTree = task.run();
+        List<DFSTestNode> ordered = spanningTree.preOrder();
         assertEquals(va, ordered.get(0));
         assertEquals(vb, ordered.get(1));
         assertEquals(vc, ordered.get(2));
-        assertEquals(3, task.max());
+        assertEquals(6, task.currentClock());
+        assertTrue(spanningTree.isAncestorOf(va, vb));
+        assertTrue(spanningTree.isAncestorOf(va, vc));
+        assertFalse(spanningTree.isAncestorOf(vc, vb));
     }
 
     @Test
@@ -74,7 +78,8 @@ public class DepthFirstTraversalLabelTaskTest {
         graph.addEdge(v7, v5);
 
         DepthFirstTraversalLabelTask<DFSTestNode, DefaultEdge> task = new DepthFirstTraversalLabelTask<>(v0, graph);
-        List<DFSTestNode> ordered = task.run().preOrder();
+        DepthFirstSpanningTree<DFSTestNode, DefaultEdge> spanningTree = task.run();
+        List<DFSTestNode> ordered = spanningTree.preOrder();
         assertEquals(v0, ordered.get(0));
         assertEquals(v1, ordered.get(1));
         assertEquals(v2, ordered.get(2));
@@ -83,7 +88,12 @@ public class DepthFirstTraversalLabelTaskTest {
         assertEquals(v5, ordered.get(5));
         assertEquals(v6, ordered.get(6));
         assertEquals(v7, ordered.get(7));
-        assertEquals(8, task.max());
+        assertEquals(16, task.currentClock());
+        assertFalse(spanningTree.isAncestorOf(v3, v6));
+        assertFalse(spanningTree.isAncestorOf(v6, v3));
+        assertFalse(spanningTree.isAncestorOf(v4, v7));
+        assertFalse(spanningTree.isAncestorOf(v7, v4));
+        assertTrue(spanningTree.isAncestorOf(v2, v5));
     }
 
     /*
@@ -133,7 +143,7 @@ public class DepthFirstTraversalLabelTaskTest {
 
         DepthFirstTraversalLabelTask<DFSTestNode, DefaultEdge> task = new DepthFirstTraversalLabelTask<>(v1, graph, 1);
         DepthFirstSpanningTree<DFSTestNode, DefaultEdge> spanningTree = task.run();
-        assertEquals(9, task.max());
+        assertEquals(17, task.currentClock());
         assertEquals(ImmutableList.of(v1, v2, v3, v4, v5, v6, v7, v8), spanningTree.preOrder());
         assertEquals(ImmutableList.of(v8, v7, v6, v5, v4, v3, v2, v1), spanningTree.postOrder());
     }

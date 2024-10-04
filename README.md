@@ -818,4 +818,4 @@ These are some other commands tried on larger graphs:
   - [Examples: numeric data and internal representation](https://www.ibm.com/docs/sk/cobol-zos/6.3?topic=data-examples-numeric-internal-representation)
   - [Enterprise Cobol for Z/OS 6.4 - Language Reference](https://publibfp.dhe.ibm.com/epubs/pdf/igy6lr40.pdf)
 - Graph Theory
-  - [](https://rgrig.blogspot.com/2009/10/dtfloatleftclearleft-summary-of-some.html)
+  - [Reducible Flowgraphs 0](https://rgrig.blogspot.com/2009/10/dtfloatleftclearleft-summary-of-some.html)
