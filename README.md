@@ -39,6 +39,7 @@ You can see the current backlog [here](https://github.com/users/avishek-sen-gupt
   - [CLI Usage](#cli-usage)
   - [Programmatic Usage](#programmatic-usage)
   - [Logging Settings](#logging-settings)
+- [Catalogue of Reusable Algorithms](#catalogue-of-reusable-algorithms)
 - [A Note on Copyright](#a-note-on-copyright)
 - [Caveats](#caveats)
 - [Known Issues](#known-issues)
@@ -739,7 +740,7 @@ Programmatic examples are provided in the following classes.
 
 You can specify a custom logging settings file by adding ```-Djava.util.logging.config.file``` option. if not specified, a default ```logging.properties``` will be loaded, with ```INFO``` as the default level.
 
-## Catalogue of Reuseable Algorithms
+## Catalogue of Reusable Algorithms
 
 This is a list of algorithms written from scratch, for reference or reuse.
 
@@ -816,3 +817,5 @@ These are some other commands tried on larger graphs:
 - COBOL References
   - [Examples: numeric data and internal representation](https://www.ibm.com/docs/sk/cobol-zos/6.3?topic=data-examples-numeric-internal-representation)
   - [Enterprise Cobol for Z/OS 6.4 - Language Reference](https://publibfp.dhe.ibm.com/epubs/pdf/igy6lr40.pdf)
+- Graph Theory
+  - [](https://rgrig.blogspot.com/2009/10/dtfloatleftclearleft-summary-of-some.html)
