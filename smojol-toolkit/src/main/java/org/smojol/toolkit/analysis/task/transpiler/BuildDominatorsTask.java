@@ -1,10 +1,12 @@
-package org.smojol.common.graph;
+package org.smojol.toolkit.analysis.task.transpiler;
 
 import com.google.common.collect.Sets;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
+import org.smojol.common.graph.DepthFirstSpanningTree;
+import org.smojol.common.graph.GraphNodeLike;
 
 import java.util.*;
 import java.util.logging.Logger;

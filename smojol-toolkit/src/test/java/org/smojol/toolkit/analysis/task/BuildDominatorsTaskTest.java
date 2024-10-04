@@ -1,4 +1,4 @@
-package org.poc.common;
+package org.smojol.toolkit.analysis.task;
 
 import com.google.common.collect.ImmutableSet;
 import org.apache.commons.lang3.tuple.ImmutablePair;
