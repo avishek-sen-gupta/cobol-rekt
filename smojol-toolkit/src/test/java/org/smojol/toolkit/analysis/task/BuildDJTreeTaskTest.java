@@ -15,15 +15,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class BuildDJTreeTaskTest {
     private static final Function<DefaultEdge, Boolean> IS_DOMINATOR_EDGE = v -> v instanceof DominatorEdge;
     private static final Function<DefaultEdge, Boolean> IS_JOIN_EDGE = v -> v instanceof JoinEdge;
+    private static final Function<DefaultEdge, Boolean> IS_BACK_JOIN_EDGE = v -> v instanceof BackJoinEdge;
+    private static final Function<DefaultEdge, Boolean> IS_CROSS_JOIN_EDGE = v -> v instanceof CrossJoinEdge;
 
     /**
-     * @see <a href="documentation/dj-tree-unit-test-graph.png">Flowgraph for this test case</a>
+     * @see <a href="documentation/dj-tree-unit-test-graph-1.png">Flowgraph for this test case</a>
      */
     @Test
     public void canBuildDJTree1() {
@@ -97,6 +101,23 @@ public class BuildDJTreeTaskTest {
         assertEdgeExistsOfType(vE, vF, djTree, IS_JOIN_EDGE);
         assertEdgeExistsOfType(vG, vD, djTree, IS_JOIN_EDGE);
         assertEdgeExistsOfType(vG, vH, djTree, IS_JOIN_EDGE);
+
+        Set<DefaultEdge> backJoinEdges = djTree.graph().edgeSet().stream().filter(IS_BACK_JOIN_EDGE::apply).collect(Collectors.toUnmodifiableSet());
+        Set<DefaultEdge> crossJoinEdges = djTree.graph().edgeSet().stream().filter(IS_CROSS_JOIN_EDGE::apply).collect(Collectors.toUnmodifiableSet());
+        assertEquals(2, backJoinEdges.size());
+
+        assertTrue(backJoinEdges.contains(djTree.graph().getEdge(vH, vA)));
+        assertTrue(backJoinEdges.contains(djTree.graph().getEdge(vG, vD)));
+
+        assertEquals(8, crossJoinEdges.size());
+        assertTrue(crossJoinEdges.contains(djTree.graph().getEdge(vH, vEND)));
+        assertTrue(crossJoinEdges.contains(djTree.graph().getEdge(vH, vC)));
+        assertTrue(crossJoinEdges.contains(djTree.graph().getEdge(vC, vD)));
+        assertTrue(crossJoinEdges.contains(djTree.graph().getEdge(vD, vF)));
+        assertTrue(crossJoinEdges.contains(djTree.graph().getEdge(vF, vH)));
+        assertTrue(crossJoinEdges.contains(djTree.graph().getEdge(vB, vD)));
+        assertTrue(crossJoinEdges.contains(djTree.graph().getEdge(vG, vH)));
+        assertTrue(crossJoinEdges.contains(djTree.graph().getEdge(vE, vF)));
     }
 
     /**
@@ -144,11 +165,22 @@ public class BuildDJTreeTaskTest {
         assertEdgeExistsOfType(vC, vB, djTree, IS_JOIN_EDGE);
         assertEdgeExistsOfType(vD, vB, djTree, IS_JOIN_EDGE);
         assertEdgeExistsOfType(vE, vC, djTree, IS_JOIN_EDGE);
+
+        Set<DefaultEdge> backJoinEdges = djTree.graph().edgeSet().stream().filter(IS_BACK_JOIN_EDGE::apply).collect(Collectors.toUnmodifiableSet());
+        Set<DefaultEdge> crossJoinEdges = djTree.graph().edgeSet().stream().filter(IS_CROSS_JOIN_EDGE::apply).collect(Collectors.toUnmodifiableSet());
+        assertEquals(2, backJoinEdges.size());
+        assertTrue(backJoinEdges.contains(djTree.graph().getEdge(vD, vB)));
+        assertTrue(backJoinEdges.contains(djTree.graph().getEdge(vE, vC)));
+
+
+        assertEquals(2, crossJoinEdges.size());
+        assertTrue(crossJoinEdges.contains(djTree.graph().getEdge(vB, vC)));
+        assertTrue(crossJoinEdges.contains(djTree.graph().getEdge(vC, vB)));
     }
 
-    private void assertEdgeExistsOfType(DominatorTreeTestNode from, DominatorTreeTestNode to, DJTree<DominatorTreeTestNode> dominatorTree, Function<DefaultEdge, Boolean> satisifiesCondition) {
+    private void assertEdgeExistsOfType(DominatorTreeTestNode from, DominatorTreeTestNode to, DJTree<DominatorTreeTestNode> dominatorTree, Function<DefaultEdge, Boolean> condition) {
         Graph<DominatorTreeTestNode, DefaultEdge> dominatorGraph = dominatorTree.graph();
-        List<DefaultEdge> matchingEdges = dominatorGraph.edgeSet().stream().filter(e -> satisifiesCondition.apply(e) && dominatorGraph.getEdgeSource(e) == from && dominatorGraph.getEdgeTarget(e) == to).toList();
+        List<DefaultEdge> matchingEdges = dominatorGraph.edgeSet().stream().filter(e -> condition.apply(e) && dominatorGraph.getEdgeSource(e) == from && dominatorGraph.getEdgeTarget(e) == to).toList();
         assertEquals(1, matchingEdges.size());
     }
 
