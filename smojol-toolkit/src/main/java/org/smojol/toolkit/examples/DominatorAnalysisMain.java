@@ -30,9 +30,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import static org.smojol.common.id.Identifiable.asPair;
-import static org.smojol.common.id.Identifiable.identifiable;
-
 public class DominatorAnalysisMain {
     public static void main(String[] args) throws IOException, InterruptedException {
         LoggingConfig.setupLogging();
@@ -49,8 +46,8 @@ public class DominatorAnalysisMain {
         TranspilerFlowgraph transpilerFlowgraph = ((AnalysisTaskResultOK) results.getFirst()).getDetail();
         PruneUnreachableTask.pruneUnreachableInstructions(transpilerFlowgraph);
         System.out.println("Number of nodes = " + transpilerFlowgraph.instructionFlowgraph().vertexSet().size());
-        DepthFirstSpanningTree<TranspilerInstruction, DefaultEdge> spanningTree = new DepthFirstTraversalLabelTask<>(transpilerFlowgraph.instructions().getFirst(), transpilerFlowgraph.instructionFlowgraph()).run();
-        DepthFirstSpanningTree<BasicBlock<TranspilerInstruction>, DefaultEdge> blockSpanningTree = new DepthFirstTraversalLabelTask<>(transpilerFlowgraph.basicBlocks().getFirst(), transpilerFlowgraph.basicBlockFlowgraph()).run();
+        DepthFirstSpanningTree<TranspilerInstruction, DefaultEdge> spanningTree = new DepthFirstTraversalLabelTask<>(transpilerFlowgraph.instructions().getFirst(), transpilerFlowgraph.instructionFlowgraph(), DefaultEdge.class).run();
+        DepthFirstSpanningTree<BasicBlock<TranspilerInstruction>, DefaultEdge> blockSpanningTree = new DepthFirstTraversalLabelTask<>(transpilerFlowgraph.basicBlocks().getFirst(), transpilerFlowgraph.basicBlockFlowgraph(), DefaultEdge.class).run();
         List<Pair<BasicBlock<TranspilerInstruction>, BasicBlock<TranspilerInstruction>>> immediateDominators = new BuildDominatorsTask<BasicBlock<TranspilerInstruction>, DefaultEdge>().immediateDominators(blockSpanningTree);
         DominatorTree<BasicBlock<TranspilerInstruction>, DefaultEdge> dominatorTree = new BuildDominatorTreeTask<>(immediateDominators, blockSpanningTree.sourceGraphRoot(), DefaultEdge.class).run();
         DJTree<BasicBlock<TranspilerInstruction>> djTree = new BuildDJTreeTask<>(dominatorTree, blockSpanningTree).run();

@@ -4,67 +4,57 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultDirectedGraph;
-import org.jgrapht.graph.DefaultEdge;
 import org.smojol.common.id.Identifiable;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class DepthFirstTraversalLabelTask<V extends Identifiable, E> {
-    public static final String DFS_DISCOVERY_START = "DFS_DISCOVERY_START";
-    public static final String DFS_DISCOVERY_FINISH = "DFS_DISCOVERY_FINISH";
-    private final List<CodeGraphNode<V>> depthFirstSpanningTreeOrder = new ArrayList<>();
+    private final List<V> depthFirstOrderedNodes = new ArrayList<>();
     private final V sourceGraphRoot;
-    private final Graph<CodeGraphNode<V>, DefaultEdge> labelledGraph;
+    private final Graph<V, E> spanningTree;
     private final Graph<V, E> sourceGraph;
-    private int currentDfsClock;
+    private int dfsClock;
+    private final Map<V, Pair<Integer, Integer>> discoveryTimes;
 
-    public DepthFirstTraversalLabelTask(V root, Graph<V, E> sourceGraph) {
-        this(root, sourceGraph, 0);
+    public DepthFirstTraversalLabelTask(V root, Graph<V, E> sourceGraph, Class<E> edgeClass) {
+        this(root, sourceGraph, 0, edgeClass);
     }
 
-    public DepthFirstTraversalLabelTask(V sourceGraphRoot, Graph<V, E> sourceGraph, int startNumber) {
+    public DepthFirstTraversalLabelTask(V sourceGraphRoot, Graph<V, E> sourceGraph, int startNumber, Class<E> edgeClass) {
         this.sourceGraphRoot = sourceGraphRoot;
-        this.labelledGraph = unorderedGraph(sourceGraph);
+        this.spanningTree = emptySpanningTree(sourceGraph, edgeClass);
         this.sourceGraph = sourceGraph;
-        this.currentDfsClock = startNumber;
+        this.dfsClock = startNumber;
+        discoveryTimes = sourceGraph.vertexSet().stream().collect(Collectors.toMap(v -> v, v -> ImmutablePair.of(-1, -1)));
     }
 
-    private static <V extends Identifiable, E> Graph<CodeGraphNode<V>, DefaultEdge> unorderedGraph(Graph<V, E> sourceGraph) {
-        Graph<CodeGraphNode<V>, DefaultEdge> graphForDominators = new DefaultDirectedGraph<>(DefaultEdge.class);
-        Map<V, CodeGraphNode<V>> sourceToDFSNodeMap = sourceGraph.vertexSet().stream().collect(Collectors.toMap(xv -> xv, CodeGraphNode::new));
-        sourceToDFSNodeMap.forEach((k, v) -> graphForDominators.addVertex(v));
-        sourceGraph.edgeSet().forEach(edge -> graphForDominators.addEdge(sourceToDFSNodeMap.get(sourceGraph.getEdgeSource(edge)), sourceToDFSNodeMap.get(sourceGraph.getEdgeTarget(edge))));
-        return graphForDominators;
-    }
-
-    private static <V extends Identifiable> CodeGraphNode<V> find(V node, Set<CodeGraphNode<V>> allNodes) {
-        return allNodes.stream().filter(cgn -> cgn.getOriginalNode() == node).findFirst().orElse(null);
+    private Graph<V, E> emptySpanningTree(Graph<V, E> sourceGraph, Class<E> edgeClass) {
+        Graph<V, E> spanningTree = new DefaultDirectedGraph<>(edgeClass);
+        sourceGraph.vertexSet().forEach(spanningTree::addVertex);
+        return spanningTree;
     }
 
     public DepthFirstSpanningTree<V, E> run() {
-        CodeGraphNode<V> labelledGraphRoot = find(sourceGraphRoot, labelledGraph.vertexSet());
-        run(labelledGraphRoot);
-        List<V> dfsOrderedOriginalNodes = depthFirstSpanningTreeOrder.stream().map(CodeGraphNode::getOriginalNode).toList();
-        Map<V, Pair<Integer, Integer>> clockTimes = labelledGraph.vertexSet().stream().collect(Collectors.toMap(CodeGraphNode::getOriginalNode,
-                v -> ImmutablePair.of(v.getProperty(DFS_DISCOVERY_START, Integer.class), v.getProperty(DFS_DISCOVERY_FINISH, Integer.class))));
-        return new DepthFirstSpanningTree<>(dfsOrderedOriginalNodes, sourceGraphRoot, sourceGraph, labelledGraph, labelledGraphRoot, clockTimes);
+        run(sourceGraphRoot);
+        return new DepthFirstSpanningTree<>(depthFirstOrderedNodes, sourceGraphRoot, sourceGraph, discoveryTimes);
     }
 
-    private void run(CodeGraphNode<V> current) {
-        current.setProperty(DFS_DISCOVERY_START, currentDfsClock++);
-        depthFirstSpanningTreeOrder.add(current);
-//        currentDfsClock++;
-        List<CodeGraphNode<V>> unvisitedChildren = labelledGraph.outgoingEdgesOf(current).stream()
-                .map(labelledGraph::getEdgeTarget).toList();
-        for (CodeGraphNode<V> child : unvisitedChildren) {
-            if (child.getProperty(DFS_DISCOVERY_START, Integer.class) != null) continue;
+    private void run(V current) {
+        discoveryTimes.put(current, ImmutablePair.of(dfsClock++, -1));
+        depthFirstOrderedNodes.add(current);
+        List<V> children = sourceGraph.outgoingEdgesOf(current).stream()
+                .map(sourceGraph::getEdgeTarget).toList();
+        for (V child : children) {
+            if (discoveryTimes.get(child).getLeft() != -1) continue;
+            E existingEdge = sourceGraph.edgeSet().stream().filter(e -> sourceGraph.getEdgeSource(e) == current && sourceGraph.getEdgeTarget(e) == child).findFirst().get();
+            spanningTree.addEdge(current, child, existingEdge);
             run(child);
         }
-        current.setProperty(DFS_DISCOVERY_FINISH, currentDfsClock++);
+        discoveryTimes.put(current, ImmutablePair.of(discoveryTimes.get(current).getLeft(), dfsClock++));
     }
 
     public int currentClock() {
-        return currentDfsClock;
+        return dfsClock;
     }
 }
