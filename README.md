@@ -372,7 +372,7 @@ You can find some useful Neo4J-based analysis queries in [Analysis](neo4j-analys
 
 Most of the tasks in this category are meant to be used as part of a larger analysis workflow, and thus do not have any filesystem outputs.
 
-### Exposing a basic transpilation Model
+### Exposing a basic transpilation Model (Instructions and Basic Blocks)
 
 This target exposes a basic transpilation model which is not tied to the COBOL syntax. It uses only assignments, loops, conditions, and jumps to represent most of COBOL syntax. The result may not still be well-structured because of arbitrary GOTOs. This will be the input for further control flow analysis tasks.
 
@@ -447,6 +447,8 @@ The screenshot below shows a part of an example transpiler model flowgraph.
 
 See [TranspilerBuildMain.java](smojol-toolkit/src/main/java/org/smojol/toolkit/examples/TranspilerBuildMain.java) for an example.
 
+The ```BuildTranspilerFlowgraphTask``` creates the intermediate AST, instructions, and the **Basic Block tree**.
+
 ### Details of the Intermediate Transpiler Tree
 
 - ```SEARCH-WHEN``` statements are translated into collection iterations (with breaks) and conditions.
@@ -459,19 +461,33 @@ See [TranspilerBuildMain.java](smojol-toolkit/src/main/java/org/smojol/toolkit/e
 - Operations like ```COMPUTE```, ```ADD```, ```SUBTRACT```, ```MULTIPLY```, and ```DIVIDE``` are converted into sequences of expressions with explicit assignments (to account for ```GIVIING``` phrases).
 - Any instructions not currently supported are converted into placeholder nodes.
 
-### Reducibility Testing (Experimental Feature)
-
-Reducibility is tested using interval analysis, specifically using the **repeated T1-T2 transform method**.
-
-See [IntervalAnalysisMain.java](smojol-toolkit/src/main/java/org/smojol/toolkit/examples/IntervalAnalysisMain.java) for an example.
-
 ### Basic Blocks (Experimental Feature)
 
-Basic Blocks are useful for analysing flow of the code without worrying about the specific computational details of the code. They are also useful (and the more pertinent use-case in our case) for rewriting / transpiling potential unstructured COBOL code (code with possibly arbitrary GOTOs) into a structured form / language (i.e., without GOTOs).
+**Basic Blocks** are useful for analysing flow of the code without worrying about the specific computational details of the code. They are also useful (and the more pertinent use-case in our case) for rewriting / transpiling potential unstructured COBOL code (code with possibly arbitrary GOTOs) into a structured form / language (i.e., without GOTOs).
 
 Exposing basic blocks is done through the ```BuildBasicBlocksTask``` task. Note that this task does not actually output any artifacts, because it is intended for more internal analysis and transpilation (if I get to it at some point). Each ```BasicBlock``` contains a list of straight-line ```TranspilerInstruction```s.
 
+Note that if you use the ```BuildTranspilerFlowgraphTask``` task, Basic Blocks are automatically generated for you.
+
+### Reducibility Testing
+
+[TODO: Write about reducibility]
+
+#### Reducibility Testing using T1-T2 Transforms
+
+**Reducibility** is tested using interval analysis, specifically using the **repeated T1-T2 transform method**.
+
+See [IntervalAnalysisMain.java](smojol-toolkit/src/main/java/org/smojol/toolkit/examples/IntervalAnalysisMain.java) for an example.
+
+#### Reducibility Testing using DJ Graphs
+
+A second technique for testing reducibility follows the method outlined in [[Sreedhar-Gao-Lee, 1996]](https://dl.acm.org/doi/pdf/10.1145/236114.236115).
+- ```BuildDJTreeTask```: This creates the DJ tree using the dominator tree. It uses the output of the ```BuildDominatorTreeTask``` as its input. See [Dominator Analysis](#dominator-analysis) for more details.
+- ```ReducibleFlowgraphTestTask```: This is the actual test which determines if a flowgraph is reducible or not.
+
 ### Improper Loop Detection
+
+#### Improper Loop Heuristic using Strongly Connected Components
 
 **Strongly Connected Components** in a flowgraph represent the most general representation of looping constructs. Proper SCC's have only one node in them that can be the entry point for any incoming edge from outside the SCC. These are **natural loops**. Having multiple entry points implies that there are arbitrary jumps into the body of the loop from outside the loop, which makes the loop improper, and consequently the graph, irreducible.
 
@@ -479,19 +495,19 @@ It is important to note that even if no improper SCC's are detected, it does not
 
 Proper SCC's are a necessary condition for a reducible flowgraph, but not a sufficient condition. The sufficient condition is that no **strongly connected subgraph** be improper. SCC's are **maximal strongly connected subgraphs**.
 
-This is, however, a good test which can surface loop-specific reducibility problems.
+This is, however, a good test which can surface loop-specific reducibility problems. The test is done using the ```IrreducibleStronglyConnectedComponentsTask``` task.
 
-This test is done using the ```IrreducibleStronglyConnectedComponentsTask``` task.
+#### Improper Loop Body Detection
+
+[TODO]
 
 ### Dominator Analysis
 
-Three tasks are required to be run to do dominator analysis.
+Several tasks are required to be run to do dominator analysis.
 
-- ```BuildTranspilerFlowgraphTask```: This creates the intermediate AST, instructions, and the basic block tree.
-- ```DepthFirstTraversalLabelTask```: This creates the actual depth-first post order labelling that will be used to build dominator lists. Note that task can be applied either to the raw ```TranspilerInstruction``` flowgraph, or the ```BasicBlock``` one, depending upon your preference.
+- ```DepthFirstTraversalLabelTask```: This creates the actual depth-first post order labelling that will be used to build dominator lists. Note that task can be applied either to the raw ```TranspilerInstruction``` flowgraph, or the ```BasicBlock``` one, depending upon your preference. See [Reusable Algorithms](#catalogue-of-reusable-algorithms) for more details.
 - ```BuildDominatorsTask```: This creates the actual dominator lists. Immediate dominators can be accessed using the ```immediateDominators()``` method. All possible dominators for all the nodes in the flowgraph can be accessed using the ```allDominators()``` method.
 - ```BuildDominatorTreeTask```: This creates the dominator tree which is used to detect irreducible loops using the algorithm as outlined in [[Sreedhar-Gao-Lee, 1996]](https://dl.acm.org/doi/pdf/10.1145/236114.236115). It uses the output of the ```BuildDominatorsTask``` as its input.
-- ```BuildDJTreeTask```: This creates the DJ tree using the dominator tree using the algorithm in [[Sreedhar-Gao-Lee, 1996]](https://dl.acm.org/doi/pdf/10.1145/236114.236115). It uses the output of the ```BuildDominatorTreeTask``` as its input.
 
 See [DominatorAnalysisMain.java](smojol-toolkit/src/main/java/org/smojol/toolkit/examples/DominatorAnalysisMain.java) for an example.
 
@@ -733,7 +749,7 @@ Programmatic examples are provided in the following classes.
 - See ```DependencyBuildMain``` for an example how inter-program dependencies can be injected into Neo4J.
 - See ```ValidateProgramMain``` for an example of how to run validation through code.
 - See ```TranspilerInstructionIntervalAnalysisMain``` and ```BasicBlockIntervalAnalysisMain``` for examples of how T1-T2 analysis is run on ```TranspilerInstruction```s and ```BasicBlock```s, respectively.
-- See ```DominatorAnalysisMain``` for an example of how dominator analysis is run.
+- See ```DominatorAnalysisMain``` for an example of how reducibility is tested using DJ trees.
 - See ```ImproperSCCsMain``` for an example of how detection of improper Strongly Connected Components is run.
 
 #### Logging Settings
@@ -744,10 +760,14 @@ You can specify a custom logging settings file by adding ```-Djava.util.logging.
 
 This is a list of algorithms written from scratch, for reference or reuse.
 
-- **Depth First Ordering (Pre- and Post-Order):** Based on [Depth-First Search and Linear Graph Algorithms](https://github.com/tpn/pdfs/blob/master/Depth-First%20Search%20and%20Linear%20Graph%20Algorithms%20-%20Tarjan%20(1972).pdf). See ```DepthFirstTraversalLabelTask```.
+- **Depth First Ordering (Pre- and Post-Order):** Based on [Depth-First Search and Linear Graph Algorithms](https://github.com/tpn/pdfs/blob/master/Depth-First%20Search%20and%20Linear%20Graph%20Algorithms%20-%20Tarjan%20(1972).pdf). See ```DepthFirstTraversalLabelTask```. This does the following things:
+  - Generate the explicit **depth-first ordering of nodes**
+  - Generate the depth-first **spanning tree**
+  - Generates discovery timestamps for determining **node ancestry**
+  - **Classifies** all edges in the source graph as **Tree Edges**, **Forward Edges**, **Back Edges**, and **Cross Edges**.
 - **Finding Dominators (All and Immediate):** Based on [Graph-Theoretic Constructs for Program Control Flow Analysis - Allen and Cocke](https://dominoweb.draco.res.ibm.com/reports/rc3923.pdf). See ```BuildDominatorsTask```.
 - **Interval Analysis via T1-T2 Transforms:** Based on [Characterizations of Reducible Flow Graphs - Hecht and Ullman](https://dl.acm.org/doi/pdf/10.1145/321832.321835). See ```IntervalAnalysisTask```.
-- **Building DJ Trees:** from [Identifying Loops Using DJ Graphs](https://dl.acm.org/doi/pdf/10.1145/236114.236115). See ```BuildDJTreeTask```.
+- **Building DJ Trees:** Based on [Identifying Loops Using DJ Graphs](https://dl.acm.org/doi/pdf/10.1145/236114.236115). See ```BuildDJTreeTask```. This task creates edges of three types: ```DominatorEdge```, ```BackJoinEdge```, and ```CrossJoinEdge```.
 
 ## A Note on Copyright
 
