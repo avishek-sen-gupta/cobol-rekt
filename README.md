@@ -29,8 +29,10 @@ You can see the current backlog [here](https://github.com/users/avishek-sen-gupt
     - [Code Pattern Recognition](#code-pattern-recognition)
 - [Control Flow Analysis and Transpilation Experiments](#control-flow-analysis-and-transpilation-experiments)
   - [Intermediate Transpilation Model](#exposing-a-basic-transpilation-model)
-  - [Reducibility Testing](#reducibility-testing-experimental-feature)
   - [Exposing Basic Blocks](#basic-blocks-experimental-feature)
+  - [Reducibility Testing](#reducibility-testing-experimental-feature)
+    - [Reducibility testing using T1-T2 Transforms](#1-reducibility-testing-using-t1-t2-transforms)
+    - [Reducibility testing using DJ Graphs](#2-reducibility-testing-using-dj-graphs)
   - [Improper Loop Detection](#improper-loop-detection)
   - [Dominator Analysis](#dominator-analysis)
 - [Running against AWS Card Demo](#running-against-aws-card-demo)
@@ -473,13 +475,13 @@ Note that if you use the ```BuildTranspilerFlowgraphTask``` task, Basic Blocks a
 
 [TODO: Write about reducibility]
 
-#### Reducibility Testing using T1-T2 Transforms
+#### 1. Reducibility Testing using T1-T2 Transforms
 
 **Reducibility** is tested using interval analysis, specifically using the **repeated T1-T2 transform method**.
 
 See [IntervalAnalysisMain.java](smojol-toolkit/src/main/java/org/smojol/toolkit/examples/IntervalAnalysisMain.java) for an example.
 
-#### Reducibility Testing using DJ Graphs
+#### 2. Reducibility Testing using DJ Graphs
 
 A second technique for testing reducibility follows the method outlined in [[Sreedhar-Gao-Lee, 1996]](https://dl.acm.org/doi/pdf/10.1145/236114.236115).
 - ```BuildDJTreeTask```: This creates the DJ tree using the dominator tree. It uses the output of the ```BuildDominatorTreeTask``` as its input. See [Dominator Analysis](#dominator-analysis) for more details.
