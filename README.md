@@ -372,7 +372,7 @@ You can find some useful Neo4J-based analysis queries in [Analysis](neo4j-analys
 
 ## Control Flow Analysis and Transpilation Experiments
 
-Most of the tasks in this category are meant to be used as part of a larger analysis workflow, and thus do not have any filesystem outputs.
+Most of the tasks in this category are meant to be used as part of a larger analysis workflow, and thus do not have any filesystem outputs. All the analyses use JGraphT's ```DefaultDirectedGraph``` for representing and manipulating graph structures.
 
 ### Exposing a basic transpilation Model (Instructions and Basic Blocks)
 
@@ -489,7 +489,7 @@ A second technique for testing reducibility follows the method outlined in [[Sre
 
 ### Improper Loop Detection
 
-#### Improper Loop Heuristic using Strongly Connected Components
+#### 1. Improper Loop Heuristic using Strongly Connected Components
 
 **Strongly Connected Components** in a flowgraph represent the most general representation of looping constructs. Proper SCC's have only one node in them that can be the entry point for any incoming edge from outside the SCC. These are **natural loops**. Having multiple entry points implies that there are arbitrary jumps into the body of the loop from outside the loop, which makes the loop improper, and consequently the graph, irreducible.
 
@@ -499,7 +499,9 @@ Proper SCC's are a necessary condition for a reducible flowgraph, but not a suff
 
 This is, however, a good test which can surface loop-specific reducibility problems. The test is done using the ```IrreducibleStronglyConnectedComponentsTask``` task.
 
-#### Improper Loop Body Detection
+Strongly Connected Components are detected using JGraphT's built-in [Kosarajau's algorithm for finding SCC's](https://jgrapht.org/javadoc/org.jgrapht.core/org/jgrapht/alg/connectivity/KosarajuStrongConnectivityInspector.html).
+
+#### 2. Improper Loop Body Detection
 
 [TODO]
 
