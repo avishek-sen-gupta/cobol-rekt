@@ -4,17 +4,14 @@ import com.google.common.collect.ImmutableList;
 import org.jgrapht.graph.DefaultEdge;
 import org.smojol.common.dialect.LanguageDialect;
 import org.smojol.common.flowchart.FlowchartOutputFormat;
-import org.smojol.common.graph.*;
 import org.smojol.common.id.UUIDProvider;
 import org.smojol.common.logging.LoggingConfig;
-import org.smojol.common.pseudocode.BasicBlock;
 import org.smojol.common.resource.LocalFilesystemOperations;
 import org.smojol.common.transpiler.PruneUnreachableTask;
 import org.smojol.common.transpiler.TranspilerFlowgraph;
-import org.smojol.common.transpiler.TranspilerInstruction;
 import org.smojol.toolkit.analysis.pipeline.ProgramSearch;
 import org.smojol.toolkit.analysis.task.analysis.CodeTaskRunner;
-import org.smojol.toolkit.analysis.task.transpiler.IrreducibleFlowgraphTestTask;
+import org.smojol.toolkit.analysis.task.transpiler.ReducibleFlowgraphTestTask;
 import org.smojol.toolkit.interpreter.FullProgram;
 import org.smojol.toolkit.interpreter.structure.OccursIgnoringFormat1DataStructureBuilder;
 import org.smojol.toolkit.task.AnalysisTaskResult;
@@ -48,7 +45,7 @@ public class DominatorAnalysisMain {
 //        Map<BasicBlock<TranspilerInstruction>, Set<BasicBlock<TranspilerInstruction>>> allDominators = new BuildDominatorsTask<BasicBlock<TranspilerInstruction>, DefaultEdge>().allDominators(blockSpanningTree.preOrder(), blockSpanningTree.sourceGraph());
 //        DominatorTree<BasicBlock<TranspilerInstruction>, DefaultEdge> dominatorTree = new BuildDominatorTreeTask<>(immediateDominators, blockSpanningTree.sourceGraphRoot(), DefaultEdge.class).run();
 //        DJTree<BasicBlock<TranspilerInstruction>, DefaultEdge> djTree = new BuildDJTreeTask<>(dominatorTree, blockSpanningTree, allDominators).run();
-        boolean isIrreducible = new IrreducibleFlowgraphTestTask<>(transpilerFlowgraph.instructions().getFirst(), transpilerFlowgraph.instructionFlowgraph(), DefaultEdge.class).run();
+        boolean isIrreducible = new ReducibleFlowgraphTestTask<>(transpilerFlowgraph.instructions().getFirst(), transpilerFlowgraph.instructionFlowgraph(), DefaultEdge.class).run();
 
 //        String draw = new MermaidGraph<BasicBlock<TranspilerInstruction>, DefaultEdge>().draw(djTree.graph());
     }

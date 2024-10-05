@@ -121,8 +121,6 @@ public class BuildDJTreeTaskTest {
         ClassifiedEdges<DefaultEdge> classifiedEdges = djSpanningTree.classifiedEdges();
         Set<DefaultEdge> backEdges = classifiedEdges.backEdges();
         assertTrue(backEdges.stream().anyMatch(be -> be.getClass() == BackJoinEdge.class));
-
-        new IrreducibleFlowgraphTestTask<>(vSTART, graph, DefaultEdge.class).run();
     }
 
     /**

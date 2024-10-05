@@ -9,13 +9,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class IrreducibleFlowgraphTestTask<V extends Identifiable, E> {
+public class ReducibleFlowgraphTestTask<V extends Identifiable, E> {
 
     private final V sourceGraphRoot;
     private final Graph<V, E> sourceGraph;
     private final Class<E> edgeClass;
 
-    public IrreducibleFlowgraphTestTask(V sourceGraphRoot, Graph<V, E> sourceGraph, Class<E> edgeClass) {
+    public ReducibleFlowgraphTestTask(V sourceGraphRoot, Graph<V, E> sourceGraph, Class<E> edgeClass) {
         this.sourceGraphRoot = sourceGraphRoot;
         this.sourceGraph = sourceGraph;
         this.edgeClass = edgeClass;
@@ -33,6 +33,6 @@ public class IrreducibleFlowgraphTestTask<V extends Identifiable, E> {
         DepthFirstSpanningTree<V, E> djSpanningTree = dfsTaskOnDJTree.run();
         ClassifiedEdges<E> classifiedEdges = djSpanningTree.classifiedEdges();
         Set<E> backEdges = classifiedEdges.backEdges();
-        return backEdges.stream().anyMatch(be -> be.getClass() == BackJoinEdge.class);
+        return backEdges.stream().noneMatch(be -> be.getClass() == BackJoinEdge.class);
     }
 }

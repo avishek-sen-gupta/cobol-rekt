@@ -27,18 +27,24 @@ public class ReducibleFlowgraphTest {
         Graph<TestNode, String> graph = new DefaultDirectedGraph<>(String.class);
         BiFunction<TestNode, TestNode, String> buildEdge = (v1, v2) -> String.format("(%s, %s)", v1, v2);
         FlowgraphTransformer<TestNode, String> transformer = new FlowgraphTransformer<>(graph, buildEdge, v -> v.label().equals("1"));
-        transformer.addVertex(node("1"));
-        transformer.addVertex(node("2"));
-        transformer.addVertex(node("3"));
-        transformer.addVertex(node("4"));
-        transformer.addVertex(node("5"));
-        transformer.addEdge(node("1"), node("1"));
-        transformer.addEdge(node("1"), node("2"));
-        transformer.addEdge(node("1"), node("3"));
-        transformer.addEdge(node("2"), node("3"));
-        transformer.addEdge(node("3"), node("2"));
-        transformer.addEdge(node("2"), node("4"));
-        transformer.addEdge(node("3"), node("5"));
+        TestNode v1 = node("1");
+        TestNode v2 = node("2");
+        TestNode v3 = node("3");
+        TestNode v4 = node("4");
+        TestNode v5 = node("5");
+
+        transformer.addVertex(v1);
+        transformer.addVertex(v2);
+        transformer.addVertex(v3);
+        transformer.addVertex(v4);
+        transformer.addVertex(v5);
+        transformer.addEdge(v1, v1);
+        transformer.addEdge(v1, v2);
+        transformer.addEdge(v1, v3);
+        transformer.addEdge(v2, v3);
+        transformer.addEdge(v3, v2);
+        transformer.addEdge(v2, v4);
+        transformer.addEdge(v3, v5);
         FlowgraphReductionResult<TestNode, String> evolutions = transformer.reduce();
     }
 
@@ -60,33 +66,42 @@ public class ReducibleFlowgraphTest {
      */
     private Graph<TestNode, DefaultEdge> counterExample() {
         Graph<TestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
-        graph.addVertex(node("1"));
-        graph.addVertex(node("2"));
-        graph.addVertex(node("3"));
-        graph.addVertex(node("4"));
-        graph.addEdge(node("1"), node("2"));
-        graph.addEdge(node("2"), node("3"));
-        graph.addEdge(node("3"), node("2"));
-        graph.addEdge(node("2"), node("4"));
-        graph.addEdge(node("4"), node("2"));
-        graph.addEdge(node("3"), node("4"));
-        graph.addEdge(node("4"), node("3"));
+        TestNode v1 = node("1");
+        TestNode v2 = node("2");
+        TestNode v3 = node("3");
+        TestNode v4 = node("4");
+        graph.addVertex(v1);
+        graph.addVertex(v2);
+        graph.addVertex(v3);
+        graph.addVertex(v4);
+        graph.addEdge(v1, v2);
+        graph.addEdge(v2, v3);
+        graph.addEdge(v3, v2);
+        graph.addEdge(v2, v4);
+        graph.addEdge(v4, v2);
+        graph.addEdge(v3, v4);
+        graph.addEdge(v4, v3);
         return graph;
     }
 
     private Graph<TestNode, DefaultEdge> simpleNonReducibleGraph() {
         Graph<TestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
-        graph.addVertex(node("1"));
-        graph.addVertex(node("2"));
-        graph.addVertex(node("3"));
-        graph.addVertex(node("4"));
-        graph.addVertex(node("5"));
-        graph.addEdge(node("1"), node("2"));
-        graph.addEdge(node("2"), node("3"));
-        graph.addEdge(node("3"), node("4"));
-        graph.addEdge(node("4"), node("5"));
-        graph.addEdge(node("1"), node("3"));
-        graph.addEdge(node("4"), node("2"));
+        TestNode v1 = node("1");
+        TestNode v2 = node("2");
+        TestNode v3 = node("3");
+        TestNode v4 = node("4");
+        TestNode v5 = node("5");
+        graph.addVertex(v1);
+        graph.addVertex(v2);
+        graph.addVertex(v3);
+        graph.addVertex(v4);
+        graph.addVertex(v5);
+        graph.addEdge(v1, v2);
+        graph.addEdge(v2, v3);
+        graph.addEdge(v3, v4);
+        graph.addEdge(v4, v5);
+        graph.addEdge(v1, v3);
+        graph.addEdge(v4, v2);
         return graph;
     }
 
@@ -104,15 +119,19 @@ public class ReducibleFlowgraphTest {
 
     private static Graph<TestNode, DefaultEdge> gotoIntoLoop() {
         Graph<TestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
-        graph.addVertex(node("1"));
-        graph.addVertex(node("2"));
-        graph.addVertex(node("3"));
-        graph.addVertex(node("4"));
-        graph.addEdge(node("1"), node("2"));
-        graph.addEdge(node("2"), node("3"));
-        graph.addEdge(node("2"), node("4"));
-        graph.addEdge(node("3"), node("2"));
-        graph.addEdge(node("1"), node("3"));
+        TestNode v1 = node("1");
+        TestNode v2 = node("2");
+        TestNode v3 = node("3");
+        TestNode v4 = node("4");
+        graph.addVertex(v1);
+        graph.addVertex(v2);
+        graph.addVertex(v3);
+        graph.addVertex(v4);
+        graph.addEdge(v1, v2);
+        graph.addEdge(v2, v3);
+        graph.addEdge(v2, v4);
+        graph.addEdge(v3, v2);
+        graph.addEdge(v1, v3);
         return graph;
     }
 
@@ -140,43 +159,48 @@ public class ReducibleFlowgraphTest {
 
     private static Graph<TestNode, DefaultEdge> multipleEntryMultiplePredecessorSCC() {
         Graph<TestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
-        TestNode node1 = node("1");
-        TestNode node2 = node("2");
-        TestNode node3 = node("3");
-        TestNode node4 = node("4");
-        TestNode node5 = node("5");
-        TestNode node6 = node("6");
+        TestNode v1 = node("1");
+        TestNode v2 = node("2");
+        TestNode v3 = node("3");
+        TestNode v4 = node("4");
+        TestNode v5 = node("5");
+        TestNode v6 = node("6");
 
-        graph.addVertex(node1);
-        graph.addVertex(node2);
-        graph.addVertex(node3);
-        graph.addVertex(node4);
-        graph.addVertex(node5);
-        graph.addVertex(node6);
+        graph.addVertex(v1);
+        graph.addVertex(v2);
+        graph.addVertex(v3);
+        graph.addVertex(v4);
+        graph.addVertex(v5);
+        graph.addVertex(v6);
 
-        graph.addEdge(node1, node2);
-        graph.addEdge(node1, node3);
-        graph.addEdge(node2, node4);
-        graph.addEdge(node3, node5);
-        graph.addEdge(node4, node5);
-        graph.addEdge(node5, node6);
-        graph.addEdge(node6, node4);
+        graph.addEdge(v1, v2);
+        graph.addEdge(v1, v3);
+        graph.addEdge(v2, v4);
+        graph.addEdge(v3, v5);
+        graph.addEdge(v4, v5);
+        graph.addEdge(v5, v6);
+        graph.addEdge(v6, v4);
         return graph;
     }
 
     private static Graph<TestNode, DefaultEdge> nonReducibleGraph1() {
         Graph<TestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
-        graph.addVertex(node("1"));
-        graph.addVertex(node("2"));
-        graph.addVertex(node("3"));
-        graph.addVertex(node("4"));
-        graph.addVertex(node("5"));
-        graph.addEdge(node("1"), node("2"));
-        graph.addEdge(node("1"), node("3"));
-        graph.addEdge(node("2"), node("3"));
-        graph.addEdge(node("3"), node("2"));
-        graph.addEdge(node("2"), node("4"));
-        graph.addEdge(node("3"), node("5"));
+        TestNode v1 = node("1");
+        TestNode v2 = node("2");
+        TestNode v3 = node("3");
+        TestNode v4 = node("4");
+        TestNode v5 = node("5");
+        graph.addVertex(v1);
+        graph.addVertex(v2);
+        graph.addVertex(v3);
+        graph.addVertex(v4);
+        graph.addVertex(v5);
+        graph.addEdge(v1, v2);
+        graph.addEdge(v1, v3);
+        graph.addEdge(v2, v3);
+        graph.addEdge(v3, v2);
+        graph.addEdge(v2, v4);
+        graph.addEdge(v3, v5);
         return graph;
     }
 
