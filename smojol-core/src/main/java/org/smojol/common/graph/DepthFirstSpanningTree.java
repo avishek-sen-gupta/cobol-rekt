@@ -43,4 +43,8 @@ public record DepthFirstSpanningTree<V extends Identifiable, E>(List<V> depthFir
         return new ClassifiedEdges<>(treeEdges, backEdges, forwardEdges, crossEdges);
 
     }
+
+    public int treeDepth(V v) {
+        return nodeStats.get(v).treeDepth();
+    }
 }

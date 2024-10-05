@@ -36,6 +36,10 @@ public class DepthFirstSearchOrderingTaskTest {
         assertTrue(spanningTree.isAncestorOf(va, vb));
         assertTrue(spanningTree.isAncestorOf(va, vc));
         assertFalse(spanningTree.isAncestorOf(vc, vb));
+
+        assertEquals(0, spanningTree.treeDepth(va));
+        assertEquals(1, spanningTree.treeDepth(vb));
+        assertEquals(1, spanningTree.treeDepth(vc));
     }
 
     @Test
@@ -95,6 +99,15 @@ public class DepthFirstSearchOrderingTaskTest {
         assertFalse(spanningTree.isAncestorOf(v4, v7));
         assertFalse(spanningTree.isAncestorOf(v7, v4));
         assertTrue(spanningTree.isAncestorOf(v2, v5));
+
+        assertEquals(0, spanningTree.treeDepth(v0));
+        assertEquals(1, spanningTree.treeDepth(v1));
+        assertEquals(2, spanningTree.treeDepth(v2));
+        assertEquals(3, spanningTree.treeDepth(v3));
+        assertEquals(4, spanningTree.treeDepth(v4));
+        assertEquals(5, spanningTree.treeDepth(v5));
+        assertEquals(3, spanningTree.treeDepth(v6));
+        assertEquals(4, spanningTree.treeDepth(v7));
     }
 
     /*
@@ -154,6 +167,16 @@ public class DepthFirstSearchOrderingTaskTest {
         assertEquals(17, task.currentClock());
         assertEquals(ImmutableList.of(v1, v2, v3, v4, v5, v6, v7, v8), spanningTree.preOrder());
         assertEquals(ImmutableList.of(v8, v7, v6, v5, v4, v3, v2, v1), spanningTree.postOrder());
+
+
+        assertEquals(0, spanningTree.treeDepth(v1));
+        assertEquals(1, spanningTree.treeDepth(v2));
+        assertEquals(2, spanningTree.treeDepth(v3));
+        assertEquals(3, spanningTree.treeDepth(v4));
+        assertEquals(4, spanningTree.treeDepth(v5));
+        assertEquals(1, spanningTree.treeDepth(v6));
+        assertEquals(2, spanningTree.treeDepth(v7));
+        assertEquals(3, spanningTree.treeDepth(v8));
     }
 
     @Test
