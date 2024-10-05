@@ -71,6 +71,7 @@ public class Format1DataStructure extends CobolDataStructure {
         this.layout = new NullMemoryLayout();
         this.dataDescription = null;
         this.unresolvedReferenceStrategy = unresolvedReferenceStrategy;
+        this.isComposite = true;
     }
 
     // Copy constructor
