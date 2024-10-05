@@ -487,7 +487,7 @@ A second technique for testing reducibility follows the method outlined in [[Sre
 - ```BuildDJTreeTask```: This creates the DJ tree using the dominator tree. It uses the output of the ```BuildDominatorTreeTask``` as its input. See [Dominator Analysis](#dominator-analysis) for more details.
 - ```ReducibleFlowgraphTestTask```: This is the actual test which determines if a flowgraph is reducible or not.
 
-### Improper Loop Detection
+_### Improper Loop Detection
 
 #### 1. Improper Loop Heuristic using Strongly Connected Components
 
