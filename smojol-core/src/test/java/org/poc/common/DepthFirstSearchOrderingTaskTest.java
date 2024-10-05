@@ -7,14 +7,14 @@ import org.jgrapht.graph.DefaultEdge;
 import org.junit.jupiter.api.Test;
 import org.smojol.common.graph.ClassifiedEdges;
 import org.smojol.common.graph.DepthFirstSpanningTree;
-import org.smojol.common.graph.DepthFirstTraversalLabelTask;
+import org.smojol.common.graph.DepthFirstSearchOrderingTask;
 import org.smojol.common.id.Identifiable;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class DepthFirstTraversalLabelTaskTest {
+public class DepthFirstSearchOrderingTaskTest {
     @Test
     public void canLabelDFSOrderForSimpleGraphWithNoLoops() {
         Graph<DFSTestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
@@ -26,7 +26,7 @@ public class DepthFirstTraversalLabelTaskTest {
         graph.addVertex(vc);
         graph.addEdge(va, vb);
         graph.addEdge(va, vc);
-        DepthFirstTraversalLabelTask<DFSTestNode, DefaultEdge> task = new DepthFirstTraversalLabelTask<>(va, graph, DefaultEdge.class);
+        DepthFirstSearchOrderingTask<DFSTestNode, DefaultEdge> task = new DepthFirstSearchOrderingTask<>(va, graph, DefaultEdge.class);
         DepthFirstSpanningTree<DFSTestNode, DefaultEdge> spanningTree = task.run();
         List<DFSTestNode> ordered = spanningTree.preOrder();
         assertEquals(va, ordered.get(0));
@@ -78,7 +78,7 @@ public class DepthFirstTraversalLabelTaskTest {
         graph.addEdge(v6, v7);
         graph.addEdge(v7, v5);
 
-        DepthFirstTraversalLabelTask<DFSTestNode, DefaultEdge> task = new DepthFirstTraversalLabelTask<>(v0, graph, DefaultEdge.class);
+        DepthFirstSearchOrderingTask<DFSTestNode, DefaultEdge> task = new DepthFirstSearchOrderingTask<>(v0, graph, DefaultEdge.class);
         DepthFirstSpanningTree<DFSTestNode, DefaultEdge> spanningTree = task.run();
         List<DFSTestNode> ordered = spanningTree.preOrder();
         assertEquals(v0, ordered.get(0));
@@ -149,7 +149,7 @@ public class DepthFirstTraversalLabelTaskTest {
         graph.addEdge(v7, v8);
         graph.addEdge(v8, v7);
 
-        DepthFirstTraversalLabelTask<DFSTestNode, DefaultEdge> task = new DepthFirstTraversalLabelTask<>(v1, graph, 1, DefaultEdge.class);
+        DepthFirstSearchOrderingTask<DFSTestNode, DefaultEdge> task = new DepthFirstSearchOrderingTask<>(v1, graph, 1, DefaultEdge.class);
         DepthFirstSpanningTree<DFSTestNode, DefaultEdge> spanningTree = task.run();
         assertEquals(17, task.currentClock());
         assertEquals(ImmutableList.of(v1, v2, v3, v4, v5, v6, v7, v8), spanningTree.preOrder());
@@ -206,7 +206,7 @@ public class DepthFirstTraversalLabelTaskTest {
         graph.addEdge(vI, vK);
         graph.addEdge(vI, vS);
 
-        DepthFirstTraversalLabelTask<DFSTestNode, DefaultEdge> task = new DepthFirstTraversalLabelTask<>(vS, graph, 1, DefaultEdge.class);
+        DepthFirstSearchOrderingTask<DFSTestNode, DefaultEdge> task = new DepthFirstSearchOrderingTask<>(vS, graph, 1, DefaultEdge.class);
         DepthFirstSpanningTree<DFSTestNode, DefaultEdge> spanningTree = task.run();
         ClassifiedEdges<DefaultEdge> classifiedEdges = spanningTree.classifiedEdges();
         assertEquals(11, classifiedEdges.treeEdges().size());

@@ -1,7 +1,6 @@
 package org.smojol.common.graph;
 
 import com.google.common.collect.Sets;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;
 import org.smojol.common.id.Identifiable;
 
@@ -12,7 +11,7 @@ import java.util.stream.Collectors;
 
 public record DepthFirstSpanningTree<V extends Identifiable, E>(List<V> depthFirstSpanningTreeOrder, V sourceGraphRoot,
                                                                 Graph<V, E> sourceGraph,
-                                                                Map<V, Pair<Integer, Integer>> clockTimes,
+                                                                Map<V, NodeDFSStatistics> nodeStats,
                                                                 Graph<V, E> spanningTree) {
 
     public List<V> preOrder() {
@@ -24,9 +23,11 @@ public record DepthFirstSpanningTree<V extends Identifiable, E>(List<V> depthFir
     }
 
     public boolean isAncestorOf(V possibleAncestor, V possibleDescendant) {
-        Pair<Integer, Integer> ancestorClockTimes = clockTimes.get(possibleAncestor);
-        Pair<Integer, Integer> descendantClockTimes = clockTimes.get(possibleDescendant);
-        return ancestorClockTimes.getLeft() < descendantClockTimes.getLeft() && ancestorClockTimes.getRight() > descendantClockTimes.getRight();
+        int ancestorClockTimeStart = nodeStats.get(possibleAncestor).discoveryStartTime();
+        int ancestorClockTimeEnd = nodeStats.get(possibleAncestor).discoveryEndTime();
+        int descendantClockTimeStart = nodeStats.get(possibleDescendant).discoveryStartTime();
+        int descendantClockTimeEnd = nodeStats.get(possibleDescendant).discoveryStartTime();
+        return ancestorClockTimeStart < descendantClockTimeStart && ancestorClockTimeEnd > descendantClockTimeEnd;
     }
 
     public ClassifiedEdges<E> classifiedEdges() {

@@ -6,7 +6,7 @@ import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.junit.jupiter.api.Test;
 import org.smojol.common.graph.DepthFirstSpanningTree;
-import org.smojol.common.graph.DepthFirstTraversalLabelTask;
+import org.smojol.common.graph.DepthFirstSearchOrderingTask;
 import org.smojol.common.graph.DominatorTree;
 import org.smojol.common.id.Identifiable;
 import org.smojol.toolkit.analysis.task.transpiler.BuildDominatorTreeTask;
@@ -62,7 +62,7 @@ public class BuildDominatorTreeTaskTest {
         graph.addEdge(vH, vC);
         graph.addEdge(vH, vEND);
 
-        DepthFirstTraversalLabelTask<DominatorTreeTestNode, DefaultEdge> dfsTask = new DepthFirstTraversalLabelTask<>(vSTART, graph, DefaultEdge.class);
+        DepthFirstSearchOrderingTask<DominatorTreeTestNode, DefaultEdge> dfsTask = new DepthFirstSearchOrderingTask<>(vSTART, graph, DefaultEdge.class);
         DepthFirstSpanningTree<DominatorTreeTestNode, DefaultEdge> spanningTree = dfsTask.run();
 
         List<Pair<DominatorTreeTestNode, DominatorTreeTestNode>> immediateDominators = new BuildDominatorsTask<DominatorTreeTestNode, DefaultEdge>().immediateDominators(spanningTree);
@@ -107,7 +107,7 @@ public class BuildDominatorTreeTaskTest {
         graph.addEdge(vC, vE);
         graph.addEdge(vE, vC);
 
-        DepthFirstTraversalLabelTask<DominatorTreeTestNode, DefaultEdge> dfsTask = new DepthFirstTraversalLabelTask<>(vA, graph, DefaultEdge.class);
+        DepthFirstSearchOrderingTask<DominatorTreeTestNode, DefaultEdge> dfsTask = new DepthFirstSearchOrderingTask<>(vA, graph, DefaultEdge.class);
         DepthFirstSpanningTree<DominatorTreeTestNode, DefaultEdge> spanningTree = dfsTask.run();
 
         List<Pair<DominatorTreeTestNode, DominatorTreeTestNode>> immediateDominators = new BuildDominatorsTask<DominatorTreeTestNode, DefaultEdge>().immediateDominators(spanningTree);

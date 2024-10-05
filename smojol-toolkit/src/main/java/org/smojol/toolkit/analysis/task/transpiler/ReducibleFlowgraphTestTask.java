@@ -22,14 +22,14 @@ public class ReducibleFlowgraphTestTask<V extends Identifiable, E> {
     }
 
     public boolean run() {
-        DepthFirstTraversalLabelTask<V, E> dfsTask = new DepthFirstTraversalLabelTask<>(sourceGraphRoot, sourceGraph, edgeClass);
+        DepthFirstSearchOrderingTask<V, E> dfsTask = new DepthFirstSearchOrderingTask<>(sourceGraphRoot, sourceGraph, edgeClass);
         DepthFirstSpanningTree<V, E> spanningTree = dfsTask.run();
 
         List<Pair<V, V>> immediateDominators = new BuildDominatorsTask<V, E>().immediateDominators(spanningTree);
         Map<V, Set<V>> allDominators = new BuildDominatorsTask<V, E>().allDominators(spanningTree.preOrder(), sourceGraph);
         DominatorTree<V, E> dominatorTree = new BuildDominatorTreeTask<>(immediateDominators, spanningTree.sourceGraphRoot(), edgeClass).run();
         DJTree<V, E> djTree = new BuildDJTreeTask<>(dominatorTree, spanningTree, allDominators).run();
-        DepthFirstTraversalLabelTask<V, E> dfsTaskOnDJTree = new DepthFirstTraversalLabelTask<>(djTree.root(), djTree.graph(), edgeClass);
+        DepthFirstSearchOrderingTask<V, E> dfsTaskOnDJTree = new DepthFirstSearchOrderingTask<>(djTree.root(), djTree.graph(), edgeClass);
         DepthFirstSpanningTree<V, E> djSpanningTree = dfsTaskOnDJTree.run();
         ClassifiedEdges<E> classifiedEdges = djSpanningTree.classifiedEdges();
         Set<E> backEdges = classifiedEdges.backEdges();

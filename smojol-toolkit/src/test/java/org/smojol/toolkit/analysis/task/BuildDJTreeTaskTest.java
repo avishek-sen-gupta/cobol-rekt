@@ -68,7 +68,7 @@ public class BuildDJTreeTaskTest {
         graph.addEdge(vH, vC);
         graph.addEdge(vH, vEND);
 
-        DepthFirstTraversalLabelTask<DominatorTreeTestNode, DefaultEdge> dfsTask = new DepthFirstTraversalLabelTask<>(vSTART, graph, DefaultEdge.class);
+        DepthFirstSearchOrderingTask<DominatorTreeTestNode, DefaultEdge> dfsTask = new DepthFirstSearchOrderingTask<>(vSTART, graph, DefaultEdge.class);
         DepthFirstSpanningTree<DominatorTreeTestNode, DefaultEdge> spanningTree = dfsTask.run();
 
         List<Pair<DominatorTreeTestNode, DominatorTreeTestNode>> immediateDominators = new BuildDominatorsTask<DominatorTreeTestNode, DefaultEdge>().immediateDominators(spanningTree);
@@ -116,7 +116,7 @@ public class BuildDJTreeTaskTest {
         assertTrue(crossJoinEdges.contains(djTree.graph().getEdge(vG, vH)));
         assertTrue(crossJoinEdges.contains(djTree.graph().getEdge(vE, vF)));
 
-        DepthFirstTraversalLabelTask<DominatorTreeTestNode, DefaultEdge> dfsTaskOnDJTree = new DepthFirstTraversalLabelTask<>(djTree.root(), djTree.graph(), DefaultEdge.class);
+        DepthFirstSearchOrderingTask<DominatorTreeTestNode, DefaultEdge> dfsTaskOnDJTree = new DepthFirstSearchOrderingTask<>(djTree.root(), djTree.graph(), DefaultEdge.class);
         DepthFirstSpanningTree<DominatorTreeTestNode, DefaultEdge> djSpanningTree = dfsTaskOnDJTree.run();
         ClassifiedEdges<DefaultEdge> classifiedEdges = djSpanningTree.classifiedEdges();
         Set<DefaultEdge> backEdges = classifiedEdges.backEdges();
@@ -150,7 +150,7 @@ public class BuildDJTreeTaskTest {
         graph.addEdge(vC, vE);
         graph.addEdge(vE, vC);
 
-        DepthFirstTraversalLabelTask<DominatorTreeTestNode, DefaultEdge> dfsTask = new DepthFirstTraversalLabelTask<>(vA, graph, DefaultEdge.class);
+        DepthFirstSearchOrderingTask<DominatorTreeTestNode, DefaultEdge> dfsTask = new DepthFirstSearchOrderingTask<>(vA, graph, DefaultEdge.class);
         DepthFirstSpanningTree<DominatorTreeTestNode, DefaultEdge> spanningTree = dfsTask.run();
 
         List<Pair<DominatorTreeTestNode, DominatorTreeTestNode>> immediateDominators = new BuildDominatorsTask<DominatorTreeTestNode, DefaultEdge>().immediateDominators(spanningTree);

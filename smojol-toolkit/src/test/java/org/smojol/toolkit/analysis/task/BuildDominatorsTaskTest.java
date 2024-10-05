@@ -58,7 +58,7 @@ public class BuildDominatorsTaskTest {
         graph.addEdge(v6, v7);
         graph.addEdge(v7, v5);
 
-        DepthFirstTraversalLabelTask<DominatorTestNode, DefaultEdge> dfsTask = new DepthFirstTraversalLabelTask<>(v0, graph, DefaultEdge.class);
+        DepthFirstSearchOrderingTask<DominatorTestNode, DefaultEdge> dfsTask = new DepthFirstSearchOrderingTask<>(v0, graph, DefaultEdge.class);
         DepthFirstSpanningTree<DominatorTestNode, DefaultEdge> spanningTree = dfsTask.run();
 
         Map<DominatorTestNode, Set<DominatorTestNode>> dominatorSets = new BuildDominatorsTask<DominatorTestNode, DefaultEdge>().allDominators(spanningTree.preOrder(), graph);
@@ -116,7 +116,7 @@ public class BuildDominatorsTaskTest {
         graph.addEdge(v6, v7);
         graph.addEdge(v7, v5);
 
-        DepthFirstTraversalLabelTask<DominatorTestNode, DefaultEdge> dfsTask = new DepthFirstTraversalLabelTask<>(v0, graph, DefaultEdge.class);
+        DepthFirstSearchOrderingTask<DominatorTestNode, DefaultEdge> dfsTask = new DepthFirstSearchOrderingTask<>(v0, graph, DefaultEdge.class);
         DepthFirstSpanningTree<DominatorTestNode, DefaultEdge> spanningTree = dfsTask.run();
 
         List<Pair<DominatorTestNode, DominatorTestNode>> immediateDominators = new BuildDominatorsTask<DominatorTestNode, DefaultEdge>().immediateDominators(spanningTree);
