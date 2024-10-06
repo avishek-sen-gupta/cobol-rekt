@@ -8,6 +8,7 @@ import org.smojol.common.pseudocode.SmojolSymbolTable;
 import org.smojol.common.transpiler.*;
 import org.smojol.common.transpiler.instruction.ConditionalJumpInstruction;
 import org.smojol.common.transpiler.instruction.DetachedInstructionBlockMarker;
+import org.smojol.common.transpiler.instruction.JumpInstruction;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.toolkit.intermediate.IntermediateASTNodeBuilder;
 import org.smojol.toolkit.transpiler.TranspilerTreeBuilder;
@@ -52,8 +53,17 @@ public class BuildTranspilerInstructionsFromTreeTask {
             case TranspilerCodeBlockNode cb -> composite(cb, epilogue);
             case IfTranspilerNode ifStmt -> ifInstructions(ifStmt, epilogue);
             case TranspilerLoop loop -> loopInstructions(loop, epilogue);
+            case JumpTranspilerNode jmp -> jumpInstructions(jmp, epilogue);
             default -> atomicUnit(node);
         };
+    }
+
+    private List<TranspilerInstruction> jumpInstructions(JumpTranspilerNode node, List<TranspilerInstruction> epilogue) {
+        String instructionID = idProvider.next();
+        return ImmutableList.of(
+                new JumpInstruction(node, ENTER, instructionID),
+                new JumpInstruction(node, BODY, instructionID),
+                new JumpInstruction(node, EXIT, instructionID));
     }
 
     private List<TranspilerInstruction> loopInstructions(TranspilerLoop loop, List<TranspilerInstruction> epilogue) {
