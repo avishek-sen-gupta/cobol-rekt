@@ -18,15 +18,15 @@ public class EvaluateNodeTranslator {
     public static TranspilerNode build(EvaluateFlowNode n, CobolDataStructure dataStructures) {
         ExpandedEvaluation deconstructedRepresentation = n.getDeconstructedRepresentation();
         List<TestActionPair> clauses = deconstructedRepresentation.testActionPairs();
-        TranspilerCodeBlock elseBody = new DetachedTranspilerCodeBlock(deconstructedRepresentation.elseBody().stream().map(stmt -> TranspilerTreeBuilder.flowToTranspiler(stmt, dataStructures)).toList());
+        TranspilerCodeBlockNode elseBody = new DetachedTranspilerCodeBlockNode(deconstructedRepresentation.elseBody().stream().map(stmt -> TranspilerTreeBuilder.flowToTranspiler(stmt, dataStructures)).toList());
         return recursiveOr(head(clauses), tail(clauses), dataStructures, elseBody);
     }
 
-    private static TranspilerNode recursiveOr(Optional<TestActionPair> current, List<TestActionPair> remaining, CobolDataStructure dataStructures, TranspilerCodeBlock elseBody) {
+    private static TranspilerNode recursiveOr(Optional<TestActionPair> current, List<TestActionPair> remaining, CobolDataStructure dataStructures, TranspilerCodeBlockNode elseBody) {
         TranspilerExpressionBuilder builder = new TranspilerExpressionBuilder(dataStructures);
         CobolExpression test = current.get().test();
         List<FlowNode> bodyStatements = current.get().actions();
-        TranspilerCodeBlock transpilerBody = new DetachedTranspilerCodeBlock(bodyStatements.stream().map(stmt -> TranspilerTreeBuilder.flowToTranspiler(stmt, dataStructures)).toList());
+        TranspilerCodeBlockNode transpilerBody = new DetachedTranspilerCodeBlockNode(bodyStatements.stream().map(stmt -> TranspilerTreeBuilder.flowToTranspiler(stmt, dataStructures)).toList());
         if (remaining.isEmpty()) return new IfTranspilerNode(builder.build(test), transpilerBody, elseBody);
         return new IfTranspilerNode(builder.build(test), transpilerBody, recursiveOr(head(remaining), tail(remaining), dataStructures, elseBody));
     }

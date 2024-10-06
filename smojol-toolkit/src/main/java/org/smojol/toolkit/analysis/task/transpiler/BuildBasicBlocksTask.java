@@ -51,7 +51,7 @@ public class BuildBasicBlocksTask {
                     .forEach(targetBB -> blockGraph.addEdge(bb, targetBB));
         });
         Function<BasicBlock<TranspilerInstruction>, Boolean> IS_ROOT = block -> block == basicBlocks.getFirst();
-        PruneUnreachableTask.pruneUnreachables(blockGraph, IS_ROOT);
+//        PruneUnreachableTask.pruneUnreachables(blockGraph, IS_ROOT);
 //        while (pruneUnreachables(blockGraph, IS_ROOT)) {
 //            System.out.println("PRUNED...");
 //        }
@@ -76,9 +76,9 @@ public class BuildBasicBlocksTask {
                     addInstructionToCurrentBlock(instruction, currentBlock);
                 }
                 else {
-                    addInstructionToCurrentBlock(instruction, currentBlock);
                     allBasicBlocks.add(currentBlock);
                     currentBlock = basicBlockFactory.block();
+                    addInstructionToCurrentBlock(instruction, currentBlock);
                 }
             } else if (isBranchPoint(instruction)) {
                 addInstructionToCurrentBlock(instruction, currentBlock);

@@ -1,9 +1,9 @@
 package org.smojol.common.pseudocode;
 
 import org.smojol.common.id.IdProvider;
-import org.smojol.common.id.Identifiable;
+import org.smojol.common.id.InstructionLike;
 
-public class BasicBlockFactory<T extends Identifiable> {
+public class BasicBlockFactory<T extends InstructionLike> {
     private final IdProvider idProvider;
 
     public BasicBlockFactory(IdProvider idProvider) {

@@ -14,6 +14,7 @@ import org.smojol.common.transpiler.TranspilerInstruction;
 import org.smojol.toolkit.analysis.pipeline.ProgramSearch;
 import org.smojol.toolkit.analysis.task.analysis.CodeTaskRunner;
 import org.smojol.toolkit.analysis.task.transpiler.IntervalAnalysisTask;
+import org.smojol.toolkit.analysis.task.transpiler.StructuredProgramTheoremFormTranspilerTask;
 import org.smojol.toolkit.interpreter.FullProgram;
 import org.smojol.toolkit.interpreter.structure.OccursIgnoringFormat1DataStructureBuilder;
 import org.smojol.toolkit.task.AnalysisTaskResult;
@@ -39,7 +40,7 @@ public class TranspilationMain {
         List<AnalysisTaskResult> results = result.get(programName);
         TranspilerFlowgraph transpilerFlowgraph = ((AnalysisTaskResultOK) results.getFirst()).getDetail();
         Graph<BasicBlock<TranspilerInstruction>, DefaultEdge> blockGraph = transpilerFlowgraph.basicBlockFlowgraph();
-
+        List<String> transpiledCode = new StructuredProgramTheoremFormTranspilerTask(transpilerFlowgraph).run();
         System.out.println("DONE");
     }
 }

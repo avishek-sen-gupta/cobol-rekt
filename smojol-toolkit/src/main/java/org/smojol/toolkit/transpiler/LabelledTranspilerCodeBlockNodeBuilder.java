@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.FlowNodeType;
 import org.smojol.common.transpiler.LabelledTranspilerCodeBlockNode;
-import org.smojol.common.transpiler.TranspilerCodeBlock;
+import org.smojol.common.transpiler.TranspilerCodeBlockNode;
 import org.smojol.common.transpiler.TranspilerNode;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.toolkit.ast.ParagraphFlowNode;
@@ -39,6 +39,6 @@ public class LabelledTranspilerCodeBlockNodeBuilder {
 
     public static TranspilerNode build(ParagraphsFlowNode n, CobolDataStructure dataStructures) {
         List<TranspilerNode> childTranspilerNodes = n.astChildren().stream().map(child -> TranspilerTreeBuilder.flowToTranspiler(child, dataStructures)).toList();
-        return new TranspilerCodeBlock(childTranspilerNodes);
+        return new TranspilerCodeBlockNode(childTranspilerNodes);
     }
 }

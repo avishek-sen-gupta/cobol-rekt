@@ -1,12 +1,14 @@
 package org.smojol.common.pseudocode;
 
+import lombok.Getter;
 import org.smojol.common.id.Identifiable;
+import org.smojol.common.id.InstructionLike;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class BasicBlock<T extends Identifiable> implements Identifiable {
-    private final List<T> instructions = new ArrayList<>();
+public class BasicBlock<T extends InstructionLike> implements Identifiable {
+    @Getter private final List<T> instructions = new ArrayList<>();
     private final String id;
 
     public BasicBlock(String id) {
@@ -38,5 +40,9 @@ public class BasicBlock<T extends Identifiable> implements Identifiable {
     public String label() {
         return id;
 //        return String.join("\n", instructions.stream().map(Object::toString).toList());
+    }
+
+    public boolean contains(T instruction, CodeSentinelType codeSentinelType) {
+        return instructions.contains(instruction) && instruction.sentinel() == codeSentinelType;
     }
 }

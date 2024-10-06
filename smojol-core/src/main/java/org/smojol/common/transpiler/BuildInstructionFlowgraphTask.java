@@ -70,7 +70,7 @@ public class BuildInstructionFlowgraphTask {
                     addEdge(currentInstruction, entry(current, transpilerNodeMap, instructions));
                     addEdge(currentInstruction, nextInstruction);
                 }
-                case DetachedTranspilerCodeBlock x when currentInstruction.sentinel() == CodeSentinelType.EXIT -> {
+                case DetachedTranspilerCodeBlockNode x when currentInstruction.sentinel() == CodeSentinelType.EXIT -> {
                     // Don't do anything
                 }
                 default -> {

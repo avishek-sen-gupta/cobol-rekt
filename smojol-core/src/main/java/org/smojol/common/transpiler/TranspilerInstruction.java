@@ -3,12 +3,12 @@ package org.smojol.common.transpiler;
 import org.smojol.common.ast.FlowNodeLike;
 import org.smojol.common.ast.FlowNodeType;
 import org.smojol.common.ast.SemanticCategory;
-import org.smojol.common.id.Identifiable;
+import org.smojol.common.id.InstructionLike;
 import org.smojol.common.pseudocode.CodeSentinelType;
 
 import java.util.List;
 
-public record TranspilerInstruction(TranspilerNode ref, CodeSentinelType sentinel, String id) implements Identifiable, FlowNodeLike {
+public record TranspilerInstruction(TranspilerNode ref, CodeSentinelType sentinel, String id) implements FlowNodeLike, InstructionLike {
     public static TranspilerInstruction NULL = new TranspilerInstruction(new NullTranspilerNode(), CodeSentinelType.BODY, "NO-ID");
 
     @Override

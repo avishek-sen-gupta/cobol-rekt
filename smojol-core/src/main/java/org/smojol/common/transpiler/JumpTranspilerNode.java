@@ -23,7 +23,7 @@ public class JumpTranspilerNode extends TranspilerNode {
 
     @Override
     public String description() {
-        return String.format("jump(%s)", start.description());
+        return String.format("jump(%s, %s)", start.description(), end.description());
     }
 
     @Override

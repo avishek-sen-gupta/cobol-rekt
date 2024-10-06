@@ -7,16 +7,16 @@ import java.util.List;
 import static org.apache.commons.lang3.StringUtils.truncate;
 
 
-public class DetachedTranspilerCodeBlock extends TranspilerCodeBlock {
-    public DetachedTranspilerCodeBlock(List<TranspilerNode> children) {
+public class DetachedTranspilerCodeBlockNode extends TranspilerCodeBlockNode {
+    public DetachedTranspilerCodeBlockNode(List<TranspilerNode> children) {
         super(children);
     }
 
-    public DetachedTranspilerCodeBlock() {
+    public DetachedTranspilerCodeBlockNode() {
         this(ImmutableList.of());
     }
 
-    public DetachedTranspilerCodeBlock(TranspilerNode single) {
+    public DetachedTranspilerCodeBlockNode(TranspilerNode single) {
         super(single);
     }
 

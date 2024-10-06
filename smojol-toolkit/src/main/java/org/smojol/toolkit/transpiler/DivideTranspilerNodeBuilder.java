@@ -2,7 +2,7 @@ package org.smojol.toolkit.transpiler;
 
 import org.smojol.common.transpiler.DivideNode;
 import org.smojol.common.transpiler.SetTranspilerNode;
-import org.smojol.common.transpiler.TranspilerCodeBlock;
+import org.smojol.common.transpiler.TranspilerCodeBlockNode;
 import org.smojol.common.transpiler.TranspilerNode;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.toolkit.ast.DivideFlowNode;
@@ -21,7 +21,7 @@ public class DivideTranspilerNodeBuilder {
 
     private static TranspilerNode setTranspilerNode(DivideFlowNode n, TranspilerExpressionBuilder nodeBuilder, List<DivideNode> quotients) {
         if (!n.isGiving())
-            return new TranspilerCodeBlock(zip(n.getDestinationExpressions().stream().map(nodeBuilder::build), quotients.stream(), (dst, src) -> (TranspilerNode) new SetTranspilerNode(src, dst)).toList());
-        return new TranspilerCodeBlock(n.getDestinationExpressions().stream().map(dst -> (TranspilerNode) new SetTranspilerNode(quotients.getFirst(), nodeBuilder.build(dst))).toList());
+            return new TranspilerCodeBlockNode(zip(n.getDestinationExpressions().stream().map(nodeBuilder::build), quotients.stream(), (dst, src) -> (TranspilerNode) new SetTranspilerNode(src, dst)).toList());
+        return new TranspilerCodeBlockNode(n.getDestinationExpressions().stream().map(dst -> (TranspilerNode) new SetTranspilerNode(quotients.getFirst(), nodeBuilder.build(dst))).toList());
     }
 }

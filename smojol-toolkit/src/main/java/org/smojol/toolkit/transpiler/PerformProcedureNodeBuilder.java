@@ -43,6 +43,6 @@ public class PerformProcedureNodeBuilder {
     private static TranspilerNode body(FlowNode node, CobolDataStructure dataStructures) {
         List<FlowNode> inlineStatements = node.astChildren().stream().filter(n -> n instanceof ConditionalStatementFlowNode).toList();
         List<TranspilerNode> inlineTranspilerNodes = inlineStatements.stream().map(istmt -> TranspilerTreeBuilder.flowToTranspiler(istmt, dataStructures)).toList();
-        return new TranspilerCodeBlock(inlineTranspilerNodes);
+        return new TranspilerCodeBlockNode(inlineTranspilerNodes);
     }
 }
