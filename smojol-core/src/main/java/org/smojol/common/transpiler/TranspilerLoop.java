@@ -1,12 +1,14 @@
 package org.smojol.common.transpiler;
 
 import com.google.common.collect.ImmutableList;
+import lombok.Getter;
 import org.smojol.common.ast.SemanticCategory;
 import org.smojol.common.vm.expression.ConditionTestTime;
 
 import java.util.Collection;
 import java.util.Objects;
 
+@Getter
 public final class TranspilerLoop extends TranspilerNode {
     private final TranspilerNode loopVariable;
     private final TranspilerNode initialValue;
@@ -27,10 +29,6 @@ public final class TranspilerLoop extends TranspilerNode {
         this.loopUpdate = loopUpdate;
         this.conditionTestTime = conditionTestTime;
         this.body = body;
-    }
-
-    public TranspilerNode body() {
-        return body;
     }
 
     @Override
