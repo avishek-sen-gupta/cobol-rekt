@@ -51,8 +51,13 @@ public class BuildTranspilerInstructionsFromTreeTask {
             case DetachedTranspilerCodeBlockNode cb -> composite(cb, epilogue);
             case TranspilerCodeBlockNode cb -> composite(cb, epilogue);
             case IfTranspilerNode ifStmt -> ifInstructions(ifStmt, epilogue);
+            case TranspilerLoop loop -> loopInstructions(loop, epilogue);
             default -> atomicUnit(node);
         };
+    }
+
+    private List<TranspilerInstruction> loopInstructions(TranspilerLoop loop, List<TranspilerInstruction> epilogue) {
+        return null;
     }
 
     private List<TranspilerInstruction> atomicUnit(TranspilerNode node) {

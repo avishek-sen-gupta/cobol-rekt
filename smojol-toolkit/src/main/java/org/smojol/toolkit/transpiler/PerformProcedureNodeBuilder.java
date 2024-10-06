@@ -31,13 +31,13 @@ public class PerformProcedureNodeBuilder {
 
     private static TranspilerNode toTranspilerLoop(FlowIteration loop, TranspilerNode body, CobolDataStructure dataStructures) {
         TranspilerExpressionBuilder expressionBuilder = new TranspilerExpressionBuilder(dataStructures);
-        return decompose(new TranspilerLoop(expressionBuilder.build(loop.loopVariable()),
+        return new TranspilerLoop(expressionBuilder.build(loop.loopVariable()),
                 expressionBuilder.build(loop.initialValue()),
                 expressionBuilder.build(loop.maxValue()),
                 expressionBuilder.build(loop.condition()),
                 new TranspilerLoopUpdate(expressionBuilder.build(loop.loopUpdate().updateDelta())),
                 loop.conditionTestTime(), body
-        ));
+        );
     }
 
     public static TranspilerNode decompose(TranspilerLoop loop) {
