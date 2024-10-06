@@ -9,6 +9,11 @@
        PROCEDURE DIVISION.
        S SECTION.
        SA1.
+           PERFORM TEST BEFORE VARYING WS-NUM1 FROM 1 BY 1
+           UNTIL WS-NUM1 > 10
+                DISPLAY "GOING " WS-NUM1
+           END-PERFORM.
+
            DISPLAY "SA1".
            PERFORM SZ1.
        SE1.
