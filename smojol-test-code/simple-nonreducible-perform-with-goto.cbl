@@ -6,8 +6,9 @@
        WORKING-STORAGE SECTION.
        01  TESTING    PIC 9(8) VALUE 100.
        PROCEDURE DIVISION.
-            MAIN-SECTION SECTION.
+            ROOT SECTION.
                 PERFORM MAIN-SECTION-01.
+                STOP RUN.
             MAIN-SECTION-01 SECTION.
                 MAIN-SECTION-01-A.
                     IF  TESTING = 5
