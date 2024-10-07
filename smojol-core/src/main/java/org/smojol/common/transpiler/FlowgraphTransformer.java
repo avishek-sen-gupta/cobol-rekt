@@ -38,7 +38,7 @@ public class FlowgraphTransformer<V extends Identifiable, E> {
         if (isRoot.apply(node)) return;
         Set<V> incomingVertexSet = new HashSet<>(incomingVertices);
         if (incomingVertexSet.isEmpty())
-            throw new RuntimeException("This cannot happen!");
+            throw new RuntimeException("This cannot happen! " + node.label());
         if (incomingVertexSet.size() != 1) return;
         merge(incomingVertices.getFirst(), node);
         affectedNodes.add(node);

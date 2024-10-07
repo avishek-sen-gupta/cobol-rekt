@@ -25,7 +25,8 @@ import java.util.Map;
 public class TranspilerInstructionIntervalAnalysisMain {
     public static void main(String[] args) throws IOException, InterruptedException {
         LoggingConfig.setupLogging();
-        String programName = "simple-nonreducible-perform.cbl";
+//        String programName = "simple-nonreducible-perform.cbl";
+        String programName = "simple-nonreducible-perform-with-goto.cbl";
 //        String programName = "incorrect-cfg-nonreducible-perform.cbl";
         Map<String, List<AnalysisTaskResult>> result = new CodeTaskRunner("/Users/asgupta/code/smojol/smojol-test-code",
                 "/Users/asgupta/code/smojol/out/report",
