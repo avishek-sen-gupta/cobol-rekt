@@ -1,4 +1,3 @@
-
        IDENTIFICATION DIVISION.
        PROGRAM-ID. IRREDUCIBLE-TEST.
        AUTHOR.        MOJO.
@@ -15,6 +14,8 @@
                         DISPLAY "SOMETHING"
                         IF  TESTING = 6
                             GO  TO  MAIN-SECTION-01-Z
+                        ELSE
+                            NEXT SENTENCE
                     ELSE
                         DISPLAY "SOMETHING".
                         PERFORM  SUBROUTINE-1.
