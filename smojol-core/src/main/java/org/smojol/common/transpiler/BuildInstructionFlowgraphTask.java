@@ -20,12 +20,14 @@ public class BuildInstructionFlowgraphTask {
     private final List<TranspilerInstruction> instructions;
     private final TranspilerNode transpilerTree;
     private final Map<TranspilerNode, Triple<Integer, Integer, Integer>> transpilerNodeMap;
+    private final List<String> flowHints;
     private final List<TranspilerInstructionEdge> edges;
 
-    public BuildInstructionFlowgraphTask(List<TranspilerInstruction> instructions, TranspilerNode transpilerTree) {
+    public BuildInstructionFlowgraphTask(List<TranspilerInstruction> instructions, TranspilerNode transpilerTree, List<String> flowHints) {
         this.instructions = instructions;
         this.transpilerTree = transpilerTree;
         transpilerNodeMap = buildTranspilerNodeMap(instructions);
+        this.flowHints = flowHints;
         edges = new ArrayList<>();
     }
 
@@ -43,6 +45,13 @@ public class BuildInstructionFlowgraphTask {
             TranspilerInstruction nextInstruction = instructions.get(i + 1);
             TranspilerNode current = currentInstruction.ref();
 
+            if (nextInstruction.ref() instanceof LabelledTranspilerCodeBlockNode b
+                    && flowHints.contains(b.getName())
+                    && (FlowNodeType.SECTION == b.getProperty("type") || FlowNodeType.PARAGRAPH == b.getProperty("type"))
+                    && nextInstruction.sentinel() == CodeSentinelType.ENTER) {
+                System.out.println("Skipping flow hint: " + b.getName());
+                continue;
+            }
             switch (current) {
                 case IfTranspilerNode n when currentInstruction.sentinel() == CodeSentinelType.BODY -> {
                     TranspilerInstruction ifThenEntry = entry(n.getIfThenBlock(), transpilerNodeMap, instructions);
@@ -119,9 +128,12 @@ public class BuildInstructionFlowgraphTask {
             case NamedLocationNode n ->
                     entry(instructions.stream().filter(instr -> instr.ref() instanceof LabelledTranspilerCodeBlockNode x && instr.sentinel() == CodeSentinelType.ENTER && x.getName().equals(n.getName())).findFirst().get().ref(), transpilerNodeMap, instructions);
             case ProgramTerminalLocationNode n -> exit(instructions.getLast().ref(), transpilerNodeMap, instructions);
-            case NextLocationNode n -> entry(nextLocation(instructions, currentAddress), transpilerNodeMap, instructions);
-            case ExitIterationScopeLocationNode s -> exit(iterationExit(currentAddress, instructions), transpilerNodeMap, instructions);
-            case IdLocationNode i -> instructions.stream().filter(instr -> instr.ref().id().equals(i.getDestination().id()) && instr.sentinel() == i.getSentinel()).findFirst().get();
+            case NextLocationNode n ->
+                    entry(nextLocation(instructions, currentAddress), transpilerNodeMap, instructions);
+            case ExitIterationScopeLocationNode s ->
+                    exit(iterationExit(currentAddress, instructions), transpilerNodeMap, instructions);
+            case IdLocationNode i ->
+                    instructions.stream().filter(instr -> instr.ref().id().equals(i.getDestination().id()) && instr.sentinel() == i.getSentinel()).findFirst().get();
             default -> TranspilerInstruction.NULL;
         };
     }

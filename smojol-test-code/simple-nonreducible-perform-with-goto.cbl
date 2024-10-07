@@ -12,16 +12,7 @@
             MAIN-SECTION-01 SECTION.
                 MAIN-SECTION-01-A.
                     IF  TESTING = 5
-                        DISPLAY "SOMETHING"
-                        IF  TESTING = 6
-                            GO  TO  MAIN-SECTION-01-Z
-                        ELSE
-                            NEXT SENTENCE
-                    ELSE
-                        DISPLAY "SOMETHING".
-                        PERFORM  SUBROUTINE-1.
-                    DISPLAY "NEXT SENTENCE".
-                MAIN-SECTION-01-FORW.
+                        GO  TO  MAIN-SECTION-01-Z.
                     PERFORM  SUBROUTINE-1.
                 MAIN-SECTION-01-Z.
                     EXIT.

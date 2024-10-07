@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mojo.woof.GraphSDK;
 import com.mojo.woof.Neo4JDriverBuilder;
-import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;
@@ -21,38 +20,42 @@ import org.smojol.toolkit.analysis.graph.NamespaceQualifier;
 import org.smojol.toolkit.analysis.graph.NodeSpecBuilder;
 import org.smojol.toolkit.analysis.graph.NodeToWoof;
 import org.smojol.toolkit.analysis.pipeline.config.OutputArtifactConfig;
-import org.smojol.toolkit.task.*;
 import org.smojol.toolkit.transpiler.TranspilerLoopUpdate;
 
 import java.util.List;
 
-public class BuildTranspilerFlowgraphTask implements AnalysisTask {
+public class BuildTranspilerFlowgraphTask {
     private final ParseTree rawAST;
     private final CobolDataStructure dataStructures;
     private final SmojolSymbolTable symbolTable;
     private final OutputArtifactConfig transpilerModelOutputConfig;
     private final ResourceOperations resourceOperations;
     private final Neo4JDriverBuilder neo4JDriverBuilder;
+    private final List<String> flowHints;
 
-    public BuildTranspilerFlowgraphTask(ParserRuleContext rawAST, CobolDataStructure dataStructures, SmojolSymbolTable symbolTable, OutputArtifactConfig transpilerModelOutputConfig, ResourceOperations resourceOperations, Neo4JDriverBuilder neo4JDriverBuilder) {
+    public BuildTranspilerFlowgraphTask(ParseTree rawAST, CobolDataStructure dataStructures, SmojolSymbolTable symbolTable, List<String> flowHints, OutputArtifactConfig transpilerModelOutputConfig, ResourceOperations resourceOperations, Neo4JDriverBuilder neo4JDriverBuilder) {
         this.rawAST = rawAST;
         this.dataStructures = dataStructures;
         this.symbolTable = symbolTable;
         this.transpilerModelOutputConfig = transpilerModelOutputConfig;
         this.resourceOperations = resourceOperations;
         this.neo4JDriverBuilder = neo4JDriverBuilder;
+        this.flowHints = flowHints;
     }
 
-    @Override
-    public AnalysisTaskResult run() {
+    public BuildTranspilerFlowgraphTask(ParseTree rawAST, CobolDataStructure dataStructures, SmojolSymbolTable symbolTable, List<String> flowHints) {
+        this(rawAST, dataStructures, symbolTable, flowHints, null, null, null);
+    }
+
+    public TranspilerFlowgraph run() {
         TranspilerNode transpilerTree = new BuildTranspilerASTTask(rawAST, dataStructures, symbolTable).run();
         List<TranspilerInstruction> instructions = new BuildTranspilerInstructionsFromTreeTask(rawAST, dataStructures, symbolTable).run();
-        Graph<TranspilerInstruction, DefaultEdge> instructionFlowgraph = new BuildInstructionFlowgraphTask(instructions, transpilerTree).run();
+        Graph<TranspilerInstruction, DefaultEdge> instructionFlowgraph = new BuildInstructionFlowgraphTask(instructions, transpilerTree, flowHints).run();
         Pair<Graph<BasicBlock<TranspilerInstruction>, DefaultEdge>, List<BasicBlock<TranspilerInstruction>>> basicBlockModel = new BuildBasicBlocksTask(instructions, instructionFlowgraph, new BasicBlockFactory<>(new IncrementingIdProvider()), neo4JDriverBuilder).run();
         Graph<BasicBlock<TranspilerInstruction>, DefaultEdge> basicBlockGraph = basicBlockModel.getLeft();
         MermaidGraph<TranspilerInstruction, DefaultEdge> mermaid = new MermaidGraph<>();
         String draw = mermaid.draw(instructionFlowgraph);
-        return AnalysisTaskResult.OK(CommandLineAnalysisTask.BUILD_TRANSPILER_FLOWGRAPH, new TranspilerFlowgraph(basicBlockGraph, instructionFlowgraph, transpilerTree, instructions, basicBlockModel.getRight()));
+        return new TranspilerFlowgraph(basicBlockGraph, instructionFlowgraph, transpilerTree, instructions, basicBlockModel.getRight());
 
 //        try {
 //            resourceOperations.createDirectories(transpilerModelOutputConfig.outputDir());
@@ -132,8 +135,7 @@ public class BuildTranspilerFlowgraphTask implements AnalysisTask {
                 .registerSubtype(ProgramTerminalLocationNode.class, "terminal_location")
                 .registerSubtype(PlaceholderTranspilerNode.class, "placeholder")
                 .registerSubtype(NullTranspilerNode.class, "null_node")
-                .registerSubtype(ExitTranspilerNode.class, "exit")
-                ;
+                .registerSubtype(ExitTranspilerNode.class, "exit");
         return new GsonBuilder().setPrettyPrinting().registerTypeAdapterFactory(runtimeTypeAdapterFactory).create();
     }
 }

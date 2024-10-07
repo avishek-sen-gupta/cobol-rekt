@@ -17,7 +17,7 @@ import java.util.Map;
 
 public class LabelledTranspilerCodeBlockNodeBuilder {
     public static TranspilerNode build(SectionFlowNode n, CobolDataStructure dataStructures) {
-        return labelledBlock(n, dataStructures);
+        return labelledBlock(n, dataStructures, ImmutableMap.of("type", FlowNodeType.SECTION));
     }
 
     private static LabelledTranspilerCodeBlockNode labelledBlock(FlowNode n, CobolDataStructure dataStructures) {
@@ -30,7 +30,7 @@ public class LabelledTranspilerCodeBlockNodeBuilder {
     }
 
     public static TranspilerNode build(ParagraphFlowNode n, CobolDataStructure dataStructures) {
-        return labelledBlock(n, dataStructures);
+        return labelledBlock(n, dataStructures, ImmutableMap.of("type", FlowNodeType.PARAGRAPH));
     }
 
     public static TranspilerNode build(ProcedureDivisionBodyFlowNode n, CobolDataStructure dataStructures) {

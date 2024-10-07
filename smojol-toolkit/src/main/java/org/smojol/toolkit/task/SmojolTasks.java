@@ -1,9 +1,12 @@
 package org.smojol.toolkit.task;
 
+import com.google.common.collect.ImmutableList;
 import com.mojo.woof.Neo4JDriverBuilder;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.smojol.common.graph.BaseAnalysisResult;
 import org.smojol.common.pseudocode.SmojolSymbolTable;
 import org.smojol.common.pseudocode.SymbolReferenceBuilder;
+import org.smojol.common.transpiler.TranspilerFlowgraph;
 import org.smojol.toolkit.analysis.pipeline.ParsePipeline;
 import org.smojol.toolkit.analysis.graph.NamespaceQualifier;
 import org.smojol.toolkit.analysis.graph.NodeSpecBuilder;
@@ -70,6 +73,13 @@ public class SmojolTasks {
         return tasks(commandLineAnalysisTasks).map(AnalysisTask::run).toList();
     }
 
+    public AnalysisTask BUILD_BASE = new AnalysisTask() {
+        @Override
+        public AnalysisTaskResult run() {
+            return AnalysisTaskResult.OK(CommandLineAnalysisTask.BASE_ANALYSIS, new BaseAnalysisResult(rawAST, dataStructures, symbolTable));
+        }
+    };
+
     public AnalysisTask INJECT_INTO_NEO4J = new AnalysisTask() {
         @Override
         public AnalysisTaskResult run() {
@@ -129,7 +139,8 @@ public class SmojolTasks {
     public AnalysisTask BUILD_TRANSPILER_FLOWGRAPH = new AnalysisTask() {
         @Override
         public AnalysisTaskResult run() {
-            return new BuildTranspilerFlowgraphTask(rawAST, dataStructures, symbolTable, transpilerModelOutputConfig, resourceOperations, neo4JDriverBuilder).run();
+            TranspilerFlowgraph transpilerFlowgraph = new BuildTranspilerFlowgraphTask(rawAST, dataStructures, symbolTable, ImmutableList.of("MAIN-SECTION-01", "SUBROUTINE-1"), transpilerModelOutputConfig, resourceOperations, neo4JDriverBuilder).run();
+            return AnalysisTaskResult.OK(CommandLineAnalysisTask.BUILD_TRANSPILER_FLOWGRAPH, transpilerFlowgraph);
         }
     };
 
@@ -197,6 +208,7 @@ public class SmojolTasks {
             case COMPARE_CODE -> COMPARE_CODE;
             case SUMMARISE_THROUGH_LLM -> SUMMARISE_THROUGH_LLM;
             case BUILD_TRANSPILER_FLOWGRAPH -> BUILD_TRANSPILER_FLOWGRAPH;
+            case BASE_ANALYSIS -> BUILD_BASE;
         });
     }
 
