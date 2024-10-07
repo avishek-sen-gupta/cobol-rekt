@@ -28,12 +28,12 @@ You can see the current backlog [here](https://github.com/users/avishek-sen-gupt
     - [Code Similarity](#code-similarity)
     - [Code Pattern Recognition](#code-pattern-recognition)
 - [Control Flow Analysis and Transpilation Experiments](#control-flow-analysis-and-transpilation-experiments)
-  - [Intermediate Transpilation Model](#exposing-a-basic-transpilation-model)
+  - [Intermediate Transpilation Model](#exposing-a-basic-transpilation-model-instructions-and-basic-blocks)
   - [Exposing Basic Blocks](#basic-blocks-experimental-feature)
-  - [Reducibility Testing](#reducibility-testing-experimental-feature)
+  - [Reducibility Testing](#reducibility-testing)
     - [Reducibility testing using T1-T2 Transforms](#1-reducibility-testing-using-t1-t2-transforms)
     - [Reducibility testing using DJ Graphs](#2-reducibility-testing-using-dj-graphs)
-  - [Improper Loop Detection](#improper-loop-detection)
+  - [Improper Loop Detection](#2-improper-loop-body-detection)
   - [Dominator Analysis](#dominator-analysis)
 - [Running against AWS Card Demo](#running-against-aws-card-demo)
 - [Developer Guide](#developer-guide)
@@ -447,9 +447,11 @@ The screenshot below shows a part of an example transpiler model flowgraph.
 
 ![Part of an Example Transpiler Model CFG](documentation/transpiler-model-cfg.png)
 
-See [TranspilerBuildMain.java](smojol-toolkit/src/main/java/org/smojol/toolkit/examples/TranspilerBuildMain.java) for an example.
+See [TranspilerBuildMain.java](smojol-toolkit/src/main/java/org/smojol/toolkit/examples/TranspilationMain.java) for an example.
 
 The ```BuildTranspilerFlowgraphTask``` creates the intermediate AST, instructions, and the **Basic Block tree**.
+
+In addition, this task can accept a set of flow hints. These flow hints allow the engineer to explicitly specify section/paragraph names which are not targets of fallthrough flows. Without these hints, some programs can yield irreducible control flowgraphs, which require more complicated resolutions, come transpilation time. See [Reducibility Test](#reducibility-testing) for more details.
 
 ### Details of the Intermediate Transpiler Tree
 
@@ -479,7 +481,7 @@ Note that if you use the ```BuildTranspilerFlowgraphTask``` task, Basic Blocks a
 
 **Reducibility** is tested using interval analysis, specifically using the **repeated T1-T2 transform method**.
 
-See [IntervalAnalysisMain.java](smojol-toolkit/src/main/java/org/smojol/toolkit/examples/IntervalAnalysisMain.java) for an example.
+See [TranspilerInstructionIntervalAnalysisMain.java](smojol-toolkit/src/main/java/org/smojol/toolkit/examples/TranspilerInstructionIntervalAnalysisMain.java) for an example.
 
 #### 2. Reducibility Testing using DJ Graphs
 
