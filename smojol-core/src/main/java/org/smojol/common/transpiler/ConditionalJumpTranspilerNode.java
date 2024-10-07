@@ -1,2 +1,4 @@
-package org.smojol.common.transpiler;public class ConditionalJumpTranspilerNode {
+package org.smojol.common.transpiler;
+
+public class ConditionalJumpTranspilerNode {
 }
