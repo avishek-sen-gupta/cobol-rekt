@@ -8,22 +8,21 @@
        01  TESTING    PIC 9(8) VALUE 100.
        PROCEDURE DIVISION.
             MAIN-SECTION SECTION.
-                PERFORM U320-DBTOG.
-                STOP RUN.
-            U320-DBTOG SECTION.
-                U320-MAIN-PART.
+                PERFORM MAIN-SECTION-01.
+            MAIN-SECTION-01 SECTION.
+                MAIN-SECTION-01-A.
                     IF  TESTING = 5
                         DISPLAY "SOMETHING"
                         IF  TESTING = 6
-                            GO  TO  U320Z
+                            GO  TO  MAIN-SECTION-01-Z
                     ELSE
                         DISPLAY "SOMETHING".
-                        PERFORM  U560-FILL-DBTOG-TAB.
+                        PERFORM  SUBROUTINE-1.
                     DISPLAY "NEXT SENTENCE".
-                U320-DBTOG-FORW.
-                    PERFORM  U560-FILL-DBTOG-TAB.
-                U320Z.
+                MAIN-SECTION-01-FORW.
+                    PERFORM  SUBROUTINE-1.
+                MAIN-SECTION-01-Z.
                     EXIT.
-            U560-FILL-DBTOG-TAB SECTION.
-                U560A.
+            SUBROUTINE-1 SECTION.
+                SUBROUTINE-1-A.
                     EXIT.
