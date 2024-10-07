@@ -7,7 +7,8 @@ import org.smojol.common.transpiler.TranspilerInstruction;
 import org.smojol.common.transpiler.TranspilerNode;
 
 public class ConditionalJumpInstruction extends TranspilerInstruction {
-    @Getter private final String name;
+    @Getter
+    private final String name;
     private final LocationNode ifThenLabel;
     private final LocationNode ifElseLabel;
 

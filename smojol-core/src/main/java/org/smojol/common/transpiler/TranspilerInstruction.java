@@ -83,9 +83,9 @@ public class TranspilerInstruction implements FlowNodeLike, InstructionLike {
         if (obj == this) return true;
         if (obj == null || obj.getClass() != this.getClass()) return false;
         var that = (TranspilerInstruction) obj;
-        return Objects.equals(this.ref, that.ref) &&
-                Objects.equals(this.sentinel, that.sentinel) &&
-                Objects.equals(this.id, that.id);
+        return Objects.equals(this.ref, that.ref)
+               && Objects.equals(this.sentinel, that.sentinel)
+               && Objects.equals(this.id, that.id);
     }
 
     @Override

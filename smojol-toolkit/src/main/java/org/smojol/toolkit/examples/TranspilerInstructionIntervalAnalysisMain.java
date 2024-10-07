@@ -26,6 +26,7 @@ public class TranspilerInstructionIntervalAnalysisMain {
     public static void main(String[] args) throws IOException, InterruptedException {
         LoggingConfig.setupLogging();
         String programName = "simple-nonreducible-perform.cbl";
+//        String programName = "incorrect-cfg-nonreducible-perform.cbl";
         Map<String, List<AnalysisTaskResult>> result = new CodeTaskRunner("/Users/asgupta/code/smojol/smojol-test-code",
                 "/Users/asgupta/code/smojol/out/report",
                 ImmutableList.of(new File("/Users/asgupta/code/smojol/smojol-test-code")),
@@ -40,5 +41,7 @@ public class TranspilerInstructionIntervalAnalysisMain {
         PruneUnreachableTask.pruneUnreachableInstructions(transpilerFlowgraph);
         AnalysisTaskResultOK intervalAnalysisResult = (AnalysisTaskResultOK) new IntervalAnalysisTask<>(transpilerFlowgraph.instructionFlowgraph(), IntervalAnalysisTask.IS_ROOT, IntervalAnalysisTask.NEW_DEFAULT_EDGE).run();
         FlowgraphReductionResult<TranspilerInstruction, DefaultEdge> reductionResult = intervalAnalysisResult.getDetail();
+        System.out.println(reductionResult.evolutions().getLast());
+        System.out.println(reductionResult.isReducible());
     }
 }
