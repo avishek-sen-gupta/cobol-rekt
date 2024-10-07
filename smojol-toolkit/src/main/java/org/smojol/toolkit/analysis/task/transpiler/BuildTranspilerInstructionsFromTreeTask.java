@@ -3,7 +3,9 @@ package org.smojol.toolkit.analysis.task.transpiler;
 import com.google.common.collect.ImmutableList;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.smojol.common.ast.FlowNode;
+import org.smojol.common.ast.TranspilerInstructionGeneratorVisitor;
 import org.smojol.common.id.IncrementingIdProvider;
+import org.smojol.common.navigation.AggregatingTranspilerNodeTraversal;
 import org.smojol.common.pseudocode.SmojolSymbolTable;
 import org.smojol.common.transpiler.*;
 import org.smojol.common.transpiler.instruction.ConditionalJumpInstruction;
@@ -34,12 +36,11 @@ public class BuildTranspilerInstructionsFromTreeTask {
     public List<TranspilerInstruction> run() {
         FlowNode flowRoot = new IntermediateASTNodeBuilder(rawAST, dataStructures, symbolTable).build();
         TranspilerNode transpilerTree = TranspilerTreeBuilder.flowToTranspiler(flowRoot, dataStructures);
-//        TranspilerInstructionGeneratorVisitor visitor = new TranspilerInstructionGeneratorVisitor(idProvider);
-        return buildInstructions(transpilerTree);
+        TranspilerInstructionGeneratorVisitor visitor = new TranspilerInstructionGeneratorVisitor(idProvider);
+//        return buildInstructions(transpilerTree);
 
-//        new AggregatingTranspilerNodeTraversal<List<TranspilerInstruction>>().accept(transpilerTree, visitor);
-//        return visitor.result();
-
+        new AggregatingTranspilerNodeTraversal<List<TranspilerInstruction>>().accept(transpilerTree, visitor);
+        return visitor.result();
     }
 
     private List<TranspilerInstruction> buildInstructions(TranspilerNode node) {

@@ -51,6 +51,7 @@ public class BuildTranspilerFlowgraphTask implements AnalysisTask {
         Pair<Graph<BasicBlock<TranspilerInstruction>, DefaultEdge>, List<BasicBlock<TranspilerInstruction>>> basicBlockModel = new BuildBasicBlocksTask(instructions, instructionFlowgraph, new BasicBlockFactory<>(new IncrementingIdProvider()), neo4JDriverBuilder).run();
         Graph<BasicBlock<TranspilerInstruction>, DefaultEdge> basicBlockGraph = basicBlockModel.getLeft();
         MermaidGraph<TranspilerInstruction, DefaultEdge> mermaid = new MermaidGraph<>();
+        String draw = mermaid.draw(instructionFlowgraph);
         return AnalysisTaskResult.OK(CommandLineAnalysisTask.BUILD_TRANSPILER_FLOWGRAPH, new TranspilerFlowgraph(basicBlockGraph, instructionFlowgraph, transpilerTree, instructions, basicBlockModel.getRight()));
 
 //        try {

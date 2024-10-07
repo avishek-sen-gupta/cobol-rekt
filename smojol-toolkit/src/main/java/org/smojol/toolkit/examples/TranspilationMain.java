@@ -30,7 +30,7 @@ import java.util.function.Function;
 
 public class TranspilationMain {
     public static void main(String[] args) throws IOException, InterruptedException {
-        String programName = "stop-run.cbl";
+        String programName = "simple-if.cbl";
         Map<String, List<AnalysisTaskResult>> result = new CodeTaskRunner("/Users/asgupta/code/smojol/smojol-test-code",
                 "/Users/asgupta/code/smojol/out/report",
                 ImmutableList.of(new File("/Users/asgupta/code/smojol/smojol-test-code")),

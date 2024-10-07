@@ -35,7 +35,6 @@ public class BuildInstructionFlowgraphTask {
         instructions.forEach(jgraph::addVertex);
         instructionEdges.forEach(edge -> jgraph.addEdge(edge.from(), edge.to()));
         return jgraph;
-//        return new TranspilerInstructionModel(transpilerTree, instructions, instructionEdges, jgraph);
     }
 
     private List<TranspilerInstructionEdge> controlFlowEdges() {
