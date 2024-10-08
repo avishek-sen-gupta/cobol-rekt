@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.smojol.common.graph.ClassifiedEdges;
 import org.smojol.common.graph.DepthFirstSpanningTree;
 import org.smojol.common.graph.DepthFirstSearchOrderingTask;
+import org.smojol.common.graph.NaturalLoopOfBackEdgeTask;
 import org.smojol.common.id.Identifiable;
 
 import java.util.List;
@@ -177,6 +178,62 @@ public class DepthFirstSearchOrderingTaskTest {
         assertEquals(1, spanningTree.treeDepth(v6));
         assertEquals(2, spanningTree.treeDepth(v7));
         assertEquals(3, spanningTree.treeDepth(v8));
+    }
+
+    @Test
+    public void canFindNaturalLoopOfBackEdge() {
+        Graph<DFSTestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
+        DFSTestNode v1 = new DFSTestNode("1");
+        DFSTestNode v2 = new DFSTestNode("2");
+        DFSTestNode v3 = new DFSTestNode("3");
+        DFSTestNode v4 = new DFSTestNode("4");
+        DFSTestNode v5 = new DFSTestNode("5");
+        DFSTestNode v6 = new DFSTestNode("6");
+        DFSTestNode v7 = new DFSTestNode("7");
+        DFSTestNode v8 = new DFSTestNode("8");
+
+        graph.addVertex(v1);
+        graph.addVertex(v2);
+        graph.addVertex(v3);
+        graph.addVertex(v4);
+        graph.addVertex(v5);
+        graph.addVertex(v6);
+        graph.addVertex(v7);
+        graph.addVertex(v8);
+
+        graph.addEdge(v1, v2);
+        graph.addEdge(v1, v6);
+        graph.addEdge(v2, v3);
+        graph.addEdge(v3, v2);
+        graph.addEdge(v6, v4);
+        graph.addEdge(v6, v7);
+        graph.addEdge(v3, v4);
+        graph.addEdge(v3, v5);
+        graph.addEdge(v4, v5);
+        graph.addEdge(v7, v8);
+        graph.addEdge(v8, v7);
+
+        DepthFirstSearchOrderingTask<DFSTestNode, DefaultEdge> task = new DepthFirstSearchOrderingTask<>(v1, graph, 1, DefaultEdge.class);
+        DepthFirstSpanningTree<DFSTestNode, DefaultEdge> spanningTree = task.run();
+        assertEquals(17, task.currentClock());
+        assertEquals(ImmutableList.of(v1, v2, v3, v4, v5, v6, v7, v8), spanningTree.preOrder());
+        assertEquals(ImmutableList.of(v8, v7, v6, v5, v4, v3, v2, v1), spanningTree.postOrder());
+
+
+        assertEquals(0, spanningTree.treeDepth(v1));
+        assertEquals(1, spanningTree.treeDepth(v2));
+        assertEquals(2, spanningTree.treeDepth(v3));
+        assertEquals(3, spanningTree.treeDepth(v4));
+        assertEquals(4, spanningTree.treeDepth(v5));
+        assertEquals(1, spanningTree.treeDepth(v6));
+        assertEquals(2, spanningTree.treeDepth(v7));
+        assertEquals(3, spanningTree.treeDepth(v8));
+
+        DefaultEdge backEdge = graph.getEdge(v3, v2);
+        List<DFSTestNode> loopNodes = new NaturalLoopOfBackEdgeTask<>(backEdge, graph).run();
+        assertEquals(2, loopNodes.size());
+        assertTrue(loopNodes.contains(v2));
+        assertTrue(loopNodes.contains(v3));
     }
 
     @Test
