@@ -41,12 +41,11 @@ public class DepthFirstSearchOrderingTask<V extends Identifiable, E> {
     private void run(V current, int treeDepth) {
         discoveryTimes.put(current, new NodeDFSStatistics(treeDepth, dfsClock++, -1));
         depthFirstOrderedNodes.add(current);
-        List<V> children = sourceGraph.outgoingEdgesOf(current).stream()
-                .map(sourceGraph::getEdgeTarget).toList();
-        for (V child : children) {
+        Set<E> outgoingEdges = sourceGraph.outgoingEdgesOf(current);
+        for (E outgoingEdge : outgoingEdges) {
+            V child = sourceGraph.getEdgeTarget(outgoingEdge);
             if (discoveryTimes.get(child).isInitialised()) continue;
-            E existingEdge = sourceGraph.edgeSet().stream().filter(e -> sourceGraph.getEdgeSource(e) == current && sourceGraph.getEdgeTarget(e) == child).findFirst().get();
-            spanningTree.addEdge(current, child, existingEdge);
+            spanningTree.addEdge(current, child, outgoingEdge);
             run(child, treeDepth + 1);
         }
         discoveryTimes.put(current, new NodeDFSStatistics(treeDepth, discoveryTimes.get(current).discoveryStartTime(), dfsClock++));

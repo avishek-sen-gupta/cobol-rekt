@@ -22,7 +22,6 @@ public class BuildDJTreeTask<V extends Identifiable, E> {
     private final DepthFirstSpanningTree<V, E> spanningTree;
     private final Map<V, Set<V>> allDominators;
 
-
     public BuildDJTreeTask(DominatorTree<V, E> dominatorTree, DepthFirstSpanningTree<V, E> spanningTree, Map<V, Set<V>> allDominators) {
         this.dominatorTree = dominatorTree;
         this.spanningTree = spanningTree;

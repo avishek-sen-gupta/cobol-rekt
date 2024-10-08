@@ -1,0 +1,16 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. IRREDUCIBLE-TEST.
+       AUTHOR.        MOJO.
+       ENVIRONMENT DIVISION.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01  TESTING    PIC 9(8) VALUE 100.
+       PROCEDURE DIVISION.
+            ROOT-ZERO SECTION.
+                PERFORM ROOT.
+                STOP RUN.
+            ROOT SECTION.
+                IF TESTING = 5
+                    PERFORM SUBROUTINE-1.
+            SUBROUTINE-1 SECTION.
+                DISPLAY "SUBROUTINE-1".

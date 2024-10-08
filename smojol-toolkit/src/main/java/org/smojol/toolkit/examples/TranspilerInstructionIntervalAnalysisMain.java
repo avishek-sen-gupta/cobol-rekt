@@ -29,8 +29,8 @@ public class TranspilerInstructionIntervalAnalysisMain {
     public static void main(String[] args) throws IOException, InterruptedException {
         LoggingConfig.setupLogging();
 //        String programName = "simple-nonreducible-perform.cbl";
-        String programName = "simple-nonreducible-perform-with-goto.cbl";
-//        String programName = "minimal-nonreducible-perform.cbl";
+//        String programName = "simple-nonreducible-perform-with-goto.cbl";
+        String programName = "minimal-nonreducible-perform.cbl";
 //        String programName = "incorrect-cfg-nonreducible-perform.cbl";
         Map<String, List<AnalysisTaskResult>> result = new CodeTaskRunner("/Users/asgupta/code/smojol/smojol-test-code",
                 "/Users/asgupta/code/smojol/out/report",
@@ -42,7 +42,7 @@ public class TranspilerInstructionIntervalAnalysisMain {
         List<AnalysisTaskResult> results = result.get(programName);
         BaseAnalysisResult baseAnalysisResult = ((AnalysisTaskResultOK) results.getFirst()).getDetail();
         TranspilerFlowgraph transpilerFlowgraph = new BuildTranspilerFlowgraphTask(baseAnalysisResult.rawAST(), baseAnalysisResult.dataStructures(), null,
-                ImmutableList.of("MAIN-SECTION-01", "SUBROUTINE-1")).run();
+                ImmutableList.of()).run();
         System.out.println("Number of nodes = " + transpilerFlowgraph.instructionFlowgraph().vertexSet().size());
         String draw = new MermaidGraph<TranspilerInstruction, DefaultEdge>().draw(transpilerFlowgraph.instructionFlowgraph());
         PruneUnreachableTask.pruneUnreachableInstructions(transpilerFlowgraph);
