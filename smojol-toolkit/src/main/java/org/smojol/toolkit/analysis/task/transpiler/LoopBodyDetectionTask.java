@@ -17,6 +17,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static org.smojol.common.graph.GraphOperations.cloneGraph;
+
 /*
 Based on "Identifying Loops Using DJ Graphs" by Sreedhar-Gao-Lee (1996)
  */
@@ -53,7 +55,7 @@ public class LoopBodyDetectionTask<V extends Identifiable, E> {
             return o1 < o2 ? 1 : -1;
         }).get();
 
-        Graph<V, E> collapsibleDJGraph = clone(djGraph);
+        Graph<V, E> collapsibleDJGraph = cloneGraph(djGraph, edgeClass);
         Set<Set<V>> allReducibleLoopBodies = new HashSet<>();
         Set<Set<V>> allIrreducibleLoopBodies = new HashSet<>();
         for (int treeDepth = maxTreeDepth; treeDepth >= 0; treeDepth--) {
@@ -88,12 +90,5 @@ public class LoopBodyDetectionTask<V extends Identifiable, E> {
     private static <V extends Identifiable, E> List<Graph<V, E>> stronglyConnectedComponents(Graph<V, E> inducedSubgraph) {
         StrongConnectivityAlgorithm<V, E> scAlg = new KosarajuStrongConnectivityInspector<>(inducedSubgraph);
         return scAlg.getStronglyConnectedComponents();
-    }
-
-    private Graph<V, E> clone(Graph<V, E> djGraph) {
-        Graph<V, E> clonedGraph = new DefaultDirectedGraph<>(edgeClass);
-        djGraph.vertexSet().forEach(clonedGraph::addVertex);
-        djGraph.edgeSet().forEach(edge -> clonedGraph.addEdge(djGraph.getEdgeSource(edge), djGraph.getEdgeTarget(edge), edge));
-        return clonedGraph;
     }
 }
