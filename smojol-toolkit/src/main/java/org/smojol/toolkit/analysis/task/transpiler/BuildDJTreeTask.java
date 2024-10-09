@@ -1,17 +1,20 @@
 package org.smojol.toolkit.analysis.task.transpiler;
 
 import com.google.common.collect.Sets;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
-import org.smojol.common.graph.DJTree;
-import org.smojol.common.graph.DepthFirstSpanningTree;
-import org.smojol.common.graph.DominatorTree;
+import org.smojol.common.graph.*;
 import org.smojol.common.id.Identifiable;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /*
 Algorithm based on the paper 'A Linear Time Algorithm for Placing Phi-Nodes' by Sreedhar (1996)
@@ -21,11 +24,13 @@ public class BuildDJTreeTask<V extends Identifiable, E> {
     private final DominatorTree<V, E> dominatorTree;
     private final DepthFirstSpanningTree<V, E> spanningTree;
     private final Map<V, Set<V>> allDominators;
+    private final Class<E> edgeClass;
 
-    public BuildDJTreeTask(DominatorTree<V, E> dominatorTree, DepthFirstSpanningTree<V, E> spanningTree, Map<V, Set<V>> allDominators) {
+    public BuildDJTreeTask(DominatorTree<V, E> dominatorTree, DepthFirstSpanningTree<V, E> spanningTree, Map<V, Set<V>> allDominators, Class<E> edgeClass) {
         this.dominatorTree = dominatorTree;
         this.spanningTree = spanningTree;
         this.allDominators = allDominators;
+        this.edgeClass = edgeClass;
     }
 
     public DJTree<V, E> run() {
@@ -34,6 +39,8 @@ public class BuildDJTreeTask<V extends Identifiable, E> {
         Graph<V, E> dominatorGraph = dominatorTree.graph();
         sourceGraph.vertexSet().forEach(djTree::addVertex);
         dominatorGraph.edgeSet().forEach(edge -> djTree.addEdge(dominatorGraph.getEdgeSource(edge), dominatorGraph.getEdgeTarget(edge), new DominatorEdge()));
+        V root = dominatorTree.root();
+        DepthFirstSpanningTree<V, E> dominatorSpanningTree = new DepthFirstSearchOrderingTask<>(root, dominatorGraph, edgeClass).run();
         Sets.difference(sourceGraph.edgeSet(), dominatorGraph.edgeSet()).forEach(edge -> {
             V from = sourceGraph.getEdgeSource(edge);
             V to = sourceGraph.getEdgeTarget(edge);
@@ -42,7 +49,14 @@ public class BuildDJTreeTask<V extends Identifiable, E> {
             else djTree.addEdge(from, to, new CrossJoinEdge());
         });
 //        sourceGraph.edgeSet().forEach(edge -> djTree.addEdge(sourceGraph.getEdgeSource(edge), sourceGraph.getEdgeTarget(edge), new JoinEdge()));
+//        Map<Integer, HashSet<V>> dominatorLevels = dominatorSpanningTree.nodeStats().values().stream().collect(Collectors.toUnmodifiableSet()).stream().collect(Collectors.toMap(NodeDFSStatistics::treeDepth, k -> new HashSet<V>()));
+        Set<Integer> dominatorLevels = dominatorSpanningTree.nodeStats().values().stream().map(NodeDFSStatistics::treeDepth).collect(Collectors.toUnmodifiableSet());
+        Map<Integer, Set<V>> dominatorLevelMap = dominatorLevels.stream().collect(Collectors.toMap(i -> i, i -> new HashSet<>()));
+        dominatorSpanningTree.nodeStats().forEach((key, value) -> {
+            int level = value.treeDepth();
+            dominatorLevelMap.get(level).add(key);
+        });
         // Trust me bro
-        return new DJTree<>(spanningTree.sourceGraphRoot(), (Graph<V, E>) djTree);
+        return new DJTree<>(spanningTree.sourceGraphRoot(), (Graph<V, E>) djTree, dominatorLevelMap);
     }
 }

@@ -848,3 +848,22 @@ These are some other commands tried on larger graphs:
   - [Enterprise Cobol for Z/OS 6.4 - Language Reference](https://publibfp.dhe.ibm.com/epubs/pdf/igy6lr40.pdf)
 - Graph Theory
   - [Reducible Flowgraphs 0](https://rgrig.blogspot.com/2009/10/dtfloatleftclearleft-summary-of-some.html)
+
+---
+title: Graph
+---
+```mermaid
+flowchart TD
+0["0"]
+6["6"]
+1["1"]
+2["2"]
+5["5"]
+0["0"] --> 1["1"]
+1["1"] --> 2["2"]
+1["1"] --> 5["5"]
+0["0"] --> 6["6"]
+5["5"] --> 1["1"]
+5["5"] --> 6["6"]
+2["2"] --> 5["5"]
+```

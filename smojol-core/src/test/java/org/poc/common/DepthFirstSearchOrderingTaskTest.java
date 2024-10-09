@@ -12,6 +12,7 @@ import org.smojol.common.graph.NaturalLoopOfBackEdgeTask;
 import org.smojol.common.id.Identifiable;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -41,6 +42,54 @@ public class DepthFirstSearchOrderingTaskTest {
         assertEquals(0, spanningTree.treeDepth(va));
         assertEquals(1, spanningTree.treeDepth(vb));
         assertEquals(1, spanningTree.treeDepth(vc));
+    }
+    @Test
+    public void canLabelTreeDepthForExampleDominatorTree() {
+        Graph<DFSTestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
+        DFSTestNode vSTART = new DFSTestNode("START");
+        DFSTestNode vEND = new DFSTestNode("END");
+        DFSTestNode vA = new DFSTestNode("A");
+        DFSTestNode vB = new DFSTestNode("B");
+        DFSTestNode vC = new DFSTestNode("C");
+        DFSTestNode vD = new DFSTestNode("D");
+        DFSTestNode vE = new DFSTestNode("E");
+        DFSTestNode vF = new DFSTestNode("F");
+        DFSTestNode vG = new DFSTestNode("G");
+        DFSTestNode vH = new DFSTestNode("H");
+        graph.addVertex(vSTART);
+        graph.addVertex(vA);
+        graph.addVertex(vB);
+        graph.addVertex(vC);
+        graph.addVertex(vD);
+        graph.addVertex(vE);
+        graph.addVertex(vF);
+        graph.addVertex(vG);
+        graph.addVertex(vH);
+        graph.addVertex(vEND);
+
+        graph.addEdge(vSTART, vEND);
+        graph.addEdge(vSTART, vA);
+        graph.addEdge(vA, vB);
+        graph.addEdge(vA, vC);
+        graph.addEdge(vA, vD);
+        graph.addEdge(vA, vF);
+        graph.addEdge(vA, vH);
+        graph.addEdge(vC, vE);
+        graph.addEdge(vD, vG);
+
+        DepthFirstSearchOrderingTask<DFSTestNode, DefaultEdge> task = new DepthFirstSearchOrderingTask<>(vSTART, graph, DefaultEdge.class);
+        DepthFirstSpanningTree<DFSTestNode, DefaultEdge> spanningTree = task.run();
+
+        assertEquals(0, spanningTree.treeDepth(vSTART));
+        assertEquals(1, spanningTree.treeDepth(vA));
+        assertEquals(1, spanningTree.treeDepth(vEND));
+        assertEquals(2, spanningTree.treeDepth(vB));
+        assertEquals(2, spanningTree.treeDepth(vC));
+        assertEquals(2, spanningTree.treeDepth(vD));
+        assertEquals(2, spanningTree.treeDepth(vF));
+        assertEquals(2, spanningTree.treeDepth(vH));
+        assertEquals(3, spanningTree.treeDepth(vE));
+        assertEquals(3, spanningTree.treeDepth(vG));
     }
 
     @Test
@@ -230,7 +279,7 @@ public class DepthFirstSearchOrderingTaskTest {
         assertEquals(3, spanningTree.treeDepth(v8));
 
         DefaultEdge backEdge = graph.getEdge(v3, v2);
-        List<DFSTestNode> loopNodes = new NaturalLoopOfBackEdgeTask<>(backEdge, graph).run();
+        Set<DFSTestNode> loopNodes = new NaturalLoopOfBackEdgeTask<>(backEdge, graph).run();
         assertEquals(2, loopNodes.size());
         assertTrue(loopNodes.contains(v2));
         assertTrue(loopNodes.contains(v3));

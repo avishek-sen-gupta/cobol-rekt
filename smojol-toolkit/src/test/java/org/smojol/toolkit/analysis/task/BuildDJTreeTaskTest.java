@@ -14,8 +14,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class BuildDJTreeTaskTest {
     private static final Function<DefaultEdge, Boolean> IS_DOMINATOR_EDGE = v -> v instanceof DominatorEdge;
@@ -74,7 +73,7 @@ public class BuildDJTreeTaskTest {
         List<Pair<DominatorTreeTestNode, DominatorTreeTestNode>> immediateDominators = new BuildDominatorsTask<DominatorTreeTestNode, DefaultEdge>().immediateDominators(spanningTree);
         Map<DominatorTreeTestNode, Set<DominatorTreeTestNode>> allDominators = new BuildDominatorsTask<DominatorTreeTestNode, DefaultEdge>().allDominators(spanningTree.preOrder(), graph);
         DominatorTree<DominatorTreeTestNode, DefaultEdge> dominatorTree = new BuildDominatorTreeTask<>(immediateDominators, spanningTree.sourceGraphRoot(), DefaultEdge.class).run();
-        DJTree<DominatorTreeTestNode, DefaultEdge> djTree = new BuildDJTreeTask<>(dominatorTree, spanningTree, allDominators).run();
+        DJTree<DominatorTreeTestNode, DefaultEdge> djTree = new BuildDJTreeTask<>(dominatorTree, spanningTree, allDominators, DefaultEdge.class).run();
 
         assertEquals(9, djTree.graph().edgeSet().stream().filter(IS_DOMINATOR_EDGE::apply).count());
         assertEdgeExistsOfType(vSTART, vEND, djTree, IS_DOMINATOR_EDGE);
@@ -156,7 +155,7 @@ public class BuildDJTreeTaskTest {
         List<Pair<DominatorTreeTestNode, DominatorTreeTestNode>> immediateDominators = new BuildDominatorsTask<DominatorTreeTestNode, DefaultEdge>().immediateDominators(spanningTree);
         Map<DominatorTreeTestNode, Set<DominatorTreeTestNode>> allDominators = new BuildDominatorsTask<DominatorTreeTestNode, DefaultEdge>().allDominators(spanningTree.preOrder(), graph);
         DominatorTree<DominatorTreeTestNode, DefaultEdge> dominatorTree = new BuildDominatorTreeTask<>(immediateDominators, spanningTree.sourceGraphRoot(), DefaultEdge.class).run();
-        DJTree<DominatorTreeTestNode, DefaultEdge> djTree = new BuildDJTreeTask<>(dominatorTree, spanningTree, allDominators).run();
+        DJTree<DominatorTreeTestNode, DefaultEdge> djTree = new BuildDJTreeTask<>(dominatorTree, spanningTree, allDominators, DefaultEdge.class).run();
         assertEquals(4, djTree.graph().edgeSet().stream().filter(IS_DOMINATOR_EDGE::apply).count());
         assertEdgeExistsOfType(vA, vB, djTree, IS_DOMINATOR_EDGE);
         assertEdgeExistsOfType(vA, vC, djTree, IS_DOMINATOR_EDGE);
@@ -179,6 +178,67 @@ public class BuildDJTreeTaskTest {
         assertEquals(2, crossJoinEdges.size());
         assertTrue(crossJoinEdges.contains(djTree.graph().getEdge(vB, vC)));
         assertTrue(crossJoinEdges.contains(djTree.graph().getEdge(vC, vB)));
+    }
+
+    @Test
+    public void canDetectBackEdges() {
+        Graph<DominatorTreeTestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
+        DominatorTreeTestNode v0 = node("0");
+        DominatorTreeTestNode v6 = node("6");
+        DominatorTreeTestNode v1 = node("1");
+        DominatorTreeTestNode v2 = node("2");
+        DominatorTreeTestNode v7 = node("7");
+        DominatorTreeTestNode v3 = node("3");
+        DominatorTreeTestNode v8 = node("8");
+        DominatorTreeTestNode v9 = node("9");
+        DominatorTreeTestNode v4 = node("4");
+        DominatorTreeTestNode v5 = node("5");
+
+        graph.addVertex(v0);
+        graph.addVertex(v6);
+        graph.addVertex(v1);
+        graph.addVertex(v2);
+        graph.addVertex(v7);
+        graph.addVertex(v3);
+        graph.addVertex(v8);
+        graph.addVertex(v9);
+        graph.addVertex(v4);
+        graph.addVertex(v5);
+
+        graph.addEdge(v0, v1);
+        graph.addEdge(v0, v6);
+        graph.addEdge(v1, v2);
+        graph.addEdge(v2, v3);
+        graph.addEdge(v3, v9);
+        graph.addEdge(v9, v5);
+        graph.addEdge(v1, v7);
+        graph.addEdge(v7, v8);
+        graph.addEdge(v8, v9);
+        graph.addEdge(v7, v3);
+        graph.addEdge(v3, v4);
+        graph.addEdge(v4, v3);
+        graph.addEdge(v4, v5);
+        graph.addEdge(v5, v1);
+        graph.addEdge(v5, v7);
+        graph.addEdge(v5, v6);
+
+        DepthFirstSearchOrderingTask<DominatorTreeTestNode, DefaultEdge> dfsTask = new DepthFirstSearchOrderingTask<>(v0, graph, DefaultEdge.class);
+        DepthFirstSpanningTree<DominatorTreeTestNode, DefaultEdge> spanningTree = dfsTask.run();
+
+        List<Pair<DominatorTreeTestNode, DominatorTreeTestNode>> immediateDominators = new BuildDominatorsTask<DominatorTreeTestNode, DefaultEdge>().immediateDominators(spanningTree);
+        Map<DominatorTreeTestNode, Set<DominatorTreeTestNode>> allDominators = new BuildDominatorsTask<DominatorTreeTestNode, DefaultEdge>().allDominators(spanningTree.preOrder(), graph);
+        DominatorTree<DominatorTreeTestNode, DefaultEdge> dominatorTree = new BuildDominatorTreeTask<>(immediateDominators, spanningTree.sourceGraphRoot(), DefaultEdge.class).run();
+        DJTree<DominatorTreeTestNode, DefaultEdge> djTree = new BuildDJTreeTask<>(dominatorTree, spanningTree, allDominators, DefaultEdge.class).run();
+        DepthFirstSearchOrderingTask<DominatorTreeTestNode, DefaultEdge> dfsTaskOnDJTree = new DepthFirstSearchOrderingTask<>(djTree.root(), djTree.graph(), DefaultEdge.class);
+        DepthFirstSpanningTree<DominatorTreeTestNode, DefaultEdge> djSpanningTree = dfsTaskOnDJTree.run();
+        List<DominatorTreeTestNode> ordering = djSpanningTree.preOrder();
+        ClassifiedEdges<DefaultEdge> classifiedEdges = djSpanningTree.classifiedEdges();
+        Graph<DominatorTreeTestNode, DefaultEdge> djGraph = djTree.graph();
+        assertEdgeExistsOfType(v5, v1, djTree, IS_JOIN_EDGE);
+        Set<DefaultEdge> backJoinEdges = djTree.graph().edgeSet().stream().filter(IS_BACK_JOIN_EDGE::apply).collect(Collectors.toUnmodifiableSet());
+        Set<DefaultEdge> crossJoinEdges = djTree.graph().edgeSet().stream().filter(IS_CROSS_JOIN_EDGE::apply).collect(Collectors.toUnmodifiableSet());
+        assertFalse(backJoinEdges.contains(djGraph.getEdge(v9, v5)));
+        assertFalse(classifiedEdges.backEdges().contains(djGraph.getEdge(v9, v5)));
     }
 
     private void assertEdgeExistsOfType(DominatorTreeTestNode from, DominatorTreeTestNode to, DJTree<DominatorTreeTestNode, DefaultEdge> dominatorTree, Function<DefaultEdge, Boolean> condition) {

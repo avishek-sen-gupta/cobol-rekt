@@ -27,7 +27,7 @@ public record DepthFirstSpanningTree<V extends Identifiable, E>(List<V> depthFir
         int ancestorClockTimeStart = nodeStats.get(possibleAncestor).discoveryStartTime();
         int ancestorClockTimeEnd = nodeStats.get(possibleAncestor).discoveryEndTime();
         int descendantClockTimeStart = nodeStats.get(possibleDescendant).discoveryStartTime();
-        int descendantClockTimeEnd = nodeStats.get(possibleDescendant).discoveryStartTime();
+        int descendantClockTimeEnd = nodeStats.get(possibleDescendant).discoveryEndTime();
         return ancestorClockTimeStart < descendantClockTimeStart && ancestorClockTimeEnd > descendantClockTimeEnd;
     }
 
