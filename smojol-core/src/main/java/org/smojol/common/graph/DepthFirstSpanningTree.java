@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 public record DepthFirstSpanningTree<V extends Identifiable, E>(List<V> depthFirstSpanningTreeOrder, V sourceGraphRoot,
                                                                 Graph<V, E> sourceGraph,
                                                                 Map<V, NodeDFSStatistics> nodeStats,
+                                                                Map<Integer, Set<V>> depthToNodeMap,
                                                                 Graph<V, E> spanningTree) {
 
     public List<V> preOrder() {

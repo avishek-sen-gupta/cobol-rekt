@@ -11,6 +11,41 @@ import org.smojol.toolkit.analysis.task.transpiler.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ReducibleFlowgraphTestTaskTest {
+    @Test
+    public void canDetectReducibleGraphWithoutLoops() {
+        Graph<DominatorTreeTestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
+        DominatorTreeTestNode vA = node("A");
+        DominatorTreeTestNode vB = node("B");
+        DominatorTreeTestNode vC = node("C");
+
+        graph.addVertex(vA);
+        graph.addVertex(vB);
+        graph.addVertex(vC);
+
+        graph.addEdge(vA, vB);
+        graph.addEdge(vA, vC);
+
+        assertTrue(new ReducibleFlowgraphTestTask<>(vA, graph, DefaultEdge.class).run());
+    }
+    @Test
+
+    public void canDetectReducibleGraphWithLoops() {
+        Graph<DominatorTreeTestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
+        DominatorTreeTestNode vA = node("A");
+        DominatorTreeTestNode vB = node("B");
+        DominatorTreeTestNode vC = node("C");
+
+        graph.addVertex(vA);
+        graph.addVertex(vB);
+        graph.addVertex(vC);
+
+        graph.addEdge(vA, vB);
+        graph.addEdge(vB, vC);
+        graph.addEdge(vC, vA);
+
+        assertTrue(new ReducibleFlowgraphTestTask<>(vA, graph, DefaultEdge.class).run());
+    }
+
     /**
      * @see <a href="documentation/dj-tree-unit-test-graph-1.png">Flowgraph for this test case</a>
      */

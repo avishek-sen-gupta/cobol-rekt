@@ -33,6 +33,6 @@ public class ReducibleFlowgraphTestTask<V extends Identifiable, E> {
         DepthFirstSpanningTree<V, E> djSpanningTree = dfsTaskOnDJTree.run();
         ClassifiedEdges<E> classifiedEdges = djSpanningTree.classifiedEdges();
         Set<E> backEdges = classifiedEdges.backEdges();
-        return backEdges.stream().noneMatch(be -> be.getClass() == BackJoinEdge.class);
+        return backEdges.stream().noneMatch(be -> be.getClass() == CrossJoinEdge.class);
     }
 }

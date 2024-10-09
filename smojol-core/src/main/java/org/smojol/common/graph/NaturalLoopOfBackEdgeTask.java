@@ -3,7 +3,7 @@ package org.smojol.common.graph;
 import org.jgrapht.Graph;
 import org.smojol.common.id.Identifiable;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -21,15 +21,15 @@ public class NaturalLoopOfBackEdgeTask<V extends Identifiable, E> {
         this.graph = graph;
     }
 
-    public List<V> run() {
+    public Set<V> run() {
         V excludedNode = graph.getEdgeTarget(backEdge);
-        List<V> discoveredNodes = new ArrayList<>(List.of(excludedNode));
+        Set<V> discoveredNodes = new HashSet<>(List.of(excludedNode));
         V root = graph.getEdgeSource(backEdge);
         run(root, discoveredNodes, graph);
         return discoveredNodes;
     }
 
-    private void run(V current, List<V> discoveredNodes, Graph<V, E> graph) {
+    private void run(V current, Set<V> discoveredNodes, Graph<V, E> graph) {
         discoveredNodes.add(current);
         Set<E> incomingEdges = graph.incomingEdgesOf(current);
         for (E incomingEdge : incomingEdges) {
