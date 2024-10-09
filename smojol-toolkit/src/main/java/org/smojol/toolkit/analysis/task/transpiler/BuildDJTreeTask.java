@@ -14,7 +14,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 /*
-Algorithm based on the paper 'Graph-Theoretic Constructs for Program Control Flow Analysis' by Allen and Cocke (1972)
+Algorithm based on the paper 'A Linear Time Algorithm for Placing Phi-Nodes' by Sreedhar (1996)
  */
 public class BuildDJTreeTask<V extends Identifiable, E> {
     private static final Logger LOGGER = Logger.getLogger(BuildDJTreeTask.class.getName());

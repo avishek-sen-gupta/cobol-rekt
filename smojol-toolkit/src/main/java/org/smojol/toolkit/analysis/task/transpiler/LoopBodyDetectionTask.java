@@ -1,5 +1,6 @@
 package org.smojol.toolkit.analysis.task.transpiler;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -7,7 +8,7 @@ import org.jgrapht.Graph;
 import org.jgrapht.alg.connectivity.KosarajuStrongConnectivityInspector;
 import org.jgrapht.alg.interfaces.StrongConnectivityAlgorithm;
 import org.jgrapht.graph.AsSubgraph;
-import org.jgrapht.graph.DefaultDirectedGraph;
+import org.jgrapht.graph.DefaultEdge;
 import org.smojol.common.graph.*;
 import org.smojol.common.id.Identifiable;
 
@@ -63,15 +64,16 @@ public class LoopBodyDetectionTask<V extends Identifiable, E> {
             Set<E> backEdgesAtTreeDepth = nodesAtTreeDepth.stream().flatMap(node -> collapsibleDJGraph.incomingEdgesOf(node).stream().filter(backEdges::contains)).collect(Collectors.toUnmodifiableSet());
             Set<E> crossJoinEdges = backEdgesAtTreeDepth.stream().filter(be -> be instanceof CrossJoinEdge).collect(Collectors.toUnmodifiableSet());
             Sets.SetView<E> backJoinEdges = Sets.difference(backEdgesAtTreeDepth, crossJoinEdges);
-            Set<Set<V>> reducibleLoopBodies = backJoinEdges.stream().map(bje -> new NaturalLoopOfBackEdgeTask<>(bje, collapsibleDJGraph).run()).collect(Collectors.toUnmodifiableSet());
+            Set<Pair<V, Set<V>>> reducibleLoopBodies = backJoinEdges.stream().map(bje -> ImmutablePair.of(collapsibleDJGraph.getEdgeTarget(bje), new NaturalLoopOfBackEdgeTask<>(bje, collapsibleDJGraph).run())).collect(Collectors.toUnmodifiableSet());
             reducibleLoopBodies.forEach(loopBody -> collapse(loopBody, collapsibleDJGraph));
-            allReducibleLoopBodies.addAll(reducibleLoopBodies);
+            allReducibleLoopBodies.addAll(reducibleLoopBodies.stream().map(Pair::getRight).toList());
             int x = treeDepth;
             Set<Set<V>> irreducibleLoopBodies = crossJoinEdges.stream().flatMap(cje -> {
                 Set<V> nodesAtOrGreaterDepth = depthToNodeMap.entrySet().stream().filter(entry -> entry.getKey() >= x).flatMap(entry -> entry.getValue().stream()).collect(Collectors.toUnmodifiableSet());
                 Graph<V, E> inducedSubgraph = new AsSubgraph<>(collapsibleDJGraph, nodesAtOrGreaterDepth);
                 List<Graph<V, E>> stronglyConnectedComponents = stronglyConnectedComponents(inducedSubgraph);
-                stronglyConnectedComponents.forEach(scc -> collapse(scc, collapsibleDJGraph));
+                stronglyConnectedComponents.forEach(scc -> collapse(ImmutablePair.of(collapsibleDJGraph.getEdgeTarget(cje), scc.vertexSet()), collapsibleDJGraph));
+//                stronglyConnectedComponents.forEach(scc -> collapse(scc, collapsibleDJGraph));
                 return stronglyConnectedComponents.stream().map(scc -> scc.vertexSet());
             }).collect(Collectors.toUnmodifiableSet());
             allIrreducibleLoopBodies.addAll(irreducibleLoopBodies);
@@ -79,12 +81,24 @@ public class LoopBodyDetectionTask<V extends Identifiable, E> {
         return ImmutablePair.of(allReducibleLoopBodies, allIrreducibleLoopBodies);
     }
 
-    private void collapse(Set<V> reducibleLoopBody, Graph<V, E> collapsibleDJGraph) {
-
+    private void collapse(Pair<V, Set<V>> reducibleLoop, Graph<V, E> collapsibleDJGraph) {
+        V loopHeader = reducibleLoop.getLeft();
+        Set<V> loopBody = reducibleLoop.getRight();
+        if (loopBody.size() <= 1) return;
+        Set<E> allOutgoingEdges = loopBody.stream().flatMap(loopNode -> collapsibleDJGraph.outgoingEdgesOf(loopNode).stream()).collect(Collectors.toUnmodifiableSet());
+        Set<E> edgesExitingLoop = allOutgoingEdges.stream().filter(oe -> !loopBody.contains(collapsibleDJGraph.getEdgeTarget(oe))).collect(Collectors.toUnmodifiableSet());
+        edgesExitingLoop.forEach(exitingEdge -> collapsibleDJGraph.addEdge(loopHeader, collapsibleDJGraph.getEdgeTarget(exitingEdge), (E) typed(exitingEdge)));
+        Sets.SetView<V> nodesToRemove = Sets.difference(loopBody, ImmutableSet.of(loopHeader));
+        nodesToRemove.forEach(collapsibleDJGraph::removeVertex);
     }
 
-    private void collapse(Graph<V, E> scc, Graph<V, E> collapsibleDJGraph) {
-
+    private DefaultEdge typed(E exitingEdge) {
+        return switch (exitingEdge) {
+            case DominatorEdge de -> new DominatorEdge();
+            case CrossJoinEdge cje -> new CrossJoinEdge();
+            case BackJoinEdge bje -> new BackJoinEdge();
+            default -> throw new IllegalStateException("Unexpected value: " + exitingEdge);
+        };
     }
 
     private static <V extends Identifiable, E> List<Graph<V, E>> stronglyConnectedComponents(Graph<V, E> inducedSubgraph) {
