@@ -41,6 +41,7 @@ public class DepthFirstSearchOrderingTaskTest {
         assertEquals(1, spanningTree.treeDepth(vb));
         assertEquals(1, spanningTree.treeDepth(vc));
     }
+
     @Test
     public void canLabelTreeDepthForExampleDominatorTree() {
         Graph<DFSTestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
@@ -393,7 +394,8 @@ public class DepthFirstSearchOrderingTaskTest {
         ClassifiedEdges<DefaultEdge> classifiedEdges = spanningTree.classifiedEdges();
         assertEquals(4, classifiedEdges.backEdges().size());
         assertTrue(classifiedEdges.backEdges().contains(graph.getEdge(v9, v5)));
-    }}
+    }
+}
 
 record DFSTestNode(String id) implements Identifiable {
     @Override
