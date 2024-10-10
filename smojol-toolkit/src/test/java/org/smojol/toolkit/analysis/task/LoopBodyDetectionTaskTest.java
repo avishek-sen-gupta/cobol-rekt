@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class LoopBodyDetectionTaskTest {
     @Test
-    public void canDetectLoopBodies() {
+    public void canDetectLoopBodies1() {
         Graph<LoopDetectionTestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
         LoopDetectionTestNode v0 = node("0");
         LoopDetectionTestNode v6 = node("6");
@@ -72,6 +72,30 @@ public class LoopBodyDetectionTaskTest {
         assertEquals(ImmutableSet.of(n("3"), n("5"), n("7"), n("8"), n("9")), irreducibleLoopBodies.stream().flatMap(Collection::stream).collect(Collectors.toUnmodifiableSet()));
 
         reducibleLoopBodies.forEach(rlb -> System.out.println(String.join(",", rlb.stream().map(LoopDetectionTestNode::id).toList())));
+    }
+    @Test
+    public void canDetectLoopBodies2() {
+        Graph<LoopDetectionTestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
+        LoopDetectionTestNode v0 = node("0");
+        LoopDetectionTestNode v1 = node("1");
+        LoopDetectionTestNode v2 = node("2");
+
+        graph.addVertex(v0);
+        graph.addVertex(v1);
+        graph.addVertex(v2);
+
+        graph.addEdge(v0, v1);
+        graph.addEdge(v0, v2);
+        graph.addEdge(v1, v2);
+        graph.addEdge(v2, v1);
+
+        LoopBodyDetectionTask<LoopDetectionTestNode, DefaultEdge> task = new LoopBodyDetectionTask<>(v0, graph, DefaultEdge.class);
+        Pair<Set<Set<LoopDetectionTestNode>>, Set<Set<LoopDetectionTestNode>>> loopBodies = task.run();
+        Set<Set<LoopDetectionTestNode>> reducibleLoopBodies = loopBodies.getLeft();
+        Set<Set<LoopDetectionTestNode>> irreducibleLoopBodies = loopBodies.getRight();
+        assertEquals(0, reducibleLoopBodies.size());
+        assertEquals(1, irreducibleLoopBodies.size());
+        assertTrue(irreducibleLoopBodies.contains(ImmutableSet.of(n("1"), n("2"))));
     }
 
     private static LoopDetectionTestNode n(String id) {
