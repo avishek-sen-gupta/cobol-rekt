@@ -50,11 +50,12 @@ public class LoopBodyDetectionTask<V extends Identifiable, E> {
         ClassifiedEdges<E> classifiedEdges = djSpanningTree.classifiedEdges();
         Map<Integer, Set<V>> dominatorLevelMap = djTree.dominatorLevels();
         Set<E> backEdges = classifiedEdges.backEdges();
-        backEdges.forEach(be -> {
-            if (djGraph.getEdgeSource(be).id().equals("9") && djGraph.getEdgeTarget(be).id().equals("5")) {
-                throw new RuntimeException("THIS IS NOT POSSIBLE");
-            }
-        });
+        Set<E> mutableBackEdges = new HashSet<>(backEdges);
+//        backEdges.forEach(be -> {
+//            if (djGraph.getEdgeSource(be).id().equals("9") && djGraph.getEdgeTarget(be).id().equals("5")) {
+//                throw new RuntimeException("THIS IS NOT POSSIBLE");
+//            }
+//        });
         Set<Integer> depths = dominatorLevelMap.keySet();
         int maxTreeDepth = depths.stream().max((o1, o2) -> {
             if (o1.equals(o2)) return 0;
@@ -67,11 +68,11 @@ public class LoopBodyDetectionTask<V extends Identifiable, E> {
         for (int treeDepth = maxTreeDepth; treeDepth >= 0; treeDepth--) {
             String startOfIterationState = new MermaidGraph<V, E>().draw(collapsibleDJGraph);
             Set<V> nodesAtTreeDepth = dominatorLevelMap.get(treeDepth).stream().filter(node -> collapsibleDJGraph.vertexSet().contains(node)).collect(Collectors.toUnmodifiableSet());
-            Set<E> backEdgesAtTreeDepth = nodesAtTreeDepth.stream().flatMap(node -> collapsibleDJGraph.incomingEdgesOf(node).stream().filter(backEdges::contains)).collect(Collectors.toUnmodifiableSet());
+            Set<E> backEdgesAtTreeDepth = nodesAtTreeDepth.stream().flatMap(node -> collapsibleDJGraph.incomingEdgesOf(node).stream().filter(mutableBackEdges::contains)).collect(Collectors.toUnmodifiableSet());
             Set<E> crossJoinEdges = backEdgesAtTreeDepth.stream().filter(be -> be instanceof CrossJoinEdge).collect(Collectors.toUnmodifiableSet());
             Sets.SetView<E> backJoinEdges = Sets.difference(backEdgesAtTreeDepth, crossJoinEdges);
             Set<Pair<V, Set<V>>> reducibleLoopBodies = backJoinEdges.stream().map(bje -> ImmutablePair.of(collapsibleDJGraph.getEdgeTarget(bje), new NaturalLoopOfBackEdgeTask<>(bje, collapsibleDJGraph).run())).collect(Collectors.toUnmodifiableSet());
-            reducibleLoopBodies.forEach(loopBody -> collapse(loopBody, collapsibleDJGraph));
+            reducibleLoopBodies.forEach(loopBody -> collapse(loopBody, collapsibleDJGraph, mutableBackEdges));
             allReducibleLoopBodies.addAll(reducibleLoopBodies.stream().map(Pair::getRight).toList());
             if (crossJoinEdges.isEmpty()) {
                 String endOfIterationState = new MermaidGraph<V, E>().draw(collapsibleDJGraph);
@@ -86,7 +87,7 @@ public class LoopBodyDetectionTask<V extends Identifiable, E> {
                         .collect(Collectors.toUnmodifiableSet());
                 Graph<V, E> inducedSubgraph = new AsSubgraph<>(collapsibleDJGraph, nodesAtOrGreaterDepth);
                 List<Graph<V, E>> stronglyConnectedComponents = stronglyConnectedComponents(inducedSubgraph).stream().filter(scc -> scc.vertexSet().size() > 1).toList();
-                stronglyConnectedComponents.forEach(scc -> collapse(ImmutablePair.of(collapsibleDJGraph.getEdgeTarget(cje), scc.vertexSet()), collapsibleDJGraph));
+                stronglyConnectedComponents.forEach(scc -> collapse(ImmutablePair.of(collapsibleDJGraph.getEdgeTarget(cje), scc.vertexSet()), collapsibleDJGraph, mutableBackEdges));
                 String endOfIterationState = new MermaidGraph<V, E>().draw(collapsibleDJGraph);
                 return stronglyConnectedComponents.stream().map(Graph::vertexSet);
             }).collect(Collectors.toUnmodifiableSet());
@@ -97,30 +98,42 @@ public class LoopBodyDetectionTask<V extends Identifiable, E> {
         return ImmutablePair.of(allReducibleLoopBodies, allIrreducibleLoopBodies);
     }
 
-    private void collapse(Pair<V, Set<V>> reducibleLoop, Graph<V, E> collapsibleDJGraph) {
+    private void collapse(Pair<V, Set<V>> reducibleLoop, Graph<V, E> collapsibleDJGraph, Set<E> mutableBackEdges) {
         V loopHeader = reducibleLoop.getLeft();
-        if (loopHeader.id().equals("5")) {
-            throw new RuntimeException("GOTCHA COPPER");
-        }
         Set<V> loopBody = reducibleLoop.getRight();
+        System.out.println("Merging " + String.join(",", loopBody.stream().map(Identifiable::id).toList()));
         if (loopBody.size() <= 1) return;
         Set<E> allOutgoingEdges = loopBody.stream().flatMap(loopNode -> collapsibleDJGraph.outgoingEdgesOf(loopNode).stream()).collect(Collectors.toUnmodifiableSet());
         Set<E> allIncomingEdges = loopBody.stream().flatMap(loopNode -> collapsibleDJGraph.incomingEdgesOf(loopNode).stream()).collect(Collectors.toUnmodifiableSet());
         Set<E> edgesExitingLoop = allOutgoingEdges.stream().filter(oe -> !loopBody.contains(collapsibleDJGraph.getEdgeTarget(oe))).collect(Collectors.toUnmodifiableSet());
         Set<E> edgesEnteringLoop = allIncomingEdges.stream().filter(oe -> !loopBody.contains(collapsibleDJGraph.getEdgeSource(oe))).collect(Collectors.toUnmodifiableSet());
 
-        collapseOutgoing(collapsibleDJGraph, edgesExitingLoop, loopHeader, loopBody);
-        collapseIncoming(collapsibleDJGraph, edgesEnteringLoop, loopHeader, loopBody);
+        collapseOutgoing(collapsibleDJGraph, edgesExitingLoop, loopHeader, loopBody, mutableBackEdges);
+        collapseIncoming(collapsibleDJGraph, edgesEnteringLoop, loopHeader, loopBody, mutableBackEdges);
         Sets.SetView<V> nodesToRemove = Sets.difference(loopBody, ImmutableSet.of(loopHeader));
         nodesToRemove.forEach(collapsibleDJGraph::removeVertex);
     }
 
-    private void collapseOutgoing(Graph<V, E> collapsibleDJGraph, Set<E> edgesExitingLoop, V loopHeader, Set<V> loopBody) {
-        edgesExitingLoop.forEach(exitingEdge -> collapsibleDJGraph.addEdge(loopHeader, collapsibleDJGraph.getEdgeTarget(exitingEdge), (E) typed(exitingEdge)));
+    private void collapseOutgoing(Graph<V, E> collapsibleDJGraph, Set<E> edgesExitingLoop, V loopHeader, Set<V> loopBody, Set<E> mutableBackEdges) {
+        edgesExitingLoop.forEach(exitingEdge -> {
+            V edgeSource = collapsibleDJGraph.getEdgeSource(exitingEdge);
+            if (edgeSource == loopHeader) return;
+            E typedEdge = (E) typed(exitingEdge);
+            mutableBackEdges.remove(exitingEdge);
+            mutableBackEdges.add(typedEdge);
+            collapsibleDJGraph.addEdge(loopHeader, collapsibleDJGraph.getEdgeTarget(exitingEdge), typedEdge);
+        });
     }
 
-    private void collapseIncoming(Graph<V, E> collapsibleDJGraph, Set<E> edgesEnteringLoop, V loopHeader, Set<V> loopBody) {
-        edgesEnteringLoop.forEach(enteringEdge -> collapsibleDJGraph.addEdge(collapsibleDJGraph.getEdgeSource(enteringEdge), loopHeader, (E) typed(enteringEdge)));
+    private void collapseIncoming(Graph<V, E> collapsibleDJGraph, Set<E> edgesEnteringLoop, V loopHeader, Set<V> loopBody, Set<E> mutableBackEdges) {
+        edgesEnteringLoop.forEach(enteringEdge -> {
+            V edgeTarget = collapsibleDJGraph.getEdgeTarget(enteringEdge);
+            if (edgeTarget == loopHeader) return;
+            E typedEdge = (E) typed(enteringEdge);
+            mutableBackEdges.remove(enteringEdge);
+            mutableBackEdges.add(typedEdge);
+            collapsibleDJGraph.addEdge(collapsibleDJGraph.getEdgeSource(enteringEdge), loopHeader, typedEdge);
+        });
     }
 
     private DefaultEdge typed(E exitingEdge) {

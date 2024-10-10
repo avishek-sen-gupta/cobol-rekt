@@ -15,51 +15,54 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class LoopBodyDetectionTaskTest {
     @Test
     public void canDetectLoopBodies() {
-        Graph<LoopDetectionTestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
-        LoopDetectionTestNode v0 = node("0");
-        LoopDetectionTestNode v6 = node("6");
-        LoopDetectionTestNode v1 = node("1");
-        LoopDetectionTestNode v2 = node("2");
-        LoopDetectionTestNode v7 = node("7");
-        LoopDetectionTestNode v3 = node("3");
-        LoopDetectionTestNode v8 = node("8");
-        LoopDetectionTestNode v9 = node("9");
-        LoopDetectionTestNode v4 = node("4");
-        LoopDetectionTestNode v5 = node("5");
+        for (int i = 0; i <= 100; i++) {
+            Graph<LoopDetectionTestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
+            LoopDetectionTestNode v0 = node("0");
+            LoopDetectionTestNode v6 = node("6");
+            LoopDetectionTestNode v1 = node("1");
+            LoopDetectionTestNode v2 = node("2");
+            LoopDetectionTestNode v7 = node("7");
+            LoopDetectionTestNode v3 = node("3");
+            LoopDetectionTestNode v8 = node("8");
+            LoopDetectionTestNode v9 = node("9");
+            LoopDetectionTestNode v4 = node("4");
+            LoopDetectionTestNode v5 = node("5");
 
-        graph.addVertex(v0);
-        graph.addVertex(v6);
-        graph.addVertex(v1);
-        graph.addVertex(v2);
-        graph.addVertex(v7);
-        graph.addVertex(v3);
-        graph.addVertex(v8);
-        graph.addVertex(v9);
-        graph.addVertex(v4);
-        graph.addVertex(v5);
+            graph.addVertex(v0);
+            graph.addVertex(v6);
+            graph.addVertex(v1);
+            graph.addVertex(v2);
+            graph.addVertex(v7);
+            graph.addVertex(v3);
+            graph.addVertex(v8);
+            graph.addVertex(v9);
+            graph.addVertex(v4);
+            graph.addVertex(v5);
 
-        graph.addEdge(v0, v1);
-        graph.addEdge(v0, v6);
-        graph.addEdge(v1, v2);
-        graph.addEdge(v1, v7);
-        graph.addEdge(v2, v3);
-        graph.addEdge(v7, v3);
-        graph.addEdge(v7, v8);
-        graph.addEdge(v8, v9);
-        graph.addEdge(v3, v4);
-        graph.addEdge(v3, v9);
-        graph.addEdge(v4, v3);
-        graph.addEdge(v4, v5);
-        graph.addEdge(v9, v5);
-        graph.addEdge(v5, v1);
-        graph.addEdge(v5, v7);
-        graph.addEdge(v5, v6);
+            graph.addEdge(v0, v1);
+            graph.addEdge(v0, v6);
+            graph.addEdge(v1, v2);
+            graph.addEdge(v1, v7);
+            graph.addEdge(v2, v3);
+            graph.addEdge(v7, v3);
+            graph.addEdge(v7, v8);
+            graph.addEdge(v8, v9);
+            graph.addEdge(v3, v4);
+            graph.addEdge(v3, v9);
+            graph.addEdge(v4, v3);
+            graph.addEdge(v4, v5);
+            graph.addEdge(v9, v5);
+            graph.addEdge(v5, v1);
+            graph.addEdge(v5, v7);
+            graph.addEdge(v5, v6);
 
-        LoopBodyDetectionTask<LoopDetectionTestNode, DefaultEdge> task = new LoopBodyDetectionTask<>(v0, graph, DefaultEdge.class);
-        Pair<Set<Set<LoopDetectionTestNode>>, Set<Set<LoopDetectionTestNode>>> loopBodies = task.run();
-        Set<Set<LoopDetectionTestNode>> reducibleLoopBodies = loopBodies.getLeft();
-        Set<Set<LoopDetectionTestNode>> irreducibleLoopBodies = loopBodies.getRight();
-        assertEquals(2, reducibleLoopBodies.size());
+            LoopBodyDetectionTask<LoopDetectionTestNode, DefaultEdge> task = new LoopBodyDetectionTask<>(v0, graph, DefaultEdge.class);
+            Pair<Set<Set<LoopDetectionTestNode>>, Set<Set<LoopDetectionTestNode>>> loopBodies = task.run();
+            Set<Set<LoopDetectionTestNode>> reducibleLoopBodies = loopBodies.getLeft();
+            Set<Set<LoopDetectionTestNode>> irreducibleLoopBodies = loopBodies.getRight();
+            assertEquals(2, reducibleLoopBodies.size());
+            reducibleLoopBodies.forEach(rlb -> System.out.println(String.join(",", rlb.stream().map(LoopDetectionTestNode::id).toList())));
+        }
     }
 
     private static LoopDetectionTestNode node(String id) {

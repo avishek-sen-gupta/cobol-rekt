@@ -42,7 +42,6 @@ public record DepthFirstSpanningTree<V extends Identifiable, E>(List<V> depthFir
                 && !isAncestorOf(sourceGraph.getEdgeTarget(e), sourceGraph.getEdgeSource(e))).collect(Collectors.toUnmodifiableSet());
 
         return new ClassifiedEdges<>(treeEdges, backEdges, forwardEdges, crossEdges);
-
     }
 
     public int treeDepth(V v) {

@@ -5,10 +5,8 @@ import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.junit.jupiter.api.Test;
-import org.smojol.common.graph.ClassifiedEdges;
-import org.smojol.common.graph.DepthFirstSpanningTree;
-import org.smojol.common.graph.DepthFirstSearchOrderingTask;
-import org.smojol.common.graph.NaturalLoopOfBackEdgeTask;
+import org.smojol.common.flowchart.MermaidGraph;
+import org.smojol.common.graph.*;
 import org.smojol.common.id.Identifiable;
 
 import java.util.List;
@@ -343,7 +341,59 @@ public class DepthFirstSearchOrderingTaskTest {
         assertEquals(1, classifiedEdges.forwardEdges().size());
         assertEquals(4, classifiedEdges.crossEdges().size());
     }
-}
+
+    @Test
+    public void doesNotLabelBackEdgesSpuriously() {
+        Graph<DFSTestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
+        DFSTestNode v0 = new DFSTestNode("0");
+        DFSTestNode v6 = new DFSTestNode("6");
+        DFSTestNode v1 = new DFSTestNode("1");
+        DFSTestNode v2 = new DFSTestNode("2");
+        DFSTestNode v7 = new DFSTestNode("7");
+        DFSTestNode v3 = new DFSTestNode("3");
+        DFSTestNode v8 = new DFSTestNode("8");
+        DFSTestNode v9 = new DFSTestNode("9");
+        DFSTestNode v4 = new DFSTestNode("4");
+        DFSTestNode v5 = new DFSTestNode("5");
+
+        graph.addVertex(v0);
+        graph.addVertex(v6);
+        graph.addVertex(v1);
+        graph.addVertex(v2);
+        graph.addVertex(v7);
+        graph.addVertex(v3);
+        graph.addVertex(v8);
+        graph.addVertex(v9);
+        graph.addVertex(v4);
+        graph.addVertex(v5);
+
+        graph.addEdge(v0, v1);
+        graph.addEdge(v1, v2);
+        graph.addEdge(v2, v3);
+        graph.addEdge(v3, v4);
+        graph.addEdge(v4, v5);
+        graph.addEdge(v5, v6);
+        graph.addEdge(v5, v7);
+        graph.addEdge(v7, v8);
+        graph.addEdge(v8, v9);
+        graph.addEdge(v0, v6);
+        graph.addEdge(v1, v7);
+        graph.addEdge(v1, v3);
+        graph.addEdge(v1, v9);
+        graph.addEdge(v1, v5);
+        graph.addEdge(v7, v3);
+        graph.addEdge(v3, v9);
+        graph.addEdge(v9, v5);
+        graph.addEdge(v4, v3);
+        graph.addEdge(v5, v1);
+
+        DepthFirstSearchOrderingTask<DFSTestNode, DefaultEdge> task = new DepthFirstSearchOrderingTask<>(v0, graph, 1, DefaultEdge.class);
+        DepthFirstSpanningTree<DFSTestNode, DefaultEdge> spanningTree = task.run();
+        String draw = new MermaidGraph<DFSTestNode, DefaultEdge>().draw(spanningTree.sourceGraph());
+        ClassifiedEdges<DefaultEdge> classifiedEdges = spanningTree.classifiedEdges();
+        assertEquals(4, classifiedEdges.backEdges().size());
+        assertTrue(classifiedEdges.backEdges().contains(graph.getEdge(v9, v5)));
+    }}
 
 record DFSTestNode(String id) implements Identifiable {
     @Override

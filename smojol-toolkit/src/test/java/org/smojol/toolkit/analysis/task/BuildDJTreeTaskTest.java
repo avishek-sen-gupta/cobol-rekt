@@ -5,6 +5,7 @@ import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.junit.jupiter.api.Test;
+import org.smojol.common.flowchart.MermaidGraph;
 import org.smojol.common.graph.*;
 import org.smojol.toolkit.analysis.task.transpiler.*;
 
@@ -206,11 +207,11 @@ public class BuildDJTreeTaskTest {
         graph.addVertex(v5);
 
         graph.addEdge(v0, v1);
-        graph.addEdge(v0, v6);
         graph.addEdge(v1, v2);
         graph.addEdge(v2, v3);
         graph.addEdge(v3, v9);
         graph.addEdge(v9, v5);
+        graph.addEdge(v0, v6);
         graph.addEdge(v1, v7);
         graph.addEdge(v7, v8);
         graph.addEdge(v8, v9);
@@ -219,8 +220,8 @@ public class BuildDJTreeTaskTest {
         graph.addEdge(v4, v3);
         graph.addEdge(v4, v5);
         graph.addEdge(v5, v1);
-        graph.addEdge(v5, v7);
         graph.addEdge(v5, v6);
+        graph.addEdge(v5, v7);
 
         DepthFirstSearchOrderingTask<DominatorTreeTestNode, DefaultEdge> dfsTask = new DepthFirstSearchOrderingTask<>(v0, graph, DefaultEdge.class);
         DepthFirstSpanningTree<DominatorTreeTestNode, DefaultEdge> spanningTree = dfsTask.run();
@@ -229,11 +230,13 @@ public class BuildDJTreeTaskTest {
         Map<DominatorTreeTestNode, Set<DominatorTreeTestNode>> allDominators = new BuildDominatorsTask<DominatorTreeTestNode, DefaultEdge>().allDominators(spanningTree.preOrder(), graph);
         DominatorTree<DominatorTreeTestNode, DefaultEdge> dominatorTree = new BuildDominatorTreeTask<>(immediateDominators, spanningTree.sourceGraphRoot(), DefaultEdge.class).run();
         DJTree<DominatorTreeTestNode, DefaultEdge> djTree = new BuildDJTreeTask<>(dominatorTree, spanningTree, allDominators, DefaultEdge.class).run();
+        String draw = new MermaidGraph<DominatorTreeTestNode, DefaultEdge>().draw(djTree.graph());
         DepthFirstSearchOrderingTask<DominatorTreeTestNode, DefaultEdge> dfsTaskOnDJTree = new DepthFirstSearchOrderingTask<>(djTree.root(), djTree.graph(), DefaultEdge.class);
         DepthFirstSpanningTree<DominatorTreeTestNode, DefaultEdge> djSpanningTree = dfsTaskOnDJTree.run();
         List<DominatorTreeTestNode> ordering = djSpanningTree.preOrder();
         ClassifiedEdges<DefaultEdge> classifiedEdges = djSpanningTree.classifiedEdges();
         Graph<DominatorTreeTestNode, DefaultEdge> djGraph = djTree.graph();
+        String draw1 = new MermaidGraph<DominatorTreeTestNode, DefaultEdge>().draw(djGraph);
         assertEdgeExistsOfType(v5, v1, djTree, IS_JOIN_EDGE);
         Set<DefaultEdge> backJoinEdges = djTree.graph().edgeSet().stream().filter(IS_BACK_JOIN_EDGE::apply).collect(Collectors.toUnmodifiableSet());
         Set<DefaultEdge> crossJoinEdges = djTree.graph().edgeSet().stream().filter(IS_CROSS_JOIN_EDGE::apply).collect(Collectors.toUnmodifiableSet());
