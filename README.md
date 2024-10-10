@@ -33,7 +33,9 @@ You can see the current backlog [here](https://github.com/users/avishek-sen-gupt
   - [Reducibility Testing](#reducibility-testing)
     - [Reducibility testing using T1-T2 Transforms](#1-reducibility-testing-using-t1-t2-transforms)
     - [Reducibility testing using DJ Graphs](#2-reducibility-testing-using-dj-graphs)
-  - [Improper Loop Detection](#2-improper-loop-body-detection)
+  - [Irreducible Loop Detection](#improper-loop-detection)
+    - [Loop Body Detection Heuristic using Strongly Connected Components](#1-improper-loop-heuristic-using-strongly-connected-components)
+    - [Improper Loop Detection using DJ Graphs](#2-improper-loop-body-detection)
   - [Dominator Analysis](#dominator-analysis)
 - [Running against AWS Card Demo](#running-against-aws-card-demo)
 - [Developer Guide](#developer-guide)
@@ -489,7 +491,7 @@ A second technique for testing reducibility follows the method outlined in [[Sre
 - ```BuildDJTreeTask```: This creates the DJ tree using the dominator tree. It uses the output of the ```BuildDominatorTreeTask``` as its input. See [Dominator Analysis](#dominator-analysis) for more details.
 - ```ReducibleFlowgraphTestTask```: This is the actual test which determines if a flowgraph is reducible or not.
 
-_### Improper Loop Detection
+### Improper Loop Detection
 
 #### 1. Improper Loop Heuristic using Strongly Connected Components
 
@@ -505,7 +507,7 @@ Strongly Connected Components are detected using JGraphT's built-in [Kosarajau's
 
 #### 2. Improper Loop Body Detection
 
-[TODO]
+The technique of testing flowgraph reducibility in the [previous section](#2-reducibility-testing-using-dj-graphs) also extends to finding the all loop bodies, both reducible and irreducible. See ```LoopBodyDetectionTask```.
 
 ### Dominator Analysis
 
