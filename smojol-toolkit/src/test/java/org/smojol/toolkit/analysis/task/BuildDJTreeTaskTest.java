@@ -241,7 +241,7 @@ public class BuildDJTreeTaskTest {
         Set<DefaultEdge> backJoinEdges = djTree.graph().edgeSet().stream().filter(IS_BACK_JOIN_EDGE::apply).collect(Collectors.toUnmodifiableSet());
         Set<DefaultEdge> crossJoinEdges = djTree.graph().edgeSet().stream().filter(IS_CROSS_JOIN_EDGE::apply).collect(Collectors.toUnmodifiableSet());
         assertFalse(backJoinEdges.contains(djGraph.getEdge(v9, v5)));
-        assertFalse(classifiedEdges.backEdges().contains(djGraph.getEdge(v9, v5)));
+        assertTrue(classifiedEdges.backEdges().contains(djGraph.getEdge(v9, v5)));
     }
 
     private void assertEdgeExistsOfType(DominatorTreeTestNode from, DominatorTreeTestNode to, DJTree<DominatorTreeTestNode, DefaultEdge> dominatorTree, Function<DefaultEdge, Boolean> condition) {
