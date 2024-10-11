@@ -1,4 +1,6 @@
 package org.smojol.common.transpiler;
 
-public record TranspilerInstructionEdge(TranspilerInstruction from, TranspilerInstruction to) {
+import java.util.Map;
+
+public record TranspilerInstructionEdge(TranspilerInstruction from, TranspilerInstruction to, Map<String, String> metadata) {
 }

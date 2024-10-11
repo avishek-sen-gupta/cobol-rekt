@@ -1,5 +1,6 @@
 package org.smojol.common.transpiler;
 
+import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
 import org.jgrapht.Graph;
@@ -35,7 +36,7 @@ public class BuildInstructionFlowgraphTask {
         List<TranspilerInstructionEdge> instructionEdges = controlFlowEdges();
         Graph<TranspilerInstruction, DefaultEdge> jgraph = new DefaultDirectedGraph<>(DefaultEdge.class);
         instructions.forEach(jgraph::addVertex);
-        instructionEdges.forEach(edge -> jgraph.addEdge(edge.from(), edge.to()));
+        instructionEdges.forEach(edge -> jgraph.addEdge(edge.from(), edge.to(), new AnnotatedEdge(edge.metadata())));
         return jgraph;
     }
 
@@ -59,31 +60,31 @@ public class BuildInstructionFlowgraphTask {
                     TranspilerInstruction ifThenExit = exit(n.getIfThenBlock(), transpilerNodeMap, instructions);
                     TranspilerInstruction ifElseExit = exit(n.getIfElseBlock(), transpilerNodeMap, instructions);
                     TranspilerInstruction currentExit = exit(current, transpilerNodeMap, instructions);
-                    addEdge(currentInstruction, ifThenEntry);
-                    addEdge(currentInstruction, ifElseEntry);
-                    addEdge(ifThenExit, currentExit);
-                    addEdge(ifElseExit, currentExit);
+                    addEdge(currentInstruction, ifThenEntry, "THEN_ENTRY");
+                    addEdge(currentInstruction, ifElseEntry, "ELSE_ENTRY");
+                    addEdge(ifThenExit, currentExit, "THEN_EXIT");
+                    addEdge(ifElseExit, currentExit, "ELSE_EXIT");
                 }
                 case JumpTranspilerNode j when currentInstruction.sentinel() == CodeSentinelType.BODY -> {
                     TranspilerInstruction forwardTarget = resolveNode(j.getStart(), instructions, i);
                     TranspilerInstruction returnCallSite = exit(resolveNode(j.getEnd(), instructions, i).ref(), transpilerNodeMap, instructions);
-                    addEdge(body(current, transpilerNodeMap, instructions), forwardTarget);
-                    addEdge(returnCallSite, exit(current, transpilerNodeMap, instructions));
+                    addEdge(body(current, transpilerNodeMap, instructions), forwardTarget, "JUMP_ENTRY");
+                    addEdge(returnCallSite, exit(current, transpilerNodeMap, instructions), "JUMP_RETURN");
                 }
                 case TranspilerLoop transpilerLoop when currentInstruction.sentinel() == CodeSentinelType.EXIT -> {
-                    addEdge(currentInstruction, entry(current, transpilerNodeMap, instructions));
-                    addEdge(currentInstruction, nextInstruction);
+                    addEdge(currentInstruction, entry(current, transpilerNodeMap, instructions), "LOOPBACK");
+                    addEdge(currentInstruction, nextInstruction, "ELSE_EXIT");
                 }
                 case ListIterationTranspilerNode listIterationTranspilerNode when currentInstruction.sentinel() == CodeSentinelType.EXIT -> {
-                    addEdge(currentInstruction, entry(current, transpilerNodeMap, instructions));
-                    addEdge(currentInstruction, nextInstruction);
+                    addEdge(currentInstruction, entry(current, transpilerNodeMap, instructions), "LOOPBACK");
+                    addEdge(currentInstruction, nextInstruction, "SEQUENTIAL");
                 }
                 case DetachedTranspilerCodeBlockNode x when currentInstruction.sentinel() == CodeSentinelType.EXIT -> {
                     // Don't do anything
                 }
                 default -> {
                     LOGGER.finer("Unknown instruction: " + currentInstruction.ref());
-                    addEdge(currentInstruction, nextInstruction);
+                    addEdge(currentInstruction, nextInstruction, "SEQUENTIAL");
                 }
             }
         }
@@ -91,9 +92,9 @@ public class BuildInstructionFlowgraphTask {
         return edges;
     }
 
-    private void addEdge(TranspilerInstruction from, TranspilerInstruction to) {
+    private void addEdge(TranspilerInstruction from, TranspilerInstruction to, String tag) {
         if (from == TranspilerInstruction.NULL || to == TranspilerInstruction.NULL) return;
-        edges.add(new TranspilerInstructionEdge(from, to));
+        edges.add(new TranspilerInstructionEdge(from, to, ImmutableMap.of("edgeType", tag)));
     }
 
     private TranspilerNode iterationExit(int currentAddress, List<TranspilerInstruction> instructions) {
