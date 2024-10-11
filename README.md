@@ -35,7 +35,7 @@ You can see the current backlog [here](https://github.com/users/avishek-sen-gupt
     - [Reducibility testing using DJ Graphs](#2-reducibility-testing-using-dj-graphs)
   - [Irreducible Loop Detection](#improper-loop-detection)
     - [Loop Body Detection Heuristic using Strongly Connected Components](#1-improper-loop-heuristic-using-strongly-connected-components)
-    - [Improper Loop Detection using DJ Graphs](#2-improper-loop-body-detection)
+    - [Improper Loop Detection using DJ Graphs](#2-reducible-and-irreducible-loop-body-detection)
   - [Dominator Analysis](#dominator-analysis)
 - [Running against AWS Card Demo](#running-against-aws-card-demo)
 - [Developer Guide](#developer-guide)
@@ -505,7 +505,7 @@ This is, however, a good test which can surface loop-specific reducibility probl
 
 Strongly Connected Components are detected using JGraphT's built-in [Kosarajau's algorithm for finding SCC's](https://jgrapht.org/javadoc/org.jgrapht.core/org/jgrapht/alg/connectivity/KosarajuStrongConnectivityInspector.html).
 
-#### 2. Improper Loop Body Detection
+#### 2. Reducible and Irreducible Loop Body Detection
 
 The technique of testing flowgraph reducibility in the [previous section](#2-reducibility-testing-using-dj-graphs) also extends to finding the all loop bodies, both reducible and irreducible. See ```LoopBodyDetectionTask```.
 
