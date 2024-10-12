@@ -528,6 +528,10 @@ See [DominatorAnalysisMain.java](smojol-toolkit/src/main/java/org/smojol/toolkit
 
 This is based on the paper [No More Gotos: Decompilation Using Pattern-Independent Control-Flow Structuring and Semantics-Preserving Transformations](https://www.ndss-symposium.org/wp-content/uploads/2017/09/11_4_2.pdf).
 
+Several tasks are involved in this.
+
+- ```GraphSliceTask```: This finds the graph slices as mentioned in the paper.
+
 [WIP]...
 
 ## Running against AWS Card Demo

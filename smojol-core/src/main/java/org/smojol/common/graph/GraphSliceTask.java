@@ -23,23 +23,23 @@ public class GraphSliceTask<V extends Identifiable, E> {
 
     public GraphSlice<V, E> run(V source, V sink) {
         List<Pair<V, E>> stack = new ArrayList<>();
-        run(source, source, null, sink, stack);
+        run(source, null, source, sink, stack);
         return new GraphSlice<>(allPaths);
     }
 
-    public void run(V source, V current, E incomingEdge, V sink, List<Pair<V, E>> stack) {
+    public void run(V current, E incomingEdge, V source, V sink, List<Pair<V, E>> dfsStack) {
         if (current == sink) {
-            setupFinalPath(source, current, incomingEdge, sink, (List<Pair<V, E>>) stack);
+            setupFinalPath(source, current, incomingEdge, sink, dfsStack);
             return;
         } else if (visited.contains(current)) {
             if (!alreadyInPath(current)) return;
-            setupFinalPath(source, current, incomingEdge, sink, (List<Pair<V, E>>) stack);
+            setupFinalPath(source, current, incomingEdge, sink, dfsStack);
             return;
         }
         visited.add(current);
         sourceGraph.outgoingEdgesOf(current).forEach(e -> {
-            run(source, sourceGraph.getEdgeTarget(e), e, sink,
-                    incomingEdge == null ? new ArrayList<>(stack) : Streams.concat(stack.stream(), Stream.of(ImmutablePair.of(current, incomingEdge))).collect(Collectors.toList()));
+            run(sourceGraph.getEdgeTarget(e), e, source, sink,
+                    incomingEdge == null ? new ArrayList<>(dfsStack) : Streams.concat(dfsStack.stream(), Stream.of(ImmutablePair.of(current, incomingEdge))).collect(Collectors.toList()));
         });
     }
 
