@@ -72,7 +72,7 @@ public class BuildDJTreeTaskTest {
         DepthFirstSpanningTree<DominatorTreeTestNode, DefaultEdge> spanningTree = dfsTask.run();
 
         List<Pair<DominatorTreeTestNode, DominatorTreeTestNode>> immediateDominators = new BuildDominatorsTask<DominatorTreeTestNode, DefaultEdge>().immediateDominators(spanningTree);
-        Map<DominatorTreeTestNode, Set<DominatorTreeTestNode>> allDominators = new BuildDominatorsTask<DominatorTreeTestNode, DefaultEdge>().allDominators(spanningTree.preOrder(), graph);
+        Map<DominatorTreeTestNode, Set<DominatorTreeTestNode>> allDominators = new BuildDominatorsTask<DominatorTreeTestNode, DefaultEdge>().allDominators(spanningTree.preOrdered(), graph);
         DominatorTree<DominatorTreeTestNode, DefaultEdge> dominatorTree = new BuildDominatorTreeTask<>(immediateDominators, spanningTree.sourceGraphRoot(), DefaultEdge.class).run();
         DJTree<DominatorTreeTestNode, DefaultEdge> djTree = new BuildDJTreeTask<>(dominatorTree, spanningTree, allDominators, DefaultEdge.class).run();
 
@@ -154,7 +154,7 @@ public class BuildDJTreeTaskTest {
         DepthFirstSpanningTree<DominatorTreeTestNode, DefaultEdge> spanningTree = dfsTask.run();
 
         List<Pair<DominatorTreeTestNode, DominatorTreeTestNode>> immediateDominators = new BuildDominatorsTask<DominatorTreeTestNode, DefaultEdge>().immediateDominators(spanningTree);
-        Map<DominatorTreeTestNode, Set<DominatorTreeTestNode>> allDominators = new BuildDominatorsTask<DominatorTreeTestNode, DefaultEdge>().allDominators(spanningTree.preOrder(), graph);
+        Map<DominatorTreeTestNode, Set<DominatorTreeTestNode>> allDominators = new BuildDominatorsTask<DominatorTreeTestNode, DefaultEdge>().allDominators(spanningTree.preOrdered(), graph);
         DominatorTree<DominatorTreeTestNode, DefaultEdge> dominatorTree = new BuildDominatorTreeTask<>(immediateDominators, spanningTree.sourceGraphRoot(), DefaultEdge.class).run();
         DJTree<DominatorTreeTestNode, DefaultEdge> djTree = new BuildDJTreeTask<>(dominatorTree, spanningTree, allDominators, DefaultEdge.class).run();
         assertEquals(4, djTree.graph().edgeSet().stream().filter(IS_DOMINATOR_EDGE::apply).count());
@@ -227,13 +227,13 @@ public class BuildDJTreeTaskTest {
         DepthFirstSpanningTree<DominatorTreeTestNode, DefaultEdge> spanningTree = dfsTask.run();
 
         List<Pair<DominatorTreeTestNode, DominatorTreeTestNode>> immediateDominators = new BuildDominatorsTask<DominatorTreeTestNode, DefaultEdge>().immediateDominators(spanningTree);
-        Map<DominatorTreeTestNode, Set<DominatorTreeTestNode>> allDominators = new BuildDominatorsTask<DominatorTreeTestNode, DefaultEdge>().allDominators(spanningTree.preOrder(), graph);
+        Map<DominatorTreeTestNode, Set<DominatorTreeTestNode>> allDominators = new BuildDominatorsTask<DominatorTreeTestNode, DefaultEdge>().allDominators(spanningTree.preOrdered(), graph);
         DominatorTree<DominatorTreeTestNode, DefaultEdge> dominatorTree = new BuildDominatorTreeTask<>(immediateDominators, spanningTree.sourceGraphRoot(), DefaultEdge.class).run();
         DJTree<DominatorTreeTestNode, DefaultEdge> djTree = new BuildDJTreeTask<>(dominatorTree, spanningTree, allDominators, DefaultEdge.class).run();
         String draw = new MermaidGraph<DominatorTreeTestNode, DefaultEdge>().draw(djTree.graph());
         DepthFirstSearchOrderingTask<DominatorTreeTestNode, DefaultEdge> dfsTaskOnDJTree = new DepthFirstSearchOrderingTask<>(djTree.root(), djTree.graph(), DefaultEdge.class);
         DepthFirstSpanningTree<DominatorTreeTestNode, DefaultEdge> djSpanningTree = dfsTaskOnDJTree.run();
-        List<DominatorTreeTestNode> ordering = djSpanningTree.preOrder();
+        List<DominatorTreeTestNode> ordering = djSpanningTree.preOrdered();
         ClassifiedEdges<DefaultEdge> classifiedEdges = djSpanningTree.classifiedEdges();
         Graph<DominatorTreeTestNode, DefaultEdge> djGraph = djTree.graph();
         String draw1 = new MermaidGraph<DominatorTreeTestNode, DefaultEdge>().draw(djGraph);

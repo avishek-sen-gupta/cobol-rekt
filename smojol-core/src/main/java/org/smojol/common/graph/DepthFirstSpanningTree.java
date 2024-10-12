@@ -11,18 +11,18 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public record DepthFirstSpanningTree<V extends Identifiable, E>(List<V> depthFirstSpanningTreeOrder, V sourceGraphRoot,
+public record DepthFirstSpanningTree<V extends Identifiable, E>(List<V> preOrder, V sourceGraphRoot,
                                                                 Graph<V, E> sourceGraph,
                                                                 Map<V, NodeDFSStatistics> nodeStats,
                                                                 Map<Integer, Set<V>> depthToNodeMap,
                                                                 Graph<V, E> spanningTree) {
 
-    public List<V> preOrder() {
-        return depthFirstSpanningTreeOrder;
+    public List<V> preOrdered() {
+        return preOrder;
     }
 
-    public List<V> postOrder() {
-        return depthFirstSpanningTreeOrder.reversed();
+    public List<V> postOrdered() {
+        return preOrder.reversed();
     }
 
     public boolean isAncestorOf(V possibleAncestor, V possibleDescendant) {

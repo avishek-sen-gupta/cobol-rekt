@@ -61,7 +61,7 @@ public class BuildDominatorsTaskTest {
         DepthFirstSearchOrderingTask<DominatorTestNode, DefaultEdge> dfsTask = new DepthFirstSearchOrderingTask<>(v0, graph, DefaultEdge.class);
         DepthFirstSpanningTree<DominatorTestNode, DefaultEdge> spanningTree = dfsTask.run();
 
-        Map<DominatorTestNode, Set<DominatorTestNode>> dominatorSets = new BuildDominatorsTask<DominatorTestNode, DefaultEdge>().allDominators(spanningTree.preOrder(), graph);
+        Map<DominatorTestNode, Set<DominatorTestNode>> dominatorSets = new BuildDominatorsTask<DominatorTestNode, DefaultEdge>().allDominators(spanningTree.preOrdered(), graph);
         assertEquals(ImmutableSet.of(v0), dominatorSets.get(v0));
         assertEquals(ImmutableSet.of(v0, v1), dominatorSets.get(v1));
         assertEquals(ImmutableSet.of(v0, v1, v2), dominatorSets.get(v2));

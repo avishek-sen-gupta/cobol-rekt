@@ -28,7 +28,7 @@ public class DepthFirstSearchOrderingTaskTest {
         graph.addEdge(va, vc);
         DepthFirstSearchOrderingTask<DFSTestNode, DefaultEdge> task = new DepthFirstSearchOrderingTask<>(va, graph, DefaultEdge.class);
         DepthFirstSpanningTree<DFSTestNode, DefaultEdge> spanningTree = task.run();
-        List<DFSTestNode> ordered = spanningTree.preOrder();
+        List<DFSTestNode> ordered = spanningTree.preOrdered();
         assertEquals(va, ordered.get(0));
         assertEquals(vb, ordered.get(1));
         assertEquals(vc, ordered.get(2));
@@ -133,7 +133,7 @@ public class DepthFirstSearchOrderingTaskTest {
 
         DepthFirstSearchOrderingTask<DFSTestNode, DefaultEdge> task = new DepthFirstSearchOrderingTask<>(v0, graph, DefaultEdge.class);
         DepthFirstSpanningTree<DFSTestNode, DefaultEdge> spanningTree = task.run();
-        List<DFSTestNode> ordered = spanningTree.preOrder();
+        List<DFSTestNode> ordered = spanningTree.preOrdered();
         assertEquals(v0, ordered.get(0));
         assertEquals(v1, ordered.get(1));
         assertEquals(v2, ordered.get(2));
@@ -214,8 +214,8 @@ public class DepthFirstSearchOrderingTaskTest {
         DepthFirstSearchOrderingTask<DFSTestNode, DefaultEdge> task = new DepthFirstSearchOrderingTask<>(v1, graph, 1, DefaultEdge.class);
         DepthFirstSpanningTree<DFSTestNode, DefaultEdge> spanningTree = task.run();
         assertEquals(17, task.currentClock());
-        assertEquals(ImmutableList.of(v1, v2, v3, v4, v5, v6, v7, v8), spanningTree.preOrder());
-        assertEquals(ImmutableList.of(v8, v7, v6, v5, v4, v3, v2, v1), spanningTree.postOrder());
+        assertEquals(ImmutableList.of(v1, v2, v3, v4, v5, v6, v7, v8), spanningTree.preOrdered());
+        assertEquals(ImmutableList.of(v8, v7, v6, v5, v4, v3, v2, v1), spanningTree.postOrdered());
 
 
         assertEquals(0, spanningTree.treeDepth(v1));
@@ -264,8 +264,8 @@ public class DepthFirstSearchOrderingTaskTest {
         DepthFirstSearchOrderingTask<DFSTestNode, DefaultEdge> task = new DepthFirstSearchOrderingTask<>(v1, graph, 1, DefaultEdge.class);
         DepthFirstSpanningTree<DFSTestNode, DefaultEdge> spanningTree = task.run();
         assertEquals(17, task.currentClock());
-        assertEquals(ImmutableList.of(v1, v2, v3, v4, v5, v6, v7, v8), spanningTree.preOrder());
-        assertEquals(ImmutableList.of(v8, v7, v6, v5, v4, v3, v2, v1), spanningTree.postOrder());
+        assertEquals(ImmutableList.of(v1, v2, v3, v4, v5, v6, v7, v8), spanningTree.preOrdered());
+        assertEquals(ImmutableList.of(v8, v7, v6, v5, v4, v3, v2, v1), spanningTree.postOrdered());
 
 
         assertEquals(0, spanningTree.treeDepth(v1));

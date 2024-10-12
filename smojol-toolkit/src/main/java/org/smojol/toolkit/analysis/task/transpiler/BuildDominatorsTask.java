@@ -49,7 +49,7 @@ public class BuildDominatorsTask<V extends Identifiable, E> {
     }
 
     public List<Pair<V, V>> immediateDominators(DepthFirstSpanningTree<V, E> dfsTree) {
-        Map<V, Set<V>> allDominators = allDominators(dfsTree.preOrder(), dfsTree.sourceGraph());
+        Map<V, Set<V>> allDominators = allDominators(dfsTree.preOrdered(), dfsTree.sourceGraph());
         LOGGER.info("Building Immediate Dominators >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
         Map<V, List<V>> dominances = new HashMap<>();
         allDominators.forEach((dominated, dominators) -> dominators.forEach(dominator -> {

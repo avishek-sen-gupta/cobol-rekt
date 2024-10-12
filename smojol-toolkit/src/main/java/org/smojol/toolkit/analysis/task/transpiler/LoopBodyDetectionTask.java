@@ -41,7 +41,7 @@ public class LoopBodyDetectionTask<V extends Identifiable, E> {
         DepthFirstSpanningTree<V, E> spanningTree = dfsTask.run();
 
         List<Pair<V, V>> immediateDominators = new BuildDominatorsTask<V, E>().immediateDominators(spanningTree);
-        Map<V, Set<V>> allDominators = new BuildDominatorsTask<V, E>().allDominators(spanningTree.preOrder(), sourceGraph);
+        Map<V, Set<V>> allDominators = new BuildDominatorsTask<V, E>().allDominators(spanningTree.preOrdered(), sourceGraph);
         DominatorTree<V, E> dominatorTree = new BuildDominatorTreeTask<>(immediateDominators, spanningTree.sourceGraphRoot(), edgeClass).run();
         DJTree<V, E> djTree = new BuildDJTreeTask<>(dominatorTree, spanningTree, allDominators, edgeClass).run();
         Graph<V, E> djGraph = djTree.graph();
