@@ -90,7 +90,7 @@ The toolkit consists of Java components, most of which are around parsing, inges
 - The toolkit uses the grammar available in the [Eclipse Che4z Cobol Support project](https://github.com/eclipse-che4z/che-che4z-lsp-for-cobol) to create the parse tree.
 - The toolkit uses the API from [Woof](https://github.com/asengupta/woof) to interact with Neo4J.
 - [Graphviz](https://graphviz.org/) for flowchart generation; see its documentation for OS-specific installation instructions.
-- [JGraphT](https://jgrapht.org/) for Java-based graph analyses and some export functionality.
+- [JGraphT](https://jgrapht.org/) for representing graph structures in all control flow / reducibility analyses and some export functionality.
 - [NetworkX](https://networkx.org/) for Python-based graph analyses
 - An implementation of the gSpan algorithm for Frequent Subgraph Mining is adapted from [https://github.com/betterenvi/gSpan].
 - [Neo4J](https://neo4j.com/) is required for using tasks involving Neo4J. The APOC and GDS plugins will need to be installed. All the tasks have also been tested using Neo4J Desktop.
@@ -773,7 +773,7 @@ You can specify a custom logging settings file by adding ```-Djava.util.logging.
 
 ## Catalogue of Reusable Algorithms
 
-This is a list of algorithms written from scratch, for reference or reuse.
+This is a list of algorithms written from scratch, for reference or reuse. All of them use JGraphT for representing graph structures.
 
 - **Depth First Ordering (Pre- and Post-Order):** Based on [Depth-First Search and Linear Graph Algorithms](https://github.com/tpn/pdfs/blob/master/Depth-First%20Search%20and%20Linear%20Graph%20Algorithms%20-%20Tarjan%20(1972).pdf). See ```DepthFirstTraversalLabelTask```. This does the following things:
   - Generate the explicit **depth-first ordering of nodes**
