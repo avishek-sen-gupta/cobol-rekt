@@ -95,7 +95,7 @@ The toolkit consists of Java components, most of which are around parsing, inges
 - An implementation of the gSpan algorithm for Frequent Subgraph Mining is adapted from [https://github.com/betterenvi/gSpan].
 - [Neo4J](https://neo4j.com/) is required for using tasks involving Neo4J. The APOC and GDS plugins will need to be installed. All the tasks have also been tested using Neo4J Desktop.
 - A subscription to OpenAI's GPT-4o (or your choice of deployment) will be needed for capabilities which use LLMs. The tasks have been tested using Azure's OpenAI offering.
-- RuntimeTypeAdapterFactory from Gson for some serialisation use-cases.
+- ```RuntimeTypeAdapterFactory``` from Gson for some serialisation use-cases.
 
 ## Reverse Engineering Use Cases
 
@@ -254,11 +254,11 @@ The interpreter can run in two modes:
 
 ### Current Capabilities of the Interpreter
 
-- Support for most control constructs: IF/THEN, NEXT SENTENCE, GO TO, PERFORM, SEARCH...WHEN, IDMS ON
+- Support for most control constructs: ```IF/THEN```, ```NEXT SENTENCE```, ```GO TO```, ```PERFORM```, ```SEARCH...WHEN```, IDMS ```ON```
 - Support for expression evaluation in COMPUTE, MOVE, ADD, SUBTRACT, MULTIPLY, DIVIDE
 - Support for interactive resolution of conditions
 - Most common class comparisons supported
-- Support for abbreviated relation condition forms (IF A > 10 OR 20 AND 30...)
+- Support for abbreviated relation condition forms (```IF A > 10 OR 20 AND 30...```)
 - Functioning type system (supports zoned decimals, COMP-3 / Packed Decimal and alphanumerics) with a large subset of z/OS behaviour compatibility for scenarios undefined in the Cobol standard
 - Support for fixed-size tables and single subscripting
 - Support for elementary, composite, and recursive REDEFINES (REDEFINES of REDEFINES)
@@ -509,6 +509,10 @@ Strongly Connected Components are detected using JGraphT's built-in [Kosarajau's
 #### 2. Reducible and Irreducible Loop Body Detection
 
 The technique of testing flowgraph reducibility in the [previous section](#2-reducibility-testing-using-dj-graphs) also extends to finding the all loop bodies, both reducible and irreducible. See ```LoopBodyDetectionTask```.
+
+This technique works by first building the Dominator-Join graph (DJ graph), then identifying reducible and irreducible loop bodies in reverse tree depth order, so that inner loops are detected first and folded into single abstract nodes.
+
+Irreducible loop bodies are found by identifying back edges which are also Cross-Join edges, and then using an SCC algorithm to find SCCs in the subgraph induced by all nodes at that level or deeper.
 
 ### Dominator Analysis
 
