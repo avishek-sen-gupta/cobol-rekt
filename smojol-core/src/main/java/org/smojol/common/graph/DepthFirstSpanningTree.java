@@ -2,10 +2,12 @@ package org.smojol.common.graph;
 
 import com.google.common.collect.Sets;
 import org.jgrapht.Graph;
+import org.smojol.common.graph.exception.CyclicGraphException;
 import org.smojol.common.id.Identifiable;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -46,5 +48,15 @@ public record DepthFirstSpanningTree<V extends Identifiable, E>(List<V> depthFir
 
     public int treeDepth(V v) {
         return nodeStats.get(v).treeDepth();
+    }
+
+    public List<V> topologicallyOrdered() {
+        if (!classifiedEdges().backEdges().isEmpty()) throw new CyclicGraphException();
+        return nodeStats.entrySet().stream().sorted((o1, o2) -> {
+            int lhsDiscoveryEndTime = o1.getValue().discoveryEndTime();
+            int rhsDiscoveryEndTime = o2.getValue().discoveryEndTime();
+            if (lhsDiscoveryEndTime == rhsDiscoveryEndTime) return 0;
+            return lhsDiscoveryEndTime < rhsDiscoveryEndTime ? 1 : -1;
+        }).map(Entry::getKey).toList();
     }
 }

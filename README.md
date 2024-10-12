@@ -773,6 +773,7 @@ This is a list of algorithms written from scratch, for reference or reuse.
   - Generate the depth-first **spanning tree**
   - Generates discovery timestamps for determining **node ancestry**
   - **Classifies** all edges in the source graph as **Tree Edges**, **Forward Edges**, **Back Edges**, and **Cross Edges**.
+  - Generates toplogical ordering for acyclic graphs
 - **Finding Dominators (All and Immediate):** Based on [Graph-Theoretic Constructs for Program Control Flow Analysis - Allen and Cocke](https://dominoweb.draco.res.ibm.com/reports/rc3923.pdf). See ```BuildDominatorsTask```.
 - **Interval Analysis via T1-T2 Transforms:** Based on [Characterizations of Reducible Flow Graphs - Hecht and Ullman](https://dl.acm.org/doi/pdf/10.1145/321832.321835). See ```IntervalAnalysisTask```.
 - **Building DJ Trees:** Based on the algorithm in [A Linear Time Algorithm for Placing Phi-Nodes](https://dl.acm.org/doi/pdf/10.1145/199448.199464). See ```BuildDJTreeTask```. This task creates edges of three types: ```DominatorEdge```, ```BackJoinEdge```, and ```CrossJoinEdge```.
