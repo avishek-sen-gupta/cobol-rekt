@@ -794,6 +794,7 @@ This is a list of algorithms written from scratch, for reference or reuse. All o
 - **Building DJ Trees:** Based on the algorithm in [A Linear Time Algorithm for Placing Phi-Nodes](https://dl.acm.org/doi/pdf/10.1145/199448.199464). See ```BuildDJTreeTask```. This task creates edges of three types: ```DominatorEdge```, ```BackJoinEdge```, and ```CrossJoinEdge```.
 - **Reducibility Testing using DJ Graphs:** Uses DJ Trees as above. See ```ReducibleFlowgraphTestTask```.
 - **Reducible and Irreducible Loop Body detection:** Based on [Identifying Loops Using DJ Graphs](https://dl.acm.org/doi/pdf/10.1145/236114.236115). See ```LoopBodyDetectionTask```.
+- **Graph Slicing:** Based on [No More Gotos: Decompilation Using Pattern-Independent Control-Flow Structuring and Semantics-Preserving Transformations](https://github.com/lifting-bits/rellic/blob/master/docs/NoMoreGotos.pdf). See ```GraphSliceTask```.
 
 ## A Note on Copyright
 
