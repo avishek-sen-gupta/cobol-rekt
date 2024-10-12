@@ -63,20 +63,15 @@ public class TopologicalSortTaskTest {
     }
 }
 
-class ToplogicalSortTestNode implements Identifiable {
-    private final String id;
-
-    public ToplogicalSortTestNode(String id) {
-        this.id = id;
-    }
+record ToplogicalSortTestNode(String id) implements Identifiable {
 
     @Override
-    public String id() {
+    public String label() {
         return id;
     }
 
     @Override
-    public String label() {
+    public String toString() {
         return id;
     }
 }
