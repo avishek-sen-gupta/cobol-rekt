@@ -37,6 +37,7 @@ You can see the current backlog [here](https://github.com/users/avishek-sen-gupt
     - [Loop Body Detection Heuristic using Strongly Connected Components](#1-improper-loop-heuristic-using-strongly-connected-components)
     - [Improper Loop Detection using DJ Graphs](#2-reducible-and-irreducible-loop-body-detection)
   - [Dominator Analysis](#dominator-analysis)
+  - [Control Flow Restructuring to eliminate GO TO's (WIP)](#control-flowgraph-restructuring-to-eliminate-go-tos)
 - [Running against AWS Card Demo](#running-against-aws-card-demo)
 - [Developer Guide](#developer-guide)
   - [How to Build](#how-to-build)
@@ -69,7 +70,7 @@ Cobol-REKT is an evolving toolkit of capabilities helpful for reverse engineerin
 - Injecting inter-program dependencies into Neo4J (with export to JSON)
 - Paragraph similarity map (Java / Python)
 - Code Pattern Detection (Neo4J / NetworkX)
-- **(WIP)** Transpilation and Control Flow Analysis capabilities:
+- Transpilation and Control Flow Analysis capabilities:
   - **Exposing a basic transpilation model** which is not tied to the COBOL syntax.
   - **Exposing Basic Blocks** which are a useful first step in raw transpilation
   - Calculating **limit flow graphs** using T1-T2 reductions: Analyse whether the control flow graph is reducible or not. This is a proxy for how well-structured the program is, and how amenable it is to direct transpilation to structured programming languages (without arbitrary GOTOs)
@@ -519,6 +520,12 @@ Several tasks are required to be run to do dominator analysis.
 
 See [DominatorAnalysisMain.java](smojol-toolkit/src/main/java/org/smojol/toolkit/examples/DominatorAnalysisMain.java) for an example.
 
+### Control Flowgraph Restructuring to eliminate GO TO's
+
+This is based on the paper [No More Gotos: Decompilation Using Pattern-Independent Control-Flow Structuring and Semantics-Preserving Transformations](https://www.ndss-symposium.org/wp-content/uploads/2017/09/11_4_2.pdf).
+
+[WIP]...
+
 ## Running against AWS Card Demo
 
 The library has been tested (validation, flowchart generation, AST generation, Unified Model generation) against the [AWS Card Demo](https://github.com/aws-samples/aws-mainframe-modernization-carddemo) codebase. To run it against that codebase, do the following:
@@ -778,7 +785,7 @@ This is a list of algorithms written from scratch, for reference or reuse.
 - **Interval Analysis via T1-T2 Transforms:** Based on [Characterizations of Reducible Flow Graphs - Hecht and Ullman](https://dl.acm.org/doi/pdf/10.1145/321832.321835). See ```IntervalAnalysisTask```.
 - **Building DJ Trees:** Based on the algorithm in [A Linear Time Algorithm for Placing Phi-Nodes](https://dl.acm.org/doi/pdf/10.1145/199448.199464). See ```BuildDJTreeTask```. This task creates edges of three types: ```DominatorEdge```, ```BackJoinEdge```, and ```CrossJoinEdge```.
 - **Reducibility Testing using DJ Graphs:** Uses DJ Trees as above. See ```ReducibleFlowgraphTestTask```.
-- **Reducible and Irreducible Loop Body detection (WIP):** Based on [Identifying Loops Using DJ Graphs](https://dl.acm.org/doi/pdf/10.1145/236114.236115). See ```LoopBodyDetectionTask```.
+- **Reducible and Irreducible Loop Body detection:** Based on [Identifying Loops Using DJ Graphs](https://dl.acm.org/doi/pdf/10.1145/236114.236115). See ```LoopBodyDetectionTask```.
 
 ## A Note on Copyright
 
@@ -837,6 +844,7 @@ These are some other commands tried on larger graphs:
   - [Solving the structured control flow problem once and for all](https://medium.com/leaningtech/solving-the-structured-control-flow-problem-once-and-for-all-5123117b1ee2)
   - [Compilers: Principles, Techniques, and Tools by Aho, Sethi, Ullman](https://www.amazon.in/Compilers-Principles-Techniques-Tools-Updated/dp/9357054111/)
   - [Control Flow Analysis slides](http://www.cse.iitm.ac.in/~krishna/cs6013/lecture4.pdf)
+  - [No More Gotos: Decompilation Using Pattern-Independent Control-Flow Structuring and Semantics-Preserving Transformations](https://github.com/lifting-bits/rellic/blob/master/docs/NoMoreGotos.pdf)
 - Dominator Algorithms
   - [Graph-Theoretic Constructs for Program Control Flow Analysis - Allen and Cocke](https://dominoweb.draco.res.ibm.com/reports/rc3923.pdf)
   - [A Fast Algorithm for Finding Dominators in a Flowgraph - Lengauer and Tarjan](https://www.cs.princeton.edu/courses/archive/fall03/cs528/handouts/a%20fast%20algorithm%20for%20finding.pdf)
@@ -845,7 +853,6 @@ These are some other commands tried on larger graphs:
 - Reducibility
   - [Making Graphs Reducible with Controlled Node Splitting](https://dl.acm.org/doi/pdf/10.1145/267959.269971)
   - [Eliminating go to’s while Preserving Program Structure](https://dl.acm.org/doi/pdf/10.1145/48014.48021)
-  - [No More Gotos: Decompilation Using Pattern-Independent Control-Flow Structuring and Semantics-Preserving Transformations](https://github.com/lifting-bits/rellic/blob/master/docs/NoMoreGotos.pdf)
 - COBOL References
   - [Examples: numeric data and internal representation](https://www.ibm.com/docs/sk/cobol-zos/6.3?topic=data-examples-numeric-internal-representation)
   - [Enterprise Cobol for Z/OS 6.4 - Language Reference](https://publibfp.dhe.ibm.com/epubs/pdf/igy6lr40.pdf)
