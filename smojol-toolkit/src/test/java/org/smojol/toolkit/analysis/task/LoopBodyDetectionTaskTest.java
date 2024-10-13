@@ -6,11 +6,10 @@ import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.junit.jupiter.api.Test;
-import org.smojol.common.id.Identifiable;
+import org.smojol.toolkit.analysis.TestNode;
 import org.smojol.toolkit.analysis.task.transpiler.LoopBodyDetectionTask;
 
 import java.util.Collection;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -20,17 +19,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class LoopBodyDetectionTaskTest {
     @Test
     public void canDetectLoopBodies1() {
-        Graph<LoopDetectionTestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
-        LoopDetectionTestNode v0 = node("0");
-        LoopDetectionTestNode v6 = node("6");
-        LoopDetectionTestNode v1 = node("1");
-        LoopDetectionTestNode v2 = node("2");
-        LoopDetectionTestNode v7 = node("7");
-        LoopDetectionTestNode v3 = node("3");
-        LoopDetectionTestNode v8 = node("8");
-        LoopDetectionTestNode v9 = node("9");
-        LoopDetectionTestNode v4 = node("4");
-        LoopDetectionTestNode v5 = node("5");
+        Graph<TestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
+        TestNode v0 = node("0");
+        TestNode v6 = node("6");
+        TestNode v1 = node("1");
+        TestNode v2 = node("2");
+        TestNode v7 = node("7");
+        TestNode v3 = node("3");
+        TestNode v8 = node("8");
+        TestNode v9 = node("9");
+        TestNode v4 = node("4");
+        TestNode v5 = node("5");
 
         graph.addVertex(v0);
         graph.addVertex(v6);
@@ -60,10 +59,10 @@ public class LoopBodyDetectionTaskTest {
         graph.addEdge(v5, v7);
         graph.addEdge(v5, v6);
 
-        LoopBodyDetectionTask<LoopDetectionTestNode, DefaultEdge> task = new LoopBodyDetectionTask<>(v0, graph, DefaultEdge.class);
-        Pair<Set<Set<LoopDetectionTestNode>>, Set<Set<LoopDetectionTestNode>>> loopBodies = task.run();
-        Set<Set<LoopDetectionTestNode>> reducibleLoopBodies = loopBodies.getLeft();
-        Set<Set<LoopDetectionTestNode>> irreducibleLoopBodies = loopBodies.getRight();
+        LoopBodyDetectionTask<TestNode, DefaultEdge> task = new LoopBodyDetectionTask<>(v0, graph, DefaultEdge.class);
+        Pair<Set<Set<TestNode>>, Set<Set<TestNode>>> loopBodies = task.run();
+        Set<Set<TestNode>> reducibleLoopBodies = loopBodies.getLeft();
+        Set<Set<TestNode>> irreducibleLoopBodies = loopBodies.getRight();
         assertEquals(2, reducibleLoopBodies.size());
         assertEquals(1, irreducibleLoopBodies.size());
         assertTrue(reducibleLoopBodies.contains(ImmutableSet.of(n("1"), n("2"), n("3")))
@@ -71,14 +70,14 @@ public class LoopBodyDetectionTaskTest {
         assertTrue(reducibleLoopBodies.contains(ImmutableSet.of(n("3"), n("4"))));
         assertEquals(ImmutableSet.of(n("3"), n("5"), n("7"), n("8"), n("9")), irreducibleLoopBodies.stream().flatMap(Collection::stream).collect(Collectors.toUnmodifiableSet()));
 
-        reducibleLoopBodies.forEach(rlb -> System.out.println(String.join(",", rlb.stream().map(LoopDetectionTestNode::id).toList())));
+        reducibleLoopBodies.forEach(rlb -> System.out.println(String.join(",", rlb.stream().map(TestNode::id).toList())));
     }
     @Test
     public void canDetectLoopBodies2() {
-        Graph<LoopDetectionTestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
-        LoopDetectionTestNode v0 = node("0");
-        LoopDetectionTestNode v1 = node("1");
-        LoopDetectionTestNode v2 = node("2");
+        Graph<TestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
+        TestNode v0 = node("0");
+        TestNode v1 = node("1");
+        TestNode v2 = node("2");
 
         graph.addVertex(v0);
         graph.addVertex(v1);
@@ -89,40 +88,21 @@ public class LoopBodyDetectionTaskTest {
         graph.addEdge(v1, v2);
         graph.addEdge(v2, v1);
 
-        LoopBodyDetectionTask<LoopDetectionTestNode, DefaultEdge> task = new LoopBodyDetectionTask<>(v0, graph, DefaultEdge.class);
-        Pair<Set<Set<LoopDetectionTestNode>>, Set<Set<LoopDetectionTestNode>>> loopBodies = task.run();
-        Set<Set<LoopDetectionTestNode>> reducibleLoopBodies = loopBodies.getLeft();
-        Set<Set<LoopDetectionTestNode>> irreducibleLoopBodies = loopBodies.getRight();
+        LoopBodyDetectionTask<TestNode, DefaultEdge> task = new LoopBodyDetectionTask<>(v0, graph, DefaultEdge.class);
+        Pair<Set<Set<TestNode>>, Set<Set<TestNode>>> loopBodies = task.run();
+        Set<Set<TestNode>> reducibleLoopBodies = loopBodies.getLeft();
+        Set<Set<TestNode>> irreducibleLoopBodies = loopBodies.getRight();
         assertEquals(0, reducibleLoopBodies.size());
         assertEquals(1, irreducibleLoopBodies.size());
         assertTrue(irreducibleLoopBodies.contains(ImmutableSet.of(n("1"), n("2"))));
     }
 
-    private static LoopDetectionTestNode n(String id) {
-        return new LoopDetectionTestNode(id);
+    private static TestNode n(String id) {
+        return new TestNode(id);
     }
 
-    private static LoopDetectionTestNode node(String id) {
+    private static TestNode node(String id) {
         return n(id);
     }
 }
 
-
-record LoopDetectionTestNode(String id) implements Identifiable {
-    @Override
-    public String label() {
-        return id;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof LoopDetectionTestNode that)) return false;
-        return Objects.equals(id, that.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
-    }
-}

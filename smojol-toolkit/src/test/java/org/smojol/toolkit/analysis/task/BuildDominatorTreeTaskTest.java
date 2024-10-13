@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.smojol.common.graph.DepthFirstSpanningTree;
 import org.smojol.common.graph.DepthFirstSearchOrderingTask;
 import org.smojol.common.graph.DominatorTree;
-import org.smojol.common.id.Identifiable;
+import org.smojol.common.graph.TestNode;
 import org.smojol.toolkit.analysis.task.transpiler.BuildDominatorTreeTask;
 import org.smojol.toolkit.analysis.task.transpiler.BuildDominatorsTask;
 
@@ -22,17 +22,17 @@ public class BuildDominatorTreeTaskTest {
      */
     @Test
     public void canBuildDominatorTree1() {
-        Graph<DominatorTreeTestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
-        DominatorTreeTestNode vSTART = node("START");
-        DominatorTreeTestNode vEND = node("END");
-        DominatorTreeTestNode vA = node("A");
-        DominatorTreeTestNode vB = node("B");
-        DominatorTreeTestNode vC = node("C");
-        DominatorTreeTestNode vD = node("D");
-        DominatorTreeTestNode vE = node("E");
-        DominatorTreeTestNode vF = node("F");
-        DominatorTreeTestNode vG = node("G");
-        DominatorTreeTestNode vH = node("H");
+        Graph<TestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
+        TestNode vSTART = node("START");
+        TestNode vEND = node("END");
+        TestNode vA = node("A");
+        TestNode vB = node("B");
+        TestNode vC = node("C");
+        TestNode vD = node("D");
+        TestNode vE = node("E");
+        TestNode vF = node("F");
+        TestNode vG = node("G");
+        TestNode vH = node("H");
 
         graph.addVertex(vSTART);
         graph.addVertex(vEND);
@@ -62,11 +62,11 @@ public class BuildDominatorTreeTaskTest {
         graph.addEdge(vH, vC);
         graph.addEdge(vH, vEND);
 
-        DepthFirstSearchOrderingTask<DominatorTreeTestNode, DefaultEdge> dfsTask = new DepthFirstSearchOrderingTask<>(vSTART, graph, DefaultEdge.class);
-        DepthFirstSpanningTree<DominatorTreeTestNode, DefaultEdge> spanningTree = dfsTask.run();
+        DepthFirstSearchOrderingTask<TestNode, DefaultEdge> dfsTask = new DepthFirstSearchOrderingTask<>(vSTART, graph, DefaultEdge.class);
+        DepthFirstSpanningTree<TestNode, DefaultEdge> spanningTree = dfsTask.run();
 
-        List<Pair<DominatorTreeTestNode, DominatorTreeTestNode>> immediateDominators = new BuildDominatorsTask<DominatorTreeTestNode, DefaultEdge>().immediateDominators(spanningTree);
-        DominatorTree<DominatorTreeTestNode, DefaultEdge> dominatorTree = new BuildDominatorTreeTask<>(immediateDominators, spanningTree.sourceGraphRoot(), DefaultEdge.class).run();
+        List<Pair<TestNode, TestNode>> immediateDominators = new BuildDominatorsTask<TestNode, DefaultEdge>().immediateDominators(spanningTree);
+        DominatorTree<TestNode, DefaultEdge> dominatorTree = new BuildDominatorTreeTask<>(immediateDominators, spanningTree.sourceGraphRoot(), DefaultEdge.class).run();
         assertEquals(9, dominatorTree.graph().edgeSet().size());
         assertEdgeDoesNotExistOfType(vSTART, vSTART, dominatorTree);
         assertEdgeExistsOfType(vSTART, vEND, dominatorTree);
@@ -85,12 +85,12 @@ public class BuildDominatorTreeTaskTest {
      */
     @Test
     public void canBuildDominatorTree2() {
-        Graph<DominatorTreeTestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
-        DominatorTreeTestNode vA = node("A");
-        DominatorTreeTestNode vB = node("B");
-        DominatorTreeTestNode vC = node("C");
-        DominatorTreeTestNode vD = node("D");
-        DominatorTreeTestNode vE = node("E");
+        Graph<TestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
+        TestNode vA = node("A");
+        TestNode vB = node("B");
+        TestNode vC = node("C");
+        TestNode vD = node("D");
+        TestNode vE = node("E");
 
         graph.addVertex(vA);
         graph.addVertex(vB);
@@ -107,11 +107,11 @@ public class BuildDominatorTreeTaskTest {
         graph.addEdge(vC, vE);
         graph.addEdge(vE, vC);
 
-        DepthFirstSearchOrderingTask<DominatorTreeTestNode, DefaultEdge> dfsTask = new DepthFirstSearchOrderingTask<>(vA, graph, DefaultEdge.class);
-        DepthFirstSpanningTree<DominatorTreeTestNode, DefaultEdge> spanningTree = dfsTask.run();
+        DepthFirstSearchOrderingTask<TestNode, DefaultEdge> dfsTask = new DepthFirstSearchOrderingTask<>(vA, graph, DefaultEdge.class);
+        DepthFirstSpanningTree<TestNode, DefaultEdge> spanningTree = dfsTask.run();
 
-        List<Pair<DominatorTreeTestNode, DominatorTreeTestNode>> immediateDominators = new BuildDominatorsTask<DominatorTreeTestNode, DefaultEdge>().immediateDominators(spanningTree);
-        DominatorTree<DominatorTreeTestNode, DefaultEdge> dominatorTree = new BuildDominatorTreeTask<>(immediateDominators, spanningTree.sourceGraphRoot(), DefaultEdge.class).run();
+        List<Pair<TestNode, TestNode>> immediateDominators = new BuildDominatorsTask<TestNode, DefaultEdge>().immediateDominators(spanningTree);
+        DominatorTree<TestNode, DefaultEdge> dominatorTree = new BuildDominatorTreeTask<>(immediateDominators, spanningTree.sourceGraphRoot(), DefaultEdge.class).run();
         assertEquals(4, dominatorTree.graph().edgeSet().size());
         assertEdgeDoesNotExistOfType(vA, vA, dominatorTree);
         assertEdgeExistsOfType(vA, vB, dominatorTree);
@@ -120,29 +120,21 @@ public class BuildDominatorTreeTaskTest {
         assertEdgeExistsOfType(vC, vE, dominatorTree);
     }
 
-    private void assertEdgeExistsOfType(DominatorTreeTestNode from, DominatorTreeTestNode to, DominatorTree<DominatorTreeTestNode, DefaultEdge> dominatorTree) {
+    private void assertEdgeExistsOfType(TestNode from, TestNode to, DominatorTree<TestNode, DefaultEdge> dominatorTree) {
         assertEdgeOfTypeExistsOrNot(from, to, dominatorTree, true);
     }
 
-    private void assertEdgeDoesNotExistOfType(DominatorTreeTestNode from, DominatorTreeTestNode to, DominatorTree<DominatorTreeTestNode, DefaultEdge> dominatorTree) {
+    private void assertEdgeDoesNotExistOfType(TestNode from, TestNode to, DominatorTree<TestNode, DefaultEdge> dominatorTree) {
         assertEdgeOfTypeExistsOrNot(from, to, dominatorTree, false);
     }
 
-    private void assertEdgeOfTypeExistsOrNot(DominatorTreeTestNode from, DominatorTreeTestNode to, DominatorTree<DominatorTreeTestNode, DefaultEdge> dominatorTree, boolean exists) {
-        Graph<DominatorTreeTestNode, DefaultEdge> dominatorGraph = dominatorTree.graph();
+    private void assertEdgeOfTypeExistsOrNot(TestNode from, TestNode to, DominatorTree<TestNode, DefaultEdge> dominatorTree, boolean exists) {
+        Graph<TestNode, DefaultEdge> dominatorGraph = dominatorTree.graph();
         List<DefaultEdge> matchingEdges = dominatorGraph.edgeSet().stream().filter(e -> e.getClass() == DefaultEdge.class && dominatorGraph.getEdgeSource(e) == from && dominatorGraph.getEdgeTarget(e) == to).toList();
         assertEquals(exists ? 1 : 0, matchingEdges.size());
     }
 
-    private static DominatorTreeTestNode node(String id) {
-        return new DominatorTreeTestNode(id);
+    private static TestNode node(String id) {
+        return new TestNode(id);
     }
 }
-
-record DominatorTreeTestNode(String id) implements Identifiable {
-    @Override
-    public String label() {
-        return id;
-    }
-}
-

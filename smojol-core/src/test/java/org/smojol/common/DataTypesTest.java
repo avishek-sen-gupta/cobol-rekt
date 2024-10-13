@@ -1,4 +1,4 @@
-package org.poc.common;
+package org.smojol.common;
 
 import com.google.common.collect.ImmutableList;
 import org.junit.jupiter.api.Test;
@@ -11,8 +11,8 @@ import org.smojol.common.vm.type.*;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.poc.common.MemoryTestUtils.assertBytes;
-import static org.poc.common.MemoryTestUtils.assertMemory;
+import static org.smojol.common.MemoryTestUtils.assertBytes;
+import static org.smojol.common.MemoryTestUtils.assertMemory;
 
 public class DataTypesTest {
     @Test

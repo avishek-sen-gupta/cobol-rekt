@@ -8,7 +8,6 @@ import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.junit.jupiter.api.Test;
 import org.smojol.common.graph.*;
-import org.smojol.common.id.Identifiable;
 import org.smojol.toolkit.analysis.task.transpiler.BuildDominatorsTask;
 
 import java.util.List;
@@ -26,15 +25,15 @@ public class BuildDominatorsTaskTest {
          |____|____|         |
               └---> 6 --> 7 -┘
      */
-        Graph<DominatorTestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
-        DominatorTestNode v0 = getCodeGraphNode("0");
-        DominatorTestNode v1 = getCodeGraphNode("1");
-        DominatorTestNode v2 = getCodeGraphNode("2");
-        DominatorTestNode v3 = getCodeGraphNode("3");
-        DominatorTestNode v4 = getCodeGraphNode("4");
-        DominatorTestNode v5 = getCodeGraphNode("5");
-        DominatorTestNode v6 = getCodeGraphNode("6");
-        DominatorTestNode v7 = getCodeGraphNode("7");
+        Graph<TestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
+        TestNode v0 = getCodeGraphNode("0");
+        TestNode v1 = getCodeGraphNode("1");
+        TestNode v2 = getCodeGraphNode("2");
+        TestNode v3 = getCodeGraphNode("3");
+        TestNode v4 = getCodeGraphNode("4");
+        TestNode v5 = getCodeGraphNode("5");
+        TestNode v6 = getCodeGraphNode("6");
+        TestNode v7 = getCodeGraphNode("7");
 
         graph.addVertex(v0);
         graph.addVertex(v1);
@@ -58,10 +57,10 @@ public class BuildDominatorsTaskTest {
         graph.addEdge(v6, v7);
         graph.addEdge(v7, v5);
 
-        DepthFirstSearchOrderingTask<DominatorTestNode, DefaultEdge> dfsTask = new DepthFirstSearchOrderingTask<>(v0, graph, DefaultEdge.class);
-        DepthFirstSpanningTree<DominatorTestNode, DefaultEdge> spanningTree = dfsTask.run();
+        DepthFirstSearchOrderingTask<TestNode, DefaultEdge> dfsTask = new DepthFirstSearchOrderingTask<>(v0, graph, DefaultEdge.class);
+        DepthFirstSpanningTree<TestNode, DefaultEdge> spanningTree = dfsTask.run();
 
-        Map<DominatorTestNode, Set<DominatorTestNode>> dominatorSets = new BuildDominatorsTask<DominatorTestNode, DefaultEdge>().allDominators(spanningTree.preOrdered(), graph);
+        Map<TestNode, Set<TestNode>> dominatorSets = new BuildDominatorsTask<TestNode, DefaultEdge>().allDominators(spanningTree.preOrdered(), graph);
         assertEquals(ImmutableSet.of(v0), dominatorSets.get(v0));
         assertEquals(ImmutableSet.of(v0, v1), dominatorSets.get(v1));
         assertEquals(ImmutableSet.of(v0, v1, v2), dominatorSets.get(v2));
@@ -72,8 +71,8 @@ public class BuildDominatorsTaskTest {
         assertEquals(ImmutableSet.of(v0, v1, v2, v6, v7), dominatorSets.get(v7));
     }
 
-    private static DominatorTestNode getCodeGraphNode(String id) {
-        return new DominatorTestNode(id);
+    private static TestNode getCodeGraphNode(String id) {
+        return new TestNode(id);
     }
 
     @Test
@@ -84,15 +83,15 @@ public class BuildDominatorsTaskTest {
          |____|____|         |
               └---> 6 --> 7 -┘
      */
-        Graph<DominatorTestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
-        DominatorTestNode v0 = getCodeGraphNode("0");
-        DominatorTestNode v1 = getCodeGraphNode("1");
-        DominatorTestNode v2 = getCodeGraphNode("2");
-        DominatorTestNode v3 = getCodeGraphNode("3");
-        DominatorTestNode v4 = getCodeGraphNode("4");
-        DominatorTestNode v5 = getCodeGraphNode("5");
-        DominatorTestNode v6 = getCodeGraphNode("6");
-        DominatorTestNode v7 = getCodeGraphNode("7");
+        Graph<TestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
+        TestNode v0 = getCodeGraphNode("0");
+        TestNode v1 = getCodeGraphNode("1");
+        TestNode v2 = getCodeGraphNode("2");
+        TestNode v3 = getCodeGraphNode("3");
+        TestNode v4 = getCodeGraphNode("4");
+        TestNode v5 = getCodeGraphNode("5");
+        TestNode v6 = getCodeGraphNode("6");
+        TestNode v7 = getCodeGraphNode("7");
 
         graph.addVertex(v0);
         graph.addVertex(v1);
@@ -116,10 +115,10 @@ public class BuildDominatorsTaskTest {
         graph.addEdge(v6, v7);
         graph.addEdge(v7, v5);
 
-        DepthFirstSearchOrderingTask<DominatorTestNode, DefaultEdge> dfsTask = new DepthFirstSearchOrderingTask<>(v0, graph, DefaultEdge.class);
-        DepthFirstSpanningTree<DominatorTestNode, DefaultEdge> spanningTree = dfsTask.run();
+        DepthFirstSearchOrderingTask<TestNode, DefaultEdge> dfsTask = new DepthFirstSearchOrderingTask<>(v0, graph, DefaultEdge.class);
+        DepthFirstSpanningTree<TestNode, DefaultEdge> spanningTree = dfsTask.run();
 
-        List<Pair<DominatorTestNode, DominatorTestNode>> immediateDominators = new BuildDominatorsTask<DominatorTestNode, DefaultEdge>().immediateDominators(spanningTree);
+        List<Pair<TestNode, TestNode>> immediateDominators = new BuildDominatorsTask<TestNode, DefaultEdge>().immediateDominators(spanningTree);
         assertFalse(immediateDominators.contains(ImmutablePair.of(v0, v0)));
         assertTrue(immediateDominators.contains(ImmutablePair.of(v0, null)));
         assertTrue(immediateDominators.contains(ImmutablePair.of(v1, v0)));
@@ -129,12 +128,5 @@ public class BuildDominatorsTaskTest {
         assertTrue(immediateDominators.contains(ImmutablePair.of(v5, v1)));
         assertTrue(immediateDominators.contains(ImmutablePair.of(v6, v2)));
         assertTrue(immediateDominators.contains(ImmutablePair.of(v7, v6)));
-    }
-}
-
-record DominatorTestNode(String id) implements Identifiable {
-    @Override
-    public String label() {
-        return id;
     }
 }

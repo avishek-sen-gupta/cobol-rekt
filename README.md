@@ -455,7 +455,7 @@ See [TranspilerBuildMain.java](smojol-toolkit/src/main/java/org/smojol/toolkit/e
 The ```BuildTranspilerFlowgraphTask``` creates the intermediate AST, instructions, and the **Basic Block tree**.
 
 In addition, this task can accept a set of flow hints. These flow hints allow the engineer to explicitly specify section/paragraph names which are not targets of fallthrough flows. Without these hints, some programs can yield irreducible control flowgraphs, which require more complicated resolutions, come transpilation time. See [Reducibility Test](#reducibility-testing) for more details.
-
+    
 ### Details of the Intermediate Transpiler Tree
 
 - ```SEARCH-WHEN``` statements are translated into collection iterations (with breaks) and conditions.

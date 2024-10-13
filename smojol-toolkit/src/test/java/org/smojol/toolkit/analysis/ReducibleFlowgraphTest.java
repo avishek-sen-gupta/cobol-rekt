@@ -208,22 +208,3 @@ public class ReducibleFlowgraphTest {
         return new TestNode(id);
     }
 }
-
-record TestNode(String id) implements Identifiable {
-    @Override
-    public String label() {
-        return id;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof TestNode testNode)) return false;
-        return Objects.equals(id, testNode.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
-    }
-}

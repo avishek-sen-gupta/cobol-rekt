@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.smojol.common.graph.DepthFirstSearchOrderingTask;
 import org.smojol.common.graph.DepthFirstSpanningTree;
 import org.smojol.common.graph.exception.CyclicGraphException;
-import org.smojol.common.id.Identifiable;
+import org.smojol.toolkit.analysis.TestNode;
 
 import java.util.List;
 
@@ -18,10 +18,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class TopologicalSortTaskTest {
     @Test
     public void canSortSimpleAcyclicTopologically() {
-        Graph<ToplogicalSortTestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
-        ToplogicalSortTestNode v1 = node("1");
-        ToplogicalSortTestNode v2 = node("2");
-        ToplogicalSortTestNode v3 = node("3");
+        Graph<TestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
+        TestNode v1 = node("1");
+        TestNode v2 = node("2");
+        TestNode v3 = node("3");
 
         graph.addVertex(v1);
         graph.addVertex(v2);
@@ -30,19 +30,19 @@ public class TopologicalSortTaskTest {
         graph.addEdge(v1, v2);
         graph.addEdge(v1, v3);
 
-        DepthFirstSearchOrderingTask<ToplogicalSortTestNode, DefaultEdge> dfsTask = new DepthFirstSearchOrderingTask<>(v1, graph, DefaultEdge.class);
-        DepthFirstSpanningTree<ToplogicalSortTestNode, DefaultEdge> spanningTree = dfsTask.run();
-        List<ToplogicalSortTestNode> toplogicalSortTestNodes = spanningTree.topologicallyOrdered();
-        assertTrue(ImmutableList.of(v1, v2, v3).equals(toplogicalSortTestNodes)
-        || ImmutableList.of(v1, v3, v2).equals(toplogicalSortTestNodes));
+        DepthFirstSearchOrderingTask<TestNode, DefaultEdge> dfsTask = new DepthFirstSearchOrderingTask<>(v1, graph, DefaultEdge.class);
+        DepthFirstSpanningTree<TestNode, DefaultEdge> spanningTree = dfsTask.run();
+        List<TestNode> testNodes = spanningTree.topologicallyOrdered();
+        assertTrue(ImmutableList.of(v1, v2, v3).equals(testNodes)
+        || ImmutableList.of(v1, v3, v2).equals(testNodes));
     }
 
     @Test()
     public void cannotSortCyclicTopologically() {
-        Graph<ToplogicalSortTestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
-        ToplogicalSortTestNode v1 = node("1");
-        ToplogicalSortTestNode v2 = node("2");
-        ToplogicalSortTestNode v3 = node("3");
+        Graph<TestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
+        TestNode v1 = node("1");
+        TestNode v2 = node("2");
+        TestNode v3 = node("3");
 
         graph.addVertex(v1);
         graph.addVertex(v2);
@@ -53,25 +53,13 @@ public class TopologicalSortTaskTest {
         graph.addEdge(v1, v3);
         graph.addEdge(v3, v1);
 
-        DepthFirstSearchOrderingTask<ToplogicalSortTestNode, DefaultEdge> dfsTask = new DepthFirstSearchOrderingTask<>(v1, graph, DefaultEdge.class);
-        DepthFirstSpanningTree<ToplogicalSortTestNode, DefaultEdge> spanningTree = dfsTask.run();
+        DepthFirstSearchOrderingTask<TestNode, DefaultEdge> dfsTask = new DepthFirstSearchOrderingTask<>(v1, graph, DefaultEdge.class);
+        DepthFirstSpanningTree<TestNode, DefaultEdge> spanningTree = dfsTask.run();
         assertThrows(CyclicGraphException.class, spanningTree::topologicallyOrdered);
     }
 
-    private ToplogicalSortTestNode node(String id) {
-        return new ToplogicalSortTestNode(id);
+    private TestNode node(String id) {
+        return new TestNode(id);
     }
 }
 
-record ToplogicalSortTestNode(String id) implements Identifiable {
-
-    @Override
-    public String label() {
-        return id;
-    }
-
-    @Override
-    public String toString() {
-        return id;
-    }
-}

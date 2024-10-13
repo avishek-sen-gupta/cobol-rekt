@@ -1,4 +1,4 @@
-package org.poc.common;
+package org.smojol.common;
 
 import org.smojol.common.vm.memory.MemoryRegion;
 

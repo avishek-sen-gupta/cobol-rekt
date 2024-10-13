@@ -1,4 +1,4 @@
-package org.poc.common;
+package org.smojol.common;
 
 import org.junit.jupiter.api.Test;
 import org.smojol.common.vm.memory.MemoryLayout;
@@ -10,7 +10,7 @@ import org.smojol.common.vm.type.ZonedDecimalSignType;
 import org.smojol.common.vm.type.ZonedDecimalDataTypeSpec;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.poc.common.MemoryTestUtils.assertMemory;
+import static org.smojol.common.MemoryTestUtils.assertMemory;
 
 public class DataTypeRedefinitionsTest {
     @Test

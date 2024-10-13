@@ -1,4 +1,4 @@
-package org.poc.common;
+package org.smojol.common;
 
 import com.google.common.collect.ImmutableList;
 import org.jgrapht.Graph;
@@ -7,7 +7,6 @@ import org.jgrapht.graph.DefaultEdge;
 import org.junit.jupiter.api.Test;
 import org.smojol.common.flowchart.MermaidGraph;
 import org.smojol.common.graph.*;
-import org.smojol.common.id.Identifiable;
 
 import java.util.List;
 import java.util.Set;
@@ -17,18 +16,18 @@ import static org.junit.jupiter.api.Assertions.*;
 public class DepthFirstSearchOrderingTaskTest {
     @Test
     public void canLabelDFSOrderForSimpleGraphWithNoLoops() {
-        Graph<DFSTestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
-        DFSTestNode va = new DFSTestNode("A");
-        DFSTestNode vb = new DFSTestNode("B");
-        DFSTestNode vc = new DFSTestNode("C");
+        Graph<TestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
+        TestNode va = new TestNode("A");
+        TestNode vb = new TestNode("B");
+        TestNode vc = new TestNode("C");
         graph.addVertex(va);
         graph.addVertex(vb);
         graph.addVertex(vc);
         graph.addEdge(va, vb);
         graph.addEdge(va, vc);
-        DepthFirstSearchOrderingTask<DFSTestNode, DefaultEdge> task = new DepthFirstSearchOrderingTask<>(va, graph, DefaultEdge.class);
-        DepthFirstSpanningTree<DFSTestNode, DefaultEdge> spanningTree = task.run();
-        List<DFSTestNode> ordered = spanningTree.preOrdered();
+        DepthFirstSearchOrderingTask<TestNode, DefaultEdge> task = new DepthFirstSearchOrderingTask<>(va, graph, DefaultEdge.class);
+        DepthFirstSpanningTree<TestNode, DefaultEdge> spanningTree = task.run();
+        List<TestNode> ordered = spanningTree.preOrdered();
         assertEquals(va, ordered.get(0));
         assertEquals(vb, ordered.get(1));
         assertEquals(vc, ordered.get(2));
@@ -44,17 +43,17 @@ public class DepthFirstSearchOrderingTaskTest {
 
     @Test
     public void canLabelTreeDepthForExampleDominatorTree() {
-        Graph<DFSTestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
-        DFSTestNode vSTART = new DFSTestNode("START");
-        DFSTestNode vEND = new DFSTestNode("END");
-        DFSTestNode vA = new DFSTestNode("A");
-        DFSTestNode vB = new DFSTestNode("B");
-        DFSTestNode vC = new DFSTestNode("C");
-        DFSTestNode vD = new DFSTestNode("D");
-        DFSTestNode vE = new DFSTestNode("E");
-        DFSTestNode vF = new DFSTestNode("F");
-        DFSTestNode vG = new DFSTestNode("G");
-        DFSTestNode vH = new DFSTestNode("H");
+        Graph<TestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
+        TestNode vSTART = new TestNode("START");
+        TestNode vEND = new TestNode("END");
+        TestNode vA = new TestNode("A");
+        TestNode vB = new TestNode("B");
+        TestNode vC = new TestNode("C");
+        TestNode vD = new TestNode("D");
+        TestNode vE = new TestNode("E");
+        TestNode vF = new TestNode("F");
+        TestNode vG = new TestNode("G");
+        TestNode vH = new TestNode("H");
         graph.addVertex(vSTART);
         graph.addVertex(vA);
         graph.addVertex(vB);
@@ -76,8 +75,8 @@ public class DepthFirstSearchOrderingTaskTest {
         graph.addEdge(vC, vE);
         graph.addEdge(vD, vG);
 
-        DepthFirstSearchOrderingTask<DFSTestNode, DefaultEdge> task = new DepthFirstSearchOrderingTask<>(vSTART, graph, DefaultEdge.class);
-        DepthFirstSpanningTree<DFSTestNode, DefaultEdge> spanningTree = task.run();
+        DepthFirstSearchOrderingTask<TestNode, DefaultEdge> task = new DepthFirstSearchOrderingTask<>(vSTART, graph, DefaultEdge.class);
+        DepthFirstSpanningTree<TestNode, DefaultEdge> spanningTree = task.run();
 
         assertEquals(0, spanningTree.treeDepth(vSTART));
         assertEquals(1, spanningTree.treeDepth(vA));
@@ -99,15 +98,15 @@ public class DepthFirstSearchOrderingTaskTest {
          |____|____|         |
               └---> 6 --> 7 -┘
      */
-        Graph<DFSTestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
-        DFSTestNode v0 = new DFSTestNode("0");
-        DFSTestNode v1 = new DFSTestNode("1");
-        DFSTestNode v2 = new DFSTestNode("2");
-        DFSTestNode v3 = new DFSTestNode("3");
-        DFSTestNode v4 = new DFSTestNode("4");
-        DFSTestNode v5 = new DFSTestNode("5");
-        DFSTestNode v6 = new DFSTestNode("6");
-        DFSTestNode v7 = new DFSTestNode("7");
+        Graph<TestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
+        TestNode v0 = new TestNode("0");
+        TestNode v1 = new TestNode("1");
+        TestNode v2 = new TestNode("2");
+        TestNode v3 = new TestNode("3");
+        TestNode v4 = new TestNode("4");
+        TestNode v5 = new TestNode("5");
+        TestNode v6 = new TestNode("6");
+        TestNode v7 = new TestNode("7");
 
         graph.addVertex(v0);
         graph.addVertex(v1);
@@ -131,9 +130,9 @@ public class DepthFirstSearchOrderingTaskTest {
         graph.addEdge(v6, v7);
         graph.addEdge(v7, v5);
 
-        DepthFirstSearchOrderingTask<DFSTestNode, DefaultEdge> task = new DepthFirstSearchOrderingTask<>(v0, graph, DefaultEdge.class);
-        DepthFirstSpanningTree<DFSTestNode, DefaultEdge> spanningTree = task.run();
-        List<DFSTestNode> ordered = spanningTree.preOrdered();
+        DepthFirstSearchOrderingTask<TestNode, DefaultEdge> task = new DepthFirstSearchOrderingTask<>(v0, graph, DefaultEdge.class);
+        DepthFirstSpanningTree<TestNode, DefaultEdge> spanningTree = task.run();
+        List<TestNode> ordered = spanningTree.preOrdered();
         assertEquals(v0, ordered.get(0));
         assertEquals(v1, ordered.get(1));
         assertEquals(v2, ordered.get(2));
@@ -180,15 +179,15 @@ public class DepthFirstSearchOrderingTaskTest {
   */
     @Test
     public void canLabelDFSOrderForSimpleGraphWithBackEdges() {
-        Graph<DFSTestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
-        DFSTestNode v1 = new DFSTestNode("1");
-        DFSTestNode v2 = new DFSTestNode("2");
-        DFSTestNode v3 = new DFSTestNode("3");
-        DFSTestNode v4 = new DFSTestNode("4");
-        DFSTestNode v5 = new DFSTestNode("5");
-        DFSTestNode v6 = new DFSTestNode("6");
-        DFSTestNode v7 = new DFSTestNode("7");
-        DFSTestNode v8 = new DFSTestNode("8");
+        Graph<TestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
+        TestNode v1 = new TestNode("1");
+        TestNode v2 = new TestNode("2");
+        TestNode v3 = new TestNode("3");
+        TestNode v4 = new TestNode("4");
+        TestNode v5 = new TestNode("5");
+        TestNode v6 = new TestNode("6");
+        TestNode v7 = new TestNode("7");
+        TestNode v8 = new TestNode("8");
 
         graph.addVertex(v1);
         graph.addVertex(v2);
@@ -211,8 +210,8 @@ public class DepthFirstSearchOrderingTaskTest {
         graph.addEdge(v7, v8);
         graph.addEdge(v8, v7);
 
-        DepthFirstSearchOrderingTask<DFSTestNode, DefaultEdge> task = new DepthFirstSearchOrderingTask<>(v1, graph, 1, DefaultEdge.class);
-        DepthFirstSpanningTree<DFSTestNode, DefaultEdge> spanningTree = task.run();
+        DepthFirstSearchOrderingTask<TestNode, DefaultEdge> task = new DepthFirstSearchOrderingTask<>(v1, graph, 1, DefaultEdge.class);
+        DepthFirstSpanningTree<TestNode, DefaultEdge> spanningTree = task.run();
         assertEquals(17, task.currentClock());
         assertEquals(ImmutableList.of(v1, v2, v3, v4, v5, v6, v7, v8), spanningTree.preOrdered());
         assertEquals(ImmutableList.of(v8, v7, v6, v5, v4, v3, v2, v1), spanningTree.postOrdered());
@@ -230,15 +229,15 @@ public class DepthFirstSearchOrderingTaskTest {
 
     @Test
     public void canFindNaturalLoopOfBackEdge() {
-        Graph<DFSTestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
-        DFSTestNode v1 = new DFSTestNode("1");
-        DFSTestNode v2 = new DFSTestNode("2");
-        DFSTestNode v3 = new DFSTestNode("3");
-        DFSTestNode v4 = new DFSTestNode("4");
-        DFSTestNode v5 = new DFSTestNode("5");
-        DFSTestNode v6 = new DFSTestNode("6");
-        DFSTestNode v7 = new DFSTestNode("7");
-        DFSTestNode v8 = new DFSTestNode("8");
+        Graph<TestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
+        TestNode v1 = new TestNode("1");
+        TestNode v2 = new TestNode("2");
+        TestNode v3 = new TestNode("3");
+        TestNode v4 = new TestNode("4");
+        TestNode v5 = new TestNode("5");
+        TestNode v6 = new TestNode("6");
+        TestNode v7 = new TestNode("7");
+        TestNode v8 = new TestNode("8");
 
         graph.addVertex(v1);
         graph.addVertex(v2);
@@ -261,8 +260,8 @@ public class DepthFirstSearchOrderingTaskTest {
         graph.addEdge(v7, v8);
         graph.addEdge(v8, v7);
 
-        DepthFirstSearchOrderingTask<DFSTestNode, DefaultEdge> task = new DepthFirstSearchOrderingTask<>(v1, graph, 1, DefaultEdge.class);
-        DepthFirstSpanningTree<DFSTestNode, DefaultEdge> spanningTree = task.run();
+        DepthFirstSearchOrderingTask<TestNode, DefaultEdge> task = new DepthFirstSearchOrderingTask<>(v1, graph, 1, DefaultEdge.class);
+        DepthFirstSpanningTree<TestNode, DefaultEdge> spanningTree = task.run();
         assertEquals(17, task.currentClock());
         assertEquals(ImmutableList.of(v1, v2, v3, v4, v5, v6, v7, v8), spanningTree.preOrdered());
         assertEquals(ImmutableList.of(v8, v7, v6, v5, v4, v3, v2, v1), spanningTree.postOrdered());
@@ -278,7 +277,7 @@ public class DepthFirstSearchOrderingTaskTest {
         assertEquals(3, spanningTree.treeDepth(v8));
 
         DefaultEdge backEdge = graph.getEdge(v3, v2);
-        Set<DFSTestNode> loopNodes = new NaturalLoopOfBackEdgeTask<>(backEdge, graph).run();
+        Set<TestNode> loopNodes = new NaturalLoopOfBackEdgeTask<>(backEdge, graph).run();
         assertEquals(2, loopNodes.size());
         assertTrue(loopNodes.contains(v2));
         assertTrue(loopNodes.contains(v3));
@@ -286,19 +285,19 @@ public class DepthFirstSearchOrderingTaskTest {
 
     @Test
     public void canClassifyEdges() {
-        Graph<DFSTestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
-        DFSTestNode vS = new DFSTestNode("S");
-        DFSTestNode vA = new DFSTestNode("A");
-        DFSTestNode vB = new DFSTestNode("B");
-        DFSTestNode vC = new DFSTestNode("C");
-        DFSTestNode vD = new DFSTestNode("D");
-        DFSTestNode vE = new DFSTestNode("E");
-        DFSTestNode vF = new DFSTestNode("F");
-        DFSTestNode vG = new DFSTestNode("G");
-        DFSTestNode vH = new DFSTestNode("H");
-        DFSTestNode vI = new DFSTestNode("I");
-        DFSTestNode vJ = new DFSTestNode("J");
-        DFSTestNode vK = new DFSTestNode("K");
+        Graph<TestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
+        TestNode vS = new TestNode("S");
+        TestNode vA = new TestNode("A");
+        TestNode vB = new TestNode("B");
+        TestNode vC = new TestNode("C");
+        TestNode vD = new TestNode("D");
+        TestNode vE = new TestNode("E");
+        TestNode vF = new TestNode("F");
+        TestNode vG = new TestNode("G");
+        TestNode vH = new TestNode("H");
+        TestNode vI = new TestNode("I");
+        TestNode vJ = new TestNode("J");
+        TestNode vK = new TestNode("K");
 
         graph.addVertex(vS);
         graph.addVertex(vA);
@@ -334,8 +333,8 @@ public class DepthFirstSearchOrderingTaskTest {
         graph.addEdge(vI, vK);
         graph.addEdge(vI, vS);
 
-        DepthFirstSearchOrderingTask<DFSTestNode, DefaultEdge> task = new DepthFirstSearchOrderingTask<>(vS, graph, 1, DefaultEdge.class);
-        DepthFirstSpanningTree<DFSTestNode, DefaultEdge> spanningTree = task.run();
+        DepthFirstSearchOrderingTask<TestNode, DefaultEdge> task = new DepthFirstSearchOrderingTask<>(vS, graph, 1, DefaultEdge.class);
+        DepthFirstSpanningTree<TestNode, DefaultEdge> spanningTree = task.run();
         ClassifiedEdges<DefaultEdge> classifiedEdges = spanningTree.classifiedEdges();
         assertEquals(11, classifiedEdges.treeEdges().size());
         assertEquals(3, classifiedEdges.backEdges().size());
@@ -345,17 +344,17 @@ public class DepthFirstSearchOrderingTaskTest {
 
     @Test
     public void doesNotLabelBackEdgesSpuriously() {
-        Graph<DFSTestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
-        DFSTestNode v0 = new DFSTestNode("0");
-        DFSTestNode v6 = new DFSTestNode("6");
-        DFSTestNode v1 = new DFSTestNode("1");
-        DFSTestNode v2 = new DFSTestNode("2");
-        DFSTestNode v7 = new DFSTestNode("7");
-        DFSTestNode v3 = new DFSTestNode("3");
-        DFSTestNode v8 = new DFSTestNode("8");
-        DFSTestNode v9 = new DFSTestNode("9");
-        DFSTestNode v4 = new DFSTestNode("4");
-        DFSTestNode v5 = new DFSTestNode("5");
+        Graph<TestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
+        TestNode v0 = new TestNode("0");
+        TestNode v6 = new TestNode("6");
+        TestNode v1 = new TestNode("1");
+        TestNode v2 = new TestNode("2");
+        TestNode v7 = new TestNode("7");
+        TestNode v3 = new TestNode("3");
+        TestNode v8 = new TestNode("8");
+        TestNode v9 = new TestNode("9");
+        TestNode v4 = new TestNode("4");
+        TestNode v5 = new TestNode("5");
 
         graph.addVertex(v0);
         graph.addVertex(v6);
@@ -388,18 +387,11 @@ public class DepthFirstSearchOrderingTaskTest {
         graph.addEdge(v4, v3);
         graph.addEdge(v5, v1);
 
-        DepthFirstSearchOrderingTask<DFSTestNode, DefaultEdge> task = new DepthFirstSearchOrderingTask<>(v0, graph, 1, DefaultEdge.class);
-        DepthFirstSpanningTree<DFSTestNode, DefaultEdge> spanningTree = task.run();
-        String draw = new MermaidGraph<DFSTestNode, DefaultEdge>().draw(spanningTree.sourceGraph());
+        DepthFirstSearchOrderingTask<TestNode, DefaultEdge> task = new DepthFirstSearchOrderingTask<>(v0, graph, 1, DefaultEdge.class);
+        DepthFirstSpanningTree<TestNode, DefaultEdge> spanningTree = task.run();
+        String draw = new MermaidGraph<TestNode, DefaultEdge>().draw(spanningTree.sourceGraph());
         ClassifiedEdges<DefaultEdge> classifiedEdges = spanningTree.classifiedEdges();
         assertEquals(4, classifiedEdges.backEdges().size());
         assertTrue(classifiedEdges.backEdges().contains(graph.getEdge(v9, v5)));
-    }
-}
-
-record DFSTestNode(String id) implements Identifiable {
-    @Override
-    public String label() {
-        return id;
     }
 }

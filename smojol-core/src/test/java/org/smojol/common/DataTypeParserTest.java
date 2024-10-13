@@ -1,4 +1,4 @@
-package org.poc.common;
+package org.smojol.common;
 
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
