@@ -7,8 +7,8 @@ import org.jgrapht.graph.DefaultEdge;
 import org.junit.jupiter.api.Test;
 import org.smojol.common.graph.DepthFirstSearchOrderingTask;
 import org.smojol.common.graph.DepthFirstSpanningTree;
+import org.smojol.common.graph.TestNode;
 import org.smojol.common.graph.exception.CyclicGraphException;
-import org.smojol.toolkit.analysis.TestNode;
 
 import java.util.List;
 

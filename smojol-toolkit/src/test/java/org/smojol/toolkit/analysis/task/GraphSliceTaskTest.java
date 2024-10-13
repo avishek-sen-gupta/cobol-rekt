@@ -7,7 +7,7 @@ import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.junit.jupiter.api.Test;
 import org.smojol.common.graph.GraphSliceTask;
-import org.smojol.toolkit.analysis.TestNode;
+import org.smojol.common.graph.TestNode;
 
 import java.util.List;
 

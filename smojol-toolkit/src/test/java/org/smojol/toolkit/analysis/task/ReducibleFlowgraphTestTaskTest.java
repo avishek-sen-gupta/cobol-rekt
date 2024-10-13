@@ -6,6 +6,7 @@ import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.junit.jupiter.api.Test;
+import org.smojol.common.graph.TestNode;
 import org.smojol.toolkit.analysis.task.transpiler.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -13,10 +14,10 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ReducibleFlowgraphTestTaskTest {
     @Test
     public void canDetectReducibleGraphWithoutLoops() {
-        Graph<DominatorTreeTestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
-        DominatorTreeTestNode vA = node("A");
-        DominatorTreeTestNode vB = node("B");
-        DominatorTreeTestNode vC = node("C");
+        Graph<TestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
+        TestNode vA = node("A");
+        TestNode vB = node("B");
+        TestNode vC = node("C");
 
         graph.addVertex(vA);
         graph.addVertex(vB);
@@ -30,10 +31,10 @@ public class ReducibleFlowgraphTestTaskTest {
     @Test
 
     public void canDetectReducibleGraphWithLoops() {
-        Graph<DominatorTreeTestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
-        DominatorTreeTestNode vA = node("A");
-        DominatorTreeTestNode vB = node("B");
-        DominatorTreeTestNode vC = node("C");
+        Graph<TestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
+        TestNode vA = node("A");
+        TestNode vB = node("B");
+        TestNode vC = node("C");
 
         graph.addVertex(vA);
         graph.addVertex(vB);
@@ -51,17 +52,17 @@ public class ReducibleFlowgraphTestTaskTest {
      */
     @Test
     public void canDetectIrreducibleGraph1() {
-        Graph<DominatorTreeTestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
-        DominatorTreeTestNode vSTART = node("START");
-        DominatorTreeTestNode vEND = node("END");
-        DominatorTreeTestNode vA = node("A");
-        DominatorTreeTestNode vB = node("B");
-        DominatorTreeTestNode vC = node("C");
-        DominatorTreeTestNode vD = node("D");
-        DominatorTreeTestNode vE = node("E");
-        DominatorTreeTestNode vF = node("F");
-        DominatorTreeTestNode vG = node("G");
-        DominatorTreeTestNode vH = node("H");
+        Graph<TestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
+        TestNode vSTART = node("START");
+        TestNode vEND = node("END");
+        TestNode vA = node("A");
+        TestNode vB = node("B");
+        TestNode vC = node("C");
+        TestNode vD = node("D");
+        TestNode vE = node("E");
+        TestNode vF = node("F");
+        TestNode vG = node("G");
+        TestNode vH = node("H");
 
         graph.addVertex(vSTART);
         graph.addVertex(vEND);
@@ -99,12 +100,12 @@ public class ReducibleFlowgraphTestTaskTest {
      */
     @Test
     public void canDetectIrreducibleGraph2() {
-        Graph<DominatorTreeTestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
-        DominatorTreeTestNode vA = node("A");
-        DominatorTreeTestNode vB = node("B");
-        DominatorTreeTestNode vC = node("C");
-        DominatorTreeTestNode vD = node("D");
-        DominatorTreeTestNode vE = node("E");
+        Graph<TestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
+        TestNode vA = node("A");
+        TestNode vB = node("B");
+        TestNode vC = node("C");
+        TestNode vD = node("D");
+        TestNode vE = node("E");
 
         graph.addVertex(vA);
         graph.addVertex(vB);
@@ -133,16 +134,16 @@ public class ReducibleFlowgraphTestTaskTest {
 
     @Test
     public void doesNotGiveFalsePositives() {
-        Pair<DominatorTreeTestNode, Graph<DominatorTreeTestNode, DefaultEdge>> example = falsePositiveExample();
+        Pair<TestNode, Graph<TestNode, DefaultEdge>> example = falsePositiveExample();
         assertFalse(new ReducibleFlowgraphTestTask<>(example.getLeft(), example.getRight(), DefaultEdge.class).run());
     }
 
-    private Pair<DominatorTreeTestNode, Graph<DominatorTreeTestNode, DefaultEdge>> falsePositiveExample() {
-        Graph<DominatorTreeTestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
-        DominatorTreeTestNode v1 = node("1");
-        DominatorTreeTestNode v2 = node("2");
-        DominatorTreeTestNode v3 = node("3");
-        DominatorTreeTestNode v4 = node("4");
+    private Pair<TestNode, Graph<TestNode, DefaultEdge>> falsePositiveExample() {
+        Graph<TestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
+        TestNode v1 = node("1");
+        TestNode v2 = node("2");
+        TestNode v3 = node("3");
+        TestNode v4 = node("4");
 
         graph.addVertex(v1);
         graph.addVertex(v2);
@@ -158,7 +159,7 @@ public class ReducibleFlowgraphTestTaskTest {
         return ImmutablePair.of(v1, graph);
     }
 
-    private static DominatorTreeTestNode node(String id) {
-        return new DominatorTreeTestNode(id);
+    private static TestNode node(String id) {
+        return new TestNode(id);
     }
 }

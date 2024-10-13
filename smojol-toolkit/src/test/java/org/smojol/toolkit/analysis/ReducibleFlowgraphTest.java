@@ -5,7 +5,7 @@ import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.junit.jupiter.api.Test;
-import org.smojol.common.id.Identifiable;
+import org.smojol.common.graph.TestNode;
 import org.smojol.common.transpiler.FlowgraphReductionResult;
 import org.smojol.common.transpiler.FlowgraphTransformer;
 import org.smojol.common.transpiler.TranspilerInstruction;
@@ -15,7 +15,6 @@ import org.smojol.toolkit.task.AnalysisTaskResult;
 import org.smojol.toolkit.task.AnalysisTaskResultOK;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiFunction;
 
