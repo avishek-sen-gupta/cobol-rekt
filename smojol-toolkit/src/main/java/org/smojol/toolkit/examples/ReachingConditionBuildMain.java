@@ -1,6 +1,7 @@
 package org.smojol.toolkit.examples;
 
 import com.google.common.collect.ImmutableList;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.graph.DefaultEdge;
 import org.smojol.common.dialect.LanguageDialect;
 import org.smojol.common.flowchart.FlowchartOutputFormat;
@@ -44,8 +45,8 @@ public class ReachingConditionBuildMain {
         TranspilerInstruction start = instructions.getFirst();
         TranspilerInstruction printInstruction = instructions.stream().filter(instr -> instr.ref() instanceof PrintTranspilerNode).findFirst().get();
         GraphSlice<TranspilerInstruction, DefaultEdge> slice = new GraphSliceTask<>(transpilerFlowgraph.instructionFlowgraph()).run(start, printInstruction);
-        Set<TranspilerNode> reachingConditions = new ReachingConditionDefinitionTask<>(slice).run();
-        reachingConditions.forEach(System.out::println);
+        List<Pair<TranspilerInstruction, TranspilerNode>> reachingConditions = new ReachingConditionDefinitionTask<>(slice).run();
+        reachingConditions.forEach(rc -> System.out.println(rc.getLeft().ref().shortDescription() + ": " + rc.getRight()))  ;
         System.out.println("DONE");
     }
 }
