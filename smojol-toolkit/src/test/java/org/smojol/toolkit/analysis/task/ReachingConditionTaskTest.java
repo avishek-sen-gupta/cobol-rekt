@@ -15,7 +15,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ReachngConditionTaskTest {
+public class ReachingConditionTaskTest {
     @Test
     public void canFindReachingConditionForSimpleAcyclicGraph() {
         Graph<TestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
