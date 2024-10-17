@@ -27,7 +27,7 @@ public class GraphSliceTask<V extends Identifiable, E> {
         return new GraphSlice<>(allPaths);
     }
 
-    public void run(V current, E incomingEdge, V source, V sink, List<Pair<V, E>> dfsStack) {
+    private void run(V current, E incomingEdge, V source, V sink, List<Pair<V, E>> dfsStack) {
         if (current == sink) {
             setupFinalPath(source, current, incomingEdge, sink, dfsStack);
             return;

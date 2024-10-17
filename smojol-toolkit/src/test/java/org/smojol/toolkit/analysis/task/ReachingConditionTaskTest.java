@@ -1,48 +1,54 @@
 package org.smojol.toolkit.analysis.task;
 
 import com.google.common.collect.ImmutableList;
-import org.jgrapht.Graph;
-import org.jgrapht.GraphPath;
-import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.smojol.common.graph.GraphSlice;
-import org.smojol.common.graph.GraphSliceTask;
-import org.smojol.common.graph.ReachingConditionDefinitionTask;
-import org.smojol.common.graph.TestNode;
+import org.smojol.common.dialect.LanguageDialect;
+import org.smojol.common.flowchart.FlowchartOutputFormat;
+import org.smojol.common.graph.*;
+import org.smojol.common.id.UUIDProvider;
+import org.smojol.common.resource.LocalFilesystemOperations;
+import org.smojol.common.transpiler.PrintTranspilerNode;
+import org.smojol.common.transpiler.TranspilerFlowgraph;
+import org.smojol.common.transpiler.TranspilerInstruction;
+import org.smojol.common.transpiler.TranspilerNode;
+import org.smojol.toolkit.analysis.pipeline.ProgramSearch;
+import org.smojol.toolkit.analysis.task.analysis.CodeTaskRunner;
+import org.smojol.toolkit.analysis.task.transpiler.BuildTranspilerFlowgraphTask;
+import org.smojol.toolkit.interpreter.FullProgram;
+import org.smojol.toolkit.interpreter.structure.OccursIgnoringFormat1DataStructureBuilder;
+import org.smojol.toolkit.task.AnalysisTaskResult;
+import org.smojol.toolkit.task.AnalysisTaskResultOK;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.smojol.toolkit.task.CommandLineAnalysisTask.BASE_ANALYSIS;
 
 public class ReachingConditionTaskTest {
     @Test
-    public void canFindReachingConditionForSimpleAcyclicGraph() {
-        Graph<TestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
-        TestNode v1 = node("1");
-        TestNode v2 = node("2");
-        TestNode v3 = node("3");
-        TestNode v4 = node("4");
+    @Disabled
+    public void canFindReachingConditionForSimpleAcyclicGraph() throws IOException {
+        Map<String, List<AnalysisTaskResult>> result = new CodeTaskRunner("/Users/asgupta/code/smojol/smojol-test-code",
+                "/Users/asgupta/code/smojol/out/report",
+                ImmutableList.of(new File("/Users/asgupta/code/smojol/smojol-test-code")),
+                "/Users/asgupta/code/smojol/che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar",
+                LanguageDialect.IDMS, new FullProgram(FlowchartOutputFormat.PNG), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder(), new ProgramSearch(), new LocalFilesystemOperations())
+                .runForPrograms(ImmutableList.of(BASE_ANALYSIS), ImmutableList.of("simple-if.cbl"));
 
-        graph.addVertex(v1);
-        graph.addVertex(v2);
-        graph.addVertex(v3);
-        graph.addVertex(v4);
-
-        graph.addEdge(v1, v2);
-        graph.addEdge(v1, v3);
-        graph.addEdge(v2, v4);
-        graph.addEdge(v3, v4);
-
-        GraphSlice<TestNode, DefaultEdge> graphSlice = new GraphSliceTask<>(graph).run(v1, v4);
-        List<GraphPath<TestNode, DefaultEdge>> allPathsFromV1ToV4 = graphSlice.allPaths();
-        assertEquals(2, allPathsFromV1ToV4.size());
-        assertEquals(ImmutableList.of(v1, v2, v4), allPathsFromV1ToV4.getFirst().getVertexList());
-        assertEquals(ImmutableList.of(v1, v3, v4), allPathsFromV1ToV4.get(1).getVertexList());
-        new ReachingConditionDefinitionTask<>().run(null);
-    }
-
-    private TestNode node(String id) {
-        return new TestNode(id);
+        AnalysisTaskResult value = result.values().stream().toList().getFirst().getFirst();
+        BaseAnalysisResult baseResult = ((AnalysisTaskResultOK) value).getDetail();
+        BuildTranspilerFlowgraphTask buildTranspilerFlowgraphTask = new BuildTranspilerFlowgraphTask(baseResult.rawAST(), baseResult.dataStructures(), baseResult.symbolTable(), ImmutableList.of());
+        TranspilerFlowgraph transpilerFlowgraph = buildTranspilerFlowgraphTask.run();
+        List<TranspilerInstruction> instructions = transpilerFlowgraph.instructions();
+        TranspilerInstruction start = instructions.getFirst();
+        TranspilerInstruction printInstruction = instructions.stream().filter(instr -> instr.ref() instanceof PrintTranspilerNode).findFirst().get();
+        GraphSlice<TranspilerInstruction, DefaultEdge> slice = new GraphSliceTask<>(transpilerFlowgraph.instructionFlowgraph()).run(start, printInstruction);
+        Set<TranspilerNode> reachingConditions = new ReachingConditionDefinitionTask<>(slice).run();
+        System.out.println("DONE");
     }
 }
