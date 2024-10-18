@@ -7,6 +7,7 @@ import org.smojol.common.transpiler.*;
 import org.smojol.common.vm.type.TypedRecord;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 public class ReachingConditionDefinitionTask<V extends TranspilerInstruction, E> {
@@ -17,15 +18,14 @@ public class ReachingConditionDefinitionTask<V extends TranspilerInstruction, E>
     }
 
     public Map<V, TranspilerNode> run() {
-        Graph<V, E> gg = slice.inducedSubgraph();
-        Map<E, TranspilerNode> edgeConditionMap = new HashMap<>();
-        gg.edgeSet().stream().map(edge -> (Pair<E, TranspilerNode>) ImmutablePair.of(edge, conditionExpression(edge, gg)))
-                .forEach(pair -> edgeConditionMap.put(pair.getLeft(), pair.getRight()));
+        Graph<V, E> graph = slice.sourceGraph();
         List<V> orderedVertices = slice.topologicallyOrderedVertices();
         Map<V, TranspilerNode> chainConditionMap = new HashMap<>();
+        Map<E, TranspilerNode> edgeConditionMap = graph.edgeSet().stream().map(edge -> (Pair<E, TranspilerNode>) ImmutablePair.of(edge, conditionExpression(edge, graph)))
+                .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
         for (V vertex : orderedVertices) {
-            TranspilerNode aggregateCondition = gg.incomingEdgesOf(vertex).stream()
-                    .map(edge -> resolvedAnd(edgeConditionMap.get(edge), chainCondition(gg.getEdgeSource(edge), chainConditionMap)))
+            TranspilerNode aggregateCondition = graph.incomingEdgesOf(vertex).stream()
+                    .map(edge -> resolvedAnd(edgeConditionMap.get(edge), chainCondition(graph.getEdgeSource(edge), chainConditionMap)))
                     .reduce(new PrimitiveValueTranspilerNode(TypedRecord.FALSE), this::resolvedOr);
             chainConditionMap.put(vertex, aggregateCondition);
         }
@@ -52,7 +52,7 @@ public class ReachingConditionDefinitionTask<V extends TranspilerInstruction, E>
         if (!chainConditionMap.containsKey(vertex)) {
             PrimitiveValueTranspilerNode alwaysTrue = new PrimitiveValueTranspilerNode(TypedRecord.TRUE);
             chainConditionMap.put(vertex, alwaysTrue);
-            System.out.println("Possibly start node: " + vertex.description());
+            System.out.println("Possibly isolated pruneable node: " + vertex.description());
             return alwaysTrue;
         }
         return chainConditionMap.get(vertex);
