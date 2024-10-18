@@ -3,12 +3,10 @@ package org.smojol.common.graph;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;
-import org.jgrapht.GraphPath;
 import org.smojol.common.transpiler.*;
 import org.smojol.common.vm.type.TypedRecord;
 
 import java.util.*;
-import java.util.stream.Stream;
 
 
 public class ReachingConditionDefinitionTask<V extends TranspilerInstruction, E> {
@@ -52,7 +50,7 @@ public class ReachingConditionDefinitionTask<V extends TranspilerInstruction, E>
     }
 
     private TranspilerNode chainCondition(V vertex, Map<V, TranspilerNode> chainConditionMap) {
-        if (!chainConditionMap.containsKey(vertex)){
+        if (!chainConditionMap.containsKey(vertex)) {
             PrimitiveValueTranspilerNode alwaysTrue = new PrimitiveValueTranspilerNode(TypedRecord.TRUE);
             chainConditionMap.put(vertex, alwaysTrue);
             System.out.println("Possibly start node: " + vertex.description());
