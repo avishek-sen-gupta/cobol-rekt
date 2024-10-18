@@ -23,7 +23,6 @@ public class ReachingConditionDefinitionTask<V extends TranspilerInstruction, E>
                 .forEach(pair -> edgeConditionMap.put(pair.getLeft(), pair.getRight()));
         List<V> orderedVertices = slice.topologicallyOrderedVertices();
         Map<V, TranspilerNode> chainConditionMap = new HashMap<>();
-        List<V> list = orderedVertices.stream().filter(v -> gg.incomingEdgesOf(v).size() > 2).toList();
         for (V vertex : orderedVertices) {
             TranspilerNode aggregateCondition = gg.incomingEdgesOf(vertex).stream()
                     .map(edge -> resolvedAnd(edgeConditionMap.get(edge), chainCondition(gg.getEdgeSource(edge), chainConditionMap)))
@@ -36,16 +35,16 @@ public class ReachingConditionDefinitionTask<V extends TranspilerInstruction, E>
     }
 
     private TranspilerNode resolvedAnd(TranspilerNode lhs, TranspilerNode rhs) {
-        if (isFalse(lhs) || isFalse(rhs)) return lhs;
-        else if (isTrue(lhs)) return rhs;
-        else if (isTrue(rhs)) return lhs;
+        if (isFalsePrimitive(lhs) || isFalsePrimitive(rhs)) return lhs;
+        else if (isTruePrimitive(lhs)) return rhs;
+        else if (isTruePrimitive(rhs)) return lhs;
         return new AndTranspilerNode(lhs, rhs);
     }
 
     private TranspilerNode resolvedOr(TranspilerNode lhs, TranspilerNode rhs) {
-        if (isTrue(lhs) || isTrue(rhs)) return lhs;
-        else if (isFalse(lhs)) return rhs;
-        else if (isFalse(rhs)) return lhs;
+        if (isTruePrimitive(lhs) || isTruePrimitive(rhs)) return lhs;
+        else if (isFalsePrimitive(lhs)) return rhs;
+        else if (isFalsePrimitive(rhs)) return lhs;
         return new OrTranspilerNode(lhs, rhs);
     }
 
@@ -59,20 +58,17 @@ public class ReachingConditionDefinitionTask<V extends TranspilerInstruction, E>
         return chainConditionMap.get(vertex);
     }
 
-    private boolean isTrue(TranspilerNode node) {
+    private boolean isTruePrimitive(TranspilerNode node) {
         return node instanceof PrimitiveValueTranspilerNode n && n.getValue().equals(TypedRecord.TRUE);
     }
 
-    private boolean isFalse(TranspilerNode node) {
+    private boolean isFalsePrimitive(TranspilerNode node) {
         return node instanceof PrimitiveValueTranspilerNode n && n.getValue().equals(TypedRecord.FALSE);
     }
 
     private TranspilerNode conditionExpression(E edge, Graph<V, E> graph) {
         V edgeSource = graph.getEdgeSource(edge);
-        if (!(edge instanceof AnnotatedEdge)) return new PrimitiveValueTranspilerNode(TypedRecord.TRUE);
-//        if (edgeSource.sentinel() != BODY) return new PrimitiveValueTranspilerNode(TypedRecord.TRUE);
-//        if (!(edgeSource.ref() instanceof IfTranspilerNode)) return new PrimitiveValueTranspilerNode(TypedRecord.TRUE);
-        AnnotatedEdge annotatedEdge = (AnnotatedEdge) edge;
+        if (!(edge instanceof AnnotatedEdge annotatedEdge)) return new PrimitiveValueTranspilerNode(TypedRecord.TRUE);
         if ("THEN_ENTRY".equals(annotatedEdge.data("edgeType")))
             return ((IfTranspilerNode) edgeSource.ref()).getCondition();
         if ("ELSE_ENTRY".equals(annotatedEdge.data("edgeType")))
