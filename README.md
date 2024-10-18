@@ -530,7 +530,8 @@ This is based on the paper [No More Gotos: Decompilation Using Pattern-Independe
 
 Several tasks are involved in this.
 
-- ```GraphSliceTask```: This finds the graph slices as mentioned in the paper.
+- ```GraphSliceTask```: This finds the graph slices as mentioned in the paper. It uses the instruction flowgraph built by ```BuildTranspilerFlowgraphTask```.
+- ```ReachingConditionDefinitionTask```: This calculates the actual reaching conditions of all the vertices in an acyclic graph slice. Condition-based refinement of conditions has not yet been implemented.
 
 [WIP]...
 
