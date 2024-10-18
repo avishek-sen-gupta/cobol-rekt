@@ -40,6 +40,6 @@ public class DetachedTranspilerCodeBlockNode extends TranspilerCodeBlockNode {
 
     @Override
     public String shortDescription() {
-        return truncate(description(), 30);
+        return truncate(description(), 40);
     }
 }

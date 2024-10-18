@@ -29,9 +29,9 @@ public class GraphSliceTask<V extends Identifiable, E> {
         run(source, null, source, sink, stack);
         Set<V> graphSliceVertices = allPaths.stream().flatMap(path -> path.getVertexList().stream()).collect(Collectors.toUnmodifiableSet());
         Set<E> graphSliceEdges = allPaths.stream().flatMap(path -> path.getEdgeList().stream()).collect(Collectors.toUnmodifiableSet());
-        Graph<V, E> inducedSubgraph = new AsSubgraph<>(sourceGraph, graphSliceVertices, graphSliceEdges);
+        Graph<V, E> inducedSubgraph = new AsSubgraph<>(sourceGraph, graphSliceVertices);
         List<V> toplogicallyOrderedVertices = new DepthFirstSearchOrderingTask<>(source, inducedSubgraph, edgeClass).run().topologicallyOrdered();
-        return new GraphSlice<>(allPaths, toplogicallyOrderedVertices, inducedSubgraph);
+        return new GraphSlice<>(allPaths, toplogicallyOrderedVertices, sourceGraph);
     }
 
     private void run(V current, E incomingEdge, V source, V sink, List<Pair<V, E>> dfsStack) {
