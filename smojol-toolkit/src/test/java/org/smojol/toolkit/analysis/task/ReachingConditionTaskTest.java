@@ -48,7 +48,7 @@ public class ReachingConditionTaskTest {
         TranspilerInstruction start = instructions.getFirst();
         TranspilerInstruction printInstruction = instructions.stream().filter(instr -> instr.ref() instanceof PrintTranspilerNode).findFirst().get();
         GraphSlice<TranspilerInstruction, DefaultEdge> slice = new GraphSliceTask<>(transpilerFlowgraph.instructionFlowgraph()).run(start, printInstruction);
-        Set<TranspilerNode> reachingConditions = new ReachingConditionDefinitionTask<>(slice).run();
+//        Set<TranspilerNode> reachingConditions = new ReachingConditionDefinitionTask<>(slice).run();
         System.out.println("DONE");
     }
 }

@@ -28,12 +28,14 @@ public class GraphSliceTask<V extends Identifiable, E> {
     }
 
     private void run(V current, E incomingEdge, V source, V sink, List<Pair<V, E>> dfsStack) {
-        if (current == sink) {
-            setupFinalPath(source, current, incomingEdge, sink, dfsStack);
+        if (visited.contains(current)) {
+            if (!alreadyInPath(current, dfsStack)) return;
+            setupFinalPath(source, current, incomingEdge, dfsStack);
             return;
-        } else if (visited.contains(current)) {
-            if (!alreadyInPath(current)) return;
-            setupFinalPath(source, current, incomingEdge, sink, dfsStack);
+        }
+        else if (current == sink) {
+            visited.add(current);
+            setupFinalPath(source, current, incomingEdge, Streams.concat(dfsStack.stream(), Stream.of(ImmutablePair.of(current, incomingEdge))).toList());
             return;
         }
         visited.add(current);
@@ -43,14 +45,15 @@ public class GraphSliceTask<V extends Identifiable, E> {
         });
     }
 
-    private void setupFinalPath(V source, V current, E incomingEdge, V sink, List<Pair<V, E>> stack) {
-        stack.add(ImmutablePair.of(current, incomingEdge));
-        allPaths.add(new GraphWalk<>(sourceGraph, source, sink,
+    private void setupFinalPath(V source, V current, E incomingEdge, List<Pair<V, E>> stack) {
+//        stack.add(ImmutablePair.of(current, incomingEdge));
+        allPaths.add(new GraphWalk<>(sourceGraph, source, current,
                 Streams.concat(Stream.of(source), stack.stream().map(Pair::getLeft)).toList(),
                 stack.stream().map(Pair::getRight).toList(), 1));
     }
 
-    private boolean alreadyInPath(V current) {
-        return allPaths.stream().anyMatch(path -> path.getVertexList().contains(current));
+    private boolean alreadyInPath(V current, List<Pair<V, E>> dfsStack) {
+        return allPaths.stream().anyMatch(path -> path.getVertexList().contains(current))
+                && dfsStack.stream().noneMatch(p -> p.getLeft().equals(current));
     }
 }

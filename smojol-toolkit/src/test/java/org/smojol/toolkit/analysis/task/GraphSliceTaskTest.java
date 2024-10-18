@@ -64,7 +64,7 @@ public class GraphSliceTaskTest {
         List<GraphPath<TestNode, DefaultEdge>> allPathsFromV1ToV4 = new GraphSliceTask<>(graph).run(v1, v4).allPaths();
         assertEquals(2, allPathsFromV1ToV4.size());
         assertEquals(ImmutableList.of(v1, v2, v4), allPathsFromV1ToV4.getFirst().getVertexList());
-        assertEquals(ImmutableList.of(v1, v3, v4), allPathsFromV1ToV4.get(1).getVertexList());
+        assertEquals(ImmutableList.of(v1, v3), allPathsFromV1ToV4.get(1).getVertexList());
     }
 
     @Test
@@ -91,7 +91,7 @@ public class GraphSliceTaskTest {
         List<GraphPath<TestNode, DefaultEdge>> allPathsFromV1ToV5 = new GraphSliceTask<>(graph).run(v1, v5).allPaths();
         assertEquals(2, allPathsFromV1ToV5.size());
         assertEquals(ImmutableList.of(v1, v2, v4, v5), allPathsFromV1ToV5.getFirst().getVertexList());
-        assertEquals(ImmutableList.of(v1, v3, v4), allPathsFromV1ToV5.get(1).getVertexList());
+        assertEquals(ImmutableList.of(v1, v3), allPathsFromV1ToV5.get(1).getVertexList());
     }
 
     private TestNode node(String id) {

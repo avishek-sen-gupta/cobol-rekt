@@ -1,7 +1,6 @@
 package org.smojol.toolkit.examples;
 
 import com.google.common.collect.ImmutableList;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.graph.DefaultEdge;
 import org.smojol.common.dialect.LanguageDialect;
 import org.smojol.common.flowchart.FlowchartOutputFormat;
@@ -24,7 +23,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import static org.smojol.toolkit.task.CommandLineAnalysisTask.BASE_ANALYSIS;
 
@@ -43,10 +41,11 @@ public class ReachingConditionBuildMain {
         TranspilerFlowgraph transpilerFlowgraph = buildTranspilerFlowgraphTask.run();
         List<TranspilerInstruction> instructions = transpilerFlowgraph.instructions();
         TranspilerInstruction start = instructions.getFirst();
+        TranspilerInstruction last = instructions.getLast();
         TranspilerInstruction printInstruction = instructions.stream().filter(instr -> instr.ref() instanceof PrintTranspilerNode).findFirst().get();
-        GraphSlice<TranspilerInstruction, DefaultEdge> slice = new GraphSliceTask<>(transpilerFlowgraph.instructionFlowgraph()).run(start, printInstruction);
-        List<Pair<TranspilerInstruction, TranspilerNode>> reachingConditions = new ReachingConditionDefinitionTask<>(slice).run();
-        reachingConditions.forEach(rc -> System.out.println(rc.getLeft().ref().shortDescription() + ": " + rc.getRight()))  ;
+        GraphSlice<TranspilerInstruction, DefaultEdge> slice = new GraphSliceTask<>(transpilerFlowgraph.instructionFlowgraph()).run(start, last);
+        Map<DefaultEdge, TranspilerNode> reachingConditions = new ReachingConditionDefinitionTask<>(slice).run2();
+        reachingConditions.forEach((key, value1) -> System.out.println(": " + value1.description()));
         System.out.println("DONE");
     }
 }

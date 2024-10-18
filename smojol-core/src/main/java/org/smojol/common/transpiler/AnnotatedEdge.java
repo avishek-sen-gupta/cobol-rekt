@@ -15,4 +15,8 @@ public class AnnotatedEdge extends DefaultEdge {
     public Object clone() {
         return new AnnotatedEdge(metadata);
     }
+
+    public String data(String key) {
+        return metadata.get(key);
+    }
 }
