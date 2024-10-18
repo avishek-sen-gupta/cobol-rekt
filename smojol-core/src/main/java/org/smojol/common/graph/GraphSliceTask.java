@@ -6,7 +6,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.graph.AsSubgraph;
-import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.GraphWalk;
 import org.smojol.common.id.Identifiable;
 
@@ -40,8 +39,7 @@ public class GraphSliceTask<V extends Identifiable, E> {
             if (!alreadyInPath(current, dfsStack)) return;
             setupFinalPath(source, current, incomingEdge, dfsStack);
             return;
-        }
-        else if (current == sink) {
+        } else if (current == sink) {
             visited.add(current);
             setupFinalPath(source, current, incomingEdge, Streams.concat(dfsStack.stream(), Stream.of(ImmutablePair.of(current, incomingEdge))).toList());
             return;
