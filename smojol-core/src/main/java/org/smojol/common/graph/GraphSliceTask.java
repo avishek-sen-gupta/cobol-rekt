@@ -5,6 +5,8 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
+import org.jgrapht.graph.AsSubgraph;
+import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.GraphWalk;
 import org.smojol.common.id.Identifiable;
 
@@ -15,16 +17,22 @@ import java.util.stream.Stream;
 public class GraphSliceTask<V extends Identifiable, E> {
     private final List<V> visited = new ArrayList<>();
     private final Graph<V, E> sourceGraph;
+    private final Class<E> edgeClass;
     private final List<GraphPath<V, E>> allPaths = new ArrayList<>();
 
-    public GraphSliceTask(Graph<V, E> sourceGraph) {
+    public GraphSliceTask(Graph<V, E> sourceGraph, Class<E> edgeClass) {
         this.sourceGraph = sourceGraph;
+        this.edgeClass = edgeClass;
     }
 
     public GraphSlice<V, E> run(V source, V sink) {
         List<Pair<V, E>> stack = new ArrayList<>();
         run(source, null, source, sink, stack);
-        return new GraphSlice<>(allPaths);
+        Set<V> graphSliceVertices = allPaths.stream().flatMap(path -> path.getVertexList().stream()).collect(Collectors.toUnmodifiableSet());
+        Set<E> graphSliceEdges = allPaths.stream().flatMap(path -> path.getEdgeList().stream()).collect(Collectors.toUnmodifiableSet());
+        Graph<V, E> inducedSubgraph = new AsSubgraph<>(sourceGraph, graphSliceVertices, graphSliceEdges);
+        List<V> toplogicallyOrderedVertices = new DepthFirstSearchOrderingTask<>(source, inducedSubgraph, edgeClass).run().topologicallyOrdered();
+        return new GraphSlice<>(allPaths, toplogicallyOrderedVertices, inducedSubgraph);
     }
 
     private void run(V current, E incomingEdge, V source, V sink, List<Pair<V, E>> dfsStack) {

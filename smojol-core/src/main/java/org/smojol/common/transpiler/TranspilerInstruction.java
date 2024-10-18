@@ -93,4 +93,7 @@ public class TranspilerInstruction implements FlowNodeLike, InstructionLike {
         return Objects.hash(ref, sentinel, id);
     }
 
+    public String description() {
+        return codeSentinelType().name() + ": " + ref.shortDescription();
+    }
 }

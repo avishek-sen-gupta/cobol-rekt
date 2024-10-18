@@ -12,7 +12,6 @@ import org.smojol.common.resource.LocalFilesystemOperations;
 import org.smojol.common.transpiler.PrintTranspilerNode;
 import org.smojol.common.transpiler.TranspilerFlowgraph;
 import org.smojol.common.transpiler.TranspilerInstruction;
-import org.smojol.common.transpiler.TranspilerNode;
 import org.smojol.toolkit.analysis.pipeline.ProgramSearch;
 import org.smojol.toolkit.analysis.task.analysis.CodeTaskRunner;
 import org.smojol.toolkit.analysis.task.transpiler.BuildTranspilerFlowgraphTask;
@@ -25,7 +24,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import static org.smojol.toolkit.task.CommandLineAnalysisTask.BASE_ANALYSIS;
 
@@ -47,7 +45,7 @@ public class ReachingConditionTaskTest {
         List<TranspilerInstruction> instructions = transpilerFlowgraph.instructions();
         TranspilerInstruction start = instructions.getFirst();
         TranspilerInstruction printInstruction = instructions.stream().filter(instr -> instr.ref() instanceof PrintTranspilerNode).findFirst().get();
-        GraphSlice<TranspilerInstruction, DefaultEdge> slice = new GraphSliceTask<>(transpilerFlowgraph.instructionFlowgraph()).run(start, printInstruction);
+        GraphSlice<TranspilerInstruction, DefaultEdge> slice = new GraphSliceTask<>(transpilerFlowgraph.instructionFlowgraph(), DefaultEdge.class).run(start, printInstruction);
 //        Set<TranspilerNode> reachingConditions = new ReachingConditionDefinitionTask<>(slice).run();
         System.out.println("DONE");
     }

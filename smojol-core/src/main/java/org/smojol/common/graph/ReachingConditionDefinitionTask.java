@@ -2,6 +2,7 @@ package org.smojol.common.graph;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jooq.lambda.Seq;
 import org.jooq.lambda.tuple.Tuple2;
@@ -24,6 +25,48 @@ public class ReachingConditionDefinitionTask<V extends TranspilerInstruction, E>
         this.slice = slice;
     }
 
+    public Map<V, TranspilerNode> run3() {
+        List<GraphPath<V, E>> paths = slice.allPaths();
+        Map<E, TranspilerNode> edgeConditionMap = new HashMap<>();
+        paths.stream()
+                .flatMap(path -> path.getEdgeList().stream()
+                        .map(edge -> (Pair<E, TranspilerNode>) ImmutablePair.of(edge, conditionExpression(path, edge))))
+                .forEach(pair -> edgeConditionMap.put(pair.getLeft(), pair.getRight()));
+        List<V> orderedVertices = slice.topologicallyOrderedVertices();
+        Graph<V, E> graph = slice.inducedSubgraph();
+        Map<V, TranspilerNode> chainConditionMap = new HashMap<>();
+        List<V> list = orderedVertices.stream().filter(v -> graph.incomingEdgesOf(v).size() > 2).toList();
+        for (V vertex : orderedVertices) {
+            TranspilerNode aggregateCondition = graph.incomingEdgesOf(vertex).stream()
+                    .map(edge -> resolvedAnd(edgeConditionMap.get(edge), chainCondition(graph.getEdgeSource(edge), chainConditionMap)))
+                    .reduce(new PrimitiveValueTranspilerNode(TypedRecord.FALSE), this::resolvedOr);
+            chainConditionMap.put(vertex, aggregateCondition);
+        }
+
+        return chainConditionMap;
+
+    }
+
+    private TranspilerNode resolvedAnd(TranspilerNode lhs, TranspilerNode rhs) {
+        if (isFalse(lhs) || isFalse(rhs)) return lhs;
+        else if (isTrue(lhs)) return rhs;
+        else if (isTrue(rhs)) return lhs;
+        return new AndTranspilerNode(lhs, rhs);
+    }
+
+    private TranspilerNode resolvedOr(TranspilerNode lhs, TranspilerNode rhs) {
+        if (isTrue(lhs) || isTrue(rhs)) return lhs;
+        else if (isFalse(lhs)) return rhs;
+        else if (isFalse(rhs)) return lhs;
+        return new OrTranspilerNode(lhs, rhs);
+    }
+
+    private TranspilerNode chainCondition(V vertex, Map<V, TranspilerNode> chainConditionMap) {
+        if (!chainConditionMap.containsKey(vertex))
+            throw new RuntimeException("Edge " + vertex + " is not a chain condition");
+        return chainConditionMap.get(vertex);
+    }
+
     public Map<E, TranspilerNode> run2() {
         List<GraphPath<V, E>> paths = slice.allPaths();
 
@@ -34,7 +77,7 @@ public class ReachingConditionDefinitionTask<V extends TranspilerInstruction, E>
 
         List<Tuple2<E, TranspilerNode>> list = paths.stream()
                 .map(path -> Seq.zip(path.getEdgeList(), Seq.<E, TranspilerNode>scanLeft(path.getEdgeList().stream(), new PrimitiveValueTranspilerNode(TypedRecord.TRUE),
-                        (intermediateAcc, current) -> isTrue(intermediateAcc) ? edgeConditionMap.get(current) : new AndTranspilerNode(edgeConditionMap.get(current), intermediateAcc))).toList())
+                        (intermediateAcc, current) -> isTrue(intermediateAcc) ? edgeConditionMap.get(current) : resolvedAnd(edgeConditionMap.get(current), intermediateAcc))).toList())
                 .flatMap(Collection::stream).toList();
         Set<Map.Entry<E, List<Tuple2<E, TranspilerNode>>>> pathConditionsPerVertex = list.stream().collect(Collectors.groupingBy(Tuple2::v1)).entrySet();
         Stream<TranspilerNode> sliceReachingConditions =
@@ -50,6 +93,10 @@ public class ReachingConditionDefinitionTask<V extends TranspilerInstruction, E>
 
     private boolean isTrue(TranspilerNode node) {
         return node instanceof PrimitiveValueTranspilerNode n && n.getValue().equals(TypedRecord.TRUE);
+    }
+
+    private boolean isFalse(TranspilerNode node) {
+        return node instanceof PrimitiveValueTranspilerNode n && n.getValue().equals(TypedRecord.FALSE);
     }
 
     private TranspilerNode conditionExpression(GraphPath<V, E> path, E edge) {

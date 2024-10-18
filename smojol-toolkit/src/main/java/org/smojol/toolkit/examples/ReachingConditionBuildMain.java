@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import org.jgrapht.graph.DefaultEdge;
 import org.smojol.common.dialect.LanguageDialect;
 import org.smojol.common.flowchart.FlowchartOutputFormat;
+import org.smojol.common.flowchart.MermaidGraph;
 import org.smojol.common.graph.BaseAnalysisResult;
 import org.smojol.common.graph.GraphSlice;
 import org.smojol.common.graph.GraphSliceTask;
@@ -42,10 +43,11 @@ public class ReachingConditionBuildMain {
         List<TranspilerInstruction> instructions = transpilerFlowgraph.instructions();
         TranspilerInstruction start = instructions.getFirst();
         TranspilerInstruction last = instructions.getLast();
+        String draw = new MermaidGraph<TranspilerInstruction, DefaultEdge>().draw(transpilerFlowgraph.instructionFlowgraph());
         TranspilerInstruction printInstruction = instructions.stream().filter(instr -> instr.ref() instanceof PrintTranspilerNode).findFirst().get();
-        GraphSlice<TranspilerInstruction, DefaultEdge> slice = new GraphSliceTask<>(transpilerFlowgraph.instructionFlowgraph()).run(start, last);
-        Map<DefaultEdge, TranspilerNode> reachingConditions = new ReachingConditionDefinitionTask<>(slice).run2();
-        reachingConditions.forEach((key, value1) -> System.out.println(": " + value1.description()));
+        GraphSlice<TranspilerInstruction, DefaultEdge> slice = new GraphSliceTask<>(transpilerFlowgraph.instructionFlowgraph(), DefaultEdge.class).run(start, last);
+        Map<TranspilerInstruction, TranspilerNode> reachingConditions = new ReachingConditionDefinitionTask<>(slice).run3();
+        reachingConditions.forEach((key, value1) -> System.out.println(key.description() + ": " + value1.description()));
         System.out.println("DONE");
     }
 }

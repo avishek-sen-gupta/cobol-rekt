@@ -31,7 +31,7 @@ public class GraphSliceTaskTest {
         graph.addEdge(v2, v4);
         graph.addEdge(v1, v3);
 
-        List<GraphPath<TestNode, DefaultEdge>> allPathsFromV1ToV3 = new GraphSliceTask<>(graph).run(v1, v3).allPaths();
+        List<GraphPath<TestNode, DefaultEdge>> allPathsFromV1ToV3 = new GraphSliceTask<>(graph, DefaultEdge.class).run(v1, v3).allPaths();
         assertEquals(1, allPathsFromV1ToV3.size());
         assertEquals(ImmutableList.of(v1, v3), allPathsFromV1ToV3.getFirst().getVertexList());
         assertEquals(1, allPathsFromV1ToV3.getFirst().getEdgeList().size());
@@ -39,7 +39,7 @@ public class GraphSliceTaskTest {
         assertEquals(v1, graph.getEdgeSource(onlyEdge));
         assertEquals(v3, graph.getEdgeTarget(onlyEdge));
 
-        List<GraphPath<TestNode, DefaultEdge>> allPathsFromV1ToV4 = new GraphSliceTask<>(graph).run(v1, v4).allPaths();
+        List<GraphPath<TestNode, DefaultEdge>> allPathsFromV1ToV4 = new GraphSliceTask<>(graph, DefaultEdge.class).run(v1, v4).allPaths();
         assertEquals(1, allPathsFromV1ToV4.size());
     }
 
@@ -61,7 +61,7 @@ public class GraphSliceTaskTest {
         graph.addEdge(v2, v4);
         graph.addEdge(v3, v4);
 
-        List<GraphPath<TestNode, DefaultEdge>> allPathsFromV1ToV4 = new GraphSliceTask<>(graph).run(v1, v4).allPaths();
+        List<GraphPath<TestNode, DefaultEdge>> allPathsFromV1ToV4 = new GraphSliceTask<>(graph, DefaultEdge.class).run(v1, v4).allPaths();
         assertEquals(2, allPathsFromV1ToV4.size());
         assertEquals(ImmutableList.of(v1, v2, v4), allPathsFromV1ToV4.getFirst().getVertexList());
         assertEquals(ImmutableList.of(v1, v3), allPathsFromV1ToV4.get(1).getVertexList());
@@ -88,7 +88,7 @@ public class GraphSliceTaskTest {
         graph.addEdge(v3, v4);
         graph.addEdge(v4, v5);
 
-        List<GraphPath<TestNode, DefaultEdge>> allPathsFromV1ToV5 = new GraphSliceTask<>(graph).run(v1, v5).allPaths();
+        List<GraphPath<TestNode, DefaultEdge>> allPathsFromV1ToV5 = new GraphSliceTask<>(graph, DefaultEdge.class).run(v1, v5).allPaths();
         assertEquals(2, allPathsFromV1ToV5.size());
         assertEquals(ImmutableList.of(v1, v2, v4, v5), allPathsFromV1ToV5.getFirst().getVertexList());
         assertEquals(ImmutableList.of(v1, v3), allPathsFromV1ToV5.get(1).getVertexList());
