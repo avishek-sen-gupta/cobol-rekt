@@ -69,7 +69,10 @@ public class ReachingConditionDefinitionTask<V extends TranspilerInstruction, E>
 
     private TranspilerNode conditionExpression(E edge, Graph<V, E> graph) {
         V edgeSource = graph.getEdgeSource(edge);
-        if (!(edge instanceof AnnotatedEdge annotatedEdge)) return new PrimitiveValueTranspilerNode(TypedRecord.TRUE);
+        if (!(edge instanceof AnnotatedEdge annotatedEdge)) {
+            System.out.println("NO ANNOTATED EDGE " + edge);
+            return new PrimitiveValueTranspilerNode(TypedRecord.TRUE);
+        }
         if ("THEN_ENTRY".equals(annotatedEdge.data("edgeType")))
             return ((IfTranspilerNode) edgeSource.ref()).getCondition();
         if ("ELSE_ENTRY".equals(annotatedEdge.data("edgeType")))

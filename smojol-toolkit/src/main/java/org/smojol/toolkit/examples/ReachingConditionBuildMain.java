@@ -10,6 +10,7 @@ import org.smojol.common.graph.GraphSlice;
 import org.smojol.common.graph.GraphSliceTask;
 import org.smojol.common.graph.ReachingConditionDefinitionTask;
 import org.smojol.common.id.UUIDProvider;
+import org.smojol.common.pseudocode.CodeSentinelType;
 import org.smojol.common.resource.LocalFilesystemOperations;
 import org.smojol.common.transpiler.*;
 import org.smojol.toolkit.analysis.pipeline.ProgramSearch;
@@ -34,18 +35,19 @@ public class ReachingConditionBuildMain {
                 ImmutableList.of(new File("/Users/asgupta/code/smojol/smojol-test-code")),
                 "/Users/asgupta/code/smojol/che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar",
                 LanguageDialect.IDMS, new FullProgram(FlowchartOutputFormat.PNG), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder(), new ProgramSearch(), new LocalFilesystemOperations())
-                .runForPrograms(ImmutableList.of(BASE_ANALYSIS), ImmutableList.of("hello.cbl"));
+                .runForPrograms(ImmutableList.of(BASE_ANALYSIS), ImmutableList.of("reaching-condition-test.cbl"));
 
         AnalysisTaskResult value = result.values().stream().toList().getFirst().getFirst();
         BaseAnalysisResult baseResult = ((AnalysisTaskResultOK) value).getDetail();
         BuildTranspilerFlowgraphTask buildTranspilerFlowgraphTask = new BuildTranspilerFlowgraphTask(baseResult.rawAST(), baseResult.dataStructures(), baseResult.symbolTable(), ImmutableList.of());
         TranspilerFlowgraph transpilerFlowgraph = buildTranspilerFlowgraphTask.run();
+        PruneUnreachableTask.pruneUnreachableInstructions(transpilerFlowgraph);
         List<TranspilerInstruction> instructions = transpilerFlowgraph.instructions();
         TranspilerInstruction start = instructions.getFirst();
         TranspilerInstruction last = instructions.getLast();
         String draw = new MermaidGraph<TranspilerInstruction, DefaultEdge>().draw(transpilerFlowgraph.instructionFlowgraph());
-        TranspilerInstruction printInstruction = instructions.stream().filter(instr -> instr.ref() instanceof PrintTranspilerNode).findFirst().get();
-        GraphSlice<TranspilerInstruction, DefaultEdge> slice = new GraphSliceTask<>(transpilerFlowgraph.instructionFlowgraph(), DefaultEdge.class).run(start, last);
+        TranspilerInstruction printInstruction = instructions.stream().filter(instr -> instr.ref() instanceof PrintTranspilerNode && instr.sentinel() == CodeSentinelType.BODY).findFirst().get();
+        GraphSlice<TranspilerInstruction, DefaultEdge> slice = new GraphSliceTask<>(transpilerFlowgraph.instructionFlowgraph(), DefaultEdge.class).run(start, printInstruction);
         Map<TranspilerInstruction, TranspilerNode> reachingConditions = new ReachingConditionDefinitionTask<>(slice).run();
         reachingConditions.forEach((key, value1) -> System.out.println(key.description() + ": " + value1.description()));
         System.out.println("DONE");
