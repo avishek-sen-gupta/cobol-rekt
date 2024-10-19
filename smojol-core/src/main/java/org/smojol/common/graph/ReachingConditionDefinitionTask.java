@@ -42,7 +42,8 @@ public class ReachingConditionDefinitionTask<V extends TranspilerInstruction, E>
     }
 
     private TranspilerNode resolvedOr(TranspilerNode lhs, TranspilerNode rhs) {
-        if (isTruePrimitive(lhs) || isTruePrimitive(rhs)) return lhs;
+        if (isTruePrimitive(lhs) || isTruePrimitive(rhs))
+            return new PrimitiveValueTranspilerNode(TypedRecord.TRUE);
         else if (isFalsePrimitive(lhs)) return rhs;
         else if (isFalsePrimitive(rhs)) return lhs;
         return new OrTranspilerNode(lhs, rhs);
