@@ -37,6 +37,7 @@ You can see the current backlog [here](https://github.com/users/avishek-sen-gupt
     - [Loop Body Detection Heuristic using Strongly Connected Components](#1-improper-loop-heuristic-using-strongly-connected-components)
     - [Improper Loop Detection using DJ Graphs](#2-reducible-and-irreducible-loop-body-detection)
   - [Dominator Analysis](#dominator-analysis)
+  - [Reaching Conditions (aka "How did I get here?")](#reaching-conditions-aka-how-did-i-get-here)
   - [Control Flow Restructuring to eliminate GO TO's (WIP)](#control-flowgraph-restructuring-to-eliminate-go-tos)
 - [Running against AWS Card Demo](#running-against-aws-card-demo)
 - [Developer Guide](#developer-guide)
@@ -523,6 +524,50 @@ Several tasks are required to be run to do dominator analysis.
 - ```BuildDominatorTreeTask```: This creates the dominator tree which is used to detect irreducible loops using the algorithm as outlined in [[Sreedhar-Gao-Lee, 1996]](https://dl.acm.org/doi/pdf/10.1145/236114.236115). It uses the output of the ```BuildDominatorsTask``` as its input.
 
 See [DominatorAnalysisMain.java](smojol-toolkit/src/main/java/org/smojol/toolkit/examples/DominatorAnalysisMain.java) for an example.
+
+### Reaching Conditions (aka, "How did I get here?")
+
+Given a graph slice, a start node, and a sink node, this calculates the actual conditions that need to be satisfied to reach the sink node. For example, assume we have the program like the following;
+
+```
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID.    STOPRUN.
+       AUTHOR.        MOJO
+       DATE-WRITTEN.  SEP 2024.
+       ENVIRONMENT DIVISION.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+            01 WS-NUM1 PIC 9(9) VALUE 5.
+       PROCEDURE DIVISION.
+       S SECTION.
+       SA1.
+           IF WS-NUM1 > 10
+            THEN
+                GO TO SA2.
+           STOP RUN.
+       SA2.
+           IF WS-NUM1 = 201
+            THEN
+                DISPLAY "IT IS DONE".
+        STOP RUN.
+```
+
+If we run the task on this flowgraph, with the first instruction as the source, and the ```DISPLAY``` statement as the sink node, the reaching condition for the statement will be given as:
+
+```
+...
+ENTER: CODE_BLOCK: print(value(primitive("IT IS: and(eq(ref('WS-NUM1'), primitive(201.0)), gt(ref('WS-NUM1'), primitive(10.0)))
+...
+```
+
+To be more precise, the reaching conditions of all the nodes in the Depth-First Search tree with the start node as the root, are calculated.
+
+A few important notes about this:
+
+- The ```ReachingConditionDefinitionTask``` performs this work. It is also used in the control flow restructuring task (see [this](#control-flowgraph-restructuring-to-eliminate-go-tos)).
+- This is only applicable to acyclic graphs for the moment. Applying this to arbitrary graphs will not give correct results.
+- Since the task requires a graph slice, the ```BuildTranspilerFlowgraphTask``` and the ```GraphSliceTask``` tasks should be run before this.
+
 
 ### Control Flowgraph Restructuring to eliminate GO TO's
 
