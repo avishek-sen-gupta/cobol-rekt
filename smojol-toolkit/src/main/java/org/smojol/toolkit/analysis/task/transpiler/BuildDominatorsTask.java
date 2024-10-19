@@ -11,7 +11,7 @@ import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import static org.smojol.common.list.ConsCar.tail;
+import static org.smojol.common.list.CarCdr.tail;
 
 /*
 Algorithm based on the paper 'Graph-Theoretic Constructs for Program Control Flow Analysis' by Allen and Cocke (1972)

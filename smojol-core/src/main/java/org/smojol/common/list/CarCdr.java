@@ -5,7 +5,7 @@ import com.google.common.collect.ImmutableList;
 import java.util.List;
 import java.util.Optional;
 
-public class ConsCar {
+public class CarCdr {
     public static <T> List<T> tail(List<T> things) {
         if (things.size() <= 1) return ImmutableList.of();
         return things.subList(1, things.size());

@@ -14,8 +14,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.google.common.collect.Streams.zip;
-import static org.smojol.common.list.ConsCar.head;
-import static org.smojol.common.list.ConsCar.tail;
+import static org.smojol.common.list.CarCdr.head;
+import static org.smojol.common.list.CarCdr.tail;
 
 public class EvaluateBreaker {
     private final CobolDataStructure dataStructures;

@@ -11,8 +11,8 @@ import org.smojol.toolkit.ast.EvaluateFlowNode;
 import java.util.List;
 import java.util.Optional;
 
-import static org.smojol.common.list.ConsCar.head;
-import static org.smojol.common.list.ConsCar.tail;
+import static org.smojol.common.list.CarCdr.head;
+import static org.smojol.common.list.CarCdr.tail;
 
 public class EvaluateNodeTranslator {
     public static TranspilerNode build(EvaluateFlowNode n, CobolDataStructure dataStructures) {

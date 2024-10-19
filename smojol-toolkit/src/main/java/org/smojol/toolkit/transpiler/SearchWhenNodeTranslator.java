@@ -7,8 +7,8 @@ import org.smojol.toolkit.ast.SearchWhenFlowNode;
 
 import java.util.List;
 
-import static org.smojol.common.list.ConsCar.head;
-import static org.smojol.common.list.ConsCar.tail;
+import static org.smojol.common.list.CarCdr.head;
+import static org.smojol.common.list.CarCdr.tail;
 
 public class SearchWhenNodeTranslator {
     public static TranspilerNode build(SearchFlowNode n, CobolDataStructure dataStructures) {
