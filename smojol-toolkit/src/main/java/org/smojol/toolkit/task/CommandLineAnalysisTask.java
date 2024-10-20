@@ -1,8 +1,8 @@
 package org.smojol.toolkit.task;
 
 public enum CommandLineAnalysisTask {
-    INJECT_INTO_NEO4J,
-    EXPORT_TO_GRAPHML,
+    FLOW_TO_NEO4J,
+    FLOW_TO_GRAPHML,
     WRITE_RAW_AST,
     WRITE_FLOW_AST,
     DRAW_FLOWCHART,

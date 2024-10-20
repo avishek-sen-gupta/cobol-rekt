@@ -23,8 +23,8 @@ public class GraphExplorerMain {
                 ImmutableList.of(new File("/Users/asgupta/code/smojol/smojol-test-code")),
                 dialectJarPath, LanguageDialect.COBOL   , new FullProgram(PNG), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder(), new ProgramSearch(), new LocalFilesystemOperations())
                 .runForPrograms(ImmutableList.of(
-                        CommandLineAnalysisTask.INJECT_INTO_NEO4J,
-                        CommandLineAnalysisTask.EXPORT_TO_GRAPHML,
+                        CommandLineAnalysisTask.FLOW_TO_NEO4J,
+                        CommandLineAnalysisTask.FLOW_TO_GRAPHML,
                         CommandLineAnalysisTask.WRITE_FLOW_AST
                 ), ImmutableList.of("test-exp.cbl"));
     }

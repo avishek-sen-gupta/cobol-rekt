@@ -32,9 +32,9 @@ public class InjectIntoNeo4JTask implements AnalysisTask {
     public AnalysisTaskResult run() {
         try (GraphSDK graphSDK = new GraphSDK(neo4JDriverBuilder.fromEnv())) {
             exportToNeo4J(astRoot, dataStructures, qualifier, graphSDK);
-            return AnalysisTaskResult.OK(CommandLineAnalysisTask.INJECT_INTO_NEO4J);
+            return AnalysisTaskResult.OK(CommandLineAnalysisTask.FLOW_TO_NEO4J);
         } catch (Exception e) {
-            return AnalysisTaskResult.ERROR(e, CommandLineAnalysisTask.INJECT_INTO_NEO4J);
+            return AnalysisTaskResult.ERROR(e, CommandLineAnalysisTask.FLOW_TO_NEO4J);
         }
     }
 

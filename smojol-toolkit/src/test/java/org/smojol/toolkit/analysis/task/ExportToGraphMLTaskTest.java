@@ -16,7 +16,7 @@ class ExportToGraphMLTaskTest {
     @Test
     void canCreateDataStructures() throws IOException {
         AnalysisTaskResult taskResult = new TestTaskRunner("no-branches.cbl", "test-code/flow-ast")
-                .runTask(CommandLineAnalysisTask.EXPORT_TO_GRAPHML);
+                .runTask(CommandLineAnalysisTask.FLOW_TO_GRAPHML);
         assertTrue(taskResult.isSuccess());
         Graph<TypedGraphVertex, TypedGraphEdge> root = ((AnalysisTaskResultOK) taskResult).getDetail();
     }

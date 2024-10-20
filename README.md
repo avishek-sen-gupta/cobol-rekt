@@ -156,7 +156,7 @@ This capability can be used by specifiying the ```WRITE_RAW_AST``` task.
 
 This capability allows the engineer to produce a control flow tree for the Cobol source. This can be used for straight-up visualisation (the flowchart capability actually uses the control flow tree behind the scenes), or more dynamic analysis through an interpreter. See [SMOJOL (SMol Java-powered CobOL Interpreter)](#smojol-smol-java-powered-cobol-interpreter) for a description of how this can help.
 
-The CFG generation is part of the ```INJECT_INTO_NEO4J``` task.
+The CFG generation is part of the ```FLOW_TO_NEO4J``` task.
 
 Note that this is not the same control flow model which is used in the transpiler tasks. For that, see [Experiments in Transpilation](#control-flow-analysis-and-transpilation-experiments).
 
@@ -206,7 +206,7 @@ This will generate the glossary in ```out/glossary.md```. Integrating other out-
 The toolkit supports extracting a capability map from the paragraphs of a source. For this, you need to generate both the AST in Neo4J, as well as the data structures JSON, you can do this via:
 
 ```
-java -jar smojol-cli/target/smojol-cli.jar run YOUR_PROGRAM --commands="INJECT_INTO_NEO4J WRITE_DATA_STRUCTURES" --srcDir /path/to/sources --copyBooksDir /path/to/copybooks --dialectJarPath che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar --dialect IDMS --reportDir /path/to/report/dir
+java -jar smojol-cli/target/smojol-cli.jar run YOUR_PROGRAM --commands="FLOW_TO_NEO4J WRITE_DATA_STRUCTURES" --srcDir /path/to/sources --copyBooksDir /path/to/copybooks --dialectJarPath che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar --dialect IDMS --reportDir /path/to/report/dir
 ```
 After this, you will want to extract the paragraph capabilities, like so:
 
@@ -240,7 +240,7 @@ This capability connects records which modify other records, with a ```FLOWS_INT
 
 This capability connects comments to the nearest subsequent node, with a ```HAS_COMMENT``` connection. This works for comments in the PROCEDURE division and all data structures. Comments before copybooks are connected to the main program node. Any comments which cannot be attached to found nodes, end up being connected to the main program node.
 
-This can be done by specifying the ```ATTACH_COMMENTS``` task. Note that for the comment nodes to appear in the graph, the ```INJECT_INTO_NEO4J``` task must appear after the ```ATTACH_COMMENTS``` task.
+This can be done by specifying the ```ATTACH_COMMENTS``` task. Note that for the comment nodes to appear in the graph, the ```FLOW_TO_NEO4J``` task must appear after the ```ATTACH_COMMENTS``` task.
 
 The example below shows all node-comment sets for a reasonably large program.
 
@@ -627,9 +627,9 @@ The individual functionalities in the Java component can be invoked using differ
 This command encapsulates almost all the tasks that you are likely to run. The descriptions of the various commands are listed below.
 
 - ```WRITE_FLOW_AST```: Writes a more useful form of the AST to JSON. This form is used by the interpreter and other analyses.
-- ```INJECT_INTO_NEO4J```: This injects the unified model into Neo4J. Exposing more fine-grained options is in progress. This requires the environment variable ```NEO4J_URI```, ```NEO4J_USERNAME```, and ```NEO4J_PASSWORD``` to be defined. If you wish to include comments in the graph, the ```ATTACH_COMMENTS``` needs to have run first.
+- ```FLOW_TO_NEO4J```: This injects the unified model into Neo4J. Exposing more fine-grained options is in progress. This requires the environment variable ```NEO4J_URI```, ```NEO4J_USERNAME```, and ```NEO4J_PASSWORD``` to be defined. If you wish to include comments in the graph, the ```ATTACH_COMMENTS``` needs to have run first.
 - ```ATTACH_COMMENTS```: This parses the original source file (excluding copybooks for now) to find comments and attach them to the nearest subsequent AST node.
-- ```EXPORT_TO_GRAPHML```: This exports the unified model to GraphML. Exposing more fine-grained options is in progress.
+- ```FLOW_TO_GRAPHML```: This exports the unified model to GraphML. Exposing more fine-grained options is in progress.
 - ```WRITE_RAW_AST```: This writes the original parse tree to JSON. Useful for downstream code to build their own AST representations.
 - ```DRAW_FLOWCHART```: This outputs flowcharts for the whole program or section-by-section of the program in PNG format.
 - ```EXPORT_MERMAID```: This outputs section-wise (one file per section) flowcharts for the program in the Mermaid format.
@@ -642,7 +642,7 @@ This command encapsulates almost all the tasks that you are likely to run. The d
 For example, if you wanted to run all of the above, you could run the following command:
 
 ```
-java -jar smojol-cli/target/smojol-cli.jar run test-exp.cbl hello.cbl --commands="WRITE_FLOW_AST INJECT_INTO_NEO4J EXPORT_TO_GRAPHML WRITE_RAW_AST DRAW_FLOWCHART WRITE_CFG" --srcDir /Users/asgupta/code/smojol/smojol-test-code --copyBooksDir /Users/asgupta/code/smojol/smojol-test-code --dialectJarPath ./che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar --reportDir out/report --generation=PROGRAM
+java -jar smojol-cli/target/smojol-cli.jar run test-exp.cbl hello.cbl --commands="WRITE_FLOW_AST FLOW_TO_NEO4J FLOW_TO_GRAPHML WRITE_RAW_AST DRAW_FLOWCHART WRITE_CFG" --srcDir /Users/asgupta/code/smojol/smojol-test-code --copyBooksDir /Users/asgupta/code/smojol/smojol-test-code --dialectJarPath ./che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar --reportDir out/report --generation=PROGRAM
 ```
 
 Passing the validation flag (```--validate``` or ```-v```) skips running all tasks, and simply validates whether the source is syntactically correct. This is non-strict validation, i.e., invalid variable references are reported, but do not cause failure.
@@ -659,8 +659,8 @@ Usage: app run [-hpvV] [-d=<dialect>] [-dp=<dialectJarPath>]
                [-cp=<copyBookDirs>[,<copyBookDirs>...]]... [<programNames>...]
 Implements various operations useful for reverse engineering Cobol code
       [<programNames>...]    The programs to analyse
-  -c, --commands=<commands>  The commands to run (INJECT_INTO_NEO4J,
-                               EXPORT_TO_GRAPHML, WRITE_RAW_AST,
+  -c, --commands=<commands>  The commands to run (FLOW_TO_NEO4J,
+                               FLOW_TO_GRAPHML, WRITE_RAW_AST,
                                DRAW_FLOWCHART, WRITE_FLOW_AST, WRITE_CFG,
                                ATTACH_COMMENTS, WRITE_DATA_STRUCTURES,
                                BUILD_PROGRAM_DEPENDENCIES, COMPARE_CODE,

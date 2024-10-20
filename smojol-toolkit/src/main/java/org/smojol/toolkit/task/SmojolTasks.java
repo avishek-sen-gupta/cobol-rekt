@@ -80,7 +80,7 @@ public class SmojolTasks {
         }
     };
 
-    public AnalysisTask INJECT_INTO_NEO4J = new AnalysisTask() {
+    public AnalysisTask FLOW_TO_NEO4J = new AnalysisTask() {
         @Override
         public AnalysisTaskResult run() {
             return new InjectIntoNeo4JTask(flowRoot, dataStructures, qualifier, neo4JDriverBuilder, graphBuildConfig).run();
@@ -101,7 +101,7 @@ public class SmojolTasks {
         }
     };
 
-    public AnalysisTask EXPORT_TO_GRAPHML = new AnalysisTask() {
+    public AnalysisTask FLOW_TO_GRAPHML = new AnalysisTask() {
         @Override
         public AnalysisTaskResult run() {
             return new ExportToGraphMLTask(flowRoot, dataStructures, graphMLOutputConfig, qualifier, resourceOperations).run();
@@ -194,8 +194,8 @@ public class SmojolTasks {
 
     private Stream<AnalysisTask> tasks(List<CommandLineAnalysisTask> commandLineAnalysisTasks) {
         return commandLineAnalysisTasks.stream().map(t -> switch (t) {
-            case INJECT_INTO_NEO4J -> INJECT_INTO_NEO4J;
-            case EXPORT_TO_GRAPHML -> EXPORT_TO_GRAPHML;
+            case FLOW_TO_NEO4J -> FLOW_TO_NEO4J;
+            case FLOW_TO_GRAPHML -> FLOW_TO_GRAPHML;
             case WRITE_RAW_AST -> WRITE_RAW_AST;
             case DRAW_FLOWCHART -> DRAW_FLOWCHART;
             case EXPORT_MERMAID -> EXPORT_MERMAID;

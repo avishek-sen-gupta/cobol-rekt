@@ -37,9 +37,9 @@ public class ExportToGraphMLTask implements AnalysisTask {
             String graphMLOutputPath = graphMLOutputConfig.outputDir().resolve(graphMLOutputConfig.outputPath()).toAbsolutePath().normalize().toString();
 //            new FlowNodeASTTraversal<FlowNode>().accept(astRoot, new FlowNodeSymbolExtractorVisitor(astRoot, dataStructures, null));
             Graph<TypedGraphVertex, TypedGraphEdge> model = exportUnifiedToGraphML(astRoot, dataStructures, qualifier, graphMLOutputPath);
-            return AnalysisTaskResult.OK(CommandLineAnalysisTask.EXPORT_TO_GRAPHML, model);
+            return AnalysisTaskResult.OK(CommandLineAnalysisTask.FLOW_TO_GRAPHML, model);
         } catch (IOException e) {
-            return AnalysisTaskResult.ERROR(e, CommandLineAnalysisTask.EXPORT_TO_GRAPHML);
+            return AnalysisTaskResult.ERROR(e, CommandLineAnalysisTask.FLOW_TO_GRAPHML);
         }
     }
 
