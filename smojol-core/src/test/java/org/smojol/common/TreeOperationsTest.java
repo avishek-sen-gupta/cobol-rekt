@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class TreeOperationsTest {
     @Test
-    public void canBuildStuff() {
+    public void canReplaceExistingNodeWithMultipleNodes() {
         TranspilerNode set1 = set("ABC", 30);
         TranspilerNode set2 = set("DEF", 40);
         TranspilerNode set3 = set("PQR", 50);

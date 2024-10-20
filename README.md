@@ -38,7 +38,7 @@ You can see the current backlog [here](https://github.com/users/avishek-sen-gupt
     - [Improper Loop Detection using DJ Graphs](#2-reducible-and-irreducible-loop-body-detection)
   - [Dominator Analysis](#dominator-analysis)
   - [Reaching Conditions (aka "How did I get here?")](#reaching-conditions-aka-how-did-i-get-here)
-  - [Control Flow Restructuring to eliminate GO TO's (WIP)](#control-flowgraph-restructuring-to-eliminate-go-tos)
+  - [Control Flow / AST Restructuring to eliminate GO TO's (WIP)](#control-flowgraph--ast-restructuring-to-eliminate-go-tos)
 - [Running against AWS Card Demo](#running-against-aws-card-demo)
 - [Developer Guide](#developer-guide)
   - [How to Build](#how-to-build)
@@ -573,9 +573,11 @@ A few important notes about this:
 - Since the task requires a graph slice, the ```BuildTranspilerFlowgraphTask``` and the ```GraphSliceTask``` tasks should be run before this.
 
 
-### Control Flowgraph Restructuring to eliminate GO TO's
+### Control Flowgraph / AST Restructuring to eliminate GO TO's
 
-This is based on the paper [No More Gotos: Decompilation Using Pattern-Independent Control-Flow Structuring and Semantics-Preserving Transformations](https://www.ndss-symposium.org/wp-content/uploads/2017/09/11_4_2.pdf).
+Experiment based on one of the following:
+- Control Flowgraph Restructuring based on [No More Gotos: Decompilation Using Pattern-Independent Control-Flow Structuring and Semantics-Preserving Transformations](https://www.ndss-symposium.org/wp-content/uploads/2017/09/11_4_2.pdf)
+- AST Restructuring based on [Taming Control Flow: A Structured Approach to Eliminating Goto Statements](https://www.cs.tufts.edu/comp/150FP/archive/laurie-hendren/taming.pdf)
 
 Several tasks are involved in this.
 
