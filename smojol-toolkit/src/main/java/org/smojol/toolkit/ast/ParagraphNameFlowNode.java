@@ -1,7 +1,6 @@
 package org.smojol.toolkit.ast;
 
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.smojol.common.ast.AggregatingFlowNodeASTVisitor;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.FlowNodeService;
 import org.smojol.common.ast.FlowNodeType;

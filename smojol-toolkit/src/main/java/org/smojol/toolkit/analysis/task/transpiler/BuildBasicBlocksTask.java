@@ -12,7 +12,6 @@ import org.jgrapht.graph.DefaultEdge;
 import org.neo4j.driver.Record;
 import org.smojol.common.ast.FlowNodeLike;
 import org.smojol.common.pseudocode.*;
-import org.smojol.common.transpiler.PruneUnreachableTask;
 import org.smojol.common.transpiler.TranspilerInstructionEdge;
 import org.smojol.common.transpiler.TranspilerInstruction;
 import org.smojol.toolkit.analysis.graph.NamespaceQualifier;
@@ -23,7 +22,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 public class BuildBasicBlocksTask {
     private final BasicBlockFactory<TranspilerInstruction> basicBlockFactory;
@@ -50,22 +48,8 @@ public class BuildBasicBlocksTask {
                     .map(instructionToBlockMap::get)
                     .forEach(targetBB -> blockGraph.addEdge(bb, targetBB));
         });
-        Function<BasicBlock<TranspilerInstruction>, Boolean> IS_ROOT = block -> block == basicBlocks.getFirst();
-//        PruneUnreachableTask.pruneUnreachables(blockGraph, IS_ROOT);
-//        while (pruneUnreachables(blockGraph, IS_ROOT)) {
-//            System.out.println("PRUNED...");
-//        }
-
         return ImmutablePair.of(blockGraph, basicBlocks);
     }
-
-//    private static boolean pruneUnreachables(Graph<BasicBlock<TranspilerInstruction>, DefaultEdge> blockGraph, Function<BasicBlock<TranspilerInstruction>, Boolean> isRoot) {
-//        List<BasicBlock<TranspilerInstruction>> verticesToRemove = blockGraph.vertexSet().stream()
-//                .filter(v -> !isRoot.apply(v) && blockGraph.incomingEdgesOf(v).isEmpty())
-//                .toList();
-//        verticesToRemove.forEach(blockGraph::removeVertex);
-//        return !verticesToRemove.isEmpty();
-//    }
 
     private List<BasicBlock<TranspilerInstruction>> basicBlocks(List<TranspilerInstruction> instructions) {
         BasicBlock<TranspilerInstruction> currentBlock = basicBlockFactory.block();

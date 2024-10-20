@@ -8,12 +8,10 @@ import org.smojol.common.flowchart.FlowchartOutputFormat;
 import org.smojol.common.id.UUIDProvider;
 import org.smojol.common.pseudocode.BasicBlock;
 import org.smojol.common.resource.LocalFilesystemOperations;
-import org.smojol.common.transpiler.FlowgraphReductionResult;
 import org.smojol.common.transpiler.TranspilerFlowgraph;
 import org.smojol.common.transpiler.TranspilerInstruction;
 import org.smojol.toolkit.analysis.pipeline.ProgramSearch;
 import org.smojol.toolkit.analysis.task.analysis.CodeTaskRunner;
-import org.smojol.toolkit.analysis.task.transpiler.IntervalAnalysisTask;
 import org.smojol.toolkit.analysis.task.transpiler.StructuredProgramTheoremFormTranspilerTask;
 import org.smojol.toolkit.interpreter.FullProgram;
 import org.smojol.toolkit.interpreter.structure.OccursIgnoringFormat1DataStructureBuilder;
@@ -25,8 +23,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 
 public class TranspilationMain {
     public static void main(String[] args) throws IOException, InterruptedException {

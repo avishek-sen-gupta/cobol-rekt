@@ -9,8 +9,6 @@ import org.smojol.toolkit.flowchart.FlowchartStylePreferences;
 import java.util.ArrayList;
 import java.util.List;
 
-import static guru.nidi.graphviz.model.Factory.mutNode;
-
 public class FlowNodeCollectorVisitor implements FlowNodeVisitor {
 
     @Getter private final List<FlowNode> flowNodes;

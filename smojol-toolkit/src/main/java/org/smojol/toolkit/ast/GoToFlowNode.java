@@ -15,9 +15,7 @@ import org.smojol.common.vm.stack.StackFrames;
 
 import java.util.List;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
-import static guru.nidi.graphviz.model.Factory.mutNode;
 
 @Getter
 public class GoToFlowNode extends CobolFlowNode implements InternalControlFlowNode {

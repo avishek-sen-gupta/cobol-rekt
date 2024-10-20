@@ -1,15 +1,12 @@
 package org.smojol.toolkit.analysis.task.transpiler;
 
 import com.google.common.collect.Sets;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.smojol.common.graph.*;
 import org.smojol.common.id.Identifiable;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
