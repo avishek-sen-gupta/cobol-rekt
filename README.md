@@ -78,9 +78,11 @@ Cobol-REKT is an evolving toolkit of capabilities helpful for reverse engineerin
   - **Dominator Analysis:** This is the first step which forms the basis for techniques like detecting implicit loops, and correct scoping of any potential transpiled code in structured programming languages.
 
 
-Cobol-REKT is more of a library of useful things intended to be embedded in more formal reverse engineering workflows/pipelines, rather than being a standalone tool (though you can certainly use it as such). Many of the higher-level wrappers are merely sensible defaults; you are encouraged to modify them to suit your needs.
+## Philosophy
 
-**It is also to be noted that OpenAI integration is only attached to specific features. Much of the functionality of this toolkit is based on deterministic analysis.**
+Cobol-REKT is more of a **library of useful things** intended to be embedded in more formal reverse engineering workflows/pipelines, rather than being a standalone tool (though you can certainly use it as such). Many of the higher-level wrappers are merely sensible defaults; **you are encouraged to modify them to suit your needs**.
+
+_It is also to be noted that OpenAI integration is only attached to specific features. Much of the functionality of this toolkit is based on deterministic analysis._
 
 The toolkit consists of Java components, most of which are around parsing, ingestion of, and export from Cobol sources, and Python components, which carry out the analyses. In addition, the support for Neo4J allows you to build custom graph analyses as per your needs. I expect most of the analysis to happen through Python (using Neo4J or NetworkX), hence the Java component tries to unlock as much of the ingested data as possible in different formats.
 
