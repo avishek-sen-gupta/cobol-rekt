@@ -824,6 +824,8 @@ Programmatic examples are provided in the following classes.
 - See ```TranspilerInstructionIntervalAnalysisMain``` and ```BasicBlockIntervalAnalysisMain``` for examples of how T1-T2 analysis is run on ```TranspilerInstruction```s and ```BasicBlock```s, respectively.
 - See ```DominatorAnalysisMain``` for an example of how reducibility is tested using DJ trees.
 - See ```ImproperSCCsMain``` for an example of how detection of improper Strongly Connected Components is run.
+- See ```LoopBodyDetectionMain``` for an example of how loop bodies are detected.
+- See ```ReachingConditionBuildMain``` for an example of how reaching conditions are calculated.
 
 #### Logging Settings
 
