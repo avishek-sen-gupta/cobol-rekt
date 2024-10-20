@@ -63,5 +63,18 @@ public abstract class TranspilerNode implements Identifiable {
         return description();
     }
 
+    public boolean replace(TranspilerNode replacedNode, List<TranspilerNode> replacementNodes) {
+        int i = childTranspilerNodes.indexOf(replacedNode);
+        if (i == -1) return false;
+        childTranspilerNodes.remove(replacedNode);
+        childTranspilerNodes.addAll(i, replacementNodes);
+        return true;
+    }
 
+    public boolean addAfter(TranspilerNode targetNode, ImmutableList<TranspilerNode> successors) {
+        int i = childTranspilerNodes.indexOf(targetNode);
+        if (i == -1) return false;
+        childTranspilerNodes.addAll(i + 1, successors);
+        return true;
+    }
 }
