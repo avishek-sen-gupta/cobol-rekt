@@ -20,10 +20,6 @@ public class LabelledTranspilerCodeBlockNodeBuilder {
         return labelledBlock(n, dataStructures, ImmutableMap.of("type", FlowNodeType.SECTION));
     }
 
-    private static LabelledTranspilerCodeBlockNode labelledBlock(FlowNode n, CobolDataStructure dataStructures) {
-        return labelledBlock(n, dataStructures, ImmutableMap.of());
-    }
-
     private static LabelledTranspilerCodeBlockNode labelledBlock(FlowNode n, CobolDataStructure dataStructures, Map<String, Object> properties) {
         List<TranspilerNode> childTranspilerNodes = n.astChildren().stream().map(child -> TranspilerTreeBuilder.flowToTranspiler(child, dataStructures)).toList();
         return new LabelledTranspilerCodeBlockNode(n.name(), childTranspilerNodes, properties);
