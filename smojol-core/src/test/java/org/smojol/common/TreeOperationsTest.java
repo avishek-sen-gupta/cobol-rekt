@@ -69,6 +69,11 @@ public class TreeOperationsTest {
         assertEquals(ImmutableList.of(set1, set2, set3, set4), parent.astChildren());
     }
 
+    @Test
+    public void canEscapeArbitraryScopeUsingJumpIf() {
+
+    }
+
     private static SetTranspilerNode set(String variable, int value) {
         return new SetTranspilerNode(new SymbolReferenceNode(variable), new PrimitiveValueTranspilerNode(TypedRecord.typedNumber(value)));
     }
