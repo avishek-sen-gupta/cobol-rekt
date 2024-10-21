@@ -50,7 +50,7 @@ public class BuildInstructionFlowgraphTask {
                     && flowHints.contains(b.getName())
                     && (FlowNodeType.SECTION == b.getProperty("type") || FlowNodeType.PARAGRAPH == b.getProperty("type"))
                     && nextInstruction.sentinel() == CodeSentinelType.ENTER) {
-                System.out.println("Skipping flow hint: " + b.getName());
+                LOGGER.info("Skipping flow hint: " + b.getName());
                 continue;
             }
             switch (current) {

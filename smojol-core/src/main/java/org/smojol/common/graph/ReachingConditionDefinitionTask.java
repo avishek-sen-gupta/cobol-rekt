@@ -7,10 +7,12 @@ import org.smojol.common.transpiler.*;
 import org.smojol.common.vm.type.TypedRecord;
 
 import java.util.*;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 
 public class ReachingConditionDefinitionTask<V extends TranspilerInstruction, E> {
+    private static final java.util.logging.Logger LOGGER = Logger.getLogger(ReachingConditionDefinitionTask.class.getName());
     private final GraphSlice<V, E> slice;
 
     public ReachingConditionDefinitionTask(GraphSlice<V, E> slice) {
@@ -53,7 +55,7 @@ public class ReachingConditionDefinitionTask<V extends TranspilerInstruction, E>
         if (!chainConditionMap.containsKey(vertex)) {
             PrimitiveValueTranspilerNode alwaysTrue = new PrimitiveValueTranspilerNode(TypedRecord.TRUE);
             chainConditionMap.put(vertex, alwaysTrue);
-            System.out.println("Possibly isolated pruneable node: " + vertex.description());
+            LOGGER.info("Possibly isolated pruneable node: " + vertex.description());
             return alwaysTrue;
         }
         return chainConditionMap.get(vertex);
@@ -70,7 +72,7 @@ public class ReachingConditionDefinitionTask<V extends TranspilerInstruction, E>
     private TranspilerNode conditionExpression(E edge, Graph<V, E> graph) {
         V edgeSource = graph.getEdgeSource(edge);
         if (!(edge instanceof AnnotatedEdge annotatedEdge)) {
-            System.out.println("NO ANNOTATED EDGE " + edge);
+            LOGGER.warning("NO ANNOTATED EDGE " + edge);
             return new PrimitiveValueTranspilerNode(TypedRecord.TRUE);
         }
         if ("THEN_ENTRY".equals(annotatedEdge.data("edgeType")))

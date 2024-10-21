@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static org.smojol.common.graph.GraphOperations.cloneGraph;
@@ -25,6 +26,7 @@ import static org.smojol.common.graph.GraphOperations.cloneGraph;
 Based on "Identifying Loops Using DJ Graphs" by Sreedhar-Gao-Lee (1996)
  */
 public class LoopBodyDetectionTask<V extends Identifiable, E> {
+    private static final java.util.logging.Logger LOGGER = Logger.getLogger(LoopBodyDetectionTask.class.getName());
 
     private final V sourceGraphRoot;
     private final Graph<V, E> sourceGraph;
@@ -51,11 +53,6 @@ public class LoopBodyDetectionTask<V extends Identifiable, E> {
         Map<Integer, Set<V>> dominatorLevelMap = djTree.dominatorLevels();
         Set<E> backEdges = classifiedEdges.backEdges();
         Set<E> mutableBackEdges = new HashSet<>(backEdges);
-//        backEdges.forEach(be -> {
-//            if (djGraph.getEdgeSource(be).id().equals("9") && djGraph.getEdgeTarget(be).id().equals("5")) {
-//                throw new RuntimeException("THIS IS NOT POSSIBLE");
-//            }
-//        });
         Set<Integer> depths = dominatorLevelMap.keySet();
         int maxTreeDepth = depths.stream().max((o1, o2) -> {
             if (o1.equals(o2)) return 0;
@@ -92,8 +89,6 @@ public class LoopBodyDetectionTask<V extends Identifiable, E> {
                 return stronglyConnectedComponents.stream().map(Graph::vertexSet);
             }).collect(Collectors.toUnmodifiableSet());
             allIrreducibleLoopBodies.addAll(irreducibleLoopBodies);
-            System.out.println("Well");
-            System.out.println();
         }
         return ImmutablePair.of(allReducibleLoopBodies, allIrreducibleLoopBodies);
     }
@@ -101,7 +96,7 @@ public class LoopBodyDetectionTask<V extends Identifiable, E> {
     private void collapse(Pair<V, Set<V>> reducibleLoop, Graph<V, E> collapsibleDJGraph, Set<E> mutableBackEdges) {
         V loopHeader = reducibleLoop.getLeft();
         Set<V> loopBody = reducibleLoop.getRight();
-        System.out.println("Merging " + String.join(",", loopBody.stream().map(Identifiable::id).toList()));
+        LOGGER.info("Merging " + String.join(",", loopBody.stream().map(Identifiable::id).toList()));
         if (loopBody.size() <= 1) return;
         Set<E> allOutgoingEdges = loopBody.stream().flatMap(loopNode -> collapsibleDJGraph.outgoingEdgesOf(loopNode).stream()).collect(Collectors.toUnmodifiableSet());
         Set<E> allIncomingEdges = loopBody.stream().flatMap(loopNode -> collapsibleDJGraph.incomingEdgesOf(loopNode).stream()).collect(Collectors.toUnmodifiableSet());
