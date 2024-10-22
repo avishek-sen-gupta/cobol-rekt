@@ -25,7 +25,7 @@ public class TreeSmith {
         TranspilerNode jumpIfTranspilerNode = switch (jumpNode) {
             case JumpTranspilerNode j -> new JumpIfTranspilerNode(j.getStart(), condition);
             case JumpIfTranspilerNode k -> new JumpIfTranspilerNode(k.getDestination(), condition);
-            default -> throw new IllegalStateException("Unexpected value: " + jumpNode);
+            default -> throw new IllegalStateException(String.format("Unexpected node of type %s. Description is:\n%s", jumpNode.getClass(), jumpNode.description()));
         };
         TreeNodeLocation graftLocation = parentMapper.parentGraftLocation(parentMapper.parentOf(jumpNode));
         graftLocation.parentScope().addAfter(graftLocation.location(), ImmutableList.of(jumpIfTranspilerNode));

@@ -7,7 +7,7 @@ import org.smojol.common.vm.type.TypedRecord;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TranspilerChildEditTest {
+public class TranspilerNodeChildEditTest {
     @Test
     public void canReplaceExistingNodeWithMultipleNodes() {
         TranspilerNode set1 = set("ABC", 30);
