@@ -382,6 +382,8 @@ You can find some useful Neo4J-based analysis queries in [Analysis](neo4j-analys
 
 Most of the tasks in this category are meant to be used as part of a larger analysis workflow, and thus do not have any filesystem outputs. All the analyses use JGraphT's ```DefaultDirectedGraph``` for representing and manipulating graph structures.
 
+**Also note that almost of all of the tasks under this category are not specific to COBOL, and can be used for analysing control flowgraphs derived from any language.**
+
 ### Exposing a basic transpilation Model (Instructions and Basic Blocks)
 
 This target exposes a basic transpilation model which is not tied to the COBOL syntax. It uses only assignments, loops, conditions, and jumps to represent most of COBOL syntax. The result may not still be well-structured because of arbitrary GOTOs. This will be the input for further control flow analysis tasks.
