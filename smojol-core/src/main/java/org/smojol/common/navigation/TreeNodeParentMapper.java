@@ -22,13 +22,13 @@ public class TreeNodeParentMapper {
 
     public TreeNodeLocation parentGraftLocation(TranspilerNode node) {
         TranspilerNode immediateParentScope = childToParentMap.get(node);
-        TranspilerNode currentChild = node;
+        TranspilerNode currentScope = node;
         while (!canGraftOnto(immediateParentScope)) {
-            currentChild = immediateParentScope;
-            immediateParentScope = childToParentMap.get(currentChild);
+            currentScope = immediateParentScope;
+            immediateParentScope = childToParentMap.get(currentScope);
         }
 
-        return new TreeNodeLocation(currentChild, immediateParentScope);
+        return new TreeNodeLocation(immediateParentScope, currentScope);
     }
 
     private static boolean canGraftOnto(TranspilerNode parentScope) {

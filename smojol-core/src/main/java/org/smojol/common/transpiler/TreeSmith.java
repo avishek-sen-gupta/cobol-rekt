@@ -28,7 +28,8 @@ public class TreeSmith {
             default -> throw new IllegalStateException(String.format("Unexpected node of type %s. Description is:\n%s", jumpNode.getClass(), jumpNode.description()));
         };
         TreeNodeLocation graftLocation = parentMapper.parentGraftLocation(parentMapper.parentOf(jumpNode));
-        graftLocation.parentScope().addAfter(graftLocation.location(), ImmutableList.of(jumpIfTranspilerNode));
+        boolean couldGraft = graftLocation.parentScope().addAfter(graftLocation.location(), ImmutableList.of(jumpIfTranspilerNode));
+        if (!couldGraft) return false;
         parentMapper.update(graftLocation.parentScope());
         return true;
     }
