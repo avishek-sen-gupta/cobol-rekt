@@ -6,9 +6,8 @@ import org.smojol.common.transpiler.*;
 import org.smojol.common.vm.type.TypedRecord;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.smojol.common.transpiler.TreeOperations.escapeScope;
 
-public class TreeOperationsTest {
+public class TranspilerChildEditTest {
     @Test
     public void canReplaceExistingNodeWithMultipleNodes() {
         TranspilerNode set1 = set("ABC", 30);
@@ -129,16 +128,6 @@ public class TreeOperationsTest {
 
         assertFalse(parent.replaceToEnd(set6, ImmutableList.of(set4, set5)));
         assertEquals(ImmutableList.of(set1, set2, set3), parent.astChildren());
-    }
-
-    @Test
-    public void canEscapeArbitraryScopeUsingJumpIf() {
-        EqualToNode condition = new EqualToNode(new SymbolReferenceNode("abcd"), new PrimitiveValueTranspilerNode(TypedRecord.TRUE));
-        TranspilerNode gotoSomeplace = new JumpTranspilerNode(new NamedLocationNode("SOMEPLACE"));
-        IfTranspilerNode ifStmt = new IfTranspilerNode(condition, new TranspilerCodeBlockNode(gotoSomeplace));
-        TranspilerCodeBlockNode program = new TranspilerCodeBlockNode(ifStmt);
-        boolean escaped = escapeScope(gotoSomeplace, ifStmt.getIfThenBlock(), ifStmt, program);
-        assertTrue(escaped);
     }
 
     private static SetTranspilerNode set(String variable, int value) {

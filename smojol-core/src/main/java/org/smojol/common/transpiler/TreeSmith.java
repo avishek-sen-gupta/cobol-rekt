@@ -1,12 +1,21 @@
 package org.smojol.common.transpiler;
 
 import com.google.common.collect.ImmutableList;
+import org.smojol.common.navigation.TreeNodeParentMapper;
 import org.smojol.common.vm.type.TypedRecord;
 
 import java.util.List;
 
-public class TreeOperations {
-    public static boolean escapeScope(TranspilerNode jumpNode, TranspilerNode currentScope, TranspilerNode graftLocation, TranspilerNode parentScope) {
+public class TreeSmith {
+    private final TranspilerNode root;
+    private final TreeNodeParentMapper parentMapper;
+
+    public TreeSmith(TranspilerNode root) {
+        this.root = root;
+        parentMapper = new TreeNodeParentMapper(root);
+    }
+
+    public boolean escapeScope(TranspilerNode jumpNode, TranspilerNode currentScope) {
         TranspilerNode condition = new PrimitiveValueTranspilerNode(TypedRecord.TRUE);
         List<TranspilerNode> everythingAfter = currentScope.everythingAfter(jumpNode);
         TranspilerNode newIf = new IfTranspilerNode(new NotTranspilerNode(condition), new TranspilerCodeBlockNode(everythingAfter));
@@ -18,7 +27,9 @@ public class TreeOperations {
             case JumpIfTranspilerNode k -> new JumpIfTranspilerNode(k.getDestination(), condition);
             default -> throw new IllegalStateException("Unexpected value: " + jumpNode);
         };
-        parentScope.addAfter(graftLocation, ImmutableList.of(jumpIfTranspilerNode));
+        TreeNodeLocation graftLocation = parentMapper.parentGraftLocation(parentMapper.parentOf(jumpNode));
+        graftLocation.parentScope().addAfter(graftLocation.location(), ImmutableList.of(jumpIfTranspilerNode));
+        parentMapper.update(graftLocation.parentScope());
         return true;
     }
 }
