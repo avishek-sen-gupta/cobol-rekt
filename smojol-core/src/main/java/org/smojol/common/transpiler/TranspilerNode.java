@@ -5,17 +5,18 @@ import com.google.common.collect.ImmutableMap;
 import lombok.Getter;
 import org.smojol.common.ast.SemanticCategory;
 import org.smojol.common.id.Identifiable;
+import org.smojol.common.navigation.TreeNode;
 
 import java.util.*;
 
-public abstract class TranspilerNode implements Identifiable {
+public abstract class TranspilerNode implements Identifiable, TreeNode {
     protected final Map<String, Object> properties;
     @Getter private final List<SemanticCategory> categories;
     protected final List<TranspilerNode> childTranspilerNodes = new ArrayList<>();
     protected final String id;
 
     public TranspilerNode(List<SemanticCategory> categories) {
-        this(ImmutableList.of(), ImmutableMap.of(), categories);
+        this(ImmutableList.of(), Map.of(), categories);
     }
 
     protected TranspilerNode(List<TranspilerNode> childTranspilerNodes, Map<String, Object> additionalAttributes, List<SemanticCategory> categories) {
@@ -25,7 +26,7 @@ public abstract class TranspilerNode implements Identifiable {
         this.id = UUID.randomUUID().toString();
     }
 
-    public <E> TranspilerNode(List<TranspilerNode> childTranspilerNodes, List<SemanticCategory> categories) {
+    public TranspilerNode(List<TranspilerNode> childTranspilerNodes, List<SemanticCategory> categories) {
         this(childTranspilerNodes, ImmutableMap.of(), categories);
     }
 
@@ -49,6 +50,10 @@ public abstract class TranspilerNode implements Identifiable {
     public <T> T getProperty(String key) {
         if (!properties.containsKey(key)) return null;
         return (T) properties.get(key);
+    }
+
+    public <T> void setProperty(String key, T value) {
+        properties.put(key, value);
     }
 
     public Collection<TranspilerNode> astChildren() {

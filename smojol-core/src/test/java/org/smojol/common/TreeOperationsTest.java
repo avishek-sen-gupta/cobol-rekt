@@ -2,8 +2,12 @@ package org.smojol.common;
 
 import com.google.common.collect.ImmutableList;
 import org.junit.jupiter.api.Test;
+import org.smojol.common.navigation.ParentBuilderVisitor;
+import org.smojol.common.navigation.TreeTraversal;
 import org.smojol.common.transpiler.*;
 import org.smojol.common.vm.type.TypedRecord;
+
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.smojol.common.transpiler.TreeOperations.escapeScope;
