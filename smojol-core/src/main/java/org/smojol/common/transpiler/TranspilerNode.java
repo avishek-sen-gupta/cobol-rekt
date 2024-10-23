@@ -97,4 +97,12 @@ public abstract class TranspilerNode implements Identifiable, TreeNode {
         if (fromIndex == childTranspilerNodes.size() - 1) return ImmutableList.of();
         return childTranspilerNodes.subList(fromIndex + 1, childTranspilerNodes.size());
     }
+
+    public List<TranspilerNode> range(TranspilerNode from, TranspilerNode to) {
+        int fromIndex = childTranspilerNodes.indexOf(from);
+        if (fromIndex == -1) return ImmutableList.of();
+        int toIndex = childTranspilerNodes.indexOf(to);
+        if (toIndex == -1) return ImmutableList.of();
+        return childTranspilerNodes.subList(fromIndex, toIndex + 1);
+    }
 }

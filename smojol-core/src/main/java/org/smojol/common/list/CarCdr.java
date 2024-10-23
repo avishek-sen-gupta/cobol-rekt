@@ -15,4 +15,9 @@ public class CarCdr {
         if (things.isEmpty()) return Optional.empty();
         return Optional.of(things.getFirst());
     }
+
+    public static <T> List<T> init(List<T> things) {
+        if (things.isEmpty() || things.size() == 1) return ImmutableList.of();
+        return things.subList(0, things.size() - 1);
+    }
 }
