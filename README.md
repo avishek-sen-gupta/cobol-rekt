@@ -4,9 +4,14 @@
 
 ## Elevator Pitch
 
-Cobol-REKT is an evolving toolkit of capabilities helpful for reverse engineering legacy Cobol code. These capabilities range from building flowcharts of the underlying code to translating COBOL into an hybrid Intermediate Representation (graph- and instruction- based) potentially suitable for transpilation to other languages.
+Cobol-REKT is an evolving toolkit of capabilities helpful for **reverse engineering legacy Cobol code**. These capabilities range from **building flowcharts** of the underlying code to **translating COBOL into an hybrid Intermediate Representation** (graph- and instruction- based) potentially suitable for transpilation to other languages.
 
 Engineers can pick components from this library to incorporate into their reverse engineering analysis workflows, or more cohesive products suitable for wider audiences like analysts.
+
+An important aim of this library is to serve as a testbed for the following:
+
+- Different compile-time analyses focusing on moving from an unstructured programming language to a structured one.
+- Tree transformations useful for translating unstructured control flow constructs to modern control flow constructs.
 
 In addition, the library also includes several reusable algorithms which are commonly used in analysis in compiler middleware toolchains.
 
@@ -131,9 +136,9 @@ Some reverse engineering use cases are listed below. Descriptions of the capabil
 ## Roadmap
 
 - Integrating Domain Knowledge
-- IDMS Identify UI interactions and participants (```INSPECT```, ```MAP IN```, ```INQUIRE MAP```, Panel Definition parsing)
 - Eliminate GO TO's in intermediate representation, to enable transformation into structured programming constructs.
 - Deeper Dataflow Analysis
+- IDMS Identify UI interactions and participants (```INSPECT```, ```MAP IN```, ```INQUIRE MAP```, Panel Definition parsing)
 
 ## Flowchart Generation
 
