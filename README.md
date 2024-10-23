@@ -2,6 +2,16 @@
 
 [![Maven Package](https://github.com/avishek-sen-gupta/cobol-rekt/actions/workflows/maven-publish.yml/badge.svg)](https://github.com/avishek-sen-gupta/cobol-rekt/actions/workflows/maven-publish.yml)
 
+## Elevator Pitch
+
+Cobol-REKT is an evolving toolkit of capabilities helpful for reverse engineering legacy Cobol code. These capabilities range from building flowcharts of the underlying code to translating COBOL into an hybrid Intermediate Representation (graph- and instruction- based) potentially suitable for transpilation to other languages.
+
+Engineers can pick components from this library to incorporate into their reverse engineering analysis workflows, or more cohesive products suitable for wider audiences like analysts.
+
+In addition, the library also includes several reusable algorithms which are commonly used in analysis in compiler middleware toolchains.
+
+## Backlog
+
 You can see the current backlog [here](https://github.com/users/avishek-sen-gupta/projects/1).
 
 ## Contents
@@ -51,7 +61,7 @@ You can see the current backlog [here](https://github.com/users/avishek-sen-gupt
 - [Known Issues](#known-issues)
 
 ## Introduction
-Cobol-REKT is an evolving toolkit of capabilities helpful for reverse engineering legacy Cobol code. As of now, the following capabilities are available:
+Cobol-REKT is an continually evolving, actively maintained collection of capabilities helpful for reverse engineering legacy Cobol code. The following is a representative list of the capabilities currently available:
 
 - Program / section / paragraph level flowchart generation based on AST (SVG or PNG)
 - Section-wise generation of Mermaid flowcharts
@@ -76,7 +86,7 @@ Cobol-REKT is an evolving toolkit of capabilities helpful for reverse engineerin
   - **Exposing Basic Blocks** which are a useful first step in raw transpilation
   - Calculating **limit flow graphs** using T1-T2 reductions: Analyse whether the control flow graph is reducible or not. This is a proxy for how well-structured the program is, and how amenable it is to direct transpilation to structured programming languages (without arbitrary GOTOs)
   - **Dominator Analysis:** This is the first step which forms the basis for techniques like detecting implicit loops, and correct scoping of any potential transpiled code in structured programming languages.
-
+- ... and more!
 
 ## Philosophy
 
@@ -84,7 +94,9 @@ Cobol-REKT is more of a **library of useful things** intended to be embedded in 
 
 _It is also to be noted that OpenAI integration is only attached to specific features. Much of the functionality of this toolkit is based on deterministic analysis._
 
-The toolkit consists of Java components, most of which are around parsing, ingestion of, and export from Cobol sources, and Python components, which carry out the analyses. In addition, the support for Neo4J allows you to build custom graph analyses as per your needs. I expect most of the analysis to happen through Python (using Neo4J or NetworkX), hence the Java component tries to unlock as much of the ingested data as possible in different formats.
+The toolkit consists of Java components, most of which are around parsing, ingestion of, export from Cobol sources, and control flow analyses, and Python components, which carry out some of the other analyses (including LLM-assisted summaries).
+
+In addition, the support for Neo4J allows you to build custom graph analyses as per your needs. I expect most of the dynamic analysis to happen through Python (using Neo4J or NetworkX), hence the Java component tries to unlock as much of the ingested data as possible in different formats.
 
 ## Contributing
 
