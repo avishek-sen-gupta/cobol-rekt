@@ -590,7 +590,7 @@ To be more precise, the reaching conditions of all the nodes in the Depth-First 
 
 A few important notes about this:
 
-- The ```ReachingConditionDefinitionTask``` performs this work. It is also used in the control flow restructuring task (see [this](#control-flowgraph-restructuring-to-eliminate-go-tos)).
+- The ```ReachingConditionDefinitionTask``` performs this work. It is also used in the control flow restructuring task (see [this](#control-flowgraph--ast-restructuring-to-eliminate-go-tos)).
 - This is only applicable to acyclic graphs for the moment. Applying this to arbitrary graphs will not give correct results.
 - Since the task requires a graph slice, the ```BuildTranspilerFlowgraphTask``` and the ```GraphSliceTask``` tasks should be run before this.
 
