@@ -3,15 +3,20 @@ package org.smojol.common.transpiler;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import lombok.Getter;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.smojol.common.ast.SemanticCategory;
 import org.smojol.common.id.Identifiable;
 import org.smojol.common.navigation.TreeNode;
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 public abstract class TranspilerNode implements Identifiable, TreeNode {
     protected final Map<String, Object> properties;
-    @Getter private final List<SemanticCategory> categories;
+    @Getter
+    private final List<SemanticCategory> categories;
     protected final List<TranspilerNode> childTranspilerNodes = new ArrayList<>();
     protected final String id;
 
@@ -98,11 +103,23 @@ public abstract class TranspilerNode implements Identifiable, TreeNode {
         return childTranspilerNodes.subList(fromIndex + 1, childTranspilerNodes.size());
     }
 
-    public List<TranspilerNode> range(TranspilerNode from, TranspilerNode to) {
-        int fromIndex = childTranspilerNodes.indexOf(from);
+    public List<TranspilerNode> range(TranspilerNode fromInclusive, TranspilerNode toInclusive) {
+        int fromIndex = childTranspilerNodes.indexOf(fromInclusive);
         if (fromIndex == -1) return ImmutableList.of();
-        int toIndex = childTranspilerNodes.indexOf(to);
+        int toIndex = childTranspilerNodes.indexOf(toInclusive);
         if (toIndex == -1) return ImmutableList.of();
-        return childTranspilerNodes.subList(fromIndex, toIndex + 1);
+        return new ArrayList<>(childTranspilerNodes.subList(fromIndex, toIndex + 1));
+    }
+
+    public Optional<TranspilerNode> findOne(Predicate<TranspilerNode> matchCondition) {
+        return childTranspilerNodes.stream().filter(matchCondition).findFirst();
+    }
+
+    public boolean replaceRange(Pair<TranspilerNode, TranspilerNode> range, List<TranspilerNode> replacingNodes) {
+        List<TranspilerNode> r = range(range.getLeft(), range.getRight());
+        if (r.isEmpty()) return false;
+        boolean replacedSuccessfully = replace(r.getFirst(), replacingNodes);
+        r.forEach(childTranspilerNodes::remove);
+        return replacedSuccessfully;
     }
 }
