@@ -8,10 +8,11 @@ Cobol-REKT is an evolving toolkit of capabilities helpful for **reverse engineer
 
 Engineers can pick components from this library to incorporate into their reverse engineering analysis workflows, or more cohesive products suitable for wider audiences like analysts.
 
-An important aim of this library is to serve as a testbed for the following:
+An important aspirational aim of this library are to serve as a testbed for the some of the following:
 
 - Different **compile-time analyses** focusing on moving from an unstructured programming language to a structured one.
 - Code transformations useful for translating **unstructured control flow constructs to modern control flow constructs**.
+- Applications of ML and reasoning techniques on top of legacy code
 
 In addition, the library also includes several reusable algorithms which are commonly used in analysis in compiler middleware toolchains.
 
