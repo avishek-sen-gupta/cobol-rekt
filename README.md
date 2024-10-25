@@ -931,6 +931,7 @@ These are some other commands tried on larger graphs:
   - [Control Flow Analysis slides](http://www.cse.iitm.ac.in/~krishna/cs6013/lecture4.pdf)
   - [No More Gotos: Decompilation Using Pattern-Independent Control-Flow Structuring and Semantics-Preserving Transformations](https://github.com/lifting-bits/rellic/blob/master/docs/NoMoreGotos.pdf)
   - [Taming Control Flow: A Structured Approach to Eliminating Goto Statements](https://www.cs.tufts.edu/comp/150FP/archive/laurie-hendren/taming.pdf)
+  - [Automatic compiler restructuring of COBOL programs into a proc per paragraph model - Patent US5778232A (Expired 2016)](https://patents.google.com/patent/US5778232A/en)
 - Dominator Algorithms
   - [Graph-Theoretic Constructs for Program Control Flow Analysis - Allen and Cocke](https://dominoweb.draco.res.ibm.com/reports/rc3923.pdf)
   - [A Fast Algorithm for Finding Dominators in a Flowgraph - Lengauer and Tarjan](https://www.cs.princeton.edu/courses/archive/fall03/cs528/handouts/a%20fast%20algorithm%20for%20finding.pdf)
@@ -939,6 +940,7 @@ These are some other commands tried on larger graphs:
 - Reducibility
   - [Making Graphs Reducible with Controlled Node Splitting](https://dl.acm.org/doi/pdf/10.1145/267959.269971)
   - [Eliminating go to’s while Preserving Program Structure](https://dl.acm.org/doi/pdf/10.1145/48014.48021)
+  - [Identifying Loops Using DJ Graphs - Sreedhar, Gao, Lee](https://dl.acm.org/doi/pdf/10.1145/236114.236115)
 - COBOL References
   - [Examples: numeric data and internal representation](https://www.ibm.com/docs/sk/cobol-zos/6.3?topic=data-examples-numeric-internal-representation)
   - [Enterprise Cobol for Z/OS 6.4 - Language Reference](https://publibfp.dhe.ibm.com/epubs/pdf/igy6lr40.pdf)
