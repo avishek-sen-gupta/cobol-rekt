@@ -52,13 +52,15 @@ public class TreeSmithTest {
         JumpIfTranspilerNode jumpTranspilerNode = new JumpIfTranspilerNode(new NamedLocationNode("SOMEPLACE"), condition);
         TranspilerNode jumpBlock = new LabelledTranspilerCodeBlockNode("SOME_BLOCK", ImmutableList.of(set1, set2), ImmutableMap.of("type", FlowNodeType.PARAGRAPH));
         TranspilerNode parent = new TranspilerCodeBlockNode(ImmutableList.of(jumpBlock, set3, set4, jumpTranspilerNode));
+        assertTrue(new TreeSmith(parent).eliminateBackJump(jumpTranspilerNode));
 
-        TranspilerNode from = parent.findOne(n -> n instanceof LabelledTranspilerCodeBlockNode l && "SOME_BLOCK".equals(l.getName())).get();
-        assertEquals(jumpBlock, from);
-        TranspilerCodeBlockNode newScope = new TranspilerCodeBlockNode(CarCdr.init(parent.range(from, jumpTranspilerNode)));
-        TranspilerLoop loop = new TranspilerLoop(new SymbolReferenceNode("ABC"), new NullTranspilerNode(), new NullTranspilerNode(),
-                jumpTranspilerNode.getCondition(), new NullTranspilerNode(), ConditionTestTime.AFTER, newScope);
-        assertTrue(parent.replaceRange(ImmutablePair.of(from, jumpTranspilerNode), ImmutableList.of(loop, jumpTranspilerNode)));
+
+//        TranspilerNode from = parent.findOne(n -> n instanceof LabelledTranspilerCodeBlockNode l && "SOME_BLOCK".equals(l.getName())).get();
+//        assertEquals(jumpBlock, from);
+//        TranspilerCodeBlockNode newScope = new TranspilerCodeBlockNode(CarCdr.init(parent.range(from, jumpTranspilerNode)));
+//        TranspilerLoop loop = new TranspilerLoop(new SymbolReferenceNode("ABC"), new NullTranspilerNode(), new NullTranspilerNode(),
+//                jumpTranspilerNode.getCondition(), new NullTranspilerNode(), ConditionTestTime.AFTER, newScope);
+//        assertTrue(parent.replaceRange(ImmutablePair.of(from, jumpTranspilerNode), ImmutableList.of(loop, jumpTranspilerNode)));
     }
 
     private static SetTranspilerNode set(String variable, int value) {

@@ -17,7 +17,7 @@ public class LabelledTranspilerCodeBlockNode extends TranspilerNode {
 
     @Override
     public String description() {
-        return String.format("[CODE_BLOCK: %s] : ", name) + " {\n" + String.join("\n", childTranspilerNodes.stream().map(TranspilerNode::description).toList() + "\n}\n");
+        return String.format("[CODE_BLOCK: %s] : ", name) + " {\n" + String.join("\n", childTranspilerNodes.stream().map(TranspilerNode::description).toList()) + "\n}\n";
 //        return String.format("[%s]", name);
     }
 

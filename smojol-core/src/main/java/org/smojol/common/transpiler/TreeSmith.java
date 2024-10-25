@@ -1,7 +1,10 @@
 package org.smojol.common.transpiler;
 
 import com.google.common.collect.ImmutableList;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.smojol.common.list.CarCdr;
 import org.smojol.common.navigation.TreeNodeParentMapper;
+import org.smojol.common.vm.expression.ConditionTestTime;
 import org.smojol.common.vm.type.TypedRecord;
 
 import java.util.List;
@@ -32,5 +35,15 @@ public class TreeSmith {
         if (!couldGraft) return false;
         parentMapper.update(graftLocation.parentScope());
         return true;
+    }
+
+    public boolean eliminateBackJump(JumpIfTranspilerNode jumpNode) {
+        TranspilerNode parent = parentMapper.parentOf(jumpNode);
+        TranspilerNode from = parent.findOne(n -> n instanceof LabelledTranspilerCodeBlockNode l && "SOME_BLOCK".equals(l.getName())).get();
+        TranspilerCodeBlockNode newScope = new TranspilerCodeBlockNode(CarCdr.init(parent.range(from, jumpNode)));
+        TranspilerLoop loop = new TranspilerLoop(new SymbolReferenceNode("ABC"), new NullTranspilerNode(), new NullTranspilerNode(),
+                jumpNode.getCondition(), new NullTranspilerNode(), ConditionTestTime.AFTER, newScope);
+
+        return parent.replaceRange(ImmutablePair.of(from, jumpNode), ImmutableList.of(loop, jumpNode));
     }
 }
