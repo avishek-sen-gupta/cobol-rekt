@@ -46,7 +46,9 @@ public class TreeSmith {
         TranspilerLoop loop = new TranspilerLoop(new SymbolReferenceNode("ABC"), new NullTranspilerNode(), new NullTranspilerNode(),
                 jumpNode.getCondition(), new NullTranspilerNode(), ConditionTestTime.AFTER, newScope);
 
-        return parent.replaceRangeToInclusive(ImmutablePair.of(from, jumpNode), ImmutableList.of(loop));
+        boolean couldGraft = parent.replaceRangeToInclusive(ImmutablePair.of(from, jumpNode), ImmutableList.of(loop));
+        parentMapper.update(parent);
+        return couldGraft;
     }
 
     public boolean eliminateForwardJump(JumpIfTranspilerNode jumpNode) {
@@ -56,9 +58,10 @@ public class TreeSmith {
         if (maybeJumpTarget.isEmpty()) return false;
         TranspilerNode jumpTarget = maybeJumpTarget.get();
         List<TranspilerNode> range = parent.range(jumpNode, jumpTarget);
-        List<TranspilerNode> replacedNodes = CarCdr.init(range);
-        List<TranspilerNode> ifBody = CarCdr.tail(replacedNodes);
+        List<TranspilerNode> ifBody = CarCdr.tail(CarCdr.init(range));
         TranspilerNode ifNode = new IfTranspilerNode(jumpNode.getCondition(), new TranspilerCodeBlockNode(ifBody));
-        return parent.replaceRangeToExclusive(ImmutablePair.of(jumpNode, jumpTarget), ImmutableList.of(ifNode));
+        boolean couldGraft = parent.replaceRangeToExclusive(ImmutablePair.of(jumpNode, jumpTarget), ImmutableList.of(ifNode));
+        parentMapper.update(parent);
+        return couldGraft;
     }
 }
