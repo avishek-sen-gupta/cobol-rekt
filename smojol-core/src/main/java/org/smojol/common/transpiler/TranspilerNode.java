@@ -3,14 +3,12 @@ package org.smojol.common.transpiler;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import lombok.Getter;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.smojol.common.ast.SemanticCategory;
 import org.smojol.common.id.Identifiable;
 import org.smojol.common.navigation.TreeNode;
 
 import java.util.*;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 public abstract class TranspilerNode implements Identifiable, TreeNode {
