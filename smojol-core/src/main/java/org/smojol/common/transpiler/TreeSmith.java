@@ -8,6 +8,7 @@ import org.smojol.common.vm.expression.ConditionTestTime;
 import org.smojol.common.vm.type.TypedRecord;
 
 import java.util.List;
+import java.util.Optional;
 
 public class TreeSmith {
     private final TranspilerNode root;
@@ -28,7 +29,8 @@ public class TreeSmith {
         TranspilerNode jumpIfTranspilerNode = switch (jumpNode) {
             case JumpTranspilerNode j -> new JumpIfTranspilerNode(j.getStart(), condition);
             case JumpIfTranspilerNode k -> new JumpIfTranspilerNode(k.getDestination(), condition);
-            default -> throw new IllegalStateException(String.format("Unexpected node of type %s. Description is:\n%s", jumpNode.getClass(), jumpNode.description()));
+            default ->
+                    throw new IllegalStateException(String.format("Unexpected node of type %s. Description is:\n%s", jumpNode.getClass(), jumpNode.description()));
         };
         TreeNodeLocation graftLocation = parentMapper.parentGraftLocation(parentMapper.parentOf(jumpNode));
         boolean couldGraft = graftLocation.parentScope().addAfter(graftLocation.location(), ImmutableList.of(jumpIfTranspilerNode));
@@ -44,6 +46,19 @@ public class TreeSmith {
         TranspilerLoop loop = new TranspilerLoop(new SymbolReferenceNode("ABC"), new NullTranspilerNode(), new NullTranspilerNode(),
                 jumpNode.getCondition(), new NullTranspilerNode(), ConditionTestTime.AFTER, newScope);
 
-        return parent.replaceRange(ImmutablePair.of(from, jumpNode), ImmutableList.of(loop, jumpNode));
+        return parent.replaceRangeToInclusive(ImmutablePair.of(from, jumpNode), ImmutableList.of(loop));
+    }
+
+    public boolean eliminateForwardJump(JumpIfTranspilerNode jumpNode) {
+        TranspilerNode parent = parentMapper.parentOf(jumpNode);
+        Optional<TranspilerNode> maybeJumpTarget = parent.findOne(n -> n instanceof LabelledTranspilerCodeBlockNode l
+                && l.getName().equals(((NamedLocationNode) jumpNode.getDestination()).getName()));
+        if (maybeJumpTarget.isEmpty()) return false;
+        TranspilerNode jumpTarget = maybeJumpTarget.get();
+        List<TranspilerNode> range = parent.range(jumpNode, jumpTarget);
+        List<TranspilerNode> replacedNodes = CarCdr.init(range);
+        List<TranspilerNode> ifBody = CarCdr.tail(replacedNodes);
+        TranspilerNode ifNode = new IfTranspilerNode(jumpNode.getCondition(), new TranspilerCodeBlockNode(ifBody));
+        return parent.replaceRangeToExclusive(ImmutablePair.of(jumpNode, jumpTarget), ImmutableList.of(ifNode));
     }
 }

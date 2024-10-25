@@ -136,7 +136,7 @@ public class TranspilerNodeChildEditTest {
     }
 
     @Test
-    public void canReplaceRangeOfChildrenWithAnotherRangeOfNodes() {
+    public void canReplaceRangeOfChildrenWithAnotherRangeToInclusiveOfNodes() {
         TranspilerNode set1 = set("ABC", 30);
         TranspilerNode set2 = set("DEF", 40);
         TranspilerNode set3 = set("PQR", 50);
@@ -147,7 +147,7 @@ public class TranspilerNodeChildEditTest {
         TranspilerNode set8 = set("RST", 110);
         TranspilerNode parent = new TranspilerCodeBlockNode(ImmutableList.of(set1, set2, set3, set4));
 
-        assertTrue(parent.replaceRange(ImmutablePair.of(set2, set3), ImmutableList.of(set6, set7, set8)));
+        assertTrue(parent.replaceRangeToInclusive(ImmutablePair.of(set2, set3), ImmutableList.of(set6, set7, set8)));
         assertEquals(ImmutableList.of(set1, set6, set7, set8, set4), parent.astChildren());
     }
 
@@ -163,7 +163,7 @@ public class TranspilerNodeChildEditTest {
         TranspilerNode set8 = set("RST", 110);
         TranspilerNode parent = new TranspilerCodeBlockNode(ImmutableList.of(set1, set2, set3, set4));
 
-        assertFalse(parent.replaceRange(ImmutablePair.of(set5, set5), ImmutableList.of(set6, set7, set8)));
+        assertFalse(parent.replaceRangeToInclusive(ImmutablePair.of(set5, set5), ImmutableList.of(set6, set7, set8)));
         assertEquals(ImmutableList.of(set1, set2, set3, set4), parent.astChildren());
     }
 
@@ -175,7 +175,7 @@ public class TranspilerNodeChildEditTest {
         TranspilerNode set4 = set("KLM", 70);
         TranspilerNode parent = new TranspilerCodeBlockNode(ImmutableList.of(set1, set2, set3, set4));
 
-        assertTrue(parent.replaceRange(ImmutablePair.of(set2, set3), ImmutableList.of()));
+        assertTrue(parent.replaceRangeToInclusive(ImmutablePair.of(set2, set3), ImmutableList.of()));
         assertEquals(ImmutableList.of(set1, set4), parent.astChildren());
     }
 

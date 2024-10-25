@@ -3,6 +3,7 @@ package org.smojol.common.transpiler;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import lombok.Getter;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.smojol.common.ast.SemanticCategory;
 import org.smojol.common.id.Identifiable;
@@ -113,11 +114,18 @@ public abstract class TranspilerNode implements Identifiable, TreeNode {
         return childTranspilerNodes.stream().filter(matchCondition).findFirst();
     }
 
-    public boolean replaceRange(Pair<TranspilerNode, TranspilerNode> range, List<TranspilerNode> replacingNodes) {
+    public boolean replaceRangeToInclusive(Pair<TranspilerNode, TranspilerNode> range, List<TranspilerNode> replacingNodes) {
         List<TranspilerNode> r = range(range.getLeft(), range.getRight());
         if (r.isEmpty()) return false;
         boolean replacedSuccessfully = replace(r.getFirst(), replacingNodes);
         r.forEach(childTranspilerNodes::remove);
         return replacedSuccessfully;
+    }
+
+
+    public boolean replaceRangeToExclusive(Pair<TranspilerNode, TranspilerNode> range, List<TranspilerNode> replacingNodes) {
+        List<TranspilerNode> r = range(range.getLeft(), range.getRight());
+        if (r.size() <= 1) return false;
+        return replaceRangeToInclusive(ImmutablePair.of(range.getLeft(), r.get(r.size() - 2)), replacingNodes);
     }
 }
