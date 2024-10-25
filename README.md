@@ -67,6 +67,7 @@ You can see the current backlog [here](https://github.com/users/avishek-sen-gupt
 - [A Note on Copyright](#a-note-on-copyright)
 - [Caveats](#caveats)
 - [Known Issues](#known-issues)
+- [References](#references)
 
 ## Introduction
 Cobol-REKT is an continually evolving, actively maintained collection of capabilities helpful for reverse engineering legacy Cobol code. The following is a representative list of the capabilities currently available:
@@ -889,6 +890,32 @@ This is a list of algorithms written from scratch, for reference or reuse. All o
 - IDMS ```SCHEMA SECTION``` get translated to ```DataDivisionContext``` nodes which have the word ```_SCHEMA_``` as the leading word in their textual description. However, this is not present in the correct child ```DialectNodeFillerContext``` node.
 - Expressions in general identifiers (```LENGTH OF...```, etc.) return static values. References to special registers resolve the variable reference (for dependency computations) only resolve one level down.
 
+## References
+
+- Code Structure and Structural Programming
+    - [Structured Program Theorem](https://en.wikipedia.org/wiki/Structured_program_theorem)
+    - [Advanced Compiler Design and Implementation by Steven Muchnik](https://www.amazon.in/Advanced-Compiler-Design-Implementation-Muchnick/dp/1558603204)
+    - [Solving the structured control flow problem once and for all](https://medium.com/leaningtech/solving-the-structured-control-flow-problem-once-and-for-all-5123117b1ee2)
+    - [Compilers: Principles, Techniques, and Tools by Aho, Sethi, Ullman](https://www.amazon.in/Compilers-Principles-Techniques-Tools-Updated/dp/9357054111/)
+    - [Control Flow Analysis slides](http://www.cse.iitm.ac.in/~krishna/cs6013/lecture4.pdf)
+    - [No More Gotos: Decompilation Using Pattern-Independent Control-Flow Structuring and Semantics-Preserving Transformations](https://github.com/lifting-bits/rellic/blob/master/docs/NoMoreGotos.pdf)
+    - [Taming Control Flow: A Structured Approach to Eliminating Goto Statements](https://www.cs.tufts.edu/comp/150FP/archive/laurie-hendren/taming.pdf)
+    - [Automatic compiler restructuring of COBOL programs into a proc per paragraph model - Patent US5778232A (Expired 2016)](https://patents.google.com/patent/US5778232A/en)
+- Dominator Algorithms
+    - [Graph-Theoretic Constructs for Program Control Flow Analysis - Allen and Cocke](https://dominoweb.draco.res.ibm.com/reports/rc3923.pdf)
+    - [A Fast Algorithm for Finding Dominators in a Flowgraph - Lengauer and Tarjan](https://www.cs.princeton.edu/courses/archive/fall03/cs528/handouts/a%20fast%20algorithm%20for%20finding.pdf)
+    - [A Linear Time Algorithm for Placing Phi-Nodes](https://dl.acm.org/doi/pdf/10.1145/199448.199464)
+    - [A very readable explanation of the Lengauer-Tarjan algorithm](https://fileadmin.cs.lth.se/cs/education/edan75/F02.pdf)
+- Reducibility
+    - [Making Graphs Reducible with Controlled Node Splitting](https://dl.acm.org/doi/pdf/10.1145/267959.269971)
+    - [Eliminating go to’s while Preserving Program Structure](https://dl.acm.org/doi/pdf/10.1145/48014.48021)
+    - [Identifying Loops Using DJ Graphs - Sreedhar, Gao, Lee](https://dl.acm.org/doi/pdf/10.1145/236114.236115)
+- COBOL References
+    - [Examples: numeric data and internal representation](https://www.ibm.com/docs/sk/cobol-zos/6.3?topic=data-examples-numeric-internal-representation)
+    - [Enterprise Cobol for Z/OS 6.4 - Language Reference](https://publibfp.dhe.ibm.com/epubs/pdf/igy6lr40.pdf)
+- Graph Theory
+    - [Reducible Flowgraphs 0](https://rgrig.blogspot.com/2009/10/dtfloatleftclearleft-summary-of-some.html)
+
 The rest of this file is mostly technical notes for my personal documentation.
 
 ## Valid Type Specifications for External Zoned Decimal and Alphanumeric
@@ -920,29 +947,3 @@ These are some other commands tried on larger graphs:
 ### This prints out all levels
 
 ```dot -Kdot -v5 -Gsize=200,200\! -Goverlap=scale -Tpng -Gnslimit=4 -Gnslimit1=4 -Gmaxiter=2000 -Gsplines=line dotfile.dot -oflowchart-level5.png```
-
-## References and Inspirations
-
-- Code Structure and Structural Programming
-  - [Structured Program Theorem](https://en.wikipedia.org/wiki/Structured_program_theorem)
-  - [Advanced Compiler Design and Implementation by Steven Muchnik](https://www.amazon.in/Advanced-Compiler-Design-Implementation-Muchnick/dp/1558603204)
-  - [Solving the structured control flow problem once and for all](https://medium.com/leaningtech/solving-the-structured-control-flow-problem-once-and-for-all-5123117b1ee2)
-  - [Compilers: Principles, Techniques, and Tools by Aho, Sethi, Ullman](https://www.amazon.in/Compilers-Principles-Techniques-Tools-Updated/dp/9357054111/)
-  - [Control Flow Analysis slides](http://www.cse.iitm.ac.in/~krishna/cs6013/lecture4.pdf)
-  - [No More Gotos: Decompilation Using Pattern-Independent Control-Flow Structuring and Semantics-Preserving Transformations](https://github.com/lifting-bits/rellic/blob/master/docs/NoMoreGotos.pdf)
-  - [Taming Control Flow: A Structured Approach to Eliminating Goto Statements](https://www.cs.tufts.edu/comp/150FP/archive/laurie-hendren/taming.pdf)
-  - [Automatic compiler restructuring of COBOL programs into a proc per paragraph model - Patent US5778232A (Expired 2016)](https://patents.google.com/patent/US5778232A/en)
-- Dominator Algorithms
-  - [Graph-Theoretic Constructs for Program Control Flow Analysis - Allen and Cocke](https://dominoweb.draco.res.ibm.com/reports/rc3923.pdf)
-  - [A Fast Algorithm for Finding Dominators in a Flowgraph - Lengauer and Tarjan](https://www.cs.princeton.edu/courses/archive/fall03/cs528/handouts/a%20fast%20algorithm%20for%20finding.pdf)
-  - [A Linear Time Algorithm for Placing Phi-Nodes](https://dl.acm.org/doi/pdf/10.1145/199448.199464)
-  - [A very readable explanation of the Lengauer-Tarjan algorithm](https://fileadmin.cs.lth.se/cs/education/edan75/F02.pdf)
-- Reducibility
-  - [Making Graphs Reducible with Controlled Node Splitting](https://dl.acm.org/doi/pdf/10.1145/267959.269971)
-  - [Eliminating go to’s while Preserving Program Structure](https://dl.acm.org/doi/pdf/10.1145/48014.48021)
-  - [Identifying Loops Using DJ Graphs - Sreedhar, Gao, Lee](https://dl.acm.org/doi/pdf/10.1145/236114.236115)
-- COBOL References
-  - [Examples: numeric data and internal representation](https://www.ibm.com/docs/sk/cobol-zos/6.3?topic=data-examples-numeric-internal-representation)
-  - [Enterprise Cobol for Z/OS 6.4 - Language Reference](https://publibfp.dhe.ibm.com/epubs/pdf/igy6lr40.pdf)
-- Graph Theory
-  - [Reducible Flowgraphs 0](https://rgrig.blogspot.com/2009/10/dtfloatleftclearleft-summary-of-some.html)
