@@ -591,21 +591,19 @@ To be more precise, the reaching conditions of all the nodes in the Depth-First 
 
 A few important notes about this:
 
-- The ```ReachingConditionDefinitionTask``` performs this work. It is also used in the control flow restructuring task (see [this](#control-flowgraph--ast-restructuring-to-eliminate-go-tos)).
+- The ```ReachingConditionDefinitionTask``` performs this work. This calculates the actual reaching conditions of all the vertices in an acyclic graph slice. Condition-based refinement of conditions has not yet been implemented.
 - This is only applicable to acyclic graphs for the moment. Applying this to arbitrary graphs will not give correct results.
-- Since the task requires a graph slice, the ```BuildTranspilerFlowgraphTask``` and the ```GraphSliceTask``` tasks should be run before this.
+- Since the task requires a graph slice, the ```BuildTranspilerFlowgraphTask``` and the ```GraphSliceTask``` tasks should be run before this. This finds the graph slices as mentioned in the paper. It uses the instruction flowgraph built by ```BuildTranspilerFlowgraphTask```.
 
 
 ### Control Flowgraph / AST Restructuring to eliminate GO TO's
 
-Experiment based on one of the following:
-- Control Flowgraph Restructuring based on [No More Gotos: Decompilation Using Pattern-Independent Control-Flow Structuring and Semantics-Preserving Transformations](https://www.ndss-symposium.org/wp-content/uploads/2017/09/11_4_2.pdf)
-- AST Restructuring based on [Taming Control Flow: A Structured Approach to Eliminating Goto Statements](https://www.cs.tufts.edu/comp/150FP/archive/laurie-hendren/taming.pdf)
+Experimental AST Restructuring based on [Taming Control Flow: A Structured Approach to Eliminating Goto Statements](https://www.cs.tufts.edu/comp/150FP/archive/laurie-hendren/taming.pdf)
 
-Several tasks are involved in this.
-
-- ```GraphSliceTask```: This finds the graph slices as mentioned in the paper. It uses the instruction flowgraph built by ```BuildTranspilerFlowgraphTask```.
-- ```ReachingConditionDefinitionTask```: This calculates the actual reaching conditions of all the vertices in an acyclic graph slice. Condition-based refinement of conditions has not yet been implemented.
+The ```TreeSmith``` class provides capabilities for the following:
+- Refactoring jumps into conditional jumps which are more easily refactored.
+- Outward transformations of conditional jumps to escape scopes.
+- Eliminating forward and backward jumps to labelled code blocks at the same level.
 
 [WIP]...
 

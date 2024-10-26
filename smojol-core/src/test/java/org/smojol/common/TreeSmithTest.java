@@ -133,15 +133,16 @@ public class TreeSmithTest {
                 jmpIf_()
         ).verify(program);
         assertTrue(new TreeSmith(program).eliminateBackJump(jumpTranspilerNode));
-        block_(loop_(block_(
-                                labelledBlock_("SOME_BLOCK",
-                                        set_(),
-                                        set_()
-                                ),
-                                set_(),
-                                set_()
-                        )
+        block_(loop_(
+                block_(
+                    labelledBlock_("SOME_BLOCK",
+                        set_(),
+                        set_()
+                    ),
+                    set_(),
+                    set_()
                 )
+            )
         ).verify(program);
     }
 
