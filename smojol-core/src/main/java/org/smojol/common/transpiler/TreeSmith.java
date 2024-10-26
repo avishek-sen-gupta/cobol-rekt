@@ -2,6 +2,7 @@ package org.smojol.common.transpiler;
 
 import com.google.common.collect.ImmutableList;
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.smojol.common.list.CarCdr;
 import org.smojol.common.navigation.TreeNodeParentMapper;
 import org.smojol.common.vm.expression.ConditionTestTime;
@@ -19,14 +20,14 @@ public class TreeSmith {
         parentMapper = new TreeNodeParentMapper(root);
     }
 
-    public boolean escapeScope(TranspilerNode jumpNode) {
+    public TranspilerNode escapeScopeOnce(TranspilerNode jumpNode) {
         TranspilerNode currentScope = parentMapper.parentOf(jumpNode);
         TranspilerNode condition = new PrimitiveValueTranspilerNode(TypedRecord.TRUE);
         List<TranspilerNode> everythingAfter = currentScope.everythingAfter(jumpNode);
         TranspilerNode newIf = new IfTranspilerNode(new NotTranspilerNode(condition), new TranspilerCodeBlockNode(everythingAfter));
         SetTranspilerNode setCondition = new SetTranspilerNode(condition, new SymbolReferenceNode("SOME"));
         boolean replaced = currentScope.replaceToEnd(jumpNode, ImmutableList.of(setCondition, newIf));
-        if (!replaced) return false;
+        if (!replaced) return jumpNode;
         TranspilerNode jumpIfTranspilerNode = switch (jumpNode) {
             case JumpTranspilerNode j -> new JumpIfTranspilerNode(j.getStart(), condition);
             case JumpIfTranspilerNode k -> new JumpIfTranspilerNode(k.getDestination(), condition);
@@ -35,9 +36,9 @@ public class TreeSmith {
         };
         TreeNodeLocation graftLocation = parentMapper.parentGraftLocation(currentScope);
         boolean couldGraft = graftLocation.parentScope().addAfter(graftLocation.location(), ImmutableList.of(jumpIfTranspilerNode));
-        if (!couldGraft) return false;
+        if (!couldGraft) return jumpNode;
         parentMapper.update(graftLocation.parentScope());
-        return true;
+        return jumpIfTranspilerNode;
     }
 
     public boolean eliminateBackJump(JumpIfTranspilerNode jumpNode) {
@@ -76,7 +77,7 @@ public class TreeSmith {
         TranspilerNode jumpTarget = maybeJumpTarget.get();
         List<TranspilerNode> range = parent.range(jumpNode, jumpTarget);
         List<TranspilerNode> ifBody = CarCdr.tail(CarCdr.init(range));
-        TranspilerNode ifNode = new IfTranspilerNode(jumpNode.getCondition(), new TranspilerCodeBlockNode(ifBody));
+        TranspilerNode ifNode = new IfTranspilerNode(new NotTranspilerNode(jumpNode.getCondition()), new TranspilerCodeBlockNode(ifBody));
         boolean couldGraft = parent.replaceRangeToExclusive(ImmutablePair.of(jumpNode, jumpTarget), ImmutableList.of(ifNode));
         parentMapper.update(parent);
         return couldGraft;
@@ -86,5 +87,45 @@ public class TreeSmith {
         SetTranspilerNode newSet = new SetTranspilerNode(new SymbolReferenceNode("EFGH"), new PrimitiveValueTranspilerNode(TypedRecord.TRUE));
         JumpIfTranspilerNode replacingJumpIf = new JumpIfTranspilerNode(jumpNode.getStart(), new ValueOfNode(new SymbolReferenceNode("EFGH")));
         return parent.replace(jumpNode, ImmutableList.of(newSet, replacingJumpIf)) ? Optional.of(replacingJumpIf) : Optional.empty();
+    }
+
+    public Pair<TranspilerNode, Boolean> escapeScope(TranspilerNode node) {
+        LocationNode destinationBlockLabel = switch (node) {
+            case JumpTranspilerNode j -> j.getStart();
+            case JumpIfTranspilerNode k -> k.getDestination();
+            default -> LocationNode.NULL;
+        };
+
+        if (destinationBlockLabel == LocationNode.NULL) return ImmutablePair.of(node, false);
+        NamedLocationNode namedLocation = (NamedLocationNode) destinationBlockLabel;
+        Optional<TranspilerNode> first = root.findAllRecursive(n -> n instanceof LabelledTranspilerCodeBlockNode l && namedLocation.getName().equals(l.getName())).stream().findFirst();
+        if (first.isEmpty()) return ImmutablePair.of(node, false);
+        int destinationLevel = level(first.get());
+        TranspilerNode current = node;
+        while (level(current) != destinationLevel) {
+            TranspilerNode updated = escapeScopeOnce(current);
+            if (updated == current) return ImmutablePair.of(current, false);
+            current = updated;
+        }
+
+        return ImmutablePair.of(current, true);
+    }
+
+    private int level(TranspilerNode node) {
+        TranspilerNode parent = parentMapper.parentOf(node);
+        int level = 0;
+        while (parent != root) {
+            level++;
+            parent = parentMapper.parentOf(parent);
+        }
+        return level;
+    }
+
+    public boolean eliminateForwardJump(TranspilerNode node) {
+        return switch (node) {
+            case JumpTranspilerNode j -> eliminateForwardJump(j);
+            case JumpIfTranspilerNode k -> eliminateForwardJump(k);
+            default -> throw new IllegalStateException("Unexpected value: " + node);
+        };
     }
 }

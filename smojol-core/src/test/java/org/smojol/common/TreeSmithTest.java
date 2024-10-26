@@ -2,6 +2,7 @@ package org.smojol.common;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Test;
 import org.smojol.common.ast.FlowNodeType;
 import org.smojol.common.list.CarCdr;
@@ -10,8 +11,7 @@ import org.smojol.common.vm.type.TypedRecord;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.smojol.common.TreeMatcher.*;
 
 public class TreeSmithTest {
@@ -32,7 +32,7 @@ public class TreeSmithTest {
                 set_()
         ).verify(program);
         TreeSmith treeOps = new TreeSmith(program);
-        boolean escaped = treeOps.escapeScope(gotoSomeplace);
+        assertFalse(gotoSomeplace == treeOps.escapeScopeOnce(gotoSomeplace));
         block_(
                 if_(block_(
                                 set_(),
@@ -45,7 +45,6 @@ public class TreeSmithTest {
                 set_(),
                 set_()
         ).verify(program);
-        assertTrue(escaped);
     }
 
     @Test
@@ -220,6 +219,63 @@ public class TreeSmithTest {
                         set_()
                 )
         ).verify(program);
+    }
+
+    @Test
+    public void canEscapeScopeOnceAutomaticallyToCorrectLevelGivenJumpIfNode() {
+        TranspilerNode set1 = set("ABC", 30);
+        TranspilerNode set2 = set("DEF", 40);
+        TranspilerNode set3 = set("PQR", 50);
+        TranspilerNode set4 = set("KLM", 70);
+        TranspilerNode set5 = set("NOP", 80);
+        EqualToNode condition = new EqualToNode(new SymbolReferenceNode("EFG"), new PrimitiveValueTranspilerNode(TypedRecord.TRUE));
+        JumpIfTranspilerNode jumpTranspilerNode = new JumpIfTranspilerNode(new NamedLocationNode("SOME_BLOCK"), condition);
+        TranspilerNode jumpDestinationBlock = new LabelledTranspilerCodeBlockNode("SOME_BLOCK", ImmutableList.of(set1, set2), ImmutableMap.of("type", FlowNodeType.PARAGRAPH));
+        IfTranspilerNode ifStmt = new IfTranspilerNode(condition, new TranspilerCodeBlockNode(ImmutableList.of(new TranspilerCodeBlockNode(jumpTranspilerNode), set("abcd", 12))));
+        TranspilerNode program = new TranspilerCodeBlockNode(ImmutableList.of(ifStmt, set3, set4, set5, jumpDestinationBlock));
+        block_(
+                if_(block_(
+                        block_(
+                            jmpIf_()
+                        ),
+                        set_()
+                ), any_()),
+                set_(),
+                set_(),
+                set_(),
+                labelledBlock_("SOME_BLOCK",
+                        set_(),
+                        set_()
+                )
+        ).verify(program);
+
+        TreeSmith treeSmith = new TreeSmith(program);
+        Pair<TranspilerNode, Boolean> promotionResult = treeSmith.escapeScope(jumpTranspilerNode);
+        assertTrue(promotionResult.getRight());
+        block_(
+                if_(block_(
+                        block_(
+                                set_(),
+                                if_(block_(), any_())
+                        ),
+                        set_(),
+                        if_(block_(
+                                set_()
+                            ), any_()
+                        )
+                ), any_()),
+                jmpIf_(),
+                set_(),
+                set_(),
+                set_(),
+                labelledBlock_("SOME_BLOCK",
+                        set_(),
+                        set_()
+                )
+        ).verify(program);
+
+//        boolean eliminatedGoto = treeSmith.eliminateForwardJump(promotionResult.getLeft());
+//        assertTrue(eliminatedGoto);
     }
 
     private static SetTranspilerNode set(String variable, int value) {

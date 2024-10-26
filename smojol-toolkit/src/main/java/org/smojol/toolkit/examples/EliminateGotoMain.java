@@ -33,13 +33,14 @@ public class EliminateGotoMain {
         TranspilerNode tree = transpilerFlowgraph.transpilerTree();
         JumpTranspilerNode firstGoto = (JumpTranspilerNode) tree.findAllRecursive(n1 -> n1 instanceof JumpTranspilerNode).getFirst();
         TreeSmith treeSmith = new TreeSmith(tree);
-        boolean b2 = treeSmith.escapeScope(firstGoto);
-        TranspilerNode jumpIf1 = tree.findAllRecursive(n -> n instanceof JumpIfTranspilerNode).getFirst();
-        boolean b1 = treeSmith.escapeScope(jumpIf1);
-        JumpIfTranspilerNode jumpIf2 = (JumpIfTranspilerNode) tree.findAllRecursive(n -> n instanceof JumpIfTranspilerNode).getFirst();
-        boolean b3 = treeSmith.escapeScope(jumpIf2);
-        JumpIfTranspilerNode jumpIf3 = (JumpIfTranspilerNode) tree.findAllRecursive(n -> n instanceof JumpIfTranspilerNode).getFirst();
-        boolean b = treeSmith.eliminateForwardJump(jumpIf3);
+        TranspilerNode b1 = treeSmith.escapeScopeOnce(firstGoto);
+//        TranspilerNode jumpIf1 = tree.findAllRecursive(n -> n instanceof JumpIfTranspilerNode).getFirst();
+//        boolean b1 = treeSmith.escapeScopeOnce(jumpIf1);
+        TranspilerNode b2 = treeSmith.escapeScopeOnce(b1);
+//        JumpIfTranspilerNode jumpIf2 = (JumpIfTranspilerNode) tree.findAllRecursive(n -> n instanceof JumpIfTranspilerNode).getFirst();
+        TranspilerNode b3 = treeSmith.escapeScopeOnce(b2);
+//        JumpIfTranspilerNode jumpIf3 = (JumpIfTranspilerNode) tree.findAllRecursive(n -> n instanceof JumpIfTranspilerNode).getFirst();
+        boolean b = treeSmith.eliminateForwardJump((JumpIfTranspilerNode) b3);
         System.out.println("DONE");
     }
 }
