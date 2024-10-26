@@ -713,6 +713,7 @@ BLOCK [ProcedureDivisionBodyContext/T1] {
 
 **NOTE:** This is a work in progress. Variables which are used to descope jumps, are currently not named uniquely.
 
+This is probably best used for smaller scale refactorings, like eliminating jumps inside a section. For larger scale refactorings, a different approach (potentially based on [Automatic compiler restructuring of COBOL programs into a proc per paragraph model - Patent US5778232A (Expired 2016)](https://patents.google.com/patent/US5778232A/en)) might give better results.
 
 ## Running against AWS Card Demo
 
