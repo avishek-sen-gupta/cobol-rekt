@@ -11,6 +11,8 @@ import org.smojol.common.navigation.TreeNode;
 
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public abstract class TranspilerNode implements Identifiable, TreeNode<TranspilerNode> {
     protected final Map<String, Object> properties;
@@ -127,5 +129,14 @@ public abstract class TranspilerNode implements Identifiable, TreeNode<Transpile
         List<TranspilerNode> r = range(range.getLeft(), range.getRight());
         if (r.size() <= 1) return false;
         return replaceRangeToInclusive(ImmutablePair.of(range.getLeft(), r.get(r.size() - 2)), replacingNodes);
+    }
+
+    public List<TranspilerNode> findAllRecursive(Predicate<TranspilerNode> p) {
+        return findAllRecursive_(this, p).toList();
+    }
+
+    private Stream<TranspilerNode> findAllRecursive_(TranspilerNode node, Predicate<TranspilerNode> p) {
+        List<TranspilerNode> parent = p.test(node) ? ImmutableList.of(node) : ImmutableList.of();
+        return Stream.concat(parent.stream(), node.astChildren().stream().flatMap(c -> findAllRecursive_(c, p)));
     }
 }
