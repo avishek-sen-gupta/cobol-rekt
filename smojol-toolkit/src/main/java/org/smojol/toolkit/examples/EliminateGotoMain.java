@@ -44,8 +44,6 @@ public class EliminateGotoMain {
         boolean b3 = treeSmith.escapeScope(jumpIf2);
         JumpIfTranspilerNode jumpIf3 = (JumpIfTranspilerNode) tree.findAllRecursive(n -> n instanceof JumpIfTranspilerNode).getFirst();
         boolean b = treeSmith.eliminateForwardJump(jumpIf3);
-
-//        List<String> transpiledCode = new StructuredProgramTheoremFormTranspilerTask(transpilerFlowgraph).run();
         System.out.println("DONE");
     }
 }

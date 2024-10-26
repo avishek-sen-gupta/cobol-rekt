@@ -11,7 +11,6 @@ import org.smojol.common.navigation.TreeNode;
 
 import java.util.*;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public abstract class TranspilerNode implements Identifiable, TreeNode<TranspilerNode> {
@@ -48,7 +47,7 @@ public abstract class TranspilerNode implements Identifiable, TreeNode<Transpile
 
     @Override
     public String toString() {
-        return description();
+        return new TranspilerNodeFormatter().format(this);
     }
 
     public abstract String description();

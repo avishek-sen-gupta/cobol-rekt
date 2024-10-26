@@ -53,14 +53,18 @@ public final class TranspilerLoop extends TranspilerNode {
 
     @Override
     public String description() {
+        return headerDescription() + "\n{\n"
+                + body.description() + "\n}\n";
+    }
+
+    public String headerDescription() {
         return "loop["
                 + "loopVariable=" + loopVariable.description() + ", "
                 + "initialValue=" + initialValue.description() + ", "
                 + "maxValue=" + maxValue.description() + ", "
                 + "terminateCondition=" + terminateCondition.description() + ", "
                 + "loopUpdate=" + loopUpdate.description() + ", "
-                + "conditionTestTime=" + conditionTestTime.name() + "] \n{\n"
-                + body.description() + "\n}\n";
+                + "conditionTestTime=" + conditionTestTime.name() + "]";
     }
 
     @Override
