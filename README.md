@@ -4,11 +4,11 @@
 
 ## Elevator Pitch
 
-Cobol-REKT is an evolving toolkit of capabilities helpful for **reverse engineering legacy Cobol code**. These capabilities range from **building flowcharts** of the underlying code to **translating COBOL into an hybrid Intermediate Representation** (graph- and instruction- based) potentially suitable for transpilation to other languages.
+Cobol-REKT is an evolving toolkit of capabilities helpful for **reverse engineering legacy Cobol code**. These capabilities range from **building flowcharts** of the underlying code to **translating COBOL into a hybrid Intermediate Representation** (graph- and instruction- based) potentially suitable for transpilation to other languages.
 
 Engineers can pick components from this library to incorporate into their reverse engineering analysis workflows, or more cohesive products suitable for wider audiences like analysts.
 
-An important aspirational aim of this library are to serve as a testbed for the some of the following:
+An important aspirational aim of this library is to serve as a testbed for some of the following:
 
 - Different **compile-time analyses** focusing on moving from an unstructured programming language to a structured one.
 - Code transformations useful for translating **unstructured control flow constructs to modern control flow constructs**.
@@ -70,7 +70,7 @@ You can see the current backlog [here](https://github.com/users/avishek-sen-gupt
 - [References](#references)
 
 ## Introduction
-Cobol-REKT is an continually evolving, actively maintained collection of capabilities helpful for reverse engineering legacy Cobol code. The following is a representative list of the capabilities currently available:
+Cobol-REKT is a continually evolving, actively maintained collection of capabilities helpful for reverse engineering legacy Cobol code. The following is a representative list of the capabilities currently available:
 
 - Program / section / paragraph level flowchart generation based on AST (SVG or PNG)
 - Section-wise generation of Mermaid flowcharts
@@ -224,7 +224,7 @@ This will generate the glossary in ```out/glossary.md```. Integrating other out-
 
 ### Building Capability Maps **(ALPHA)**
 
-The toolkit supports extracting a capability map from the paragraphs of a source. For this, you need to generate both the AST in Neo4J, as well as the data structures JSON, you can do this via:
+The toolkit supports extracting a capability map from the paragraphs of a source. For this, you need to generate the AST in Neo4J, as well as the data structures JSON. You can do this via:
 
 ```
 java -jar smojol-cli/target/smojol-cli.jar run YOUR_PROGRAM --commands="FLOW_TO_NEO4J WRITE_DATA_STRUCTURES" --srcDir /path/to/sources --copyBooksDir /path/to/copybooks --dialectJarPath che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar --dialect IDMS --reportDir /path/to/report/dir
@@ -245,7 +245,7 @@ python -m src.llm.capability_extractor.capabilities_graph /paragraph/capabilitie
 
 ![Capability Map Extraction Screenshot](documentation/capability-extraction-progress-screenshot.png)
 
-This will take a little time, depending upon the number of paragraphs and their sizes. At the end, it will generate a dendrogram visualisation, as will as the capability map in Neo4J, as illustrated below (for a 10000+ line COBOL program).
+This will take a little time, depending upon the number of paragraphs and their sizes. At the end, it will generate a dendrogram visualisation, as well as the capability map in Neo4J, as illustrated below (for a 10000+ line COBOL program).
 
 ![Capability Map Dendrogram](documentation/capability-map-dendrogram.png)
 
@@ -253,7 +253,7 @@ This will take a little time, depending upon the number of paragraphs and their 
 
 ## Data Dependency Graph
 
-This capability connects records which modify other records, with a ```FLOWS_INTO``` relation. The dependencies traced include variables which are used in expressions, as well as free-standing literals. Below is an example of a set of record dependencies from a program. It also generates connections based on REDEFINES clauses.
+This capability connects records which modify other records, with a ```FLOWS_INTO``` relation. The dependencies traced include variables which are used in expressions, as well as freestanding literals. Below is an example of a set of record dependencies from a program. It also generates connections based on REDEFINES clauses.
 
 ![record-dependencies-graph](documentation/record-dependencies-graph.png)
 
@@ -367,7 +367,7 @@ If you omit the ```--output``` flag, it will simply print out the results.
 
 ## Analysis through NetworkX
 
-If you export the Unified Model to JSON, you can import it into NetworkX quite easily. The ```unified_model_to_networkx``` script lets you ingest the JSON and create both the fully-connected NetworkX graph, as well as the in-memory Python equivalent of the Unified Model. You're free to extract out specific parts of the model through convenience functions. The following code extracts out the AST, CFG, and the data structures separately. You can customise extraction for your use case; take a look at any one of those convenience methods for guidance.
+If you export the Unified Model to JSON, you can import it into NetworkX quite easily. The ```unified_model_to_networkx``` script lets you ingest the JSON and create both the fully-connected NetworkX graph, and the in-memory Python equivalent of the Unified Model. You're free to extract out specific parts of the model through convenience functions. The following code extracts out the AST, CFG, and the data structures separately. You can customise extraction for your use case; take a look at any one of those convenience methods for guidance.
 
 ```
 with open(input_path, 'r') as file:
@@ -403,7 +403,7 @@ You can find some useful Neo4J-based analysis queries in [Analysis](neo4j-analys
 
 Most of the tasks in this category are meant to be used as part of a larger analysis workflow, and thus do not have any filesystem outputs. All the analyses use JGraphT's ```DefaultDirectedGraph``` for representing and manipulating graph structures.
 
-**Also note that almost of all of the tasks under this category are not specific to COBOL, and can be used for analysing control flowgraphs derived from any language.**
+**Also note that most of the tasks under this category are not specific to COBOL, and can be used for analysing control flowgraphs derived from any language.**
 
 ### Exposing a basic transpilation Model (Instructions and Basic Blocks)
 
