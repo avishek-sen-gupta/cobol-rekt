@@ -69,4 +69,8 @@ public class TreeMatcher {
     public static TreeMatcher loop_(TreeMatcher... childMatchers) {
         return new TreeMatcher(n -> n instanceof TranspilerLoop, Arrays.asList(childMatchers));
     }
+
+    public void verify(TranspilerNode node) {
+        run(node).assertStructure();
+    }
 }

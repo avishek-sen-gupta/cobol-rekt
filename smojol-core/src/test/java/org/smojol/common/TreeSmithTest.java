@@ -23,15 +23,14 @@ public class TreeSmithTest {
         TranspilerNode gotoSomeplace = new JumpTranspilerNode(new NamedLocationNode("SOMEPLACE"));
         IfTranspilerNode ifStmt = new IfTranspilerNode(condition, new TranspilerCodeBlockNode(ImmutableList.of(gotoSomeplace, set("abcd", 12))));
         TranspilerCodeBlockNode program = new TranspilerCodeBlockNode(ImmutableList.of(ifStmt, set1, set2));
-        TreeMatcher blockMatcher = block_(
+        block_(
                 if_(block_(
                                 jmp_(),
                                 set_()),
                         any_()),
                 set_(),
                 set_()
-        );
-        blockMatcher.run(program).assertStructure();
+        ).verify(program);
         TreeSmith treeOps = new TreeSmith(program);
         boolean escaped = treeOps.escapeScope(gotoSomeplace);
         block_(
@@ -45,7 +44,7 @@ public class TreeSmithTest {
                 jmpIf_(),
                 set_(),
                 set_()
-        ).run(program).assertStructure();
+        ).verify(program);
         assertTrue(escaped);
     }
 
@@ -63,7 +62,7 @@ public class TreeSmithTest {
                 if_(block_(
                                 jmp_(),
                                 set_()),
-                        any_())).run(blockNode).assertStructure();
+                        any_())).verify(blockNode);
     }
 
     @Test
@@ -99,7 +98,7 @@ public class TreeSmithTest {
                 set_(),
                 set_(),
                 jmpIf_()
-        ).run(program).assertStructure();
+        ).verify(program);
         assertTrue(new TreeSmith(program).eliminateBackJump(jumpTranspilerNode));
         block_(loop_(block_(
                                 labelledBlock_("SOME_BLOCK",
@@ -110,7 +109,7 @@ public class TreeSmithTest {
                                 set_()
                         )
                 )
-        ).run(program).assertStructure();
+        ).verify(program);
     }
 
     @Test
@@ -133,7 +132,7 @@ public class TreeSmithTest {
                         set_(),
                         set_()
                 )
-        ).run(program).assertStructure();
+        ).verify(program);
         assertTrue(new TreeSmith(program).eliminateForwardJump(jumpTranspilerNode));
         block_(
                 if_(
@@ -148,7 +147,7 @@ public class TreeSmithTest {
                         set_(),
                         set_()
                 )
-        ).run(program).assertStructure();
+        ).verify(program);
     }
 
     private static SetTranspilerNode set(String variable, int value) {
