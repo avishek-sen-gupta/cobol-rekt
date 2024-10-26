@@ -282,6 +282,74 @@ public class TreeSmithTest {
 //        assertTrue(eliminatedGoto);
     }
 
+    @Test
+    public void canIdentifyForwardJump() {
+        TranspilerNode set1 = set("ABC", 30);
+        TranspilerNode set2 = set("DEF", 40);
+        TranspilerNode set3 = set("PQR", 50);
+        TranspilerNode set4 = set("KLM", 70);
+        TranspilerNode set5 = set("NOP", 80);
+        TranspilerNode set6 = set("RST", 90);
+        EqualToNode condition = new EqualToNode(new SymbolReferenceNode("EFG"), new PrimitiveValueTranspilerNode(TypedRecord.TRUE));
+        JumpIfTranspilerNode jumpTranspilerNode = new JumpIfTranspilerNode(new NamedLocationNode("SOME_BLOCK"), condition);
+        TranspilerNode jumpDestinationBlock = new LabelledTranspilerCodeBlockNode("SOME_BLOCK", ImmutableList.of(set1, set2), ImmutableMap.of("type", FlowNodeType.PARAGRAPH));
+        IfTranspilerNode ifStmt = new IfTranspilerNode(condition, new TranspilerCodeBlockNode(ImmutableList.of(new TranspilerCodeBlockNode(ImmutableList.of(jumpTranspilerNode, set6)), set("abcd", 12))));
+        TranspilerNode program = new TranspilerCodeBlockNode(ImmutableList.of(ifStmt, set3, set4, set5, jumpDestinationBlock));
+        block_(
+                if_(block_(
+                        block_(
+                            jmpIf_(),
+                            set_()
+                        ),
+                        set_()
+                ), any_()),
+                set_(),
+                set_(),
+                set_(),
+                labelledBlock_("SOME_BLOCK",
+                        set_(),
+                        set_()
+                )
+        ).verify(program);
+
+        TreeSmith treeSmith = new TreeSmith(program);
+        assertEquals(JumpType.FORWARD, treeSmith.jumpType(jumpTranspilerNode));
+    }
+
+    @Test
+    public void canIdentifyBackJump() {
+        TranspilerNode set1 = set("ABC", 30);
+        TranspilerNode set2 = set("DEF", 40);
+        TranspilerNode set3 = set("PQR", 50);
+        TranspilerNode set4 = set("KLM", 70);
+        TranspilerNode set5 = set("NOP", 80);
+        TranspilerNode set6 = set("RST", 90);
+        EqualToNode condition = new EqualToNode(new SymbolReferenceNode("EFG"), new PrimitiveValueTranspilerNode(TypedRecord.TRUE));
+        JumpIfTranspilerNode jumpTranspilerNode = new JumpIfTranspilerNode(new NamedLocationNode("SOME_BLOCK"), condition);
+        TranspilerNode jumpDestinationBlock = new LabelledTranspilerCodeBlockNode("SOME_BLOCK", ImmutableList.of(set1, set2), ImmutableMap.of("type", FlowNodeType.PARAGRAPH));
+        IfTranspilerNode ifStmt = new IfTranspilerNode(condition, new TranspilerCodeBlockNode(ImmutableList.of(new TranspilerCodeBlockNode(ImmutableList.of(jumpTranspilerNode, set6)), set("abcd", 12))));
+        TranspilerNode program = new TranspilerCodeBlockNode(ImmutableList.of(jumpDestinationBlock, set3, set4, set5, ifStmt));
+        block_(
+                labelledBlock_("SOME_BLOCK",
+                        set_(),
+                        set_()
+                ),
+                set_(),
+                set_(),
+                set_(),
+                if_(block_(
+                        block_(
+                                jmpIf_(),
+                                set_()
+                        ),
+                        set_()
+                ), any_())
+        ).verify(program);
+
+        TreeSmith treeSmith = new TreeSmith(program);
+        assertEquals(JumpType.BACKWARD, treeSmith.jumpType(jumpTranspilerNode));
+    }
+
     private static SetTranspilerNode set(String variable, int value) {
         return new SetTranspilerNode(new SymbolReferenceNode(variable), new PrimitiveValueTranspilerNode(TypedRecord.typedNumber(value)));
     }

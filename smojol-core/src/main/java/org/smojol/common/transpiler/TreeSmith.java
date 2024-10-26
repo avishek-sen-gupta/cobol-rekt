@@ -5,6 +5,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.smojol.common.list.CarCdr;
 import org.smojol.common.navigation.TreeNodeParentMapper;
+import org.smojol.common.navigation.TreeTraversal;
 import org.smojol.common.vm.expression.ConditionTestTime;
 import org.smojol.common.vm.type.TypedRecord;
 
@@ -14,10 +15,13 @@ import java.util.Optional;
 public class TreeSmith {
     private final TranspilerNode root;
     private final TreeNodeParentMapper parentMapper;
+    private final TranspilerNodeOrderingVisitor orderVisitor;
 
     public TreeSmith(TranspilerNode root) {
         this.root = root;
         parentMapper = new TreeNodeParentMapper(root);
+        orderVisitor = new TranspilerNodeOrderingVisitor();
+        new TreeTraversal<TranspilerNode>().run(root, orderVisitor);
     }
 
     public TranspilerNode escapeScopeOnce(TranspilerNode jumpNode) {
@@ -90,11 +94,7 @@ public class TreeSmith {
     }
 
     public Pair<TranspilerNode, Boolean> escapeScope(TranspilerNode node) {
-        LocationNode destinationBlockLabel = switch (node) {
-            case JumpTranspilerNode j -> j.getStart();
-            case JumpIfTranspilerNode k -> k.getDestination();
-            default -> LocationNode.NULL;
-        };
+        LocationNode destinationBlockLabel = destination(node);
 
         if (destinationBlockLabel == LocationNode.NULL) return ImmutablePair.of(node, false);
         NamedLocationNode namedLocation = (NamedLocationNode) destinationBlockLabel;
@@ -109,6 +109,14 @@ public class TreeSmith {
         }
 
         return ImmutablePair.of(current, true);
+    }
+
+    private static LocationNode destination(TranspilerNode node) {
+        return switch (node) {
+            case JumpTranspilerNode j -> j.getStart();
+            case JumpIfTranspilerNode k -> k.getDestination();
+            default -> LocationNode.NULL;
+        };
     }
 
     private int level(TranspilerNode node) {
@@ -127,5 +135,15 @@ public class TreeSmith {
             case JumpIfTranspilerNode k -> eliminateForwardJump(k);
             default -> throw new IllegalStateException("Unexpected value: " + node);
         };
+    }
+
+    public JumpType jumpType(TranspilerNode node) {
+        LocationNode destination = destination(node);
+        if (destination == LocationNode.NULL) throw new RuntimeException("Invalid location: " + node);
+
+        NamedLocationNode namedLocation = (NamedLocationNode) destination;
+        List<TranspilerNode> allMatchingBlocks = root.findAllRecursive(n -> n instanceof LabelledTranspilerCodeBlockNode l && namedLocation.getName().equals(l.getName()));
+        if (allMatchingBlocks.isEmpty()) throw new RuntimeException("Invalid location: " + node);
+        return orderVisitor.order(node, allMatchingBlocks.getFirst());
     }
 }
