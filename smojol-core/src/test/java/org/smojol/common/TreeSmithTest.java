@@ -8,11 +8,11 @@ import org.smojol.common.list.CarCdr;
 import org.smojol.common.transpiler.*;
 import org.smojol.common.vm.type.TypedRecord;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.smojol.common.TreeMatcher.*;
 
 public class TreeSmithTest {
     @Test
@@ -30,16 +30,14 @@ public class TreeSmithTest {
                         any_()),
                 set_(),
                 set_()
-                );
+        );
         blockMatcher.run(program).assertStructure();
         TreeSmith treeOps = new TreeSmith(program);
         boolean escaped = treeOps.escapeScope(gotoSomeplace);
-        List<TranspilerNode> children = program.astChildren();
-        TreeMatcher postTransformBlockMatcher = block_(
+        block_(
                 if_(block_(
                                 set_(),
                                 if_(block_(
-                                        jmp_(),
                                         set_()
                                 ), any_())
                         ),
@@ -47,10 +45,7 @@ public class TreeSmithTest {
                 jmpIf_(),
                 set_(),
                 set_()
-        );
-        postTransformBlockMatcher.run(program).assertStructure();
-        assertTrue(children.getFirst() instanceof IfTranspilerNode);
-        assertTrue(children.get(1) instanceof JumpIfTranspilerNode);
+        ).run(program).assertStructure();
         assertTrue(escaped);
     }
 
@@ -58,52 +53,17 @@ public class TreeSmithTest {
     public void canAssertStructure() {
         TranspilerNode set1 = set("ABC", 30);
         TranspilerNode set2 = set("DEF", 40);
-        TreeMatcher blockMatcher = block_(
-                set_(),
-                set_(),
-                if_(block_(
-                        jmp_(),
-                        set_()),
-                    any_()));
         EqualToNode condition = new EqualToNode(new SymbolReferenceNode("abcd"), new PrimitiveValueTranspilerNode(TypedRecord.TRUE));
         TranspilerNode gotoSomeplace = new JumpTranspilerNode(new NamedLocationNode("SOMEPLACE"));
         IfTranspilerNode ifStmt = new IfTranspilerNode(condition, new TranspilerCodeBlockNode(ImmutableList.of(gotoSomeplace, set("abcd", 12))));
         TranspilerCodeBlockNode blockNode = new TranspilerCodeBlockNode(ImmutableList.of(set1, set2, ifStmt));
-        TreeMatchResult matchResult = blockMatcher.run(blockNode);
-        matchResult.assertStructure();
-
-    }
-
-    private TreeMatcher jmpIf_() {
-        return new TreeMatcher(n -> n instanceof JumpIfTranspilerNode);
-    }
-
-    private TreeMatcher jmp_() {
-        return new TreeMatcher(n -> n instanceof JumpTranspilerNode);
-    }
-
-    private TreeMatcher any_() {
-        return new TreeMatcher(n -> n != null);
-    }
-
-    private TreeMatcher if_(TreeMatcher ifThen, TreeMatcher ifElse) {
-        return new TreeMatcher(n -> n instanceof IfTranspilerNode, ImmutableList.of(ifThen, ifElse));
-    }
-
-    private static TreeMatcher set_() {
-        return new TreeMatcher(n -> n instanceof SetTranspilerNode);
-    }
-
-//    private static TreeMatcher blockNode(List<TreeMatcher> childMatchers) {
-//        return new TreeMatcher(n -> n instanceof TranspilerCodeBlockNode, childMatchers);
-//    }
-
-    private static TreeMatcher block_(TreeMatcher... childMatchers) {
-        return new TreeMatcher(n -> n instanceof TranspilerCodeBlockNode, Arrays.asList(childMatchers));
-    }
-
-    private List<TreeMatcher> list() {
-        return null;
+        block_(
+                set_(),
+                set_(),
+                if_(block_(
+                                jmp_(),
+                                set_()),
+                        any_())).run(blockNode).assertStructure();
     }
 
     @Test
@@ -131,7 +91,26 @@ public class TreeSmithTest {
         JumpIfTranspilerNode jumpTranspilerNode = new JumpIfTranspilerNode(new NamedLocationNode("SOME_BLOCK"), condition);
         TranspilerNode jumpBlock = new LabelledTranspilerCodeBlockNode("SOME_BLOCK", ImmutableList.of(set1, set2), ImmutableMap.of("type", FlowNodeType.PARAGRAPH));
         TranspilerNode program = new TranspilerCodeBlockNode(ImmutableList.of(jumpBlock, set3, set4, jumpTranspilerNode));
+        block_(
+                labelledBlock_("SOME_BLOCK",
+                        set_(),
+                        set_()
+                ),
+                set_(),
+                set_(),
+                jmpIf_()
+        ).run(program).assertStructure();
         assertTrue(new TreeSmith(program).eliminateBackJump(jumpTranspilerNode));
+        block_(loop_(block_(
+                                labelledBlock_("SOME_BLOCK",
+                                        set_(),
+                                        set_()
+                                ),
+                                set_(),
+                                set_()
+                        )
+                )
+        ).run(program).assertStructure();
     }
 
     @Test
@@ -145,7 +124,31 @@ public class TreeSmithTest {
         JumpIfTranspilerNode jumpTranspilerNode = new JumpIfTranspilerNode(new NamedLocationNode("SOME_BLOCK"), condition);
         TranspilerNode jumpDestinationBlock = new LabelledTranspilerCodeBlockNode("SOME_BLOCK", ImmutableList.of(set1, set2), ImmutableMap.of("type", FlowNodeType.PARAGRAPH));
         TranspilerNode program = new TranspilerCodeBlockNode(ImmutableList.of(jumpTranspilerNode, set3, set4, set5, jumpDestinationBlock));
+        block_(
+                jmpIf_(),
+                set_(),
+                set_(),
+                set_(),
+                labelledBlock_("SOME_BLOCK",
+                        set_(),
+                        set_()
+                )
+        ).run(program).assertStructure();
         assertTrue(new TreeSmith(program).eliminateForwardJump(jumpTranspilerNode));
+        block_(
+                if_(
+                        block_(
+                                set_(),
+                                set_(),
+                                set_()
+                        ),
+                        any_()
+                ),
+                labelledBlock_("SOME_BLOCK",
+                        set_(),
+                        set_()
+                )
+        ).run(program).assertStructure();
     }
 
     private static SetTranspilerNode set(String variable, int value) {
