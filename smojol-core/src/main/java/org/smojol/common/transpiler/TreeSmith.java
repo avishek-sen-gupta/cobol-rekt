@@ -137,6 +137,14 @@ public class TreeSmith {
         };
     }
 
+    public boolean eliminateBackJump(TranspilerNode node) {
+        return switch (node) {
+            case JumpTranspilerNode j -> eliminateBackJump(j);
+            case JumpIfTranspilerNode k -> eliminateBackJump(k);
+            default -> throw new IllegalStateException("Unexpected value: " + node);
+        };
+    }
+
     public JumpType jumpType(TranspilerNode node) {
         LocationNode destination = destination(node);
         if (destination == LocationNode.NULL) throw new RuntimeException("Invalid location: " + node);
@@ -145,5 +153,13 @@ public class TreeSmith {
         List<TranspilerNode> allMatchingBlocks = root.findAllRecursive(n -> n instanceof LabelledTranspilerCodeBlockNode l && namedLocation.getName().equals(l.getName()));
         if (allMatchingBlocks.isEmpty()) throw new RuntimeException("Invalid location: " + node);
         return orderVisitor.order(node, allMatchingBlocks.getFirst());
+    }
+
+    public boolean eliminateGoto(TranspilerNode node) {
+        JumpType jumpType = jumpType(node);
+        Pair<TranspilerNode, Boolean> promotedJumpResult = escapeScope(node);
+        if (!promotedJumpResult.getRight()) throw new RuntimeException("Invalid location: " + node);
+        TranspilerNode promotedJump = promotedJumpResult.getLeft();
+        return jumpType == JumpType.FORWARD ? eliminateForwardJump(promotedJump) : eliminateBackJump(promotedJump);
     }
 }
