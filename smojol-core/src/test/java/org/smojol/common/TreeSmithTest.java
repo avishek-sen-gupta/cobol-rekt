@@ -62,7 +62,8 @@ public class TreeSmithTest {
                 if_(block_(
                                 jmp_(),
                                 set_()),
-                        any_())).verify(blockNode);
+                        any_())
+        ).verify(blockNode);
     }
 
     @Test
@@ -78,6 +79,38 @@ public class TreeSmithTest {
         assertEquals(ImmutableList.of(set2, set3), CarCdr.init(range));
         TranspilerCodeBlockNode newScope = new TranspilerCodeBlockNode(CarCdr.init(range));
         assertEquals(ImmutableList.of(set2, set3), newScope.astChildren());
+    }
+
+    @Test
+    public void canEncloseStatementRangeInNewScopeAutomaticallyGivenSimpleJumpNodeForBackJump() {
+        TranspilerNode set1 = set("ABC", 30);
+        TranspilerNode set2 = set("DEF", 40);
+        TranspilerNode set3 = set("PQR", 50);
+        TranspilerNode set4 = set("KLM", 70);
+        JumpTranspilerNode jumpTranspilerNode = new JumpTranspilerNode(new NamedLocationNode("SOME_BLOCK"));
+        TranspilerNode jumpBlock = new LabelledTranspilerCodeBlockNode("SOME_BLOCK", ImmutableList.of(set1, set2), ImmutableMap.of("type", FlowNodeType.PARAGRAPH));
+        TranspilerNode program = new TranspilerCodeBlockNode(ImmutableList.of(jumpBlock, set3, set4, jumpTranspilerNode));
+        block_(
+                labelledBlock_("SOME_BLOCK",
+                        set_(),
+                        set_()
+                ),
+                set_(),
+                set_(),
+                jmp_()
+        ).verify(program);
+        assertTrue(new TreeSmith(program).eliminateBackJump(jumpTranspilerNode));
+        block_(loop_(block_(
+                                labelledBlock_("SOME_BLOCK",
+                                        set_(),
+                                        set_()
+                                ),
+                                set_(),
+                                set_(),
+                                set_()
+                        )
+                )
+        ).verify(program);
     }
 
     @Test
@@ -108,6 +141,44 @@ public class TreeSmithTest {
                                 set_(),
                                 set_()
                         )
+                )
+        ).verify(program);
+    }
+
+    @Test
+    public void canEncloseStatementRangeInNewIfScopeAutomaticallyGivenSimpleJumpNodeForForwardJump() {
+        TranspilerNode set1 = set("ABC", 30);
+        TranspilerNode set2 = set("DEF", 40);
+        TranspilerNode set3 = set("PQR", 50);
+        TranspilerNode set4 = set("KLM", 70);
+        TranspilerNode set5 = set("NOP", 80);
+        JumpTranspilerNode jumpTranspilerNode = new JumpTranspilerNode(new NamedLocationNode("SOME_BLOCK"));
+        TranspilerNode jumpDestinationBlock = new LabelledTranspilerCodeBlockNode("SOME_BLOCK", ImmutableList.of(set1, set2), ImmutableMap.of("type", FlowNodeType.PARAGRAPH));
+        TranspilerNode program = new TranspilerCodeBlockNode(ImmutableList.of(jumpTranspilerNode, set3, set4, set5, jumpDestinationBlock));
+        block_(
+                jmp_(),
+                set_(),
+                set_(),
+                set_(),
+                labelledBlock_("SOME_BLOCK",
+                        set_(),
+                        set_()
+                )
+        ).verify(program);
+        assertTrue(new TreeSmith(program).eliminateForwardJump(jumpTranspilerNode));
+        block_(
+                set_(),
+                if_(
+                        block_(
+                                set_(),
+                                set_(),
+                                set_()
+                        ),
+                        any_()
+                ),
+                labelledBlock_("SOME_BLOCK",
+                        set_(),
+                        set_()
                 )
         ).verify(program);
     }

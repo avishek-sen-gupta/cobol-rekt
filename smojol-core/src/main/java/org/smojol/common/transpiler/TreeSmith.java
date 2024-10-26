@@ -52,6 +52,22 @@ public class TreeSmith {
         return couldGraft;
     }
 
+    public boolean eliminateBackJump(JumpTranspilerNode jumpNode) {
+        TranspilerNode parent = parentMapper.parentOf(jumpNode);
+        Optional<JumpIfTranspilerNode> replacingJumpIf = replaceJumpWithJumpIf(jumpNode, parent);
+        if (replacingJumpIf.isEmpty()) return false;
+        parentMapper.update(parent);
+        return eliminateBackJump(replacingJumpIf.get());
+    }
+
+    public boolean eliminateForwardJump(JumpTranspilerNode jumpNode) {
+        TranspilerNode parent = parentMapper.parentOf(jumpNode);
+        Optional<JumpIfTranspilerNode> replacingJumpIf = replaceJumpWithJumpIf(jumpNode, parent);
+        if (replacingJumpIf.isEmpty()) return false;
+        parentMapper.update(parent);
+        return eliminateForwardJump(replacingJumpIf.get());
+    }
+
     public boolean eliminateForwardJump(JumpIfTranspilerNode jumpNode) {
         TranspilerNode parent = parentMapper.parentOf(jumpNode);
         Optional<TranspilerNode> maybeJumpTarget = parent.findOne(n -> n instanceof LabelledTranspilerCodeBlockNode l
@@ -64,5 +80,11 @@ public class TreeSmith {
         boolean couldGraft = parent.replaceRangeToExclusive(ImmutablePair.of(jumpNode, jumpTarget), ImmutableList.of(ifNode));
         parentMapper.update(parent);
         return couldGraft;
+    }
+
+    Optional<JumpIfTranspilerNode> replaceJumpWithJumpIf(JumpTranspilerNode jumpNode, TranspilerNode parent) {
+        SetTranspilerNode newSet = new SetTranspilerNode(new SymbolReferenceNode("EFGH"), new PrimitiveValueTranspilerNode(TypedRecord.TRUE));
+        JumpIfTranspilerNode replacingJumpIf = new JumpIfTranspilerNode(jumpNode.getStart(), new ValueOfNode(new SymbolReferenceNode("EFGH")));
+        return parent.replace(jumpNode, ImmutableList.of(newSet, replacingJumpIf)) ? Optional.of(replacingJumpIf) : Optional.empty();
     }
 }
