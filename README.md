@@ -56,7 +56,7 @@ You can see the current backlog [here](https://github.com/users/avishek-sen-gupt
     - [Improper Loop Detection using DJ Graphs](#2-reducible-and-irreducible-loop-body-detection)
   - [Dominator Analysis](#dominator-analysis)
   - [Reaching Conditions (aka "How did I get here?")](#reaching-conditions-aka-how-did-i-get-here)
-  - [AST Restructuring to eliminate GO TO's (WIP)](#ast-refactoring-to-eliminate-go-tos)
+  - [AST Restructuring to eliminate ```GO TO```s (WIP)](#ast-refactoring-to-eliminate-go-tos)
 - [Running against AWS Card Demo](#running-against-aws-card-demo)
 - [Developer Guide](#developer-guide)
   - [How to Build](#how-to-build)
@@ -635,16 +635,84 @@ A few important notes about this:
 - Since the task requires a graph slice, the ```BuildTranspilerFlowgraphTask``` and the ```GraphSliceTask``` tasks should be run before this. This finds the graph slices as mentioned in the paper. It uses the instruction flowgraph built by ```BuildTranspilerFlowgraphTask```.
 
 
-### AST Refactoring to eliminate GO TO's
+### AST Refactoring to eliminate ```GO TO```s
 
-Experimental AST Restructuring based on [Taming Control Flow: A Structured Approach to Eliminating Goto Statements](https://www.cs.tufts.edu/comp/150FP/archive/laurie-hendren/taming.pdf)
+This is an experimental technique based on [Taming Control Flow: A Structured Approach to Eliminating Goto Statements](https://www.cs.tufts.edu/comp/150FP/archive/laurie-hendren/taming.pdf) to eliminate ```GO TO```s by restructuring the AST.
 
 The ```TreeSmith``` class provides capabilities for the following:
 - Refactoring jumps into conditional jumps which are more easily refactored.
 - Outward transformations of conditional jumps to escape scopes.
 - Eliminating forward and backward jumps to labelled code blocks at the same level.
+- The highest-level of abstraction is provided is through the ```eliminateGoto()``` method.
 
-[WIP]...
+Let's consider the [simple-goto.cbl](/smojol-test-code/simple-goto.cbl) program. Eliminating the ```GO TO``` in this code, gives us the following code:
+
+```
+BLOCK [ProcedureDivisionBodyContext/T1] {
+  {
+  }
+  BLOCK [S] {
+    placeholder: S SECTION
+    {
+      BLOCK [SA1] {
+        placeholder: SA1
+        {
+          print(value(primitive("ABCD")))
+        }
+        {
+          if (gt(ref('WS-NUM1'), primitive(10.0)))
+          {
+            set(ref('SOME'), primitive(true))
+            if (not(primitive(true)))
+            {
+            }
+            else
+            {
+            }
+          }
+          else
+          {
+            print(value(primitive("<= 10")))
+          }
+          set(ref('SOME'), primitive(true))
+          if (not(primitive(true)))
+          {
+          }
+          else
+          {
+          }
+        }
+        set(ref('SOME'), primitive(true))
+        if (not(primitive(true)))
+        {
+          {
+            print(value(primitive("SA1-1")))
+            print(value(primitive("SA1-2")))
+          }
+        }
+        else
+        {
+        }
+      }
+      if (not(primitive(true)))
+      {
+      }
+      else
+      {
+      }
+      BLOCK [SZ1] {
+        placeholder: SZ1
+        {
+          print(value(primitive("ENDING...")))
+        }
+      }
+    }
+  }
+}
+```
+
+**NOTE:** This is a work in progress. Variables which are used to descope jumps, are currently not named uniquely.
+
 
 ## Running against AWS Card Demo
 
@@ -888,6 +956,7 @@ Programmatic examples are provided in the following classes.
 - See ```ImproperSCCsMain``` for an example of how detection of improper Strongly Connected Components is run.
 - See ```LoopBodyDetectionMain``` for an example of how loop bodies are detected.
 - See ```ReachingConditionBuildMain``` for an example of how reaching conditions are calculated.
+- See ```EliminateGotoMain``` for an example of how ```GO TO```s are eliminated.
 
 #### Logging Settings
 
