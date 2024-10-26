@@ -1,5 +1,5 @@
        IDENTIFICATION DIVISION.
-       PROGRAM-ID.    STOPRUN.
+       PROGRAM-ID.    SIMPLE-GOTO.
        AUTHOR.        MOJO
        DATE-WRITTEN.  SEP 2024.
        ENVIRONMENT DIVISION.
@@ -15,7 +15,7 @@
                 GO TO SZ1
             ELSE
                 DISPLAY "<= 10".
-           DISPLAY "SA1-1".
+           DISPLAY "SA1-1"
            DISPLAY "SA1-2".
        SZ1.
            DISPLAY "ENDING...".

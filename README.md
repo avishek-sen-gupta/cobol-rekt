@@ -474,6 +474,45 @@ loop[loopVariable=ref('SOME-PART-1'), initialValue=primitive(1.0), maxValue=NULL
 }
 ```
 
+You can view the formatted outputted of any node (program root or otherwise), by using the ```TranspilerNodeFormatter```'s ```format()``` method. The following is the formatted IR representation of [simple-goto.cbl](/smojol-test-code/simple-goto.cbl).
+
+```
+BLOCK [ProcedureDivisionBodyContext/T1] {
+  {
+  }
+  BLOCK [S] {
+    placeholder: S SECTION
+    {
+      BLOCK [SA1] {
+        placeholder: SA1
+        {
+          print(value(primitive("ABCD")))
+        }
+        {
+          if (gt(ref('WS-NUM1'), primitive(10.0)))
+          {
+            jump(loc(SZ1), [NULL])
+          }
+          else
+          {
+            print(value(primitive("<= 10")))
+          }
+        }
+        {
+          print(value(primitive("SA1-1")))
+          print(value(primitive("SA1-2")))
+        }
+      }
+      BLOCK [SZ1] {
+        placeholder: SZ1
+        {
+          print(value(primitive("ENDING...")))
+        }
+      }
+    }
+  }
+}
+```
 The screenshot below shows a part of an example transpiler model flowgraph.
 
 ![Part of an Example Transpiler Model CFG](documentation/transpiler-model-cfg.png)

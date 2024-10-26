@@ -7,8 +7,18 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class TranspilerNodeFormatter {
+    private final String indentString;
+
+    public TranspilerNodeFormatter(String indentString) {
+        this.indentString = indentString;
+    }
+
+    public TranspilerNodeFormatter() {
+        this("  ");
+    }
+
     private String tabbed(String code, int level) {
-        return IntStream.range(0, level).mapToObj(i -> "\t").reduce("", String::concat) + code;
+        return IntStream.range(0, level).mapToObj(i -> indentString).reduce("", String::concat) + code;
     }
 
     public List<String> format(TranspilerNode n, int level) {
