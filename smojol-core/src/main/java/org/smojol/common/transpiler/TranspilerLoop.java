@@ -6,6 +6,7 @@ import org.smojol.common.ast.SemanticCategory;
 import org.smojol.common.vm.expression.ConditionTestTime;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -63,7 +64,7 @@ public final class TranspilerLoop extends TranspilerNode {
     }
 
     @Override
-    public Collection<TranspilerNode> astChildren() {
+    public List<TranspilerNode> astChildren() {
         return ImmutableList.of(body);
     }
 

@@ -19,7 +19,8 @@ public class TreeSmith {
         parentMapper = new TreeNodeParentMapper(root);
     }
 
-    public boolean escapeScope(TranspilerNode jumpNode, TranspilerNode currentScope) {
+    public boolean escapeScope(TranspilerNode jumpNode) {
+        TranspilerNode currentScope = parentMapper.parentOf(jumpNode);
         TranspilerNode condition = new PrimitiveValueTranspilerNode(TypedRecord.TRUE);
         List<TranspilerNode> everythingAfter = currentScope.everythingAfter(jumpNode);
         TranspilerNode newIf = new IfTranspilerNode(new NotTranspilerNode(condition), new TranspilerCodeBlockNode(everythingAfter));
@@ -32,7 +33,7 @@ public class TreeSmith {
             default ->
                     throw new IllegalStateException(String.format("Unexpected node of type %s. Description is:\n%s", jumpNode.getClass(), jumpNode.description()));
         };
-        TreeNodeLocation graftLocation = parentMapper.parentGraftLocation(parentMapper.parentOf(jumpNode));
+        TreeNodeLocation graftLocation = parentMapper.parentGraftLocation(currentScope);
         boolean couldGraft = graftLocation.parentScope().addAfter(graftLocation.location(), ImmutableList.of(jumpIfTranspilerNode));
         if (!couldGraft) return false;
         parentMapper.update(graftLocation.parentScope());

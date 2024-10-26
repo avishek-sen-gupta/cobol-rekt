@@ -12,7 +12,7 @@ import org.smojol.common.navigation.TreeNode;
 import java.util.*;
 import java.util.function.Predicate;
 
-public abstract class TranspilerNode implements Identifiable, TreeNode {
+public abstract class TranspilerNode implements Identifiable, TreeNode<TranspilerNode> {
     protected final Map<String, Object> properties;
     @Getter
     private final List<SemanticCategory> categories;
@@ -60,7 +60,7 @@ public abstract class TranspilerNode implements Identifiable, TreeNode {
         properties.put(key, value);
     }
 
-    public Collection<TranspilerNode> astChildren() {
+    public List<TranspilerNode> astChildren() {
         return childTranspilerNodes;
     }
 

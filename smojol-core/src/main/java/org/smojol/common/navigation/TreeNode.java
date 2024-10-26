@@ -2,8 +2,8 @@ package org.smojol.common.navigation;
 
 import org.smojol.common.id.Identifiable;
 
-import java.util.Collection;
+import java.util.List;
 
-public interface TreeNode extends Identifiable {
-    <T extends TreeNode> Collection<T> astChildren();
+public interface TreeNode<T> extends Identifiable {
+    List<T> astChildren();
 }
