@@ -32,7 +32,9 @@ public class TreeSmithTest {
                 set_()
         ).verify(program);
         TreeSmith treeOps = new TreeSmith(program);
-        assertFalse(gotoSomeplace == treeOps.escapeScopeOnce(gotoSomeplace));
+        Pair<TranspilerNode, Boolean> escapeResult = treeOps.escapeScopeOnce(gotoSomeplace);
+        assertTrue(escapeResult.getRight());
+        assertNotSame(gotoSomeplace, escapeResult.getLeft());
         block_(
                 if_(block_(
                                 set_(),

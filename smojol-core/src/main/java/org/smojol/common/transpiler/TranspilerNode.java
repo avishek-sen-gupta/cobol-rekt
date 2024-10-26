@@ -15,8 +15,7 @@ import java.util.stream.Stream;
 
 public abstract class TranspilerNode implements Identifiable, TreeNode<TranspilerNode> {
     protected final Map<String, Object> properties;
-    @Getter
-    private final List<SemanticCategory> categories;
+    @Getter private final List<SemanticCategory> categories;
     protected final List<TranspilerNode> childTranspilerNodes = new ArrayList<>();
     protected final String id;
 
@@ -55,10 +54,6 @@ public abstract class TranspilerNode implements Identifiable, TreeNode<Transpile
     public <T> T getProperty(String key) {
         if (!properties.containsKey(key)) return null;
         return (T) properties.get(key);
-    }
-
-    public <T> void setProperty(String key, T value) {
-        properties.put(key, value);
     }
 
     public List<TranspilerNode> astChildren() {

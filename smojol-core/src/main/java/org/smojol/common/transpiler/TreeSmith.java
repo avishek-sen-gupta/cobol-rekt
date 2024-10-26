@@ -24,14 +24,14 @@ public class TreeSmith {
         new TreeTraversal<TranspilerNode>().run(root, orderVisitor);
     }
 
-    public TranspilerNode escapeScopeOnce(TranspilerNode jumpNode) {
+    public Pair<TranspilerNode, Boolean> escapeScopeOnce(TranspilerNode jumpNode) {
         TranspilerNode currentScope = parentMapper.parentOf(jumpNode);
         TranspilerNode condition = new PrimitiveValueTranspilerNode(TypedRecord.TRUE);
         List<TranspilerNode> everythingAfter = currentScope.everythingAfter(jumpNode);
         TranspilerNode newIf = new IfTranspilerNode(new NotTranspilerNode(condition), new TranspilerCodeBlockNode(everythingAfter));
         SetTranspilerNode setCondition = new SetTranspilerNode(condition, new SymbolReferenceNode("SOME"));
         boolean replaced = currentScope.replaceToEnd(jumpNode, ImmutableList.of(setCondition, newIf));
-        if (!replaced) return jumpNode;
+        if (!replaced) return ImmutablePair.of(jumpNode, false);
         TranspilerNode jumpIfTranspilerNode = switch (jumpNode) {
             case JumpTranspilerNode j -> new JumpIfTranspilerNode(j.getStart(), condition);
             case JumpIfTranspilerNode k -> new JumpIfTranspilerNode(k.getDestination(), condition);
@@ -40,9 +40,9 @@ public class TreeSmith {
         };
         TreeNodeLocation graftLocation = parentMapper.parentGraftLocation(currentScope);
         boolean couldGraft = graftLocation.parentScope().addAfter(graftLocation.location(), ImmutableList.of(jumpIfTranspilerNode));
-        if (!couldGraft) return jumpNode;
+        if (!couldGraft) return ImmutablePair.of(jumpNode, false);
         parentMapper.update(graftLocation.parentScope());
-        return jumpIfTranspilerNode;
+        return ImmutablePair.of(jumpIfTranspilerNode, true);
     }
 
     public boolean eliminateBackJump(JumpIfTranspilerNode jumpNode) {
@@ -103,7 +103,10 @@ public class TreeSmith {
         int destinationLevel = level(first.get());
         TranspilerNode current = node;
         while (level(current) != destinationLevel) {
-            TranspilerNode updated = escapeScopeOnce(current);
+
+            Pair<TranspilerNode, Boolean> escapeResult = escapeScopeOnce(current);
+            if (!escapeResult.getRight()) return ImmutablePair.of(current, false);
+            TranspilerNode updated = escapeResult.getLeft();
             if (updated == current) return ImmutablePair.of(current, false);
             current = updated;
         }
