@@ -6,19 +6,19 @@ import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public class TranspilerNodeFormatter {
+public class TranspilerTreeFormatter {
     private final String indentString;
 
-    public TranspilerNodeFormatter(String indentString) {
+    public TranspilerTreeFormatter(String indentString) {
         this.indentString = indentString;
     }
 
-    public TranspilerNodeFormatter() {
+    public TranspilerTreeFormatter() {
         this("  ");
     }
 
-    private String tabbed(String code, int level) {
-        return IntStream.range(0, level).mapToObj(i -> indentString).reduce("", String::concat) + code;
+    public String format(TranspilerNode node) {
+        return String.join("\n", format(node, 0));
     }
 
     public List<String> format(TranspilerNode n, int level) {
@@ -27,43 +27,43 @@ public class TranspilerNodeFormatter {
             case TranspilerCodeBlockNode l -> blockFormat(l, level);
             case IfTranspilerNode l -> ifFormat(l, level);
             case TranspilerLoop l -> loopFormat(l, level);
-            default -> ImmutableList.of(tabbed(n.description(), level));
+            default -> ImmutableList.of(indented(n.description(), level));
         };
+    }
+
+    private String indented(String code, int level) {
+        return IntStream.range(0, level).mapToObj(i -> indentString).reduce("", String::concat) + code;
     }
 
     private List<String> loopFormat(TranspilerLoop l, int level) {
         return Stream.concat(Stream.concat(
-                        Stream.of(tabbed(String.format("Loop [%s] {", l.headerDescription()), level)),
+                        Stream.of(indented(String.format("Loop [%s] {", l.headerDescription()), level)),
                         l.astChildren().stream().flatMap(c -> format(c, level + 1).stream())
                 ),
-                Stream.of(tabbed("}", level))).toList();
+                Stream.of(indented("}", level))).toList();
     }
 
     private List<String> ifFormat(IfTranspilerNode l, int level) {
         return Stream.of(
-                Stream.of(tabbed(String.format("if (%s)", l.getCondition().description()), level)),
+                Stream.of(indented(String.format("if (%s)", l.getCondition().description()), level)),
                 format(l.getIfThenBlock(), level).stream(),
-                Stream.of(tabbed("else", level)),
+                Stream.of(indented("else", level)),
                 format(l.getIfElseBlock(), level).stream()
         ).flatMap(s -> s).toList();
     }
 
     private List<String> blockFormat(TranspilerCodeBlockNode l, int level) {
         return Stream.of(
-                Stream.of(tabbed("{", level)),
+                Stream.of(indented("{", level)),
                 l.astChildren().stream().flatMap(c -> format(c, level + 1).stream()),
-                Stream.of(tabbed("}", level))).flatMap(s -> s).toList();
+                Stream.of(indented("}", level))).flatMap(s -> s).toList();
     }
 
     private List<String> blockFormat(LabelledTranspilerCodeBlockNode l, int level) {
         return Stream.concat(Stream.concat(
-                        Stream.of(tabbed(String.format("BLOCK [%s] {", l.getName()), level)),
+                        Stream.of(indented(String.format("BLOCK [%s] {", l.getName()), level)),
                         l.astChildren().stream().flatMap(c -> format(c, level + 1).stream())
                 ),
-                Stream.of(tabbed("}", level))).toList();
-    }
-
-    public String format(TranspilerNode node) {
-        return String.join("\n", format(node, 0));
+                Stream.of(indented("}", level))).toList();
     }
 }

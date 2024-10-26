@@ -47,7 +47,7 @@ public abstract class TranspilerNode implements Identifiable, TreeNode<Transpile
 
     @Override
     public String toString() {
-        return new TranspilerNodeFormatter().format(this);
+        return new TranspilerTreeFormatter().format(this);
     }
 
     public abstract String description();

@@ -32,7 +32,7 @@ public class TreeFormatterTest {
                         set_()
                 )
         ).verify(program);
-        String formattedProgram = new TranspilerNodeFormatter("\t").format(program);
+        String formattedProgram = new TranspilerTreeFormatter("\t").format(program);
         String expectedFormattedProgram = """
                 {
                 \tjump_if(eq(ref('EFG'), primitive(true)), loc(SOME_BLOCK))

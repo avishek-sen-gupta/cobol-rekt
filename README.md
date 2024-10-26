@@ -474,7 +474,7 @@ loop[loopVariable=ref('SOME-PART-1'), initialValue=primitive(1.0), maxValue=NULL
 }
 ```
 
-You can view the formatted outputted of any node (program root or otherwise), by using the ```TranspilerNodeFormatter```'s ```format()``` method. The following is the formatted IR representation of [simple-goto.cbl](/smojol-test-code/simple-goto.cbl).
+You can view the formatted outputted of any node (program root or otherwise), by using the ```TranspilerTreeFormatter```'s ```format()``` method. The following is the formatted IR representation of [simple-goto.cbl](/smojol-test-code/simple-goto.cbl).
 
 ```
 BLOCK [ProcedureDivisionBodyContext/T1] {

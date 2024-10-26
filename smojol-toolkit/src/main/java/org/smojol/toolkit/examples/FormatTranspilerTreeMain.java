@@ -31,6 +31,6 @@ public class FormatTranspilerTreeMain {
         List<AnalysisTaskResult> results = result.get(programName);
         TranspilerFlowgraph transpilerFlowgraph = ((AnalysisTaskResultOK) results.getFirst()).getDetail();
         TranspilerNode tree = transpilerFlowgraph.transpilerTree();
-        System.out.println(new TranspilerNodeFormatter().format(tree));
+        System.out.println(new TranspilerTreeFormatter().format(tree));
     }
 }
