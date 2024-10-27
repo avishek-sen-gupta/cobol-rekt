@@ -4,6 +4,6 @@ import org.smojol.common.id.Identifiable;
 
 import java.util.List;
 
-public interface TreeNode<T> extends Identifiable {
+public interface GenericTreeNode<T> extends Identifiable {
     List<T> astChildren();
 }

@@ -493,9 +493,10 @@ public class TreeSmithTest {
         IfTranspilerNode ifStmt = new IfTranspilerNode(condition, new TranspilerCodeBlockNode(ImmutableList.of(new TranspilerCodeBlockNode(ImmutableList.of(jumpTranspilerNode, set6)), set("abcd", 12))));
         TranspilerNode program = new TranspilerCodeBlockNode(ImmutableList.of(set1, set3, new TranspilerCodeBlockNode(ImmutableList.of(set4, set5)), ifStmt));
 
-        Tuple2<io.vavr.collection.List<TranspilerNode>, TranspilerNode> zipper = new Tuple2<>(io.vavr.collection.List.of(), program);
-        Tuple2<io.vavr.collection.List<TranspilerNode>, TranspilerNode> updatedZipper = new Tuple2<>(zipper._1().prepend(zipper._2()), set1);
+        Zipper<TranspilerNode> zippy = new Zipper<>(io.vavr.collection.List.of(), program);
+        Zipper<TranspilerNode> down = zippy.down(set1);
 
-        assertNotSame(integers.size(), newIntegers.size());
+        assertEquals(io.vavr.collection.List.of(program), down.getThread());
+        assertEquals(set1, down.getCurrent());
     }
 }

@@ -4,7 +4,7 @@ import org.smojol.common.ast.NodeVisitor;
 
 import java.util.logging.Logger;
 
-public class TreeTraversal<T extends TreeNode<T>> {
+public class TreeTraversal<T extends GenericTreeNode<T>> {
     private static final Logger LOGGER = Logger.getLogger(TreeTraversal.class.getName());
 
     public void run(T node, NodeVisitor<T> visitor) {

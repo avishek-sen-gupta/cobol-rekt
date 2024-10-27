@@ -7,13 +7,13 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.smojol.common.ast.SemanticCategory;
 import org.smojol.common.id.Identifiable;
-import org.smojol.common.navigation.TreeNode;
+import org.smojol.common.navigation.GenericTreeNode;
 
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-public abstract class TranspilerNode implements Identifiable, TreeNode<TranspilerNode> {
+public abstract class TranspilerNode implements Identifiable, GenericTreeNode<TranspilerNode> {
     protected final Map<String, Object> properties;
     @Getter private final List<SemanticCategory> categories;
     protected final List<TranspilerNode> childTranspilerNodes = new ArrayList<>();
