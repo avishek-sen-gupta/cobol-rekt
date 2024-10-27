@@ -7,6 +7,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Test;
 import org.smojol.common.ast.FlowNodeType;
 import org.smojol.common.list.CarCdr;
+import org.smojol.common.navigation.GenericTreeNode;
 import org.smojol.common.transpiler.*;
 import org.smojol.common.vm.type.TypedRecord;
 
@@ -491,12 +492,41 @@ public class TreeSmithTest {
         JumpIfTranspilerNode jumpTranspilerNode = new JumpIfTranspilerNode(new NamedLocationNode("SOME_BLOCK"), condition);
         TranspilerNode jumpDestinationBlock = new LabelledTranspilerCodeBlockNode("SOME_BLOCK", ImmutableList.of(set1, set2), ImmutableMap.of("type", FlowNodeType.PARAGRAPH));
         IfTranspilerNode ifStmt = new IfTranspilerNode(condition, new TranspilerCodeBlockNode(ImmutableList.of(new TranspilerCodeBlockNode(ImmutableList.of(jumpTranspilerNode, set6)), set("abcd", 12))));
-        TranspilerNode program = new TranspilerCodeBlockNode(ImmutableList.of(set1, set3, new TranspilerCodeBlockNode(ImmutableList.of(set4, set5)), ifStmt));
+        TranspilerCodeBlockNode block = new TranspilerCodeBlockNode(ImmutableList.of(set4, set5));
+        TranspilerNode program = new TranspilerCodeBlockNode(ImmutableList.of(set1, set3, block, ifStmt));
 
         Zipper<TranspilerNode> zippy = new Zipper<>(io.vavr.collection.List.of(), program);
         Zipper<TranspilerNode> down = zippy.down(set1);
 
         assertEquals(io.vavr.collection.List.of(program), down.getThread());
         assertEquals(set1, down.getCurrent());
+
+
+        Zipper<TranspilerNode> insideBlock = zippy.down(block).down(set4);
+        assertEquals(io.vavr.collection.List.of(block, program), insideBlock.getThread());
+        assertEquals(set4, insideBlock.getCurrent());
+
+        Zipper<TranspilerNode> backUpToBlock = insideBlock.up();
+        assertEquals(io.vavr.collection.List.of(program), backUpToBlock.getThread());
+        assertEquals(block, backUpToBlock.getCurrent());
+    }
+
+    @Test
+    public void VavrTest2() {
+        ZipperTestNode nn = n("A",
+                                n("B"),
+                                n("C",
+                                        n("D"),
+                                        n("E")
+                                )
+                        );
+
+        TestZipper zippy = new TestZipper(io.vavr.collection.List.of(), nn);
+        TestZipper atB = zippy.down(n -> n.id().equals("B"));
+        TestZipper newRoot = atB.replaceChildren(io.vavr.collection.List.of(n("B1"), n("B2")));
+    }
+
+    private ZipperTestNode n(String id, ZipperTestNode... children) {
+        return new ZipperTestNode(id, io.vavr.collection.List.of(children));
     }
 }

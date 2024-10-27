@@ -17,7 +17,11 @@ public class Zipper<T extends GenericTreeNode<T>> {
     public Zipper<T> down(T child) {
         int childIndex = current.astChildren().indexOf(child);
         if (childIndex == -1) return this;
-        T newCurrent = current.astChildren().get(childIndex);
-        return new Zipper<>(thread.prepend(current), newCurrent);
+        return new Zipper<>(thread.prepend(current), child);
+    }
+
+    public Zipper<T> up() {
+        return new Zipper<>(thread.tail(), thread.head());
     }
 }
+
