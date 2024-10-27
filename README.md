@@ -713,6 +713,7 @@ Here are some points to note regarding this technique:
 
 - The only applicable transformation in the paper that is applicable in COBOL programs is the outward transformation. Thus, the other three techniques in the paper are not implemented.
 - The algorithm does not utilise the value of the ```IF``` condition. Instead, it simply sets a boolean inside whatever scope it exists in, converts a jump into a ```JumpIf```, and then proceeds to repeat this procedure till it is at the same level as its destination block. The final elimination occurs after that.
+- These operations mutate the original AST. If you are concerned about preserving the original AST, consider having another copy. Potentially, I may experiment with a functional data structure, like the ones in VAVR, to have immutability semantics.
 
 This is probably best used for smaller scale refactorings, like eliminating jumps inside a section. For larger scale refactorings, a different approach (potentially based on [Automatic compiler restructuring of COBOL programs into a proc per paragraph model - Patent US5778232A (Expired 2016)](https://patents.google.com/patent/US5778232A/en)) might give better results.
 

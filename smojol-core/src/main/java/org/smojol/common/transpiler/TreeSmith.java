@@ -103,7 +103,6 @@ public class TreeSmith {
         int destinationLevel = level(first.get());
         TranspilerNode current = node;
         while (level(current) != destinationLevel) {
-
             Pair<TranspilerNode, Boolean> escapeResult = escapeScopeOnce(current);
             if (!escapeResult.getRight()) return ImmutablePair.of(current, false);
             TranspilerNode updated = escapeResult.getLeft();
@@ -159,10 +158,10 @@ public class TreeSmith {
     }
 
     public boolean eliminateGoto(TranspilerNode node) {
-        JumpType jumpType = jumpType(node);
         Pair<TranspilerNode, Boolean> promotedJumpResult = escapeScope(node);
         if (!promotedJumpResult.getRight()) throw new RuntimeException("Invalid location: " + node);
         TranspilerNode promotedJump = promotedJumpResult.getLeft();
+        JumpType jumpType = jumpType(node);
         return jumpType == JumpType.FORWARD ? eliminateForwardJump(promotedJump) : eliminateBackJump(promotedJump);
     }
 }
