@@ -2,12 +2,10 @@ package org.smojol.common;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import io.vavr.Tuple2;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Test;
 import org.smojol.common.ast.FlowNodeType;
 import org.smojol.common.list.CarCdr;
-import org.smojol.common.navigation.GenericTreeNode;
 import org.smojol.common.transpiler.*;
 import org.smojol.common.vm.type.TypedRecord;
 
