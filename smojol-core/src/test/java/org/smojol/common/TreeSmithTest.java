@@ -481,7 +481,6 @@ public class TreeSmithTest {
     @Test
     public void VavrTest() {
         io.vavr.collection.List<Integer> integers = io.vavr.collection.List.of(1);
-        io.vavr.collection.List<Integer> newIntegers = integers.append(2);
         TranspilerNode set1 = set("ABC", 30);
         TranspilerNode set2 = set("DEF", 40);
         TranspilerNode set3 = set("PQR", 50);
@@ -490,7 +489,6 @@ public class TreeSmithTest {
         TranspilerNode set6 = set("RST", 90);
         EqualToNode condition = new EqualToNode(new SymbolReferenceNode("EFG"), new PrimitiveValueTranspilerNode(TypedRecord.TRUE));
         JumpIfTranspilerNode jumpTranspilerNode = new JumpIfTranspilerNode(new NamedLocationNode("SOME_BLOCK"), condition);
-        TranspilerNode jumpDestinationBlock = new LabelledTranspilerCodeBlockNode("SOME_BLOCK", ImmutableList.of(set1, set2), ImmutableMap.of("type", FlowNodeType.PARAGRAPH));
         IfTranspilerNode ifStmt = new IfTranspilerNode(condition, new TranspilerCodeBlockNode(ImmutableList.of(new TranspilerCodeBlockNode(ImmutableList.of(jumpTranspilerNode, set6)), set("abcd", 12))));
         TranspilerCodeBlockNode block = new TranspilerCodeBlockNode(ImmutableList.of(set4, set5));
         TranspilerNode program = new TranspilerCodeBlockNode(ImmutableList.of(set1, set3, block, ifStmt));
@@ -523,7 +521,13 @@ public class TreeSmithTest {
 
         TestZipper zippy = new TestZipper(io.vavr.collection.List.of(), nn);
         TestZipper atB = zippy.down(n -> n.id().equals("B"));
-        TestZipper newRoot = atB.replaceChildren(io.vavr.collection.List.of(n("B1"), n("B2")));
+        TestZipper atRoot = atB.replaceChildren(io.vavr.collection.List.of(n("B1"), n("B2")));
+        ZipperTestNode newRootZipper = atRoot.getCurrent();
+        ZipperTestNode nodeB = newRootZipper.astChildren().get(0);
+        assertNotSame(atB.getCurrent().astChildren().size(), nodeB.astChildren().size());
+        assertEquals("B", nodeB.id());
+        assertEquals("B1", nodeB.astChildren().get(0).id());
+        assertEquals("B2", nodeB.astChildren().get(1).id());
     }
 
     private ZipperTestNode n(String id, ZipperTestNode... children) {
