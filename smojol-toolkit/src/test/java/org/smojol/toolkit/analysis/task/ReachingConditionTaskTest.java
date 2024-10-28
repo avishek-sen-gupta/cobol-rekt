@@ -6,12 +6,14 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.smojol.common.dialect.LanguageDialect;
 import org.smojol.common.flowchart.FlowchartOutputFormat;
-import org.smojol.common.graph.*;
+import org.smojol.common.graph.GraphSlice;
+import org.smojol.common.graph.GraphSliceTask;
 import org.smojol.common.id.UUIDProvider;
 import org.smojol.common.resource.LocalFilesystemOperations;
 import org.smojol.common.transpiler.PrintTranspilerNode;
 import org.smojol.common.transpiler.TranspilerFlowgraph;
 import org.smojol.common.transpiler.TranspilerInstruction;
+import org.smojol.toolkit.analysis.pipeline.BaseAnalysisResult;
 import org.smojol.toolkit.analysis.pipeline.ProgramSearch;
 import org.smojol.toolkit.analysis.task.analysis.CodeTaskRunner;
 import org.smojol.toolkit.analysis.task.transpiler.BuildTranspilerFlowgraphTask;
@@ -25,8 +27,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import static org.smojol.toolkit.task.CommandLineAnalysisTask.BASE_ANALYSIS;
-
 public class ReachingConditionTaskTest {
     @Test
     @Disabled
@@ -36,7 +36,7 @@ public class ReachingConditionTaskTest {
                 ImmutableList.of(new File("/Users/asgupta/code/smojol/smojol-test-code")),
                 "/Users/asgupta/code/smojol/che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar",
                 LanguageDialect.IDMS, new FullProgram(FlowchartOutputFormat.PNG), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder(), new ProgramSearch(), new LocalFilesystemOperations())
-                .runForPrograms(ImmutableList.of(BASE_ANALYSIS), ImmutableList.of("simple-if.cbl"));
+                .runForPrograms(ImmutableList.of(), ImmutableList.of("simple-if.cbl"));
 
         AnalysisTaskResult value = result.values().stream().toList().getFirst().getFirst();
         BaseAnalysisResult baseResult = ((AnalysisTaskResultOK) value).getDetail();

@@ -3,10 +3,9 @@ package org.smojol.toolkit.task;
 import com.google.common.collect.ImmutableList;
 import com.mojo.woof.Neo4JDriverBuilder;
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.smojol.common.graph.BaseAnalysisResult;
 import org.smojol.common.pseudocode.SmojolSymbolTable;
 import org.smojol.common.transpiler.TranspilerFlowgraph;
-import org.smojol.toolkit.analysis.pipeline.CodeSeedModel;
+import org.smojol.toolkit.analysis.pipeline.BaseAnalysisResult;
 import org.smojol.toolkit.analysis.pipeline.ParsePipeline;
 import org.smojol.toolkit.analysis.graph.NamespaceQualifier;
 import org.smojol.toolkit.analysis.graph.NodeSpecBuilder;
@@ -71,13 +70,6 @@ public class SmojolTasks {
     public List<AnalysisTaskResult> run(List<CommandLineAnalysisTask> commandLineAnalysisTasks) throws IOException {
         return tasks(commandLineAnalysisTasks).map(AnalysisTask::run).toList();
     }
-
-    public AnalysisTask BUILD_BASE = new AnalysisTask() {
-        @Override
-        public AnalysisTaskResult run() {
-            return AnalysisTaskResult.OK(CommandLineAnalysisTask.BASE_ANALYSIS, new BaseAnalysisResult(rawAST, dataStructures, symbolTable));
-        }
-    };
 
     public AnalysisTask FLOW_TO_NEO4J = new AnalysisTask() {
         @Override
@@ -178,13 +170,13 @@ public class SmojolTasks {
         }
     };
 
-    public AnalysisTask BUILD_SEED_MODEL = new AnalysisTask() {
+    public AnalysisTask BUILD_BASE_ANALYSIS = new AnalysisTask() {
         @Override
         public AnalysisTaskResult run() {
             AnalysisTaskResult result = new BuildSeedModelTask(pipeline, idProvider).run();
             return switch (result) {
                 case AnalysisTaskResultOK o -> {
-                    CodeSeedModel seedModel = o.getDetail();
+                    BaseAnalysisResult seedModel = o.getDetail();
                     navigator = seedModel.navigator();
                     rawAST = seedModel.rawAST();
                     dataStructures = seedModel.dataStructures();
@@ -198,34 +190,9 @@ public class SmojolTasks {
         }
     };
 
-    public SmojolTasks build() {
-        AnalysisTaskResult result = BUILD_SEED_MODEL.run();
-        switch (result) {
-            case AnalysisTaskResultOK o -> {
-                CodeSeedModel seedModel = o.getDetail();
-                navigator = seedModel.navigator();
-                rawAST = seedModel.rawAST();
-                dataStructures = seedModel.dataStructures();
-                symbolTable = seedModel.symbolTable();
-                flowRoot = seedModel.flowRoot();
-            }
-
-            case AnalysisTaskResultError e -> throw new RuntimeException(e.getException());
-        }
-//        navigator = pipeline.parse();
-//        rawAST = navigator.procedureDivisionBody(navigator.getRoot());
-//        dataStructures = pipeline.getDataStructures();
-//        FlowchartBuilder flowcharter = pipeline.flowcharter();
-//        symbolTable = new SmojolSymbolTable(dataStructures, new SymbolReferenceBuilder(idProvider));
-//        flowcharter.buildFlowAST(rawAST).buildControlFlow().buildOverlay();
-//        flowRoot = flowcharter.getRoot();
-//        flowRoot.resolve(symbolTable, dataStructures);
-        return this;
-    }
-
     private Stream<AnalysisTask> tasks(List<CommandLineAnalysisTask> commandLineAnalysisTasks) {
         return commandLineAnalysisTasks.stream().map(t -> switch (t) {
-            case BUILD_SEED_MODEL -> BUILD_SEED_MODEL;
+            case BUILD_BASE_ANALYSIS -> BUILD_BASE_ANALYSIS;
             case FLOW_TO_NEO4J -> FLOW_TO_NEO4J;
             case FLOW_TO_GRAPHML -> FLOW_TO_GRAPHML;
             case WRITE_RAW_AST -> WRITE_RAW_AST;
@@ -240,7 +207,6 @@ public class SmojolTasks {
             case COMPARE_CODE -> COMPARE_CODE;
             case SUMMARISE_THROUGH_LLM -> SUMMARISE_THROUGH_LLM;
             case BUILD_TRANSPILER_FLOWGRAPH -> BUILD_TRANSPILER_FLOWGRAPH;
-            case BASE_ANALYSIS -> BUILD_BASE;
         });
     }
 
