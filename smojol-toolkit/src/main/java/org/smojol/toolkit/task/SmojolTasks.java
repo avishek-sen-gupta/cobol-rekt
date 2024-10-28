@@ -5,14 +5,13 @@ import com.mojo.woof.Neo4JDriverBuilder;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.smojol.common.graph.BaseAnalysisResult;
 import org.smojol.common.pseudocode.SmojolSymbolTable;
-import org.smojol.common.pseudocode.SymbolReferenceBuilder;
 import org.smojol.common.transpiler.TranspilerFlowgraph;
+import org.smojol.toolkit.analysis.pipeline.CodeSeedModel;
 import org.smojol.toolkit.analysis.pipeline.ParsePipeline;
 import org.smojol.toolkit.analysis.graph.NamespaceQualifier;
 import org.smojol.toolkit.analysis.graph.NodeSpecBuilder;
 import org.smojol.toolkit.analysis.pipeline.config.*;
 import org.smojol.common.ast.*;
-import org.smojol.common.flowchart.*;
 import org.smojol.common.id.IdProvider;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.vm.structure.CobolDataStructure;
@@ -182,24 +181,51 @@ public class SmojolTasks {
     public AnalysisTask BUILD_SEED_MODEL = new AnalysisTask() {
         @Override
         public AnalysisTaskResult run() {
-            return new BuildSeedModelTask(pipeline, idProvider).run();
+            AnalysisTaskResult result = new BuildSeedModelTask(pipeline, idProvider).run();
+            return switch (result) {
+                case AnalysisTaskResultOK o -> {
+                    CodeSeedModel seedModel = o.getDetail();
+                    navigator = seedModel.navigator();
+                    rawAST = seedModel.rawAST();
+                    dataStructures = seedModel.dataStructures();
+                    symbolTable = seedModel.symbolTable();
+                    flowRoot = seedModel.flowRoot();
+                    yield o;
+                }
+
+                case AnalysisTaskResultError e -> e;
+            };
         }
     };
 
-    public SmojolTasks build() throws IOException {
-        navigator = pipeline.parse();
-        rawAST = navigator.procedureDivisionBody(navigator.getRoot());
-        dataStructures = pipeline.getDataStructures();
-        FlowchartBuilder flowcharter = pipeline.flowcharter();
-        symbolTable = new SmojolSymbolTable(dataStructures, new SymbolReferenceBuilder(idProvider));
-        flowcharter.buildFlowAST(rawAST).buildControlFlow().buildOverlay();
-        flowRoot = flowcharter.getRoot();
-        flowRoot.resolve(symbolTable, dataStructures);
+    public SmojolTasks build() {
+        AnalysisTaskResult result = BUILD_SEED_MODEL.run();
+        switch (result) {
+            case AnalysisTaskResultOK o -> {
+                CodeSeedModel seedModel = o.getDetail();
+                navigator = seedModel.navigator();
+                rawAST = seedModel.rawAST();
+                dataStructures = seedModel.dataStructures();
+                symbolTable = seedModel.symbolTable();
+                flowRoot = seedModel.flowRoot();
+            }
+
+            case AnalysisTaskResultError e -> throw new RuntimeException(e.getException());
+        }
+//        navigator = pipeline.parse();
+//        rawAST = navigator.procedureDivisionBody(navigator.getRoot());
+//        dataStructures = pipeline.getDataStructures();
+//        FlowchartBuilder flowcharter = pipeline.flowcharter();
+//        symbolTable = new SmojolSymbolTable(dataStructures, new SymbolReferenceBuilder(idProvider));
+//        flowcharter.buildFlowAST(rawAST).buildControlFlow().buildOverlay();
+//        flowRoot = flowcharter.getRoot();
+//        flowRoot.resolve(symbolTable, dataStructures);
         return this;
     }
 
     private Stream<AnalysisTask> tasks(List<CommandLineAnalysisTask> commandLineAnalysisTasks) {
         return commandLineAnalysisTasks.stream().map(t -> switch (t) {
+            case BUILD_SEED_MODEL -> BUILD_SEED_MODEL;
             case FLOW_TO_NEO4J -> FLOW_TO_NEO4J;
             case FLOW_TO_GRAPHML -> FLOW_TO_GRAPHML;
             case WRITE_RAW_AST -> WRITE_RAW_AST;

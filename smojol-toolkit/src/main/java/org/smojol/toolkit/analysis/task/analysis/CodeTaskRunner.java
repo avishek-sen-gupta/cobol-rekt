@@ -30,6 +30,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 public class CodeTaskRunner {
     private static final Logger LOGGER = Logger.getLogger(CodeTaskRunner.class.getName());
@@ -148,7 +149,7 @@ public class CodeTaskRunner {
                 flowASTOutputConfig, cfgOutputConfig,
                 graphBuildConfig, dataStructuresOutputConfig, unifiedModelOutputConfig, similarityOutputConfig,
                 mermaidOutputConfig, transpilerModelOutputConfig,
-                idProvider, resourceOperations, new Neo4JDriverBuilder()).build();
-        return pipelineTasks.run(tasks);
+                idProvider, resourceOperations, new Neo4JDriverBuilder());
+        return pipelineTasks.run(Stream.concat(Stream.of(CommandLineAnalysisTask.BUILD_SEED_MODEL), tasks.stream()).toList());
     }
 }
