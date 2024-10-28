@@ -63,7 +63,7 @@ You can see the current backlog [here](https://github.com/users/avishek-sen-gupt
   - [CLI Usage](#cli-usage)
   - [Programmatic Usage](#programmatic-usage)
   - [Logging Settings](#logging-settings)
-- [Catalogue of Reusable Algorithms](#catalogue-of-reusable-algorithms)
+- [Catalogue of Reusable Algorithms](#catalogue-of-reusable-algorithms-and-data-structures)
 - [A Note on Copyright](#a-note-on-copyright)
 - [Caveats](#caveats)
 - [Known Issues](#known-issues)
