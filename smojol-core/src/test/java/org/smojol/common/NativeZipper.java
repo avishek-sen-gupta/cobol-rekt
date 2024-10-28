@@ -22,7 +22,7 @@ public class NativeZipper<T extends ZipperNode<T>> {
     public NativeZipper<T> down(T child) {
         int childIndex = current.children().indexOf(child);
         if (childIndex == -1) return this;
-        return new NativeZipper<T>(thread.prepend(current), child);
+        return new NativeZipper<>(thread.prepend(current), child);
     }
 
     public NativeZipper<T> down(Predicate<T> condition) {
@@ -45,7 +45,7 @@ public class NativeZipper<T extends ZipperNode<T>> {
         List<T> updatedChildren = currentChildren.update(currentChildren.indexOf(replacedChild), replacingChild);
         NativeZipper<T> upZipper = up();
         T nodeCopy = current.clone(current, updatedChildren);
-        if (upZipper == this) return new NativeZipper(List.of(), nodeCopy);
+        if (upZipper == this) return new NativeZipper<>(List.of(), nodeCopy);
         return upZipper.replaceChild(current, nodeCopy);
     }
 }
