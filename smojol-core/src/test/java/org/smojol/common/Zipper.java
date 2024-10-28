@@ -9,10 +9,9 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
-@Getter
 public class Zipper<T extends GenericTreeNode<T>> {
-    private final List<T> thread;
-    private final T current;
+    @Getter private final List<T> thread;
+    @Getter private final T current;
     private final BiFunction<T, java.util.List<T>, T> cloneCtor;
 
     public Zipper(List<T> thread, T current, BiFunction<T, java.util.List<T>, T> cloneCtor) {
@@ -52,4 +51,3 @@ public class Zipper<T extends GenericTreeNode<T>> {
         return upZipper.replaceChild(current, nodeCopy);
     }
 }
-
