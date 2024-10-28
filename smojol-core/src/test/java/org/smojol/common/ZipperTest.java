@@ -144,10 +144,10 @@ public class ZipperTest {
                 )
         );
 
-        NativeZipper zippy = new NativeZipper(io.vavr.collection.List.of(), nn);
-        NativeZipper atB = zippy.down(n -> n.id().equals("B"));
-        NativeZipper atRoot = atB.replaceChildren(io.vavr.collection.List.of(n("B1"), n("B2")));
-        NativeZipperNode newRootZipper = atRoot.getCurrent();
+        NativeZipper<NativeZipperNode> zippy = new NativeZipper<>(io.vavr.collection.List.of(), nn);
+        NativeZipper<NativeZipperNode> atB = zippy.down(n -> n.id().equals("B"));
+        NativeZipper<NativeZipperNode> atRoot = atB.replaceChildren(io.vavr.collection.List.of(n("B1"), n("B2")));
+        NativeZipperNode newRootZipper = atRoot.current();
         NativeZipperNode nodeB = newRootZipper.astChildren().get(0);
         assertNotSame(atB.getCurrent().astChildren().size(), nodeB.astChildren().size());
         assertEquals("B", nodeB.id());

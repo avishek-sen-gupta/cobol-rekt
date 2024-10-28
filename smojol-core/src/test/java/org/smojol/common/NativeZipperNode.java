@@ -4,11 +4,11 @@ import io.vavr.collection.List;
 
 import java.util.Objects;
 
-public class NativeZipperNode {
+public class NativeZipperNode implements ZipperNode<NativeZipperNode> {
     private final String id;
-    private final io.vavr.collection.List<NativeZipperNode> children;
+    private final List<NativeZipperNode> children;
 
-    public NativeZipperNode(String id, io.vavr.collection.List<NativeZipperNode> children) {
+    public NativeZipperNode(String id, List<NativeZipperNode> children) {
         this.id = id;
         this.children = children;
     }
@@ -31,5 +31,15 @@ public class NativeZipperNode {
     @Override
     public int hashCode() {
         return Objects.hashCode(id);
+    }
+
+    @Override
+    public NativeZipperNode clone(NativeZipperNode original, List<NativeZipperNode> children) {
+        return new NativeZipperNode(id, children);
+    }
+
+    @Override
+    public List<NativeZipperNode> children() {
+        return children;
     }
 }

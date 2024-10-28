@@ -6,41 +6,45 @@ import lombok.Getter;
 import java.util.function.Predicate;
 
 @Getter
-public class NativeZipper {
-    private final List<NativeZipperNode> thread;
-    private final NativeZipperNode current;
+public class NativeZipper<T extends ZipperNode<T>> {
+    private final List<T> thread;
+    private final T current;
 
-    public NativeZipper(List<NativeZipperNode> thread, NativeZipperNode current) {
+    public NativeZipper(List<T> thread, T current) {
         this.thread = thread;
         this.current = current;
     }
 
-    public NativeZipper down(NativeZipperNode child) {
-        int childIndex = current.astChildren().indexOf(child);
-        if (childIndex == -1) return this;
-        return new NativeZipper(thread.prepend(current), child);
+    public T current() {
+        return current;
     }
 
-    public NativeZipper down(Predicate<NativeZipperNode> condition) {
-        List<NativeZipperNode> filtered = current.astChildren().filter(condition);
+    public NativeZipper<T> down(T child) {
+        int childIndex = current.children().indexOf(child);
+        if (childIndex == -1) return this;
+        return new NativeZipper<T>(thread.prepend(current), child);
+    }
+
+    public NativeZipper<T> down(Predicate<T> condition) {
+        List<T> filtered = current.children().filter(condition);
         if (filtered.isEmpty()) return this;
         return down(filtered.head());
     }
 
-    public NativeZipper up() {
+    public NativeZipper<T> up() {
         if (thread.isEmpty()) return this;
-        return new NativeZipper(thread.tail(), thread.head());
+        return new NativeZipper<>(thread.tail(), thread.head());
     }
 
-    public NativeZipper replaceChildren(List<NativeZipperNode> newChildren) {
-        return up().replaceChild(current, new NativeZipperNode(current.id(), newChildren));
+    public NativeZipper<T> replaceChildren(List<T> newChildren) {
+        return up().replaceChild(current, current.clone(current, newChildren));
     }
 
-    private NativeZipper replaceChild(NativeZipperNode replacedChild, NativeZipperNode replacingChild) {
-        List<NativeZipperNode> currentChildren = current.astChildren();
-        List<NativeZipperNode> updatedChildren = currentChildren.update(currentChildren.indexOf(replacedChild), replacingChild);
-        NativeZipper upZipper = up();
-        NativeZipperNode nodeCopy = new NativeZipperNode(current.id(), updatedChildren);
+    private NativeZipper<T> replaceChild(T replacedChild, T replacingChild) {
+        List<T> currentChildren = current.children();
+        List<T> updatedChildren = currentChildren.update(currentChildren.indexOf(replacedChild), replacingChild);
+        NativeZipper<T> upZipper = up();
+        T nodeCopy = current.clone(current, updatedChildren);
         if (upZipper == this) return new NativeZipper(List.of(), nodeCopy);
         return upZipper.replaceChild(current, nodeCopy);
     }
