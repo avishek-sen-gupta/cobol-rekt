@@ -1,6 +1,7 @@
 package org.smojol.common;
 
 import com.google.common.collect.ImmutableList;
+import io.vavr.collection.List;
 import org.junit.jupiter.api.Test;
 import org.smojol.common.transpiler.*;
 import org.smojol.common.vm.type.TypedRecord;
@@ -54,7 +55,7 @@ public class ZipperTest {
         Zipper<TranspilerNode> backUpToBlock = insideBlock.up();
         assertEquals(io.vavr.collection.List.of(program), backUpToBlock.getThread());
         assertEquals(block, backUpToBlock.getCurrent());
-        Zipper<TranspilerNode> newTranspilerZipper = backUpToBlock.replaceChildren(io.vavr.collection.List.of(set2));
+        Zipper<TranspilerNode> newRootZipper = backUpToBlock.replaceChildren(List.of(set2));
 
         block_(
                 set_(),
@@ -85,13 +86,12 @@ public class ZipperTest {
                         ),
                         set_()
                 ), any_())
-        ).verify(newTranspilerZipper.getCurrent());
+        ).verify(newRootZipper.getCurrent());
     }
 
     @Test
     public void canTraverseTranspilerNodesUsingZipper() {
         TranspilerNode set1 = set("ABC", 30);
-        TranspilerNode set2 = set("DEF", 40);
         TranspilerNode set3 = set("PQR", 50);
         TranspilerNode set4 = set("KLM", 70);
         TranspilerNode set5 = set("NOP", 80);
