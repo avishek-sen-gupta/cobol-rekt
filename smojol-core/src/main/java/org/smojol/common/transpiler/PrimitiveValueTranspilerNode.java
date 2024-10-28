@@ -5,8 +5,9 @@ import lombok.Getter;
 import org.smojol.common.ast.SemanticCategory;
 import org.smojol.common.vm.type.TypedRecord;
 
+@Getter
 public class PrimitiveValueTranspilerNode extends TranspilerNode {
-    @Getter private final TypedRecord value;
+    private final TypedRecord value;
 
     public PrimitiveValueTranspilerNode(TypedRecord value) {
         super(ImmutableList.of(SemanticCategory.REFERENCE));

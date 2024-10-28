@@ -1,8 +1,10 @@
 package org.smojol.common.transpiler;
 
 import com.google.common.collect.ImmutableList;
+import lombok.Getter;
 import org.smojol.common.ast.SemanticCategory;
 
+@Getter
 public class SubtractNode extends TranspilerNode {
     private final TranspilerNode minuend;
     private final TranspilerNode subtrahend;

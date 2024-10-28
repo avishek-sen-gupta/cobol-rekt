@@ -1,8 +1,10 @@
 package org.smojol.common.transpiler;
 
 import com.google.common.collect.ImmutableList;
+import lombok.Getter;
 import org.smojol.common.ast.SemanticCategory;
 
+@Getter
 public class SymbolReferenceNode extends TranspilerNode {
     private final String name;
 

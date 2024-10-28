@@ -1,12 +1,14 @@
 package org.smojol.common.transpiler;
 
 import com.google.common.collect.ImmutableList;
+import lombok.Getter;
 import org.smojol.common.ast.SemanticCategory;
 import org.smojol.common.vm.expression.ComparisonOperator;
 import org.smojol.common.vm.expression.RelationalOperation;
 
 import java.util.Collection;
 
+@Getter
 public abstract class TranspilerComparisonOperator extends TranspilerNode {
     protected final TranspilerNode lhs;
     protected final TranspilerNode rhs;

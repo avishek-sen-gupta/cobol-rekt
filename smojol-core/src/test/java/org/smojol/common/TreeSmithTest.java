@@ -478,7 +478,6 @@ public class TreeSmithTest {
 
     @Test
     public void VavrTest() {
-        io.vavr.collection.List<Integer> integers = io.vavr.collection.List.of(1);
         TranspilerNode set1 = set("ABC", 30);
         TranspilerNode set2 = set("DEF", 40);
         TranspilerNode set3 = set("PQR", 50);
@@ -491,7 +490,7 @@ public class TreeSmithTest {
         TranspilerCodeBlockNode block = new TranspilerCodeBlockNode(ImmutableList.of(set4, set5));
         TranspilerNode program = new TranspilerCodeBlockNode(ImmutableList.of(set1, set3, block, ifStmt));
 
-        Zipper<TranspilerNode> zippy = new Zipper<>(io.vavr.collection.List.of(), program);
+        Zipper<TranspilerNode> zippy = new Zipper<>(io.vavr.collection.List.of(), program, TranspilerCloneOperation::clone);
         Zipper<TranspilerNode> down = zippy.down(set1);
 
         assertEquals(io.vavr.collection.List.of(program), down.getThread());
@@ -505,17 +504,49 @@ public class TreeSmithTest {
         Zipper<TranspilerNode> backUpToBlock = insideBlock.up();
         assertEquals(io.vavr.collection.List.of(program), backUpToBlock.getThread());
         assertEquals(block, backUpToBlock.getCurrent());
+        Zipper<TranspilerNode> newTranspilerZipper = backUpToBlock.replaceChildren(io.vavr.collection.List.of(set2));
+
+        block_(
+                set_(),
+                set_(),
+                block_(
+                        set_(),
+                        set_()
+                ),
+                if_(block_(
+                        block_(
+                            jmpIf_(),
+                            set_()
+                        ),
+                        set_()
+                ), any_())
+        ).verify(program);
+
+        block_(
+                set_(),
+                set_(),
+                block_(
+                        set_()
+                ),
+                if_(block_(
+                        block_(
+                            jmpIf_(),
+                            set_()
+                        ),
+                        set_()
+                ), any_())
+        ).verify(newTranspilerZipper.getCurrent());
     }
 
     @Test
     public void VavrTest2() {
         ZipperTestNode nn = n("A",
-                                n("B"),
-                                n("C",
-                                        n("D"),
-                                        n("E")
-                                )
-                        );
+                n("B"),
+                n("C",
+                        n("D"),
+                        n("E")
+                )
+        );
 
         TestZipper zippy = new TestZipper(io.vavr.collection.List.of(), nn);
         TestZipper atB = zippy.down(n -> n.id().equals("B"));

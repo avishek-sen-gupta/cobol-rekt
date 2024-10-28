@@ -1,11 +1,13 @@
 package org.smojol.common.transpiler;
 
 import com.google.common.collect.ImmutableList;
+import lombok.Getter;
 import org.smojol.common.ast.SemanticCategory;
 
 import java.util.Collection;
 import java.util.List;
 
+@Getter
 public class FunctionCallNode extends TranspilerNode {
     private final String functionName;
     private final List<TranspilerNode> arguments;

@@ -1,7 +1,7 @@
 package org.smojol.common.transpiler;
 
 public class GreaterThanNode extends TranspilerComparisonOperator {
-    GreaterThanNode(TranspilerNode lhs, TranspilerNode rhs) {
+    public GreaterThanNode(TranspilerNode lhs, TranspilerNode rhs) {
         super(lhs, rhs);
     }
 

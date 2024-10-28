@@ -5,6 +5,7 @@ import lombok.Getter;
 import org.smojol.common.ast.SemanticCategory;
 
 import java.util.Collection;
+import java.util.List;
 
 @Getter
 public class IfTranspilerNode extends TranspilerNode {
@@ -17,6 +18,13 @@ public class IfTranspilerNode extends TranspilerNode {
         this.condition = condition;
         this.ifThenBlock = ifThenBlock;
         this.ifElseBlock = ifElseBlock;
+    }
+
+    public IfTranspilerNode(TranspilerNode condition, List<TranspilerNode> allBlocks) {
+        super(allBlocks, ImmutableList.of(SemanticCategory.DECISION));
+        this.condition = condition;
+        this.ifThenBlock = allBlocks.getFirst();
+        this.ifElseBlock = allBlocks.get(1);
     }
 
     public IfTranspilerNode(TranspilerNode condition, TranspilerNode ifThenBlock) {

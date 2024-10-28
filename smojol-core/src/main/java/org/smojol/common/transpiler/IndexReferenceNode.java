@@ -1,12 +1,14 @@
 package org.smojol.common.transpiler;
 
 import com.google.common.collect.ImmutableList;
+import lombok.Getter;
 import org.smojol.common.ast.SemanticCategory;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+@Getter
 public class IndexReferenceNode extends TranspilerNode {
     private final SymbolReferenceNode root;
     private final List<TranspilerNode> indexes;

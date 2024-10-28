@@ -1,10 +1,12 @@
 package org.smojol.common.transpiler;
 
 import com.google.common.collect.ImmutableList;
+import lombok.Getter;
 import org.smojol.common.ast.SemanticCategory;
 
 import java.util.Collection;
 
+@Getter
 public class ListIterationTranspilerNode extends TranspilerNode {
     private final TranspilerNode iterable;
     private final TranspilerNode body;

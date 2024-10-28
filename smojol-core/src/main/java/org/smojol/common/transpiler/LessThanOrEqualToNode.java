@@ -1,7 +1,7 @@
 package org.smojol.common.transpiler;
 
 public class LessThanOrEqualToNode extends TranspilerComparisonOperator {
-    LessThanOrEqualToNode(TranspilerNode lhs, TranspilerNode rhs) {
+    public LessThanOrEqualToNode(TranspilerNode lhs, TranspilerNode rhs) {
         super(lhs, rhs);
     }
 
