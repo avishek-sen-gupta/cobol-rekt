@@ -47,7 +47,9 @@ public class TreeSmith {
 
     public boolean eliminateBackJump(JumpIfTranspilerNode jumpNode) {
         TranspilerNode parent = parentMapper.parentOf(jumpNode);
-        TranspilerNode from = parent.findOne(n -> n instanceof LabelledTranspilerCodeBlockNode l && "SOME_BLOCK".equals(l.getName())).get();
+        Optional<TranspilerNode> maybeFrom = parent.findOne(n -> n instanceof LabelledTranspilerCodeBlockNode l && "SOME_BLOCK".equals(l.getName()));
+        if (maybeFrom.isEmpty()) return false;
+        TranspilerNode from = maybeFrom.get();
         TranspilerCodeBlockNode newScope = new TranspilerCodeBlockNode(CarCdr.init(parent.range(from, jumpNode)));
         TranspilerLoop loop = new TranspilerLoop(new SymbolReferenceNode("ABC"), new NullTranspilerNode(), new NullTranspilerNode(),
                 jumpNode.getCondition(), new NullTranspilerNode(), ConditionTestTime.AFTER, newScope);

@@ -41,21 +41,21 @@ public class ZipperTest {
                 ), any_())
         ).verify(program);
 
-        Zipper<TranspilerNode> zippy = new Zipper<>(io.vavr.collection.List.of(), program, TranspilerCloneOperation::clone);
-        Zipper<TranspilerNode> down = zippy.down(set1);
+        BridgeZipper<TranspilerNode> zippy = new BridgeZipper<>(io.vavr.collection.List.of(), program, TranspilerCloneOperation::clone);
+        BridgeZipper<TranspilerNode> down = zippy.down(set1);
 
         assertEquals(io.vavr.collection.List.of(program), down.getThread());
         assertEquals(set1, down.getCurrent());
 
 
-        Zipper<TranspilerNode> insideBlock = zippy.down(block).down(set4);
+        BridgeZipper<TranspilerNode> insideBlock = zippy.down(block).down(set4);
         assertEquals(io.vavr.collection.List.of(block, program), insideBlock.getThread());
         assertEquals(set4, insideBlock.getCurrent());
 
-        Zipper<TranspilerNode> backUpToBlock = insideBlock.up();
+        BridgeZipper<TranspilerNode> backUpToBlock = insideBlock.up();
         assertEquals(io.vavr.collection.List.of(program), backUpToBlock.getThread());
         assertEquals(block, backUpToBlock.getCurrent());
-        Zipper<TranspilerNode> newRootZipper = backUpToBlock.replaceChildren(List.of(set2));
+        BridgeZipper<TranspilerNode> newRootZipper = backUpToBlock.replaceChildren(List.of(set2));
 
         block_(
                 set_(),
@@ -102,18 +102,18 @@ public class ZipperTest {
         TranspilerCodeBlockNode block = new TranspilerCodeBlockNode(ImmutableList.of(set4, set5));
         TranspilerNode program = new TranspilerCodeBlockNode(ImmutableList.of(set1, set3, block, ifStmt));
 
-        Zipper<TranspilerNode> zippy = new Zipper<>(io.vavr.collection.List.of(), program, TranspilerCloneOperation::clone);
-        Zipper<TranspilerNode> down = zippy.down(set1);
+        BridgeZipper<TranspilerNode> zippy = new BridgeZipper<>(io.vavr.collection.List.of(), program, TranspilerCloneOperation::clone);
+        BridgeZipper<TranspilerNode> down = zippy.down(set1);
 
         assertEquals(io.vavr.collection.List.of(program), down.getThread());
         assertEquals(set1, down.getCurrent());
 
 
-        Zipper<TranspilerNode> insideBlock = zippy.down(block).down(set4);
+        BridgeZipper<TranspilerNode> insideBlock = zippy.down(block).down(set4);
         assertEquals(io.vavr.collection.List.of(block, program), insideBlock.getThread());
         assertEquals(set4, insideBlock.getCurrent());
 
-        Zipper<TranspilerNode> backUpToBlock = insideBlock.up();
+        BridgeZipper<TranspilerNode> backUpToBlock = insideBlock.up();
         assertEquals(io.vavr.collection.List.of(program), backUpToBlock.getThread());
         assertEquals(block, backUpToBlock.getCurrent());
 

@@ -117,6 +117,7 @@ In addition, the support for Neo4J allows you to build custom graph analyses as 
 - An implementation of the gSpan algorithm for Frequent Subgraph Mining is adapted from [https://github.com/betterenvi/gSpan].
 - [Neo4J](https://neo4j.com/) is required for using tasks involving Neo4J. The APOC and GDS plugins will need to be installed. All the tasks have also been tested using Neo4J Desktop.
 - A subscription to OpenAI's GPT-4o (or your choice of deployment) will be needed for capabilities which use LLMs. The tasks have been tested using Azure's OpenAI offering.
+- [VAVR](https://github.com/vavr-io/vavr) for functional lists used in zipper classes for AST navigation and manipulation.
 - ```RuntimeTypeAdapterFactory``` from Gson for some serialisation use-cases.
 
 ## Reverse Engineering Use Cases
@@ -965,7 +966,7 @@ Programmatic examples are provided in the following classes.
 
 You can specify a custom logging settings file by adding ```-Djava.util.logging.config.file``` option. if not specified, a default ```logging.properties``` will be loaded, with ```INFO``` as the default level.
 
-## Catalogue of Reusable Algorithms
+## Catalogue of Reusable Algorithms and Data Structures
 
 This is a list of algorithms written from scratch, for reference or reuse. All of them use JGraphT for representing graph structures.
 
@@ -981,6 +982,7 @@ This is a list of algorithms written from scratch, for reference or reuse. All o
 - **Reducibility Testing using DJ Graphs:** Uses DJ Trees as above. See ```ReducibleFlowgraphTestTask```.
 - **Reducible and Irreducible Loop Body detection:** Based on [Identifying Loops Using DJ Graphs](https://dl.acm.org/doi/pdf/10.1145/236114.236115). See ```LoopBodyDetectionTask```.
 - **Graph Slicing:** Based on [No More Gotos: Decompilation Using Pattern-Independent Control-Flow Structuring and Semantics-Preserving Transformations](https://github.com/lifting-bits/rellic/blob/master/docs/NoMoreGotos.pdf). See ```GraphSliceTask```.
+- **Tree Zipper:** Based on the [zipper data structure](https://wiki.haskell.org/Zipper) used for manipulating locations in data structures. This implementation focuses on trees. The ```BridgeZipper``` expects nodes to be of the parameterised interface ```GenericTreeNode``` (which contain generic Java lists of children), whereas the ```NativeZipper``` expects nodes of the parameterised interface ```ZipperNode``` which uses native VAVR lists to store children. They are similar, otherwise.
 
 ## A Note on Copyright
 
