@@ -29,4 +29,7 @@ public sealed interface AnalysisTaskResult permits AnalysisTaskResultOK, Analysi
     static AnalysisTaskResult ERROR(Exception e, CommandLineAnalysisTask task) {
         return new AnalysisTaskResultError(e, task);
     }
+    static AnalysisTaskResult ERROR(Exception e, String task) {
+        return new AnalysisTaskResultError(e, task);
+    }
 }

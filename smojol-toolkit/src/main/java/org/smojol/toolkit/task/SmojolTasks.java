@@ -179,6 +179,13 @@ public class SmojolTasks {
         }
     };
 
+    public AnalysisTask BUILD_SEED_MODEL = new AnalysisTask() {
+        @Override
+        public AnalysisTaskResult run() {
+            return new BuildSeedModelTask(pipeline, idProvider).run();
+        }
+    };
+
     public SmojolTasks build() throws IOException {
         navigator = pipeline.parse();
         rawAST = navigator.procedureDivisionBody(navigator.getRoot());
@@ -188,7 +195,6 @@ public class SmojolTasks {
         flowcharter.buildFlowAST(rawAST).buildControlFlow().buildOverlay();
         flowRoot = flowcharter.getRoot();
         flowRoot.resolve(symbolTable, dataStructures);
-//        new FlowNodeASTTraversal<FlowNode>().accept(astRoot, new FlowNodeSymbolExtractorVisitor(astRoot, dataStructRoot, symbolTable));
         return this;
     }
 
