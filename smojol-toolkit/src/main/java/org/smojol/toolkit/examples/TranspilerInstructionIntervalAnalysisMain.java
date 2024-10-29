@@ -12,7 +12,7 @@ import org.smojol.common.transpiler.FlowgraphReductionResult;
 import org.smojol.common.transpiler.PruneUnreachableTask;
 import org.smojol.common.transpiler.TranspilerFlowgraph;
 import org.smojol.common.transpiler.TranspilerInstruction;
-import org.smojol.toolkit.analysis.pipeline.BaseAnalysisResult;
+import org.smojol.toolkit.analysis.pipeline.BaseAnalysisModel;
 import org.smojol.toolkit.analysis.pipeline.ProgramSearch;
 import org.smojol.toolkit.analysis.task.analysis.CodeTaskRunner;
 import org.smojol.toolkit.analysis.task.transpiler.BuildTranspilerFlowgraphTask;
@@ -42,8 +42,8 @@ public class TranspilerInstructionIntervalAnalysisMain {
                 .runForPrograms(ImmutableList.of(), ImmutableList.of(programName));
         System.out.println("DONE");
         List<AnalysisTaskResult> results = result.get(programName);
-        BaseAnalysisResult baseAnalysisResult = ((AnalysisTaskResultOK) results.getFirst()).getDetail();
-        TranspilerFlowgraph transpilerFlowgraph = new BuildTranspilerFlowgraphTask(baseAnalysisResult.rawAST(), baseAnalysisResult.dataStructures(), null,
+        BaseAnalysisModel baseAnalysisModel = ((AnalysisTaskResultOK) results.getFirst()).getDetail();
+        TranspilerFlowgraph transpilerFlowgraph = new BuildTranspilerFlowgraphTask(baseAnalysisModel.rawAST(), baseAnalysisModel.dataStructures(), null,
                 ImmutableList.of()).run();
         System.out.println("Number of nodes = " + transpilerFlowgraph.instructionFlowgraph().vertexSet().size());
         String draw = new MermaidGraph<TranspilerInstruction, DefaultEdge>().draw(transpilerFlowgraph.instructionFlowgraph());

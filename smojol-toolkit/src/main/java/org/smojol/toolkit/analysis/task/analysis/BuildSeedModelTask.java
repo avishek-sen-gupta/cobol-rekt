@@ -8,7 +8,7 @@ import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.pseudocode.SmojolSymbolTable;
 import org.smojol.common.pseudocode.SymbolReferenceBuilder;
 import org.smojol.common.vm.structure.CobolDataStructure;
-import org.smojol.toolkit.analysis.pipeline.BaseAnalysisResult;
+import org.smojol.toolkit.analysis.pipeline.BaseAnalysisModel;
 import org.smojol.toolkit.analysis.pipeline.ParsePipeline;
 import org.smojol.toolkit.task.AnalysisTask;
 import org.smojol.toolkit.task.AnalysisTaskResult;
@@ -35,7 +35,7 @@ public class BuildSeedModelTask implements AnalysisTask {
             flowcharter.buildFlowAST(rawAST).buildControlFlow().buildOverlay();
             FlowNode flowRoot = flowcharter.getRoot();
             flowRoot.resolve(symbolTable, dataStructures);
-            return AnalysisTaskResult.OK("BUILD_SEED_MODEL", new BaseAnalysisResult(navigator, rawAST, dataStructures,
+            return AnalysisTaskResult.OK("BUILD_SEED_MODEL", new BaseAnalysisModel(navigator, rawAST, dataStructures,
                     flowcharter, symbolTable, flowRoot));
         } catch (IOException e) {
             return AnalysisTaskResult.ERROR(e, "BUILD_SEED_MODEL");

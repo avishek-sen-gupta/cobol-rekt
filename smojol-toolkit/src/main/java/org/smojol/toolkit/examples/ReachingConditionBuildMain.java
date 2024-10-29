@@ -12,7 +12,7 @@ import org.smojol.common.id.UUIDProvider;
 import org.smojol.common.pseudocode.CodeSentinelType;
 import org.smojol.common.resource.LocalFilesystemOperations;
 import org.smojol.common.transpiler.*;
-import org.smojol.toolkit.analysis.pipeline.BaseAnalysisResult;
+import org.smojol.toolkit.analysis.pipeline.BaseAnalysisModel;
 import org.smojol.toolkit.analysis.pipeline.ProgramSearch;
 import org.smojol.toolkit.analysis.task.analysis.CodeTaskRunner;
 import org.smojol.toolkit.analysis.task.transpiler.BuildTranspilerFlowgraphTask;
@@ -36,7 +36,7 @@ public class ReachingConditionBuildMain {
                 .runForPrograms(ImmutableList.of(), ImmutableList.of("reaching-condition-test.cbl"));
 
         AnalysisTaskResult value = result.values().stream().toList().getFirst().getFirst();
-        BaseAnalysisResult baseResult = ((AnalysisTaskResultOK) value).getDetail();
+        BaseAnalysisModel baseResult = ((AnalysisTaskResultOK) value).getDetail();
         BuildTranspilerFlowgraphTask buildTranspilerFlowgraphTask = new BuildTranspilerFlowgraphTask(baseResult.rawAST(), baseResult.dataStructures(), baseResult.symbolTable(), ImmutableList.of());
         TranspilerFlowgraph transpilerFlowgraph = buildTranspilerFlowgraphTask.run();
         PruneUnreachableTask.pruneUnreachableInstructions(transpilerFlowgraph);

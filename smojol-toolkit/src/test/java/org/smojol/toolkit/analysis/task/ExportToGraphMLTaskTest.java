@@ -14,7 +14,7 @@ import org.smojol.toolkit.analysis.graph.NamespaceQualifier;
 import org.smojol.toolkit.analysis.graph.NodeSpecBuilder;
 import org.smojol.toolkit.analysis.graph.graphml.TypedGraphEdge;
 import org.smojol.toolkit.analysis.graph.graphml.TypedGraphVertex;
-import org.smojol.toolkit.analysis.pipeline.BaseAnalysisResult;
+import org.smojol.toolkit.analysis.pipeline.BaseAnalysisModel;
 import org.smojol.toolkit.analysis.pipeline.ParsePipeline;
 import org.smojol.toolkit.analysis.pipeline.config.GraphMLExportConfig;
 import org.smojol.toolkit.analysis.pipeline.config.SourceConfig;
@@ -47,7 +47,7 @@ class ExportToGraphMLTaskTest {
         AnalysisTaskResult buildSeedModelResult = new BuildSeedModelTask(pipeline, new UUIDProvider()).run();
         switch (buildSeedModelResult) {
             case AnalysisTaskResultOK o -> {
-                BaseAnalysisResult r = o.getDetail();
+                BaseAnalysisModel r = o.getDetail();
                 GraphMLExportConfig graphMLOutputConfig = new GraphMLExportConfig(Path.of("test-code/out"), "test-graphml.json");
                 NodeSpecBuilder qualifier = new NodeSpecBuilder(new NamespaceQualifier("SOME_SPACE"));
                 AnalysisTaskResult result = new ExportToGraphMLTask(r.flowRoot(), r.dataStructures(), graphMLOutputConfig, qualifier, resourceOperations).run();
