@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 
 import static org.smojol.common.flowchart.FlowchartOutputFormat.PNG;
+import static org.smojol.toolkit.task.CommandLineAnalysisTask.BUILD_BASE_ANALYSIS;
 
 public class GraphExplorerMain {
     public static void main(String[] args) throws IOException {
@@ -23,6 +24,7 @@ public class GraphExplorerMain {
                 ImmutableList.of(new File("/Users/asgupta/code/smojol/smojol-test-code")),
                 dialectJarPath, LanguageDialect.COBOL   , new FullProgram(PNG), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder(), new ProgramSearch(), new LocalFilesystemOperations())
                 .runForPrograms(ImmutableList.of(
+                        BUILD_BASE_ANALYSIS,
                         CommandLineAnalysisTask.FLOW_TO_NEO4J,
                         CommandLineAnalysisTask.FLOW_TO_GRAPHML,
                         CommandLineAnalysisTask.WRITE_FLOW_AST

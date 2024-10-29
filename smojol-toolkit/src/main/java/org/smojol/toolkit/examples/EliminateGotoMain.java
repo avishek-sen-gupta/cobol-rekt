@@ -19,17 +19,20 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import static org.smojol.toolkit.task.CommandLineAnalysisTask.*;
+import static org.smojol.toolkit.task.CommandLineAnalysisTask.BUILD_BASE_ANALYSIS;
+
 public class EliminateGotoMain {
     public static void main(String[] args) throws IOException, InterruptedException {
-        String programName = "simple-goto.cbl";
+        String programName = "implicit-loop.cbl";
         Map<String, List<AnalysisTaskResult>> result = new CodeTaskRunner("/Users/asgupta/code/smojol/smojol-test-code",
                 "/Users/asgupta/code/smojol/out/report",
                 ImmutableList.of(new File("/Users/asgupta/code/smojol/smojol-test-code")),
                 "/Users/asgupta/code/smojol/che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar",
                 LanguageDialect.IDMS, new FullProgram(FlowchartOutputFormat.MERMAID), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder(), new ProgramSearch(), new LocalFilesystemOperations())
-                .runForPrograms(ImmutableList.of(CommandLineAnalysisTask.BUILD_TRANSPILER_FLOWGRAPH), ImmutableList.of(programName));
+                .runForPrograms(ImmutableList.of(BUILD_BASE_ANALYSIS, BUILD_TRANSPILER_FLOWGRAPH), ImmutableList.of(programName));
         List<AnalysisTaskResult> results = result.get(programName);
-        TranspilerFlowgraph transpilerFlowgraph = ((AnalysisTaskResultOK) results.getFirst()).getDetail();
+        TranspilerFlowgraph transpilerFlowgraph = ((AnalysisTaskResultOK) results.get(1)).getDetail();
         TranspilerNode tree = transpilerFlowgraph.transpilerTree();
         JumpTranspilerNode firstGoto = (JumpTranspilerNode) tree.findAllRecursive(n1 -> n1 instanceof JumpTranspilerNode).getFirst();
         TreeSmith treeSmith = new TreeSmith(tree);

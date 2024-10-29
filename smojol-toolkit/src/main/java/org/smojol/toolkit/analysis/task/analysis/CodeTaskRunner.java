@@ -150,6 +150,7 @@ public class CodeTaskRunner {
                 graphBuildConfig, dataStructuresOutputConfig, unifiedModelOutputConfig, similarityOutputConfig,
                 mermaidOutputConfig, transpilerModelOutputConfig,
                 idProvider, resourceOperations, new Neo4JDriverBuilder());
-        return pipelineTasks.run(Stream.concat(Stream.of(CommandLineAnalysisTask.BUILD_BASE_ANALYSIS), tasks.stream()).toList());
+        return pipelineTasks.run(tasks);
+//        return pipelineTasks.run(Stream.concat(Stream.of(CommandLineAnalysisTask.BUILD_BASE_ANALYSIS), tasks.stream()).toList());
     }
 }

@@ -1,5 +1,5 @@
        IDENTIFICATION DIVISION.
-       PROGRAM-ID.    STOPRUN.
+       PROGRAM-ID.    SIMPLE-GOTO.
        AUTHOR.        MOJO
        DATE-WRITTEN.  SEP 2024.
        ENVIRONMENT DIVISION.
@@ -8,15 +8,13 @@
             01 WS-NUM1 PIC 9(9) VALUE 5.
        PROCEDURE DIVISION.
        S SECTION.
-       SA0.
-            DISPLAY "IN LOOP".
        SA1.
-           IF WS-NUM1 > 10
+           DISPLAY "ABCD".
+           ADD 1 TO WS-NUM1.
+           IF WS-NUM1 <= 10
             THEN
-                DISPLAY "> 10"
-                GO TO SA0
+                GO TO SA1
             ELSE
-                DISPLAY "DONE".
-           DISPLAY "SA1".
+                DISPLAY "EXITING LOOP".
        SZ1.
            DISPLAY "ENDING...".

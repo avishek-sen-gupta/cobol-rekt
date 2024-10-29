@@ -28,13 +28,14 @@ public class TreeSmith {
         TranspilerNode currentScope = parentMapper.parentOf(jumpNode);
         TranspilerNode condition = new PrimitiveValueTranspilerNode(TypedRecord.TRUE);
         List<TranspilerNode> everythingAfter = currentScope.everythingAfter(jumpNode);
-        TranspilerNode newIf = new IfTranspilerNode(new NotTranspilerNode(condition), new TranspilerCodeBlockNode(everythingAfter));
         SetTranspilerNode setCondition = new SetTranspilerNode(condition, new SymbolReferenceNode("SOME"));
+        TranspilerNode newIf = new IfTranspilerNode(new NotTranspilerNode(new ValueOfNode(new SymbolReferenceNode("SOME"))),
+                new TranspilerCodeBlockNode(everythingAfter));
         boolean replaced = currentScope.replaceToEnd(jumpNode, ImmutableList.of(setCondition, newIf));
         if (!replaced) return ImmutablePair.of(jumpNode, false);
         TranspilerNode jumpIfTranspilerNode = switch (jumpNode) {
-            case JumpTranspilerNode j -> new JumpIfTranspilerNode(j.getStart(), condition);
-            case JumpIfTranspilerNode k -> new JumpIfTranspilerNode(k.getDestination(), condition);
+            case JumpTranspilerNode j -> new JumpIfTranspilerNode(j.getStart(), new ValueOfNode(new SymbolReferenceNode("SOME")));
+            case JumpIfTranspilerNode k -> new JumpIfTranspilerNode(k.getDestination(), new ValueOfNode(new SymbolReferenceNode("SOME")));
             default ->
                     throw new IllegalStateException(String.format("Unexpected node of type %s. Description is:\n%s", jumpNode.getClass(), jumpNode.description()));
         };
@@ -47,7 +48,7 @@ public class TreeSmith {
 
     public boolean eliminateBackJump(JumpIfTranspilerNode jumpNode) {
         TranspilerNode parent = parentMapper.parentOf(jumpNode);
-        Optional<TranspilerNode> maybeFrom = parent.findOne(n -> n instanceof LabelledTranspilerCodeBlockNode l && "SOME_BLOCK".equals(l.getName()));
+        Optional<TranspilerNode> maybeFrom = parent.findOne(n -> n instanceof LabelledTranspilerCodeBlockNode l && ((NamedLocationNode) jumpNode.getDestination()).getName().equals(l.getName()));
         if (maybeFrom.isEmpty()) return false;
         TranspilerNode from = maybeFrom.get();
         TranspilerCodeBlockNode newScope = new TranspilerCodeBlockNode(CarCdr.init(parent.range(from, jumpNode)));

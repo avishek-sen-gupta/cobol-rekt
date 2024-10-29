@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import static org.smojol.toolkit.task.CommandLineAnalysisTask.BUILD_BASE_ANALYSIS;
+
 public class AwsCardDemoTasksMain {
     public static void main(String[] args) throws IOException, InterruptedException {
         LoggingConfig.setupLogging();
@@ -27,7 +29,7 @@ public class AwsCardDemoTasksMain {
                         new File("/Users/asgupta/code/aws-mainframe-modernization-carddemo/app/cpy-bms")),
                 "/Users/asgupta/code/smojol/che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar",
                 LanguageDialect.COBOL, new FullProgram(FlowchartOutputFormat.SVG), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder(), new ProgramSearch(), new LocalFilesystemOperations())
-                .runForPrograms(ImmutableList.of(CommandLineAnalysisTask.FLOW_TO_GRAPHML), ImmutableList.of("CBACT01C.cbl"));
+                .runForPrograms(ImmutableList.of(BUILD_BASE_ANALYSIS, CommandLineAnalysisTask.FLOW_TO_GRAPHML), ImmutableList.of("CBACT01C.cbl"));
         for (Map.Entry<String, List<AnalysisTaskResult>> entry : result.entrySet()) {
             System.out.println(entry.getKey() + ": ");
             for (AnalysisTaskResult taskResult : entry.getValue()) {

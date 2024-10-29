@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import static org.smojol.toolkit.task.CommandLineAnalysisTask.BUILD_BASE_ANALYSIS;
+
 public class AnalyseProgramDependenciesTask {
     java.util.logging.Logger LOGGER = Logger.getLogger(AnalyseProgramDependenciesTask.class.getName());
     private final String sourceDir;
@@ -56,7 +58,7 @@ public class AnalyseProgramDependenciesTask {
             Map<String, List<AnalysisTaskResult>> results = new CodeTaskRunner(srcDir,
                     reportRootDir, copyBookPaths, dialectJarPath,
                     dialect, new FullProgram(FlowchartOutputFormat.SVG), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder(), programSearch, resourceOperations)
-                    .runForPrograms(ImmutableList.of(CommandLineAnalysisTask.BUILD_PROGRAM_DEPENDENCIES), ImmutableList.of(foundFile.getName()));
+                    .runForPrograms(ImmutableList.of(BUILD_BASE_ANALYSIS, CommandLineAnalysisTask.BUILD_PROGRAM_DEPENDENCIES), ImmutableList.of(foundFile.getName()));
             AnalysisTaskResult first = results.get(program.getName()).getFirst();
             List<CallTarget> dependencies = switch (first) {
                 case AnalysisTaskResultOK o -> o.getDetail();
