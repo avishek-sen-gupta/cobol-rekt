@@ -30,12 +30,13 @@ public class SmojolTasks {
     private final OutputArtifactConfig dataStructuresOutputConfig;
     private final OutputArtifactConfig mermaidOutputConfig;
     private final OutputArtifactConfig transpilerModelOutputConfig;
-    private final IdProvider idProvider;
     private final GraphBuildConfig graphBuildConfig;
+    private final IdProvider idProvider;
     private final ResourceOperations resourceOperations;
     private final Neo4JDriverBuilder neo4JDriverBuilder;
     private final ParsePipeline pipeline;
     private final NodeSpecBuilder qualifier;
+    private BaseAnalysisResult seedModel;
 
     public SmojolTasks(ParsePipeline pipeline, SourceConfig sourceConfig, FlowchartOutputWriter flowchartOutputWriter, RawASTOutputConfig rawAstOutputConfig, GraphMLExportConfig graphMLOutputConfig, FlowASTOutputConfig flowASTOutputConfig, CFGOutputConfig cfgOutputConfig, GraphBuildConfig graphBuildConfig, OutputArtifactConfig dataStructuresOutputConfig, OutputArtifactConfig unifiedModelOutputConfig, OutputArtifactConfig similarityOutputConfig, OutputArtifactConfig mermaidOutputConfig, OutputArtifactConfig transpilerModelOutputConfig, IdProvider idProvider, ResourceOperations resourceOperations, Neo4JDriverBuilder neo4JDriverBuilder) {
         this.pipeline = pipeline;
@@ -160,7 +161,6 @@ public class SmojolTasks {
         }
     };
 
-    private BaseAnalysisResult seedModel;
     public AnalysisTask BUILD_BASE_ANALYSIS = new AnalysisTask() {
         @Override
         public AnalysisTaskResult run() {
