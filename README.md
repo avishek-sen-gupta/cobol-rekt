@@ -760,6 +760,7 @@ The individual functionalities in the Java component can be invoked using differ
 
 This command encapsulates almost all the tasks that you are likely to run. The descriptions of the various commands are listed below.
 
+- ```BUILD_BASE_ANALYSIS```: This task builds the base analysis model which includes the raw AST, the first approximate flowgraph model (used for flowchart generation, and as an intermediate step in the transpilation model building process), and a few other entities. **Please note that ```BUILD_BASE_ANALYSIS` will always be the first task to be run before any of the following tasks, whether specified or not.**
 - ```WRITE_FLOW_AST```: Writes a more useful form of the AST to JSON. This form is used by the interpreter and other analyses.
 - ```FLOW_TO_NEO4J```: This injects the unified model into Neo4J. Exposing more fine-grained options is in progress. This requires the environment variable ```NEO4J_URI```, ```NEO4J_USERNAME```, and ```NEO4J_PASSWORD``` to be defined. If you wish to include comments in the graph, the ```ATTACH_COMMENTS``` needs to have run first.
 - ```ATTACH_COMMENTS```: This parses the original source file (excluding copybooks for now) to find comments and attach them to the nearest subsequent AST node.
@@ -793,8 +794,8 @@ Usage: app run [-hpvV] [-d=<dialect>] [-dp=<dialectJarPath>]
                [-cp=<copyBookDirs>[,<copyBookDirs>...]]... [<programNames>...]
 Implements various operations useful for reverse engineering Cobol code
       [<programNames>...]    The programs to analyse
-  -c, --commands=<commands>  The commands to run (FLOW_TO_NEO4J,
-                               FLOW_TO_GRAPHML, WRITE_RAW_AST,
+  -c, --commands=<commands>  The commands to run (BUILD_BASE_ANALYSIS,
+                               FLOW_TO_NEO4J, FLOW_TO_GRAPHML, WRITE_RAW_AST,
                                DRAW_FLOWCHART, WRITE_FLOW_AST, WRITE_CFG,
                                ATTACH_COMMENTS, WRITE_DATA_STRUCTURES,
                                BUILD_PROGRAM_DEPENDENCIES, COMPARE_CODE,
@@ -808,7 +809,7 @@ Implements various operations useful for reverse engineering Cobol code
                              Format of the flowchart output (PNG, SVG)
   -g, --generation=<flowchartGenerationStrategy>
                              The flowchart generation strategy. Valid values
-                               are SECTION, PROGRAM, and NODRAW
+                               are PARAGRAPH, SECTION, PROGRAM, and NODRAW
   -h, --help                 Show this help message and exit.
   -p, --permissiveSearch     Match filename using looser criteria
   -r, --reportDir=<reportRootDir>
@@ -931,17 +932,31 @@ Interprets the COBOL source
 The simplest way to invoke tasks associated with the ```CodeTaskRunner``` through the API is using ```CodeTaskRunner```, like so:
 
 ```
-        CodeTaskRunner codeTaskRunner1 = new CodeTaskRunner("/path/to/src",
+        String programName = "implicit-loop.cbl";
+        Map<String, List<AnalysisTaskResult>> result = new CodeTaskRunner("/path/to/src",
                 "/path/to/report",
                 ImmutableList.of(new File("/path/1/to/cpy"),
                         new File("/path/2/to/cpy"),
-                        new File("/path/3/to/cpy")),
-                "/path/to/dialect-idms.jar",
-                LanguageDialect.IDMS, new FullProgram(PNG), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder(), new ProgramSearch());
-
+                new File("/path/3/to/cpy")),                "/path/to/dialect-idms.jar",
+                LanguageDialect.IDMS, new FullProgram(FlowchartOutputFormat.MERMAID), 
+                new UUIDProvider(), 
+                new OccursIgnoringFormat1DataStructureBuilder(), 
+                new ProgramSearch(), 
+                new LocalFilesystemOperations())
+                    .runForPrograms(ImmutableList.of(
+                        BUILD_BASE_ANALYSIS, 
+                        BUILD_TRANSPILER_FLOWGRAPH), 
+                        ImmutableList.of(programName));
+        List<AnalysisTaskResult> results = result.get(programName);
+        TranspilerFlowgraph transpilerFlowgraph = ((AnalysisTaskResultOK) results.get(1)).getDetail();
+        TranspilerNode tree = transpilerFlowgraph.transpilerTree();
 ```
 
+The above performs the base analysis and then the actual analysis we are interested, namely, building the transpilation model. There are a lot of dependencies needing to be specified as of now; simpler defaults will be added going forward.
+
 Depending upon the number of tasks invoked, the result will contain a list of ```AnalysisTaskResult``` objects, which can be either ```AnalysisTaskResultOK``` or ```AnalysisTaskResultError```. You can use them to determine what you want to do.
+
+**Please note that ```BUILD_BASE_ANALYSIS` will always be the first task to be run before any of the following tasks, whether specified or not.** Thus, the results of any actual analysis will always start from the second element.
 
 This invocation uses some specific conventions when deciding where to output file artifacts under the ```report-dir``` directory.
 If you want more fine-grained control of the location of output artifacts, you can use the ```SmojolTasks``` class, which gives you more configurability in exchange for having to provide more detailed specifications.
