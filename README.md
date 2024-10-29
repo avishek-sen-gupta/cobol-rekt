@@ -1,3 +1,5 @@
+![Cobol-REKT Banner](/documentation/cobol-rekt-banner.png)
+
 # Cobol-REKT (Cobol Reverse Engineering KiT)
 
 [![Maven Package](https://github.com/avishek-sen-gupta/cobol-rekt/actions/workflows/maven-publish.yml/badge.svg)](https://github.com/avishek-sen-gupta/cobol-rekt/actions/workflows/maven-publish.yml)
