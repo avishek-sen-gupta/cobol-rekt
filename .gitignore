@@ -1,3 +1,4 @@
+**/resources/static/dist/
 target/
 coverage/
 .nyc_output/
