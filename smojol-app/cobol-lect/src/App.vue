@@ -15,7 +15,7 @@ export default {
   setup() {
     const codeArea = ref("Here's some code");
 
-    function updateText1() {
+    function updateText() {
       codeArea.value = "BLAH BLAH";
     }
 
@@ -42,7 +42,7 @@ export default {
       ]
     });
     console.log(graph);
-    return {codeArea, updateText1, graph};
+    return {codeArea, updateText1: updateText, graph};
   },
   data() {
     const testGraph = new TestAstNode("A1", "TOP",
@@ -143,14 +143,6 @@ export default {
   background-color: azure;
   border: 1px solid azure;
   text-align: left;
-}
-
-.ast_TOP {
-  background-color: lightpink;
-}
-
-.ast_BOTTOM {
-  background-color: greenyellow;
 }
 
 #cyto {
