@@ -128,7 +128,7 @@ export default {
     <button>Control Flowgraph</button>
     <button>Configure/Run Task(s)</button>
   </div>
-  <div>Ping result is {{heartbeatResult}}</div>
+  <div>Ping result is MODIFIED: {{heartbeatResult}}</div>
   <div class="ir-box">
     <UiAstNode :node="testGraph"/>
   </div>
