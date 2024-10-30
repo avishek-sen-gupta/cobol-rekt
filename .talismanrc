@@ -31,3 +31,5 @@ fileignoreconfig:
   checksum: b5d7135135db97c9de436f53d9b4da33d95f8f8459f471bcb59589733eb09ede
 - filename: smojol-app/cobol-lect/package-lock.json
   checksum: b1fabdb9cf26426c7aa512759aa901fe1f860f2c6981a191884861cb1063d2c2
+- filename: smojol-app/cobol-lect/package-lock.json
+  checksum: df93dabfb6378307a680bff4ea5f26c93a7b611e08260427590d769f6ea0a839

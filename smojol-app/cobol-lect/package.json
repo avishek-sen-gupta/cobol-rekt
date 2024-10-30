@@ -9,7 +9,10 @@
   },
   "dependencies": {
     "@primevue/themes": "^4.1.1",
+    "@types/cytoscape": "^3.21.8",
     "core-js": "^3.8.3",
+    "cytoscape": "^3.30.3",
+    "cytoscape-dagre": "^2.5.0",
     "primevue": "^4.1.1",
     "vue": "^3.2.13"
   },

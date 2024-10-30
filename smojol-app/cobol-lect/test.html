@@ -1,0 +1,126 @@
+<!DOCTYPE>
+
+<html>
+
+<head>
+    <title>cytoscape-avsdf.js demo</title>
+
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+
+    <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
+
+    <!--polyfills are needed for this extension for old browsers like IE -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/core-js/2.5.7/shim.min.js"></script>
+
+    <script src="https://unpkg.com/layout-base/layout-base.js"></script>
+    <script src="https://unpkg.com/avsdf-base/avsdf-base.js"></script>
+
+    <style>
+        body {
+            font-family: helvetica;
+            font-size: 15px;
+        }
+
+        #cy {
+            width: 100%;
+            height: 90%;
+            z-index: 999;
+        }
+
+        h1 {
+            opacity: 0.5;
+            font-size: 1em;
+            font-weight: bold;
+        }
+
+        button {
+            font-size: 15px;
+            margin-right: 10px;
+        }
+
+        .line {
+            clear:left;
+            height:25px;
+            margin-top:6px;
+            margin-right:6px;
+            margin-bottom:6px;
+        }
+
+        .radio {
+            margin-left:25px;
+        }
+
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function(){
+            var cy = cytoscape({
+                container: document.getElementById('cy'),
+
+                layout: {
+                    name: 'breadthfirst',
+                    directed: true
+                },
+
+                style: [
+                    {
+                        selector: 'node',
+                        style: {
+                            'label': 'data(id)',
+                            'text-valign': 'center',
+                            'color': '#000000',
+                            'background-color': '#3a7ecf'
+                        }
+                    },
+
+                    {
+                        selector: 'edge',
+                        style: {
+                            'width': 2,
+                            'line-color': '#3a7ecf',
+                            'opacity': 0.5
+                        }
+                    }
+                ],
+
+                elements: [ // list of graph elements to start with
+                    { // node a
+                        data: { id: 'a' }
+                    },
+                    { // node b
+                        data: { id: 'b' }
+                    },
+                    { // node b
+                        data: { id: 'c' }
+                    },
+                    { // edge ab
+                        data: { id: 'ab', source: 'a', target: 'b' },
+                    },
+                    { // edge ac
+                        data: { id: 'ac', source: 'a', target: 'c' }
+                    }
+                ]
+            });
+        });
+    </script>
+</head>
+
+<body>
+<h1>cytoscape-avsdf demo</h1>
+<div class="line">
+    Animation Type:
+    <input type="radio" name="radio" id="end" class="radio" value="end" checked> End
+    <input type="radio" name="radio" id="during" class="radio" value="during"> During <br>
+</div>
+<a data-toggle="tooltip" data-placement="auto" title="Places the nodes circularly as a randomly permuted sequence">
+    <button id="randomize" type="button">Randomize</button>
+</a>
+<a data-toggle="tooltip" data-placement="auto" title="Places the nodes circularly with respect to AVSDF layout">
+    <button id="layoutButton" type="button">AVSDF</button>
+</a>
+
+<div id="cy"></div>
+
+</body>
+
+</html>
