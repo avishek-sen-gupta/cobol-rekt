@@ -5,7 +5,7 @@ import Aura from '@primevue/themes/aura';
 import Button from "primevue/button"
 import Textarea from 'primevue/textarea';
 
-let app = createApp(App);
+const app = createApp(App);
 app.use(PrimeVue, {
     theme: {
         preset: Aura

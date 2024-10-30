@@ -1,21 +1,56 @@
 <script>
-import HelloWorld from './components/HelloWorld.vue'
 import {ref} from "vue";
 import cytoscape from 'cytoscape';
 import cydagre from "cytoscape-dagre";
+import UiAstNode from "@/components/UiAstNode.vue";
+import HelloWorld from "@/components/HelloWorld.vue";
+import {TestAstNode} from "@/ts/TestAstNode";
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    HelloWorld,
+    UiAstNode
   },
   setup() {
-    const codeArea = ref("Here's some <bold>code</bold>");
+    const codeArea = ref("Here's some code");
+
     function updateText1() {
       codeArea.value = "BLAH BLAH";
     }
 
-    return {codeArea, updateText1};
+    const graph = ref({
+      id: "A",
+      children: [
+        {
+          id: "A1",
+          children: [
+            {
+              id: "AA1",
+              children: []
+            },
+            {
+              id: "AA2",
+              children: []
+            }
+          ]
+        },
+        {
+          id: "A2",
+          children: []
+        }
+      ]
+    });
+    console.log(graph);
+    return {codeArea, updateText1, graph};
+  },
+  data() {
+    const testGraph = ref(new TestAstNode("A1", "TOP",
+        [
+          new TestAstNode("AA1", "BOTTOM", [])
+        ]
+    ));
+    return {testGraph: testGraph};
   },
   mounted() {
     this.drawGraph();
@@ -27,19 +62,19 @@ export default {
         container: document.getElementById('cyto'),
         elements: [ // list of graph elements to start with
           { // node a
-            data: { id: 'a' }
+            data: {id: 'a'}
           },
           { // node b
-            data: { id: 'b' }
+            data: {id: 'b'}
           },
           { // node b
-            data: { id: 'c' }
+            data: {id: 'c'}
           },
           { // edge ab
-            data: { id: 'ab', source: 'a', target: 'b' },
+            data: {id: 'ab', source: 'a', target: 'b'},
           },
           { // edge ac
-            data: { id: 'ac', source: 'a', target: 'c' }
+            data: {id: 'ac', source: 'a', target: 'c'}
           }
         ],
         style: [ // the stylesheet for the graph
@@ -78,6 +113,7 @@ export default {
 <template>
   <img alt="Vue logo" src="./assets/cobol-rekt-banner.png">
   <HelloWorld header="Welcome to this amazing app"/>
+  <UiAstNode :node="testGraph"/>
   <h3>Intermediate representation</h3>
   <div class="readonly-code">What {{ codeArea }}</div>
   <textarea v-model="codeArea" rows="10" columns="10" class="code"/>
@@ -106,6 +142,15 @@ export default {
   border: 1px solid azure;
   text-align: left;
 }
+
+.ast_TOP {
+  background-color: blue;
+}
+
+.ast_BOTTOM {
+  background-color: greenyellow;
+}
+
 #cyto {
   height: 600px;
   width: 600px;
