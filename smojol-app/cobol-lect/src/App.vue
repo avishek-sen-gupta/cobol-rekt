@@ -5,6 +5,7 @@ import cydagre from "cytoscape-dagre";
 import UiAstNode from "@/components/UiAstNode.vue";
 import HelloWorld from "@/components/HelloWorld.vue";
 import {TestAstNode} from "@/ts/TestAstNode";
+import axios from "axios";
 
 export default {
   name: 'App',
@@ -56,6 +57,9 @@ export default {
     this.drawGraph();
   },
   methods: {
+    testPing() {
+      axios.get
+    },
     drawGraph() {
       cydagre(cytoscape);
       const cy = cytoscape({
@@ -111,9 +115,10 @@ export default {
 </script>
 
 <template>
-  <img alt="Vue logo" src="./assets/cobol-rekt-banner.png">
+  <img alt="Cobol-REKT logo" src="./assets/cobol-rekt-banner.png">
   <HelloWorld header="Welcome to this amazing app"/>
   <div>
+    <button @click="testPing">Test Ping</button>
     <button>Flowchart</button>
     <button>Intermediate Representation</button>
     <button>Control Flowgraph</button>

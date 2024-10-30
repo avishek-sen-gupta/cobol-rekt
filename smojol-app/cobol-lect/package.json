@@ -10,12 +10,14 @@
   "dependencies": {
     "@primevue/themes": "^4.1.1",
     "@types/cytoscape": "^3.21.8",
+    "axios": "^1.7.7",
     "core-js": "^3.8.3",
     "cytoscape": "^3.30.3",
     "cytoscape-dagre": "^2.5.0",
     "primevue": "^4.1.1",
     "vue": "^3.2.13",
-    "vue-class-component": "^8.0.0-0"
+    "vue-class-component": "^8.0.0-0",
+    "vue-router": "^4.4.5"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

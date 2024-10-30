@@ -11,6 +11,7 @@
 
     <modules>
         <module>smojol-cli</module>
+        <module>smojol-api</module>
         <module>smojol-toolkit</module>
         <module>smojol-core</module>
         <module>woof</module>
