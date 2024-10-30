@@ -19,6 +19,9 @@ export default defineComponent({
           if (this.node.nodeType === "TOP") return "ast_TOP";
           else if (this.node.nodeType === "BOTTOM") return "ast_BOTTOM";
           return "ast_DEFAULT";
+        },
+        hasChildren() {
+          return this.node.children.length > 0;
         }
       }
     }
@@ -26,15 +29,15 @@ export default defineComponent({
 </script>
 
 <template>
-  <span :id="nodeID" :class="nodeClass">({{ node.id }}</span>
-  <span>ast-{{ node.nodeType }}</span>
-  <span>
+  <span :id="nodeID" :class="nodeClass">({{ node.id }}
+  <span v-if="hasChildren">
     <UiAstNode
         v-for="child in node.children"
         :key="child.id"
         :node="child"
     />
   </span>)
+  </span>
 </template>
 
 <style scoped>

@@ -45,11 +45,11 @@ export default {
     return {codeArea, updateText1, graph};
   },
   data() {
-    const testGraph = ref(new TestAstNode("A1", "TOP",
+    const testGraph = new TestAstNode("A1", "TOP",
         [
           new TestAstNode("AA1", "BOTTOM", [])
         ]
-    ));
+    );
     return {testGraph: testGraph};
   },
   mounted() {
@@ -113,7 +113,9 @@ export default {
 <template>
   <img alt="Vue logo" src="./assets/cobol-rekt-banner.png">
   <HelloWorld header="Welcome to this amazing app"/>
-  <UiAstNode :node="testGraph"/>
+  <div class="ir-box">
+    <UiAstNode :node="testGraph"/>
+  </div>
   <h3>Intermediate representation</h3>
   <div class="readonly-code">What {{ codeArea }}</div>
   <textarea v-model="codeArea" rows="10" columns="10" class="code"/>
@@ -136,7 +138,7 @@ export default {
   background-color: azure;
 }
 
-.readonly-code {
+.readonly-code, .ir-box {
   font-family: "Courier New", sans-serif;
   background-color: azure;
   border: 1px solid azure;
@@ -144,7 +146,7 @@ export default {
 }
 
 .ast_TOP {
-  background-color: blue;
+  background-color: lightpink;
 }
 
 .ast_BOTTOM {
