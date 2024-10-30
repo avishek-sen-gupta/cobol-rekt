@@ -29,3 +29,5 @@ fileignoreconfig:
   checksum: c8e93f7e1dab2e2bc6f9a811c878371d8729835f1dbced72e0c0490b7eb130c3
 - filename: smojol_python/src/analysis/frequent_pattern_miner.py
   checksum: b5d7135135db97c9de436f53d9b4da33d95f8f8459f471bcb59589733eb09ede
+- filename: smojol-app/cobol-lect/package-lock.json
+  checksum: b1fabdb9cf26426c7aa512759aa901fe1f860f2c6981a191884861cb1063d2c2
