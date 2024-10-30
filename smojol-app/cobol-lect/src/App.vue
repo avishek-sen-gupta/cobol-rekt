@@ -51,14 +51,18 @@ export default {
           new TestAstNode("AA1", "BOTTOM", [])
         ]
     );
-    return {testGraph: testGraph};
+    return {testGraph, heartbeatResult: null};
   },
   mounted() {
     this.drawGraph();
   },
   methods: {
     testPing() {
-      axios.get
+      axios.get("/api/heartbeat")
+          .then(response => {
+            console.log(response);
+            this.heartbeatResult = response.data;
+          })
     },
     drawGraph() {
       cydagre(cytoscape);
@@ -124,6 +128,7 @@ export default {
     <button>Control Flowgraph</button>
     <button>Configure/Run Task(s)</button>
   </div>
+  <div>Ping result is {{heartbeatResult}}</div>
   <div class="ir-box">
     <UiAstNode :node="testGraph"/>
   </div>
