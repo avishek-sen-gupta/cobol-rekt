@@ -42,7 +42,7 @@ export default {
       ]
     });
     console.log(graph);
-    return {codeArea, updateText1: updateText, graph};
+    return {codeArea, updateText: updateText, graph};
   },
   data() {
     const testGraph = new TestAstNode("A1", "TOP",
@@ -113,13 +113,19 @@ export default {
 <template>
   <img alt="Vue logo" src="./assets/cobol-rekt-banner.png">
   <HelloWorld header="Welcome to this amazing app"/>
+  <div>
+    <button>Flowchart</button>
+    <button>Intermediate Representation</button>
+    <button>Control Flowgraph</button>
+    <button>Configure/Run Task(s)</button>
+  </div>
   <div class="ir-box">
     <UiAstNode :node="testGraph"/>
   </div>
   <h3>Intermediate representation</h3>
   <div class="readonly-code">What {{ codeArea }}</div>
   <textarea v-model="codeArea" rows="10" columns="10" class="code"/>
-  <button @click="updateText1">Le Button</button>
+  <button @click="updateText">Le Button</button>
 </template>
 
 
