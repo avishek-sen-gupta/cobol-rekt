@@ -1,8 +1,9 @@
 <script>
 
 import {TestAstNode} from "@/ts/TestAstNode";
+import {defineComponent} from "vue";
 
-export default ({
+export default defineComponent({
       name: "UiAstNode",
       props: {
         node: {
