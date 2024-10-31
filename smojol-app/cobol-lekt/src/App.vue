@@ -137,6 +137,13 @@ export default {
     <button>Configure/Run Task(s)</button>
     <button>Capability Mapping</button>
   </div>
+  <div>
+    <button>T1/T2 Reducibility</button>
+    <button>Strongly Connected Components</button>
+    <button>Identify Loop Bodies</button>
+    <button>Trace Program Dependencies</button>
+    <button>Code Patterns</button>
+  </div>
   <div>Ping result is MODIFIED: {{heartbeatResult}}</div>
   <div class="ir-box">
     <UiAstNode :node="testGraph"/>
