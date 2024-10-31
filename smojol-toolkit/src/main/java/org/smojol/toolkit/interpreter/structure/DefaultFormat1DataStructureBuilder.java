@@ -5,7 +5,7 @@ import org.smojol.common.structure.SourceSection;
 import org.smojol.common.vm.strategy.UnresolvedReferenceStrategy;
 import org.smojol.common.vm.structure.*;
 
-public class DefaultFormat1DataStructureBuilder implements Format1DataStructureBuilder {
+public class DefaultFormat1DataStructureBuilder implements Format1DataStructureBuildStrategy {
     @Override
     public Format1DataStructure build(CobolParser.DataDescriptionEntryFormat1Context format1Structure, UnresolvedReferenceStrategy strategy, SourceSection sourceSection) {
         if (format1Structure.dataOccursClause() == null || format1Structure.dataOccursClause().isEmpty()) {

@@ -17,7 +17,7 @@ import org.smojol.common.ast.CobolTreeVisualiser;
 import org.smojol.common.id.IdProvider;
 import org.smojol.common.navigation.EntityNavigatorBuilder;
 import org.smojol.common.vm.strategy.UnresolvedReferenceThrowStrategy;
-import org.smojol.common.vm.structure.Format1DataStructureBuilder;
+import org.smojol.common.vm.structure.Format1DataStructureBuildStrategy;
 import org.smojol.toolkit.flowchart.FlowchartGenerationStrategy;
 import org.smojol.toolkit.flowchart.FlowchartOutputWriter;
 import org.smojol.toolkit.task.CommandLineAnalysisTask;
@@ -54,11 +54,11 @@ public class CodeTaskRunner {
     private final IdProvider idProvider;
     @Getter
     private final Map<String, List<SyntaxError>> errorMap = new HashMap<>();
-    private final Format1DataStructureBuilder format1DataStructureBuilder;
+    private final Format1DataStructureBuildStrategy format1DataStructureBuilder;
     private final ProgramSearch programSearch;
     private final ResourceOperations resourceOperations;
 
-    public CodeTaskRunner(String sourceDir, String reportRootDir, List<File> copyBookPaths, String dialectJarPath, LanguageDialect dialect, FlowchartGenerationStrategy flowchartGenerationStrategy, IdProvider idProvider, Format1DataStructureBuilder format1DataStructureBuilder, ProgramSearch programSearch, ResourceOperations resourceOperations) {
+    public CodeTaskRunner(String sourceDir, String reportRootDir, List<File> copyBookPaths, String dialectJarPath, LanguageDialect dialect, FlowchartGenerationStrategy flowchartGenerationStrategy, IdProvider idProvider, Format1DataStructureBuildStrategy format1DataStructureBuilder, ProgramSearch programSearch, ResourceOperations resourceOperations) {
         this.sourceDir = sourceDir;
         this.copyBookPaths = copyBookPaths;
         this.dialectJarPath = dialectJarPath;

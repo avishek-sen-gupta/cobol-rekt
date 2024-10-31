@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static org.smojol.toolkit.task.CommandLineAnalysisTask.DO_NOTHING;
+
 public class SmojolTasks {
     private final SourceConfig sourceConfig;
     private final FlowchartOutputWriter flowchartOutputWriter;
@@ -193,10 +195,11 @@ public class SmojolTasks {
             case COMPARE_CODE -> COMPARE_CODE;
             case SUMMARISE_THROUGH_LLM -> SUMMARISE_THROUGH_LLM;
             case BUILD_TRANSPILER_FLOWGRAPH -> BUILD_TRANSPILER_FLOWGRAPH;
+            case DO_NOTHING -> nullTask(DO_NOTHING);
         });
     }
 
     private AnalysisTask nullTask(CommandLineAnalysisTask task) {
-        return () -> new AnalysisTaskResultOK(task.name(), task + " is not live yet.");
+        return () -> new AnalysisTaskResultOK(task.name(), baseModel);
     }
 }

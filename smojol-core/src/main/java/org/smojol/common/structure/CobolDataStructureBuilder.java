@@ -20,10 +20,10 @@ public class CobolDataStructureBuilder {
     private final CobolEntityNavigator navigator;
     private final UnresolvedReferenceStrategy unresolvedReferenceStrategy;
     private CobolDataStructure zerothStructure;
-    private final Format1DataStructureBuilder format1DataStructureBuilder;
+    private final Format1DataStructureBuildStrategy format1DataStructureBuilder;
     private final IdProvider idProvider;
 
-    public CobolDataStructureBuilder(CobolEntityNavigator navigator, UnresolvedReferenceStrategy unresolvedReferenceStrategy, Format1DataStructureBuilder format1DataStructureBuilder, IdProvider idProvider) {
+    public CobolDataStructureBuilder(CobolEntityNavigator navigator, UnresolvedReferenceStrategy unresolvedReferenceStrategy, Format1DataStructureBuildStrategy format1DataStructureBuilder, IdProvider idProvider) {
         this.navigator = navigator;
         this.unresolvedReferenceStrategy = unresolvedReferenceStrategy;
         this.format1DataStructureBuilder = format1DataStructureBuilder;
