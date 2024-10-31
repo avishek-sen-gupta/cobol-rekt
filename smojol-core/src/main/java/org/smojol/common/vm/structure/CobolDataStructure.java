@@ -189,11 +189,9 @@ public abstract class CobolDataStructure extends SimpleTreeNode {
 
     protected abstract AccessChain typeSpecificChain(String subRecordID, AccessChain chain);
 
-    protected static CobolDataType cobolDataType(CobolParser.DataDescriptionEntryFormat1Context dataDescription) {
-        if (dataDescription.dataOccursClause() != null && !dataDescription.dataOccursClause().isEmpty())
-            return CobolDataType.TABLE;
-        else if (isPointer(dataDescription)) return CobolDataType.POINTER;
-        if (dataDescription.dataPictureClause().isEmpty()) return GROUP;
+    protected static CobolDataType elementaryDataType(CobolParser.DataDescriptionEntryFormat1Context dataDescription) {
+        if (isPointer(dataDescription)) return CobolDataType.POINTER;
+        else if (dataDescription.dataPictureClause().isEmpty()) return GROUP;
 
         // TODO: Handle multiple usage clauses?
         String input = dataDescription.dataPictureClause().getFirst().pictureString().getFirst().getText();
@@ -209,6 +207,12 @@ public abstract class CobolDataStructure extends SimpleTreeNode {
             return NUMERIC_EXTERNAL_DECIMAL;
         } else if (root.dataTypeSpec().alphanumeric() != null) return STRING;
         throw new UnsupportedOperationException("Unknown type: " + root.dataTypeSpec().getText());
+    }
+
+    protected static CobolDataType cobolDataType(CobolParser.DataDescriptionEntryFormat1Context dataDescription) {
+        if (dataDescription.dataOccursClause() != null && !dataDescription.dataOccursClause().isEmpty())
+            return CobolDataType.TABLE;
+        else return elementaryDataType(dataDescription);
     }
 
     private static <T> boolean chain(CobolParser.DataDescriptionEntryFormat1Context dataDescription, Supplier<T> levelNumber) {

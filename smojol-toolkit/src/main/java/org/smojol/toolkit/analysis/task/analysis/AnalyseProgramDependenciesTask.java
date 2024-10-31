@@ -59,7 +59,7 @@ public class AnalyseProgramDependenciesTask {
                     reportRootDir, copyBookPaths, dialectJarPath,
                     dialect, new FullProgram(FlowchartOutputFormat.SVG), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder(), programSearch, resourceOperations)
                     .runForPrograms(ImmutableList.of(BUILD_BASE_ANALYSIS, CommandLineAnalysisTask.BUILD_PROGRAM_DEPENDENCIES), ImmutableList.of(foundFile.getName()));
-            AnalysisTaskResult first = results.get(program.getName()).getFirst();
+            AnalysisTaskResult first = results.get(program.getName()).get(1);
             List<CallTarget> dependencies = switch (first) {
                 case AnalysisTaskResultOK o -> o.getDetail();
                 case AnalysisTaskResultError e -> throw new RuntimeException(e.getException());

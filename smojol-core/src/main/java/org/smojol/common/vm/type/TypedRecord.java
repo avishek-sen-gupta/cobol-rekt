@@ -127,8 +127,8 @@ public final class TypedRecord {
 
     public boolean isCompatibleWith(TypedRecord other) {
         LOGGER.finer(String.format("Comparing data types of %s and %s\n", this, other));
-        return true;
-//        return dataType == other.dataType;
+//        return true;
+        return dataType.abstractType() == other.dataType.abstractType();
 //        return dataType == other.dataType ||
 //                dataType == CobolDataType.STRING && other.dataType == CobolDataType.NUMBER;
     }

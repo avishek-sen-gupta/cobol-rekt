@@ -9,6 +9,8 @@ import org.smojol.common.flowchart.FlowchartBuilder;
 import org.smojol.common.id.UUIDProvider;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.navigation.EntityNavigatorBuilder;
+import org.smojol.common.pseudocode.SmojolSymbolTable;
+import org.smojol.common.pseudocode.SymbolReferenceBuilder;
 import org.smojol.common.resource.ResourceOperations;
 import org.smojol.common.vm.interpreter.Breakpointer;
 import org.smojol.common.vm.interpreter.ConditionResolver;
@@ -57,6 +59,8 @@ public class InterpretTask implements AnalysisTask {
             ParseTree procedure = navigator.procedureDivisionBody(navigator.getRoot());
             flowcharter.buildFlowAST(procedure).buildControlFlow().buildOverlay();
             FlowNode root = flowcharter.getRoot();
+            root.resolve(new SmojolSymbolTable(dataStructures, new SymbolReferenceBuilder(ops.getIdProvider())), dataStructures);
+
 //            new FlowNodeASTTraversal<FlowNode>().accept(sourceGraphRoot, new FlowNodeSymbolExtractorVisitor(sourceGraphRoot, dataStructures, new SmojolSymbolTable(dataStructures, new SymbolReferenceBuilder(new UUIDProvider()))));
             LOGGER.info("DATA STRUCTURES\n--------------------------------\n");
             dataStructures.report();

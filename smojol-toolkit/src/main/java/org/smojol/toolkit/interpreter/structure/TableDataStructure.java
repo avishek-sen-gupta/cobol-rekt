@@ -23,7 +23,7 @@ public class TableDataStructure extends Format1DataStructure {
 
     public TableDataStructure(CobolParser.DataDescriptionEntryFormat1Context structure, int numElements, UnresolvedReferenceStrategy strategy, SourceSection sourceSection) {
         super(structure, strategy, sourceSection);
-        elementType = cobolDataType(structure);
+        elementType = elementaryDataType(structure);
         this.numElements = numElements;
     }
 
@@ -42,8 +42,8 @@ public class TableDataStructure extends Format1DataStructure {
     @Override
     public void expandTables() {
         if (!isComposite) {
-//            structures = IntStream.range(0, numElements).mapToObj(i -> (CobolDataStructure) new Format1DataStructure(NamingScheme.INDEXED.apply(i), dataDescription, copy(structures), level(), this, isComposite, unresolvedReferenceStrategy, conditions, elementType, sourceSection)).toList();
-            structures = IntStream.range(0, numElements).mapToObj(i -> (CobolDataStructure) new Format1DataStructure(this, NamingScheme.INDEXED.apply(i))).toList();
+//            structures = IntStream.range(0, numElements).mapToObj(i -> (CobolDataStructure) new Format1DataStructure(this, NamingScheme.INDEXED.apply(i))).toList();
+            structures = IntStream.range(0, numElements).mapToObj(i -> (CobolDataStructure) new Format1DataStructure(this.dataDescription, elementType, unresolvedReferenceStrategy, sourceSection)).toList();
         } else {
             structures.forEach(CobolDataStructure::expandTables);
             structures = IntStream.range(0, numElements).mapToObj(i -> {
