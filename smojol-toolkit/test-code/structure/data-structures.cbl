@@ -3,8 +3,8 @@
        DATA DIVISION.
            WORKING-STORAGE SECTION.
                01 EXCHANGE-PART-01 PIC XXXX.
-               01 SOME-ARRAY PIC XXXX OCCURS 10.
-               01 SOME-PART PIC XXXX.
+               01 SOME-ARRAY PIC XXXX OCCURS 3.
+               01 SOME-PART.
                     10 SOME-PART-1 PIC XXXX.
                     10 SOME-PART-2 PIC XXXX.
                     10 INVOICE-AMOUNT PIC 9999.
