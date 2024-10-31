@@ -64,6 +64,14 @@ export default {
             this.heartbeatResult = response.data;
           })
     },
+    getIR() {
+      axios.get("/api/ir-ast")
+          .then(response => {
+            console.log(response);
+            console.log(response.data);
+            this.heartbeatResult = response.data;
+          })
+    },
     drawGraph() {
       cydagre(cytoscape);
       const cy = cytoscape({
@@ -124,7 +132,7 @@ export default {
   <div>
     <button @click="testPing">Test Ping</button>
     <button>Flowchart</button>
-    <button>Intermediate Representation</button>
+    <button @click="getIR">Intermediate Representation</button>
     <button>Control Flowgraph</button>
     <button>Configure/Run Task(s)</button>
     <button>Capability Mapping</button>
