@@ -1,8 +1,5 @@
 package org.smojol.api;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.javalin.Javalin;
@@ -38,8 +35,6 @@ public class ApiMain {
                 return gson.fromJson(json, targetType);
             }
         };
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
         Javalin.create(config -> {
                     config.jsonMapper(gsonMapper);
                     config.staticFiles.add("/static/dist");
