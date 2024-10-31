@@ -14,11 +14,11 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 public abstract class TranspilerNode implements Identifiable, GenericTreeNode<TranspilerNode> {
+    private final String nodeType = this.getClass().getSimpleName();
     protected final Map<String, Object> properties;
     @Getter private final List<SemanticCategory> categories;
     protected final List<TranspilerNode> childTranspilerNodes = new ArrayList<>();
     protected final String id;
-    private final String nodeType = this.getClass().getSimpleName();
 
     public TranspilerNode(List<SemanticCategory> categories) {
         this(ImmutableList.of(), Map.of(), categories);
