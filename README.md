@@ -150,6 +150,8 @@ This capability allows the engineer to transform Cobol source (or part of it) in
 - Specifying the ```--generation``` parameter as ```SECTION``` creates one flowchart per section, while specifying the value as ```PROGRAM``` generates one flowchart for the entire program.
 - You can specify the output format as SVG or PNG by setting ```--fileOutputFormat``` to ```SVG``` or ```PNG``` respectively.
 
+**NOTE: You need to have installed Graphviz to generate flowcharts. Specifically, the ```dot``` command should be available on your path.**
+
 ### Example flowchart of the program test-exp.cbl
 ![Flowchart](documentation/example-flowchart.png)
 
