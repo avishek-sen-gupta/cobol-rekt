@@ -29,7 +29,7 @@ import java.util.Map;
 
 import static org.smojol.toolkit.task.CommandLineAnalysisTask.BUILD_BASE_ANALYSIS;
 
-public class ReachingConditionTaskTest {
+public class ReachingConditionTaskRegressionTest {
     @Test
     @Disabled
     public void canFindReachingConditionForSimpleAcyclicGraph() throws IOException {

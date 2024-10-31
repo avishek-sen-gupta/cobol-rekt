@@ -32,7 +32,7 @@ import java.nio.file.Path;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-class ExportToGraphMLTaskTest {
+public class ExportToGraphMLTaskRegressionTest {
     @Test
     void canCreateDataStructures() {
         SourceConfig sourceConfig = new SourceConfig("test-exp.cbl",

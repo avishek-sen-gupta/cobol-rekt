@@ -10,7 +10,7 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class WriteFlowASTTaskTest {
+class WriteFlowASTTaskRegressionTest {
     @Test
     void canCreateFlowAST() throws IOException {
         AnalysisTaskResult taskResult = new TestTaskRunner("no-branches.cbl", "test-code/flow-ast")

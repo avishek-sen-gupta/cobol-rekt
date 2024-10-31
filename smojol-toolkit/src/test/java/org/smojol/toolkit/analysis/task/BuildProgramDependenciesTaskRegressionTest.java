@@ -16,7 +16,7 @@ import java.io.IOException;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.smojol.toolkit.analysis.task.TestTaskRunner.dir;
 
-class BuildProgramDependenciesTaskTest {
+public class BuildProgramDependenciesTaskRegressionTest {
     @Test
     void canBuildProgramDependencies() throws IOException {
         AnalysisTaskResult result = new AnalyseProgramDependenciesTask(dir("test-code/flow-ast"),

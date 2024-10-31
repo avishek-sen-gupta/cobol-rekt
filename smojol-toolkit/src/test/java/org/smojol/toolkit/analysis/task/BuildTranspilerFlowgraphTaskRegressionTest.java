@@ -1,7 +1,7 @@
 package org.smojol.toolkit.analysis.task;
 
 import org.junit.jupiter.api.Test;
-import org.smojol.toolkit.analysis.pipeline.SerialisableCobolDataStructure;
+import org.smojol.common.transpiler.TranspilerFlowgraph;
 import org.smojol.toolkit.task.AnalysisTaskResult;
 import org.smojol.toolkit.task.AnalysisTaskResultOK;
 import org.smojol.toolkit.task.CommandLineAnalysisTask;
@@ -10,12 +10,12 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class WriteDataStructuresTaskTest {
+public class BuildTranspilerFlowgraphTaskRegressionTest {
     @Test
-    void canCreateDataStructures() throws IOException {
+    void canCreateTranspilerTree() throws IOException {
         AnalysisTaskResult taskResult = new TestTaskRunner("no-branches.cbl", "test-code/flow-ast")
-                .runTask(CommandLineAnalysisTask.WRITE_DATA_STRUCTURES);
+                .runTask(CommandLineAnalysisTask.BUILD_TRANSPILER_FLOWGRAPH);
         assertTrue(taskResult.isSuccess());
-        SerialisableCobolDataStructure root = ((AnalysisTaskResultOK) taskResult).getDetail();
+        TranspilerFlowgraph transpilerFlowgraph = ((AnalysisTaskResultOK) taskResult).getDetail();
     }
 }

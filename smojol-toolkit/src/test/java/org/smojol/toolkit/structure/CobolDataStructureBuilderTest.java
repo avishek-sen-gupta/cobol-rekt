@@ -88,4 +88,3 @@ public class CobolDataStructureBuilderTest {
         ).match(dsRoot).verify();
     }
 }
-
