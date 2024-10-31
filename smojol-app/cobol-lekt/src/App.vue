@@ -136,6 +136,7 @@ export default {
     <button>Control Flowgraph</button>
     <button>Configure/Run Task(s)</button>
     <button>Capability Mapping</button>
+    <button>Node Summarisation</button>
   </div>
   <div>
     <button>T1/T2 Reducibility</button>
@@ -143,7 +144,6 @@ export default {
     <button>Identify Loop Bodies</button>
     <button>Trace Program Dependencies</button>
     <button>Code Patterns</button>
-    <button>Node Summarisation</button>
   </div>
   <div>Ping result is MODIFIED: {{heartbeatResult}}</div>
   <div class="ir-box">
