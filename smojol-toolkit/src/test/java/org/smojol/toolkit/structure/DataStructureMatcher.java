@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static com.google.common.collect.Streams.zip;
-import static org.junit.jupiter.api.Assertions.fail;
 
 public class DataStructureMatcher {
     public final Function1<CobolDataStructure, SelfStructureMatchResult> selfMatcher;
@@ -54,7 +53,7 @@ public class DataStructureMatcher {
         });
     }
 
-    public DataStructureMatcher static_(String recordName, CobolDataType dataType) {
+    public static DataStructureMatcher static_(String recordName, CobolDataType dataType) {
         return new DataStructureMatcher(recordDefinition -> {
             List<StructurePropertyMatchResult> structurePropertyMatchResults = ImmutableList.of(
                     mustMatch(StaticDataStructure.class, recordDefinition.getClass(), recordDefinition, "staticStructure"),
@@ -63,11 +62,6 @@ public class DataStructureMatcher {
                     mustMatch(dataType, recordDefinition.getDataType(), recordDefinition, "dataType"));
             return new SelfStructureMatchResult(true, structurePropertyMatchResults);
         });
-    }
-
-    public void assertNoErrors(StructureMatchResult result) {
-        if (!result.selfMatched()) fail(String.join("\n", result.selfMatchErrorMessages()));
-        result.childResults().forEach(this::assertNoErrors);
     }
 
     public static DataStructureMatcher root(DataStructureMatcher... matchers) {
@@ -155,5 +149,4 @@ public class DataStructureMatcher {
             return new SelfStructureMatchResult(true, structurePropertyMatchResults);
         }, matchers);
     }
-
 }
