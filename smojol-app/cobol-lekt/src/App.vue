@@ -159,6 +159,7 @@ export default {
   background-color: azure;
   border: 1px solid azure;
   text-align: left;
+  white-space: pre-wrap;
 }
 
 #cyto {

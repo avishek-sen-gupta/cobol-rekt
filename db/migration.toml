@@ -1,0 +1,8 @@
+# More information on the parameters can be found here: https://documentation.red-gate.com/flyway/flyway-cli-and-api/configuration/parameters
+
+[environments.app]
+url = "jdbc:sqlite:db/smojol_db.sqlite"
+
+[flyway]
+environment = "app"
+locations = ["filesystem:db/migrations"]
