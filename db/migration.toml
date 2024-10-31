@@ -6,3 +6,4 @@ url = "jdbc:sqlite:db/smojol_db.sqlite"
 [flyway]
 environment = "app"
 locations = ["filesystem:db/migrations"]
+cleanDisabled = false

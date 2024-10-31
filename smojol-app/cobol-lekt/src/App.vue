@@ -127,6 +127,7 @@ export default {
     <button>Intermediate Representation</button>
     <button>Control Flowgraph</button>
     <button>Configure/Run Task(s)</button>
+    <button>Capability Mapping</button>
   </div>
   <div>Ping result is MODIFIED: {{heartbeatResult}}</div>
   <div class="ir-box">

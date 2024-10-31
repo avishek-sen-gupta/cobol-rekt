@@ -37,3 +37,5 @@ fileignoreconfig:
   checksum: 416cbeac29fcd4fe3c0f64f89cdf3a83917a022651cabc6413a7a2ab6e25e2fe
 - filename: smojol-app/cobol-lect/package-lock.json
   checksum: 6e14609c629aa4b01e855469e2a8626af17eb4364c508b18fde3094874d39f44
+- filename: smojol-toolkit/src/test/java/org/smojol/toolkit/analysis/SqliiteAccessTest.java
+  checksum: 77d595a74c39c963211a5a00197e82d1337449df2baf5133594f738024b4c5a3
