@@ -73,19 +73,26 @@ public class CobolDataStructureBuilderTest {
                                         number("AA2")
                                 )
                         ),
+                        string("SOMETHING"),
+                        table("SOMEFRACTION", 2,
+                                number("SOMEFRACTION"),
+                                number("SOMEFRACTION")),
+                        group("SOME-UNION-1", true,
+                                number("UNION-CHILD-1"),
+                                string("UNION-CHILD-2", true)),
+                        number("SOMETEXT"),
+                        string("REDEF-SOMETEXT", true),
+                        number("NUMERIC-SOMETEXT", true),
+                        number("CENTURY"),
+                        number("REDEF", true),
+                        number("SCALED"),
+                        number("RESULT"),
                         any(),
-                        any(),
-                        any(),
-                        any(),
-                        any(),
-                        any(),
-                        any(),
-                        any(),
-                        any(),
-                        any(),
-                        any(),
-                        any(),
-                        any(),
+                        string("SOMETHING-LINKAGE"),
+                        table("SOMEFRACTION-LINKAGE", 2,
+                            number("SOMEFRACTION-LINKAGE"),
+                            number("SOMEFRACTION-LINKAGE")
+                        ),
                         any()
                 ).match(dsRoot);
         assertNoErrors(lol);
