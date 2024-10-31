@@ -37,7 +37,7 @@ public class CobolDataStructureBuilderTest {
         StructureMatchResult lol =
                 root(
                         string("EXCHANGE-PART-01"),
-                        table("SOME-ARRAY", false, 3,
+                        table("SOME-ARRAY", 3,
                                 string("SOME-ARRAY"),
                                 string("SOME-ARRAY"),
                                 string("SOME-ARRAY")
@@ -48,7 +48,31 @@ public class CobolDataStructureBuilderTest {
                                 number("INVOICE-AMOUNT"),
                                 number("VENDOR-CORRECTION")
                         ),
-                        any(),
+                        group("SOME-GROUP",
+                                table("LEVEL-10-A", 3,
+                                        string("LEVEL-10-A"),
+                                        string("LEVEL-10-A"),
+                                        string("LEVEL-10-A")
+                                        ),
+                                table("LEVEL-10-B", 2,
+                                    group("LEVEL-10-B",
+                                        table("LEVEL-20-B", 2,
+                                            string("LEVEL-20-B"),
+                                            string("LEVEL-20-B")
+                                        )
+                                    ),
+                                    group("LEVEL-10-B",
+                                        table("LEVEL-20-B", 2,
+                                            string("LEVEL-20-B"),
+                                            string("LEVEL-20-B")
+                                        )
+                                    )
+                                ),
+                                group("AA", true,
+                                        number("AA1"),
+                                        number("AA2")
+                                )
+                        ),
                         any(),
                         any(),
                         any(),
@@ -111,7 +135,7 @@ public class CobolDataStructureBuilderTest {
     private static DataStructureMatcher format1(String recordName, AbstractCobolType abstractDataType, boolean isRedefinition, DataStructureMatcher... matchers) {
         return new DataStructureMatcher(recordDefinition -> {
             ImmutableList<StructurePropertyMatchResult> structurePropertyMatchResults = ImmutableList.of(
-                    mustBeTrue(recordDefinition instanceof Format1DataStructure, recordDefinition, "type"),
+                    mustMatch(Format1DataStructure.class, recordDefinition.getClass(), recordDefinition, "type"),
                     mustMatch(isRedefinition, recordDefinition.isRedefinition(), recordDefinition, "isRedefinition"),
                     mustMatch(recordName, recordDefinition.name(), recordDefinition, "name"),
                     mustMatch(abstractDataType, recordDefinition.getDataType().abstractType(), recordDefinition, "abstractType"));
@@ -126,7 +150,7 @@ public class CobolDataStructureBuilderTest {
     private static DataStructureMatcher group(String recordName, boolean isRedefinition, DataStructureMatcher... matchers) {
         return new DataStructureMatcher(recordDefinition -> {
             ImmutableList<StructurePropertyMatchResult> structurePropertyMatchResults = ImmutableList.of(
-                    mustBeTrue(recordDefinition instanceof Format1DataStructure, recordDefinition, "type"),
+                    mustMatch(Format1DataStructure.class, recordDefinition.getClass(), recordDefinition, "type"),
                     mustMatch(CobolDataType.GROUP, recordDefinition.getDataType(), recordDefinition, "isGroup"),
                     mustMatch(isRedefinition, recordDefinition.isRedefinition(), recordDefinition, "isRedefinition"),
                     mustMatch(recordName, recordDefinition.name(), recordDefinition, "name"),
@@ -165,10 +189,14 @@ public class CobolDataStructureBuilderTest {
         return new StructurePropertyMatchResult(matched, matched ? "OK" : String.format("Expected field '%s' of record '%s' to be %s but was %s", field, recordDefinition.name(), expected, actual));
     }
 
-    private static DataStructureMatcher table(String recordName, boolean isRedefinition, int occurrences, DataStructureMatcher... matchers) {
+    private static DataStructureMatcher table(String recordName, int occurrences, DataStructureMatcher... matchers) {
+        return table(recordName, occurrences, false, matchers);
+    }
+
+    private static DataStructureMatcher table(String recordName, int occurrences, boolean isRedefinition, DataStructureMatcher... matchers) {
         return new DataStructureMatcher(recordDefinition -> {
             ImmutableList<StructurePropertyMatchResult> structurePropertyMatchResults = ImmutableList.of(
-                    mustBeTrue(recordDefinition instanceof TableDataStructure, recordDefinition, "typeMustBeTable"),
+                    mustMatch(TableDataStructure.class, recordDefinition.getClass(), recordDefinition, "typeMustBeTable"),
                     mustMatch(isRedefinition, recordDefinition.isRedefinition(), recordDefinition, "isRedefinition"),
                     mustMatch(recordName, recordDefinition.name(), recordDefinition, "name"),
                     mustMatch(occurrences, recordDefinition.subStructures().size(), recordDefinition, "elementSize"));
