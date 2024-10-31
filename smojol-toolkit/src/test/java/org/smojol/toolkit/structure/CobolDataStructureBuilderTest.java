@@ -3,7 +3,9 @@ package org.smojol.toolkit.structure;
 import com.google.common.collect.ImmutableList;
 import org.junit.jupiter.api.Test;
 import org.smojol.common.vm.structure.CobolDataStructure;
+import org.smojol.common.vm.structure.ConditionalDataStructure;
 import org.smojol.common.vm.structure.Format1DataStructure;
+import org.smojol.common.vm.structure.StaticDataStructure;
 import org.smojol.common.vm.type.AbstractCobolType;
 import org.smojol.common.vm.type.CobolDataType;
 import org.smojol.toolkit.analysis.pipeline.BaseAnalysisModel;
@@ -19,6 +21,7 @@ import java.io.IOException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.smojol.toolkit.structure.DataStructureMatcher.*;
 
 public class CobolDataStructureBuilderTest {
     @Test
@@ -87,15 +90,37 @@ public class CobolDataStructureBuilderTest {
                         number("REDEF", true),
                         number("SCALED"),
                         number("RESULT"),
-                        any(),
+                        string("CONDI"),
                         string("SOMETHING-LINKAGE"),
                         table("SOMEFRACTION-LINKAGE", 2,
                             number("SOMEFRACTION-LINKAGE"),
                             number("SOMEFRACTION-LINKAGE")
                         ),
-                        any()
+                        static_("WHEN-COMPILED", CobolDataType.STRING)
                 ).match(dsRoot);
         assertNoErrors(lol);
+    }
+
+    private static DataStructureMatcher conditional(String conditionalName, CobolDataType dataType) {
+        return new DataStructureMatcher(recordDefinition -> {
+            List<StructurePropertyMatchResult> structurePropertyMatchResults = ImmutableList.of(
+                    mustMatch(ConditionalDataStructure.class, recordDefinition.getClass(), recordDefinition, "staticStructure"),
+                    mustMatch(false, recordDefinition.isRedefinition(), recordDefinition, "isRedefinition"),
+                    mustMatch(conditionalName, recordDefinition.name(), recordDefinition, "name"),
+                    mustMatch(dataType, recordDefinition.getDataType(), recordDefinition, "dataType"));
+            return new SelfStructureMatchResult(true, structurePropertyMatchResults);
+        });
+    }
+
+    private DataStructureMatcher static_(String recordName, CobolDataType dataType) {
+        return new DataStructureMatcher(recordDefinition -> {
+            List<StructurePropertyMatchResult> structurePropertyMatchResults = ImmutableList.of(
+                    mustMatch(StaticDataStructure.class, recordDefinition.getClass(), recordDefinition, "staticStructure"),
+                    mustMatch(false, recordDefinition.isRedefinition(), recordDefinition, "isRedefinition"),
+                    mustMatch(recordName, recordDefinition.name(), recordDefinition, "name"),
+                    mustMatch(dataType, recordDefinition.getDataType(), recordDefinition, "dataType"));
+            return new SelfStructureMatchResult(true, structurePropertyMatchResults);
+        });
     }
 
     private void assertNoErrors(StructureMatchResult result) {
@@ -117,105 +142,12 @@ public class CobolDataStructureBuilderTest {
         });
     }
 
-    private DataStructureMatcher root(DataStructureMatcher... matchers) {
-        return new DataStructureMatcher(recordDefinition -> {
-            ImmutableList<StructurePropertyMatchResult> structurePropertyMatchResults = ImmutableList.of(
-                    mustMatch(false, recordDefinition.isRedefinition(), recordDefinition, "isRedefinition"),
-                    mustMatch("[ROOT]", recordDefinition.name(), recordDefinition, "name"),
-                    mustMatch(AbstractCobolType.OBJECT, recordDefinition.getDataType().abstractType(), recordDefinition, "abstractType"));
-            return new SelfStructureMatchResult(true, structurePropertyMatchResults);
-        }, matchers);
-    }
-
-    private DataStructureMatcher any(DataStructureMatcher... matchers) {
-        return new DataStructureMatcher(recordDefinition -> new SelfStructureMatchResult(true, ImmutableList.of(mustBeTrue(recordDefinition != null, recordDefinition, "notNull"))), matchers.length > 0, matchers);
-    }
-
     private static void assertFormat1RecordDetail(CobolDataStructure recordDefinition, String recordName, AbstractCobolType abstractDataType, boolean isRedefinition) {
         assertTrue(recordDefinition instanceof Format1DataStructure);
         Format1DataStructure typed = (Format1DataStructure) recordDefinition;
         assertEquals(isRedefinition, typed.isRedefinition());
         assertEquals(recordName, typed.name());
         assertEquals(abstractDataType, typed.getDataType().abstractType());
-    }
-
-    private static DataStructureMatcher format1(String recordName, AbstractCobolType abstractDataType, boolean isRedefinition, DataStructureMatcher... matchers) {
-        return new DataStructureMatcher(recordDefinition -> {
-            ImmutableList<StructurePropertyMatchResult> structurePropertyMatchResults = ImmutableList.of(
-                    mustMatch(Format1DataStructure.class, recordDefinition.getClass(), recordDefinition, "type"),
-                    mustMatch(isRedefinition, recordDefinition.isRedefinition(), recordDefinition, "isRedefinition"),
-                    mustMatch(recordName, recordDefinition.name(), recordDefinition, "name"),
-                    mustMatch(abstractDataType, recordDefinition.getDataType().abstractType(), recordDefinition, "abstractType"));
-            return new SelfStructureMatchResult(true, structurePropertyMatchResults);
-        }, matchers);
-    }
-
-    private static DataStructureMatcher group(String recordName, DataStructureMatcher... matchers) {
-        return group(recordName, false, matchers);
-    }
-
-    private static DataStructureMatcher group(String recordName, boolean isRedefinition, DataStructureMatcher... matchers) {
-        return new DataStructureMatcher(recordDefinition -> {
-            ImmutableList<StructurePropertyMatchResult> structurePropertyMatchResults = ImmutableList.of(
-                    mustMatch(Format1DataStructure.class, recordDefinition.getClass(), recordDefinition, "type"),
-                    mustMatch(CobolDataType.GROUP, recordDefinition.getDataType(), recordDefinition, "isGroup"),
-                    mustMatch(isRedefinition, recordDefinition.isRedefinition(), recordDefinition, "isRedefinition"),
-                    mustMatch(recordName, recordDefinition.name(), recordDefinition, "name"),
-                    mustMatch(AbstractCobolType.OBJECT, recordDefinition.getDataType().abstractType(), recordDefinition, "abstractType"));
-            return new SelfStructureMatchResult(true, structurePropertyMatchResults);
-        }, matchers);
-    }
-
-    private static DataStructureMatcher format1(String recordName, AbstractCobolType abstractDataType, DataStructureMatcher... matchers) {
-        return format1(recordName, abstractDataType, false, matchers);
-    }
-
-    private static DataStructureMatcher string(String recordName) {
-        return string(recordName, false);
-    }
-
-    private static DataStructureMatcher string(String recordName, boolean isRedefinition) {
-        return format1(recordName, AbstractCobolType.STRING, isRedefinition);
-    }
-
-    private static DataStructureMatcher number(String recordName) {
-        return number(recordName, false);
-    }
-
-    private static DataStructureMatcher number(String recordName, boolean isRedefinition) {
-        return format1(recordName, AbstractCobolType.NUMBER, isRedefinition);
-    }
-
-    private static StructurePropertyMatchResult mustBeTrue(boolean condition, CobolDataStructure recordDefinition, String conditionDescription) {
-        return condition ? new StructurePropertyMatchResult(true, "OK") :
-                new StructurePropertyMatchResult(false, String.format("Expected condition '%s' on record '%s' to be true but was false", conditionDescription, recordDefinition.name()));
-    }
-
-    private static StructurePropertyMatchResult mustMatch(Object expected, Object actual, CobolDataStructure recordDefinition, String field) {
-        boolean matched = expected.equals(actual);
-        return new StructurePropertyMatchResult(matched, matched ? "OK" : String.format("Expected field '%s' of record '%s' to be %s but was %s", field, recordDefinition.name(), expected, actual));
-    }
-
-    private static DataStructureMatcher table(String recordName, int occurrences, DataStructureMatcher... matchers) {
-        return table(recordName, occurrences, false, matchers);
-    }
-
-    private static DataStructureMatcher table(String recordName, int occurrences, boolean isRedefinition, DataStructureMatcher... matchers) {
-        return new DataStructureMatcher(recordDefinition -> {
-            ImmutableList<StructurePropertyMatchResult> structurePropertyMatchResults = ImmutableList.of(
-                    mustMatch(TableDataStructure.class, recordDefinition.getClass(), recordDefinition, "typeMustBeTable"),
-                    mustMatch(isRedefinition, recordDefinition.isRedefinition(), recordDefinition, "isRedefinition"),
-                    mustMatch(recordName, recordDefinition.name(), recordDefinition, "name"),
-                    mustMatch(occurrences, recordDefinition.subStructures().size(), recordDefinition, "elementSize"));
-            return new SelfStructureMatchResult(true, structurePropertyMatchResults);
-        }, matchers);
-    }
-
-    private static void assertRoot(CobolDataStructure recordDefinition) {
-        assertTrue(recordDefinition instanceof Format1DataStructure);
-        assertEquals("[ROOT]", recordDefinition.name());
-        assertFalse(recordDefinition.isRedefinition());
-        assertEquals(AbstractCobolType.OBJECT, recordDefinition.getDataType().abstractType());
     }
 }
 
