@@ -143,6 +143,7 @@ export default {
     <button>Identify Loop Bodies</button>
     <button>Trace Program Dependencies</button>
     <button>Code Patterns</button>
+    <button>Node Summarisation</button>
   </div>
   <div>Ping result is MODIFIED: {{heartbeatResult}}</div>
   <div class="ir-box">
