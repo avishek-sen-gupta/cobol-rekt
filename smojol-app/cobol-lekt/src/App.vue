@@ -53,7 +53,7 @@ export default {
           new TestAstNode("AA1", "BOTTOM", [])
         ]
     );
-    return {testGraph, heartbeatResult: null, irAST: null};
+    return {testGraph, heartbeatResult: "UNKNOWN", irAST: null};
   },
   mounted() {
     this.drawGraph();
@@ -154,14 +154,14 @@ export default {
     <button>Trace Program Dependencies</button>
     <button>Code Patterns</button>
   </div>
-  <div>Ping result is MODIFIED: {{heartbeatResult}}</div>
+  <div>Last Ping result is: {{heartbeatResult}}</div>
   <div class="ir-box">
     <UiAstNode :node="testGraph"/>
   </div>
   <h3>Intermediate representation</h3>
   <div class="readonly-code">What {{ codeArea }}</div>
   <div class="readonly-code" v-if="irTreePopulated">
-    <UiIntermediateAstNode :node="irAST"/>
+    <UiIntermediateAstNode :node="irAST" :depth="0"/>
   </div>
   <textarea v-model="codeArea" rows="10" columns="10" class="code"/>
   <button @click="updateText">Le Button</button>
@@ -179,12 +179,12 @@ export default {
 }
 
 .code {
-  font-family: "Courier New", sans-serif;
+  font-family: "Andale Mono", sans-serif;
   background-color: azure;
 }
 
 .readonly-code, .ir-box {
-  font-family: "Courier New", sans-serif;
+  font-family: "Andale Mono", sans-serif;
   background-color: azure;
   border: 1px solid azure;
   text-align: left;
