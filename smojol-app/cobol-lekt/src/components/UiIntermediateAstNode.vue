@@ -44,6 +44,9 @@ export default defineComponent({
         isIfBlock() {
           return this.node.nodeType === "IfTranspilerNode";
         },
+        isEqualTo() {
+          return this.node.nodeType === "EqualToNode";
+        },
         isGreaterThan() {
           return this.node.nodeType === "GreaterThanNode";
         },
@@ -86,8 +89,23 @@ export default defineComponent({
         isAnd() {
           return this.node.nodeType === "AndTranspilerNode";
         },
-        isEqualTo() {
-          return this.node.nodeType === "EqualToNode";
+        isExponent() {
+          return this.node.nodeType === "ExponentNode";
+        },
+        isAdd() {
+          return this.node.nodeType === "AddNode";
+        },
+        isSubtract() {
+          return this.node.nodeType === "SubtractNode";
+        },
+        isMultiply() {
+          return this.node.nodeType === "MultiplyNode";
+        },
+        isDivide() {
+          return this.node.nodeType === "DivideNode";
+        },
+        isNegative() {
+          return this.node.nodeType === "NegativeNode";
         },
         nextLevel() {
           return this.depth + 1;
@@ -255,6 +273,59 @@ export default defineComponent({
         :node="node.rhs"
         :depth="depth"
     />)
+  </span>
+  <span :id="nodeID" v-else-if="isAdd">(<UiIntermediateAstNode
+      :node="node.lhs"
+      :depth="depth"
+  /> +
+    <UiIntermediateAstNode
+        :node="node.rhs"
+        :depth="depth"
+    />)
+  </span>
+  <span :id="nodeID" v-else-if="isSubtract">(<UiIntermediateAstNode
+      :node="node.minuend"
+      :depth="depth"
+  /> -
+    <UiIntermediateAstNode
+        :node="node.subtrahend"
+        :depth="depth"
+    />)
+  </span>
+  <span :id="nodeID" v-else-if="isMultiply">(<UiIntermediateAstNode
+      :node="node.lhs"
+      :depth="depth"
+  /> *
+    <UiIntermediateAstNode
+        :node="node.rhs"
+        :depth="depth"
+    />)
+  </span>
+  <span :id="nodeID" v-else-if="isDivide">(<UiIntermediateAstNode
+      :node="node.dividend"
+      :depth="depth"
+  /> /
+    <UiIntermediateAstNode
+        :node="node.divisor"
+        :depth="depth"
+    />)
+  </span>
+  <span :id="nodeID" v-else-if="isNegative">(-
+    <UiIntermediateAstNode
+        :node="node.divisor"
+        :depth="depth"
+    />)
+  </span>
+  <span :id="nodeID" v-else-if="isExponent">(
+    <UiIntermediateAstNode
+        :node="node.basis"
+        :depth="depth"
+    /> ^
+    <UiIntermediateAstNode
+        :node="node.exponent"
+        :depth="depth"
+    />
+    )
   </span>
   <div :id="nodeID" v-else-if="isIfBlock">
     {{ indent }}if (
