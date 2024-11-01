@@ -62,6 +62,9 @@ export default defineComponent({
         isSymbolReference() {
           return this.node.nodeType === "SymbolReferenceNode";
         },
+        isIndexReference() {
+          return this.node.nodeType === "IndexReferenceNode";
+        },
         isValueOf() {
           return this.node.nodeType === "ValueOfNode";
         },
@@ -74,6 +77,9 @@ export default defineComponent({
         isPrint() {
           return this.node.nodeType === "PrintTranspilerNode";
         },
+        isSet() {
+          return this.node.nodeType === "SetTranspilerNode";
+        },
         isJump() {
           return this.node.nodeType === "JumpTranspilerNode";
         },
@@ -82,6 +88,9 @@ export default defineComponent({
         },
         isJumpIf() {
           return this.node.nodeType === "JumpIfTranspilerNode";
+        },
+        isNestedCondition() {
+          return this.node.nodeType === "NestedConditionNode";
         },
         isOr() {
           return this.node.nodeType === "OrTranspilerNode";
@@ -107,6 +116,24 @@ export default defineComponent({
         isNegative() {
           return this.node.nodeType === "NegativeNode";
         },
+        isNamedLocation() {
+          return this.node.nodeType === "NamedLocationNode";
+        },
+        isNextLocation() {
+          return this.node.nodeType === "NextLocationNode";
+        },
+        isProgramExitLocation() {
+          return this.node.nodeType === "ProgramTerminalLocationNode";
+        },
+        isLoopBreakLocation() {
+          return this.node.nodeType === "ExitIterationScopeLocationNode";
+        },
+        isLoop() {
+          return this.node.nodeType === "TranspilerLoop";
+        },
+        isListIteration() {
+          return this.node.nodeType === "ListIterationTranspilerNode";
+        },
         nextLevel() {
           return this.depth + 1;
         },
@@ -119,7 +146,6 @@ export default defineComponent({
             backgroundColor: `rgb(${255 - depth * 25}, ${255 - depth * 15}, ${255 - depth * 10})`,
             transform: `translateX(${depth}px)`
           }
-          // return {r: 255 - this.depth * 10, g: 255 - this.depth * 20, b: 255 - this.depth * 30};
         }
       }
     }
@@ -159,6 +185,15 @@ export default defineComponent({
   </div>
   <span :id="nodeID" v-else-if="isSymbolReference">ref("{{ this.node.name }}")
   </span>
+  <span :id="nodeID" v-else-if="isIndexReference">indexRef("{{ this.node.name }}",
+    <UiIntermediateAstNode
+        v-for="child in node.indexes"
+        :key="child.id"
+        :node="child"
+        :depth="depth"
+    />
+    )
+  </span>
   <span :id="nodeID" v-else-if="isValueOf">valueOf(
     <UiIntermediateAstNode
         :node="node.expression"
@@ -182,6 +217,18 @@ export default defineComponent({
         :depth="depth"
     />
     ...
+    )
+  </div>
+  <div :id="nodeID" v-else-if="isSet">
+    {{ indent }}set(
+    <UiIntermediateAstNode
+        :node="node.destination"
+        :depth="depth"
+    />,
+    <UiIntermediateAstNode
+        :node="node.source"
+        :depth="depth"
+    />
     )
   </div>
   <div :id="nodeID" v-else-if="isJump">
@@ -210,6 +257,11 @@ export default defineComponent({
     {{ indent }}...
   </div>
   <span :id="nodeID" v-else-if="isPrimitiveReference">prim({{ this.node.value.value }})
+  </span>
+  <span :id="nodeID" v-else-if="isNestedCondition">(<UiIntermediateAstNode
+      :node="node.expression"
+      :depth="depth"
+  />)
   </span>
   <span :id="nodeID" v-else-if="isOr">or(<UiIntermediateAstNode
       :node="node.lhs"
@@ -327,6 +379,14 @@ export default defineComponent({
     />
     )
   </span>
+  <span :id="nodeID" v-else-if="isNamedLocation">loc("{{node.name}}")
+  </span>
+  <span :id="nodeID" v-else-if="isNextLocation">nextLoc()
+  </span>
+  <span :id="nodeID" v-else-if="isProgramExitLocation">programExitLoc()
+  </span>
+  <span :id="nodeID" v-else-if="isLoopBreakLocation">break()
+  </span>
   <div :id="nodeID" v-else-if="isIfBlock">
     {{ indent }}if (
     <UiIntermediateAstNode
@@ -341,6 +401,30 @@ export default defineComponent({
     {{ indent }}else
     <UiIntermediateAstNode
         :node="node.ifElseBlock"
+        :depth="depth"
+    />
+  </div>
+  <div :id="nodeID" v-else-if="isLoop">
+    {{ indent }}loop(
+    <UiIntermediateAstNode
+        :node="node.terminateCondition"
+        :depth="depth"
+    />
+    )
+    <UiIntermediateAstNode
+        :node="node.body"
+        :depth="depth"
+    />
+  </div>
+  <div :id="nodeID" v-else-if="isListIteration">
+    {{ indent }}list_loop(
+    <UiIntermediateAstNode
+        :node="node.iterable"
+        :depth="depth"
+    />
+    )
+    <UiIntermediateAstNode
+        :node="node.body"
         :depth="depth"
     />
   </div>
