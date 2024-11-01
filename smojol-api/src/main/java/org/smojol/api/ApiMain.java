@@ -8,6 +8,11 @@ import io.javalin.http.Handler;
 import io.javalin.json.JsonMapper;
 import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jooq.DSLContext;
+import org.jooq.SQLDialect;
+import org.jooq.impl.DSL;
+import org.smojol.api.contract.ProjectListing;
+import org.smojol.api.database.ConnectionBuilder;
 import org.smojol.common.transpiler.*;
 import org.smojol.common.vm.type.TypedRecord;
 
@@ -16,12 +21,15 @@ import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Logger;
 
 public class ApiMain {
     private static final java.util.logging.Logger LOGGER = Logger.getLogger(ApiMain.class.getName());
 
-    public static void main(String[] args) throws IOException, URISyntaxException {
+    public static void main(String[] args) throws IOException, URISyntaxException, SQLException {
         ClassLoader classloader = Thread.currentThread().getContextClassLoader();
         InputStream is = classloader.getResourceAsStream("test-data/data.json");
         String content = IOUtils.toString(is, StandardCharsets.UTF_8);
@@ -48,6 +56,10 @@ public class ApiMain {
                 return gson.fromJson(json, targetType);
             }
         };
+
+        ConnectionBuilder connectionBuilder = new ConnectionBuilder(System.getenv("DATABASE_URL"),
+                System.getenv("DATABASE_USER"),
+                System.getenv("DATABASE_PASSWORD"));
         Javalin.create(config -> {
                     config.jsonMapper(gsonMapper);
                     config.staticFiles.add("/static/dist");
@@ -55,6 +67,14 @@ public class ApiMain {
                 })
                 .get("/api/heartbeat", ctx -> ctx.result("Hello World!"))
                 .get("/api/ir-ast", dummyAST)
+                .get("/api/projects", ctx -> ctx.json(projectListings(connectionBuilder)))
                 .start(7070);
+    }
+
+    private static List<ProjectListing> projectListings(ConnectionBuilder connectionBuilder) throws SQLException {
+        try (Connection conn = connectionBuilder.getConnection()) {
+            DSLContext using = DSL.using(conn, SQLDialect.SQLITE);
+            return new IntermediateASTService().intermediateASTListingsByProject(using);
+        }
     }
 }

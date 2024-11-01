@@ -51,18 +51,25 @@ export default {
           new TestAstNode("AA1", "BOTTOM", [])
         ]
     );
-    return {testGraph, heartbeatResult: "UNKNOWN", irAST: null, cy: null, nodeDetails: null};
+    return {testGraph, heartbeatResult: "UNKNOWN", irAST: null, cy: null, nodeDetails: null, projectListing: null};
   },
   mounted() {
     this.drawGraph();
+    this.projectListing = this.getProjectListing();
   },
   methods: {
     testPing() {
-      // this.drawGraph();
       axios.get("/api/heartbeat")
           .then(response => {
             console.log(response);
             this.heartbeatResult = response.data;
+          })
+    },
+    getProjectListing() {
+      axios.get("/api/projects")
+          .then(response => {
+            console.log(response);
+            this.projectListing = response.data;
           })
     },
     getIR() {
@@ -194,11 +201,19 @@ export default {
       <h3>Graph View</h3>
       <div id="cyto" class="cyto"></div>
     </div>
-    <div id="node-details-pane">
-      <h3>Node Data</h3>
-      <div id="node-details">
-        {{ this.nodeDetails }}
+    <div style="display: flex; flex-direction: column;">
+      <div id="node-details-pane">
+        <h3>Node Data</h3>
+        <div id="node-details">
+          {{ this.nodeDetails }}
 
+        </div>
+      </div>
+      <div id="project-listing-pane">
+        <h3>Projects</h3>
+        <div id="project-listing-details">
+          {{ this.projectListing }}
+        </div>
       </div>
     </div>
   </div>
@@ -237,10 +252,18 @@ export default {
 
 #node-details {
   width: 350px;
-  height: 400px;
+  height: 250px;
   overflow-y: scroll;
   border: 1px solid;
   background-color: azure;
+}
+
+#project-listing-details {
+  width: 350px;
+  height: 286px;
+  border: 1px solid;
+  background-color: azure;
+  overflow-y: scroll;
 }
 
 .functions {
