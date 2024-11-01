@@ -179,6 +179,7 @@ export default {
       <button>Identify Loop Bodies</button>
       <button>Trace Program Dependencies</button>
       <button>Code Patterns</button>
+      <button>Eliminate GO TOs</button>
     </div>
   </div>
 
