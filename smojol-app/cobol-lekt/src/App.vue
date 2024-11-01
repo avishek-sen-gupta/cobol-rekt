@@ -2,7 +2,6 @@
 import {ref} from "vue";
 import cytoscape from 'cytoscape';
 import cydagre from "cytoscape-dagre";
-import UiAstNode from "@/components/UiAstNode.vue";
 import HelloWorld from "@/components/HelloWorld.vue";
 import {TestAstNode} from "@/ts/TestAstNode";
 import axios from "axios";
@@ -12,8 +11,7 @@ export default {
   name: 'App',
   components: {
     UiIntermediateAstNode,
-    HelloWorld,
-    UiAstNode
+    HelloWorld
   },
   setup() {
     const codeArea = ref("Here's some code");
@@ -155,12 +153,9 @@ export default {
     <button>Code Patterns</button>
   </div>
   <div>Last Ping result is: {{heartbeatResult}}</div>
-  <div class="ir-box">
-    <UiAstNode :node="testGraph"/>
-  </div>
   <h3>Intermediate representation</h3>
   <div class="readonly-code">What {{ codeArea }}</div>
-  <div class="readonly-code" v-if="irTreePopulated">
+  <div class="readonly-code ir-window" v-if="irTreePopulated">
     <UiIntermediateAstNode :node="irAST" :depth="0"/>
   </div>
   <textarea v-model="codeArea" rows="10" columns="10" class="code"/>
@@ -183,7 +178,7 @@ export default {
   background-color: azure;
 }
 
-.readonly-code, .ir-box {
+.readonly-code {
   font-family: "Andale Mono", sans-serif;
   background-color: azure;
   border: 1px solid azure;
@@ -191,6 +186,11 @@ export default {
   white-space: pre-wrap;
 }
 
+.ir-window {
+  max-width: 700px;
+  max-height: 600px;
+  overflow-y: scroll;
+}
 #cyto {
   height: 600px;
   width: 600px;
