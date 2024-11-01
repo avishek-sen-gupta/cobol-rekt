@@ -6,10 +6,12 @@ import UiAstNode from "@/components/UiAstNode.vue";
 import HelloWorld from "@/components/HelloWorld.vue";
 import {TestAstNode} from "@/ts/TestAstNode";
 import axios from "axios";
+import UiIntermediateAstNode from "@/components/UiIntermediateAstNode.vue";
 
 export default {
   name: 'App',
   components: {
+    UiIntermediateAstNode,
     HelloWorld,
     UiAstNode
   },
@@ -51,7 +53,7 @@ export default {
           new TestAstNode("AA1", "BOTTOM", [])
         ]
     );
-    return {testGraph, heartbeatResult: null};
+    return {testGraph, heartbeatResult: null, irAST: null};
   },
   mounted() {
     this.drawGraph();
@@ -69,7 +71,7 @@ export default {
           .then(response => {
             console.log(response);
             console.log(response.data);
-            this.heartbeatResult = response.data;
+            this.irAST = response.data;
           })
     },
     drawGraph() {
@@ -121,6 +123,13 @@ export default {
       cy.center();
       console.log("DONE " + cy);
     }
+  },
+  computed: {
+    irTreePopulated() {
+      console.log("Checking IR pop");
+      console.log(this.irAST);
+      return this.irAST != null;
+    }
   }
 }
 
@@ -151,6 +160,9 @@ export default {
   </div>
   <h3>Intermediate representation</h3>
   <div class="readonly-code">What {{ codeArea }}</div>
+  <div class="readonly-code" v-if="irTreePopulated">
+    <UiIntermediateAstNode :node="irAST"/>
+  </div>
   <textarea v-model="codeArea" rows="10" columns="10" class="code"/>
   <button @click="updateText">Le Button</button>
 </template>
