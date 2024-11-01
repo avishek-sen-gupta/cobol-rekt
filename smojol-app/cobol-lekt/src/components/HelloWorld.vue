@@ -1,6 +1,5 @@
 <template>
   <div class="hello">
-    <h1>{{ header }}</h1>
     <p>
       Welcome to Cobol-REKT. See <a href="https://github.com/avishek-sen-gupta/cobol-rekt">manual</a> for further instructions.
     </p>

@@ -51,13 +51,14 @@ export default {
           new TestAstNode("AA1", "BOTTOM", [])
         ]
     );
-    return {testGraph, heartbeatResult: "UNKNOWN", irAST: null};
+    return {testGraph, heartbeatResult: "UNKNOWN", irAST: null, cy: null};
   },
   mounted() {
     this.drawGraph();
   },
   methods: {
     testPing() {
+      // this.drawGraph();
       axios.get("/api/heartbeat")
           .then(response => {
             console.log(response);
@@ -74,8 +75,10 @@ export default {
     },
     drawGraph() {
       cydagre(cytoscape);
+      console.log("Called drawGraph()...");
+      console.log(document.getElementById("cyto"));
       const cy = cytoscape({
-        container: document.getElementById('cyto'),
+        container: document.getElementById("cyto"),
         elements: [ // list of graph elements to start with
           { // node a
             data: {id: 'a'}
@@ -118,8 +121,9 @@ export default {
           directed: true
         }
       });
-      cy.center();
+      // cy.center();
       console.log("DONE " + cy);
+      this.cy = cy;
     }
   },
   computed: {
@@ -134,29 +138,38 @@ export default {
 </script>
 
 <template>
-  <img alt="Cobol-REKT logo" src="./assets/cobol-rekt-banner.png">
+  <div id="top-panel">
+    <img alt="Cobol-REKT logo" src="./assets/cobol-rekt-banner.png" style="width: 30%; height: auto">
+    <div class="functions">
+      <button @click="testPing">Test Ping</button>
+      <button>Flowchart</button>
+      <button @click="getIR">Intermediate Representation</button>
+      <button>Control Flowgraph</button>
+      <button>Configure/Run Task(s)</button>
+      <button>Capability Mapping</button>
+      <button>Node Summarisation</button>
+      <button>T1/T2 Reducibility</button>
+      <button>Strongly Connected Components</button>
+      <button>Identify Loop Bodies</button>
+      <button>Trace Program Dependencies</button>
+      <button>Code Patterns</button>
+    </div>
+  </div>
+
   <HelloWorld header="Welcome to this amazing app"/>
-  <div>
-    <button @click="testPing">Test Ping</button>
-    <button>Flowchart</button>
-    <button @click="getIR">Intermediate Representation</button>
-    <button>Control Flowgraph</button>
-    <button>Configure/Run Task(s)</button>
-    <button>Capability Mapping</button>
-    <button>Node Summarisation</button>
-  </div>
-  <div>
-    <button>T1/T2 Reducibility</button>
-    <button>Strongly Connected Components</button>
-    <button>Identify Loop Bodies</button>
-    <button>Trace Program Dependencies</button>
-    <button>Code Patterns</button>
-  </div>
-  <div>Last Ping result is: {{heartbeatResult}}</div>
-  <h3>Intermediate representation</h3>
+  <div>Last Ping result is: {{ heartbeatResult }}</div>
   <div class="readonly-code">What {{ codeArea }}</div>
-  <div class="readonly-code ir-window" v-if="irTreePopulated">
-    <UiIntermediateAstNode :node="irAST" :depth="0"/>
+  <div class="main-panel">
+    <div id="code-view">
+      <h3>Intermediate representation</h3>
+      <div class="readonly-code ir-window">
+        <UiIntermediateAstNode :node="irAST" :depth="0" v-if="irTreePopulated"/>
+      </div>
+    </div>
+    <div id="graph-view">
+      <h3>Graph View</h3>
+      <div id="cyto" class="cyto"></div>
+    </div>
   </div>
   <textarea v-model="codeArea" rows="10" columns="10" class="code"/>
   <button @click="updateText">Le Button</button>
@@ -168,9 +181,8 @@ export default {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  margin-top: 10px;
 }
 
 .code {
@@ -187,13 +199,34 @@ export default {
 }
 
 .ir-window {
-  max-width: 700px;
-  max-height: 600px;
+  width: 700px;
+  height: 600px;
   overflow-y: scroll;
+  border: 1px solid;
+}
+
+.functions {
+  display: flex;
+  width: 1000px;
+  height: 100px;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.main-panel {
+  display: flex;
+  gap: 10px;
 }
 #cyto {
   height: 600px;
   width: 600px;
   background-color: azure;
+  border: 1px solid;
+  position: relative;
+}
+
+#top-panel {
+  display: flex;
+  gap: 10px;
 }
 </style>
