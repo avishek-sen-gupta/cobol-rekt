@@ -96,7 +96,7 @@ public class BuildTranspilerFlowgraphTask {
         return nodeEntry;
     }
 
-    private static Gson initGson() {
+    public static Gson initGson() {
         RuntimeTypeAdapterFactory<TranspilerNode> runtimeTypeAdapterFactory = RuntimeTypeAdapterFactory
                 .of(TranspilerNode.class, "type")
                 .registerSubtype(NegativeNode.class, "negative")

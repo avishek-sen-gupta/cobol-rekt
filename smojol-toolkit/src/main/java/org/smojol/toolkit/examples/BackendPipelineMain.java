@@ -18,6 +18,7 @@ import org.smojol.common.transpiler.*;
 import org.smojol.common.vm.type.TypedRecord;
 import org.smojol.toolkit.analysis.pipeline.ProgramSearch;
 import org.smojol.toolkit.analysis.task.analysis.CodeTaskRunner;
+import org.smojol.toolkit.analysis.task.transpiler.BuildTranspilerFlowgraphTask;
 import org.smojol.toolkit.interpreter.FullProgram;
 import org.smojol.toolkit.interpreter.structure.OccursIgnoringFormat1DataStructureBuilder;
 import org.smojol.toolkit.task.AnalysisTaskResult;
@@ -65,8 +66,8 @@ public class BackendPipelineMain {
 //                    .values("PROJECT-1").execute();
             List<Integer> where = using.select(field("ID")).from(table("PROJECT")).where(field("NAME").eq("PROJECT-1")).fetchInto(Integer.class);
 //            JumpIfTranspilerNode transpilerNode = new JumpIfTranspilerNode(new NamedLocationNode("ABCD"), new EqualToNode(new ValueOfNode(new SymbolReferenceNode("A")), new PrimitiveValueTranspilerNode(TypedRecord.typedNumber(10))));
+            Gson gson = BuildTranspilerFlowgraphTask.initGson();
             String json = new Gson().toJson(tree);
-//            JsonObject jsonObject = new Gson().fromJson(json, JsonObject.class);
             using.insertInto(table("IR_AST"))
                     .columns(field("PROGRAM_NAME"), field("PROJECT_ID"),
                             field("IR_AST"))

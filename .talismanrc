@@ -41,3 +41,5 @@ fileignoreconfig:
   checksum: 77d595a74c39c963211a5a00197e82d1337449df2baf5133594f738024b4c5a3
 - filename: smojol-toolkit/src/main/java/org/smojol/toolkit/examples/BackendPipelineMain.java
   checksum: 6335fe8c5da9566ceda010bac9daf5a449c95e9274a0063ae698cd32b324e9c7
+- filename: smojol-app/cobol-lekt/package-lock.json
+  checksum: 1d51d8d376706db4450e1022ff13a3c7b4b063df2e0e016d82bfee90b740152f
