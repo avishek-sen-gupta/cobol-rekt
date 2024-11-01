@@ -71,7 +71,57 @@ export default {
             console.log(response);
             console.log(response.data);
             this.irAST = response.data;
-          })
+            const cytoNodes = this.updateGraph(this.irAST);
+            console.log("PRINTTING NODES");
+            console.log(cytoNodes);
+            // for (const cytoNodesKey in cytoNodes) {
+            //   console.log(cytoNodesKey);
+            // }
+            this.cy = cytoscape({
+              container: document.getElementById("cyto"),
+              elements: cytoNodes,
+              style: [ // the stylesheet for the graph
+                {
+                  selector: 'node',
+                  style: {
+                    'background-color': '#666',
+                    'label': 'data(id)'
+                  }
+                },
+                {
+                  selector: 'edge',
+                  style: {
+                    'width': 3,
+                    'line-color': '#ccc',
+                    'target-arrow-color': '#ccc',
+                    'target-arrow-shape': 'triangle',
+                    'curve-style': 'bezier'
+                  }
+                }
+              ],
+
+              layout: {
+                name: 'breadthfirst',
+                directed: true
+              }
+            });
+            this.cy.on('select', 'node', (event) => {
+              const node = event.target;
+              console.log(`Node selected: ${node.id()}`);
+            });
+            this.cy.center();
+
+          });
+    },
+    updateGraph(current) {
+      console.log(current);
+      console.log("CHILDREN=");
+      console.log(current.childTranspilerNodes.length);
+      if (current.childTranspilerNodes.length == 0) {
+        console.log("WAS EMPTY");
+        return [{data: current}];
+      }
+      return current.childTranspilerNodes.flatMap(e => this.updateGraph(e));
     },
     drawGraph() {
       cydagre(cytoscape);
@@ -121,9 +171,13 @@ export default {
           directed: true
         }
       });
-      // cy.center();
+      cy.center();
       console.log("DONE " + cy);
       this.cy = cy;
+      this.cy.on('select', 'node', (event) => {
+        const node = event.target;
+        console.log(`Node selected: ${node.id()}`);
+      });
     }
   },
   computed: {
@@ -161,7 +215,7 @@ export default {
   <div class="readonly-code">What {{ codeArea }}</div>
   <div class="main-panel">
     <div id="code-view">
-      <h3>Intermediate representation</h3>
+      <h3>Source</h3>
       <div class="readonly-code ir-window">
         <UiIntermediateAstNode :node="irAST" :depth="0" v-if="irTreePopulated"/>
       </div>
@@ -174,7 +228,6 @@ export default {
   <textarea v-model="codeArea" rows="10" columns="10" class="code"/>
   <button @click="updateText">Le Button</button>
 </template>
-
 
 <style>
 #app {
@@ -217,6 +270,7 @@ export default {
   display: flex;
   gap: 10px;
 }
+
 #cyto {
   height: 600px;
   width: 600px;
