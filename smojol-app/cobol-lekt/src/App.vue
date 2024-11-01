@@ -51,7 +51,7 @@ export default {
           new TestAstNode("AA1", "BOTTOM", [])
         ]
     );
-    return {testGraph, heartbeatResult: "UNKNOWN", irAST: null, cy: null};
+    return {testGraph, heartbeatResult: "UNKNOWN", irAST: null, cy: null, nodeDetails: null};
   },
   mounted() {
     this.drawGraph();
@@ -71,20 +71,20 @@ export default {
             console.log(response);
             console.log(response.data);
             this.irAST = response.data;
-            const cytoNodes = this.updateGraph(this.irAST);
+            const cytoNodes = this.recalculatedNodes(this.irAST);
+            const cytoEdges = this.recalculatedEdges(this.irAST, []);
             console.log("PRINTTING NODES");
             console.log(cytoNodes);
-            // for (const cytoNodesKey in cytoNodes) {
-            //   console.log(cytoNodesKey);
-            // }
+            cytoEdges.forEach(edge => console.log(edge));
+            cydagre(cytoscape);
             this.cy = cytoscape({
               container: document.getElementById("cyto"),
-              elements: cytoNodes,
+              elements: cytoNodes.concat(cytoEdges),
               style: [ // the stylesheet for the graph
                 {
                   selector: 'node',
                   style: {
-                    'background-color': '#666',
+                    'background-color': '#075',
                     'label': 'data(id)'
                   }
                 },
@@ -107,77 +107,48 @@ export default {
             });
             this.cy.on('select', 'node', (event) => {
               const node = event.target;
-              console.log(`Node selected: ${node.id()}`);
+              // console.log(`Node selected: ${node.target.id}`);
+              const nodeData = node.data();
+              console.log(nodeData);
+              this.nodeDetails = {
+                id: nodeData.id,
+                nodeType: nodeData.nodeType,
+              };
             });
             this.cy.center();
 
           });
     },
-    updateGraph(current) {
-      console.log(current);
-      console.log("CHILDREN=");
-      console.log(current.childTranspilerNodes.length);
+    recalculatedNodes(current) {
+      // console.log(current);
+      // console.log("CHILDREN=");
+      // console.log(current.childTranspilerNodes.length);
+      const currentGraphNodes = [{data: current}];
       if (current.childTranspilerNodes.length == 0) {
-        console.log("WAS EMPTY");
-        return [{data: current}];
+        // console.log("WAS EMPTY");
+        return currentGraphNodes;
       }
-      return current.childTranspilerNodes.flatMap(e => this.updateGraph(e));
+      return currentGraphNodes.concat(current.childTranspilerNodes.flatMap(e => this.recalculatedNodes(e)));
+    },
+    recalculatedEdges(current, thread) {
+      // console.log(current);
+      // console.log("CHILDREN=");
+      // console.log(current.childTranspilerNodes.length);
+      const parentNode = thread.length === 0 ? null : thread.at(-1);
+      const myEdges = parentNode == null ? [] : [{
+        data: {
+          id: current.id + parentNode.id,
+          source: parentNode.id,
+          target: current.id
+        }
+      }];
+      if (current.childTranspilerNodes.length == 0) {
+        // console.log("WAS EMPTY");
+        return myEdges;
+      }
+      return myEdges.concat(current.childTranspilerNodes.flatMap(e => this.recalculatedEdges(e, thread.concat(current))));
     },
     drawGraph() {
-      cydagre(cytoscape);
-      console.log("Called drawGraph()...");
-      console.log(document.getElementById("cyto"));
-      const cy = cytoscape({
-        container: document.getElementById("cyto"),
-        elements: [ // list of graph elements to start with
-          { // node a
-            data: {id: 'a'}
-          },
-          { // node b
-            data: {id: 'b'}
-          },
-          { // node b
-            data: {id: 'c'}
-          },
-          { // edge ab
-            data: {id: 'ab', source: 'a', target: 'b'},
-          },
-          { // edge ac
-            data: {id: 'ac', source: 'a', target: 'c'}
-          }
-        ],
-        style: [ // the stylesheet for the graph
-          {
-            selector: 'node',
-            style: {
-              'background-color': '#666',
-              'label': 'data(id)'
-            }
-          },
-          {
-            selector: 'edge',
-            style: {
-              'width': 3,
-              'line-color': '#ccc',
-              'target-arrow-color': '#ccc',
-              'target-arrow-shape': 'triangle',
-              'curve-style': 'bezier'
-            }
-          }
-        ],
-
-        layout: {
-          name: 'breadthfirst',
-          directed: true
-        }
-      });
-      cy.center();
-      console.log("DONE " + cy);
-      this.cy = cy;
-      this.cy.on('select', 'node', (event) => {
-        const node = event.target;
-        console.log(`Node selected: ${node.id()}`);
-      });
     }
   },
   computed: {
@@ -212,7 +183,6 @@ export default {
 
   <HelloWorld header="Welcome to this amazing app"/>
   <div>Last Ping result is: {{ heartbeatResult }}</div>
-  <div class="readonly-code">What {{ codeArea }}</div>
   <div class="main-panel">
     <div id="code-view">
       <h3>Source</h3>
@@ -224,9 +194,16 @@ export default {
       <h3>Graph View</h3>
       <div id="cyto" class="cyto"></div>
     </div>
+    <div id="node-details-pane">
+      <h3>Node Data</h3>
+      <div id="node-details">
+        {{ this.nodeDetails }}
+
+      </div>
+    </div>
   </div>
-  <textarea v-model="codeArea" rows="10" columns="10" class="code"/>
-  <button @click="updateText">Le Button</button>
+<!--  <textarea v-model="codeArea" rows="10" columns="10" class="code"/>-->
+<!--  <button @click="updateText">Le Button</button>-->
 </template>
 
 <style>
@@ -256,6 +233,14 @@ export default {
   height: 600px;
   overflow-y: scroll;
   border: 1px solid;
+}
+
+#node-details {
+  width: 350px;
+  height: 400px;
+  overflow-y: scroll;
+  border: 1px solid;
+  background-color: azure;
 }
 
 .functions {
