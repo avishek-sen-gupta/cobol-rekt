@@ -1,9 +1,8 @@
 package org.smojol.api;
 
 import com.google.common.collect.ImmutableMap;
-import org.jooq.*;
 import org.jooq.Record;
-import org.jooq.impl.DSL;
+import org.jooq.*;
 import org.smojol.api.contract.IntermediateASTListing;
 import org.smojol.api.contract.ProjectListing;
 

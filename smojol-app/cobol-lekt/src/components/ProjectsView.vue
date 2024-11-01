@@ -2,7 +2,16 @@
   <div id="project-listing-pane">
     <h3>Projects</h3>
     <div id="project-listing-details">
-      {{ this.projectListing }}
+      <div v-for="project in projectListing"
+           :key="project.projectID">
+        Project ID: {{ project.projectID }}
+        <ul>
+          <li v-for="iast in project.astListings"
+               :key="iast.astID">
+            &emsp;I-AST ID: {{ iast.programName }} / {{ iast.astID }}
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </template>
@@ -36,15 +45,6 @@ h3 {
   margin: 40px 0 0;
 }
 
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
 
 a {
   color: #42b983;

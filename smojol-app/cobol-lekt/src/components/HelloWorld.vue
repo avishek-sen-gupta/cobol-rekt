@@ -1,7 +1,7 @@
 <template>
   <div class="hello">
     <p>
-      Welcome to Cobol-REKT. See <a href="https://github.com/avishek-sen-gupta/cobol-rekt">manual</a> for further instructions.
+      Welcome to Cobol-REKT. See the <a href="https://github.com/avishek-sen-gupta/cobol-rekt">project README</a> for more information.
     </p>
   </div>
 </template>

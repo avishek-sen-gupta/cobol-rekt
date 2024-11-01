@@ -186,7 +186,7 @@ export default {
   <div>Last Ping result is: {{ heartbeatResult }}</div>
   <div class="main-panel">
     <div id="code-view">
-      <h3>Source</h3>
+      <h3>Intermediate Form Source</h3>
       <div class="readonly-code ir-window">
         <UiIntermediateAstNode :node="irAST" :depth="0" v-if="irTreePopulated"/>
       </div>

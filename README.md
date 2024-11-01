@@ -27,6 +27,7 @@ You can see the current backlog [here](https://github.com/users/avishek-sen-gupt
 ## Contents
 
 - [Introduction](#introduction)
+- [Demo App](#demo-app-very-early---wip)
 - [Major Dependencies](#major-dependencies)
 - [Reverse Engineering Use Cases](#reverse-engineering-use-cases)
 - [Roadmap](#roadmap)
@@ -99,6 +100,12 @@ Cobol-REKT is a continually evolving, actively maintained collection of capabili
   - **Dominator Analysis:** This is the first step which forms the basis for techniques like detecting implicit loops, and correct scoping of any potential transpiled code in structured programming languages.
 - ... and more!
 
+## Demo App (Very Early - WIP)
+
+This app is ultimately intended to only give a showcase of the capabilities of the library, and is currently in a nascent state and not ready for use. Nevertheless, the screenshot below shows the user navigating the syntax highlighted Intermediate Representation source, with the IR Syntax Tree is shown in the graph. The top right pane shows the currently selected node information, and the bottom right pane shows the available projects.
+
+![Demo App Early](/documentation/demo-app-early.png)
+
 ## Philosophy
 
 Cobol-REKT is more of a **library of useful things** intended to be embedded in more formal reverse engineering workflows/pipelines, rather than being a standalone tool (though you can certainly use it as such). Many of the higher-level wrappers are merely sensible defaults; **you are encouraged to modify them to suit your needs**.
@@ -120,6 +127,7 @@ In addition, the support for Neo4J allows you to build custom graph analyses as 
 - [Neo4J](https://neo4j.com/) is required for using tasks involving Neo4J. The APOC and GDS plugins will need to be installed. All the tasks have also been tested using Neo4J Desktop.
 - A subscription to OpenAI's GPT-4o (or your choice of deployment) will be needed for capabilities which use LLMs. The tasks have been tested using Azure's OpenAI offering.
 - [VAVR](https://github.com/vavr-io/vavr) for functional lists used in zipper classes for AST navigation and manipulation.
+- The [demo app](#demo-app-very-early---wip) is being developed using Vue.js.
 - ```RuntimeTypeAdapterFactory``` from Gson for some serialisation use-cases.
 
 ## Reverse Engineering Use Cases
