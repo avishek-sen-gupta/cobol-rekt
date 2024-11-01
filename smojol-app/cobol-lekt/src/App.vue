@@ -6,12 +6,14 @@ import HelloWorld from "@/components/HelloWorld.vue";
 import {TestAstNode} from "@/ts/TestAstNode";
 import axios from "axios";
 import UiIntermediateAstNode from "@/components/UiIntermediateAstNode.vue";
+import ProjectsView from "@/components/ProjectsView.vue";
 
 export default {
   name: 'App',
   components: {
     UiIntermediateAstNode,
-    HelloWorld
+    HelloWorld,
+    ProjectsView
   },
   setup() {
     const codeArea = ref("Here's some code");
@@ -51,11 +53,10 @@ export default {
           new TestAstNode("AA1", "BOTTOM", [])
         ]
     );
-    return {testGraph, heartbeatResult: "UNKNOWN", irAST: null, cy: null, nodeDetails: null, projectListing: null};
+    return {testGraph, heartbeatResult: "UNKNOWN", irAST: null, cy: null, nodeDetails: null};
   },
   mounted() {
     this.drawGraph();
-    this.projectListing = this.getProjectListing();
   },
   methods: {
     testPing() {
@@ -63,13 +64,6 @@ export default {
           .then(response => {
             console.log(response);
             this.heartbeatResult = response.data;
-          })
-    },
-    getProjectListing() {
-      axios.get("/api/projects")
-          .then(response => {
-            console.log(response);
-            this.projectListing = response.data;
           })
     },
     getIR() {
@@ -209,12 +203,7 @@ export default {
 
         </div>
       </div>
-      <div id="project-listing-pane">
-        <h3>Projects</h3>
-        <div id="project-listing-details">
-          {{ this.projectListing }}
-        </div>
-      </div>
+      <ProjectsView/>
     </div>
   </div>
 <!--  <textarea v-model="codeArea" rows="10" columns="10" class="code"/>-->
@@ -256,14 +245,6 @@ export default {
   overflow-y: scroll;
   border: 1px solid;
   background-color: azure;
-}
-
-#project-listing-details {
-  width: 350px;
-  height: 286px;
-  border: 1px solid;
-  background-color: azure;
-  overflow-y: scroll;
 }
 
 .functions {
