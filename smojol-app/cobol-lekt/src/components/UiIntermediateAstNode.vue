@@ -47,6 +47,15 @@ export default defineComponent({
         isGreaterThan() {
           return this.node.nodeType === "GreaterThanNode";
         },
+        isGreaterThanOrEqualTo() {
+          return this.node.nodeType === "GreaterThanOrEqualToNode";
+        },
+        isLessThan() {
+          return this.node.nodeType === "LessThanNode";
+        },
+        isLessThanOrEqualTo() {
+          return this.node.nodeType === "LessThanOrEqualToNode";
+        },
         isSymbolReference() {
           return this.node.nodeType === "SymbolReferenceNode";
         },
@@ -55,6 +64,9 @@ export default defineComponent({
         },
         isPrimitiveReference() {
           return this.node.nodeType === "PrimitiveValueTranspilerNode";
+        },
+        isNot() {
+          return this.node.nodeType === "NotTranspilerNode";
         },
         isPrint() {
           return this.node.nodeType === "PrintTranspilerNode";
@@ -67,6 +79,15 @@ export default defineComponent({
         },
         isJumpIf() {
           return this.node.nodeType === "JumpIfTranspilerNode";
+        },
+        isOr() {
+          return this.node.nodeType === "OrTranspilerNode";
+        },
+        isAnd() {
+          return this.node.nodeType === "AndTranspilerNode";
+        },
+        isEqualTo() {
+          return this.node.nodeType === "EqualToNode";
         },
         nextLevel() {
           return this.depth + 1;
@@ -119,6 +140,13 @@ export default defineComponent({
     />
     )
   </span>
+  <span :id="nodeID" v-else-if="isNot">not(
+    <UiIntermediateAstNode
+        :node="node.expression"
+        :depth="depth"
+    />
+    )
+  </span>
   <div :id="nodeID" v-else-if="isPrint">
     {{indent}}print(
     <UiIntermediateAstNode
@@ -150,14 +178,68 @@ export default defineComponent({
     )
   </span>
   <div :id="nodeID" v-else-if="isPlaceholder">
-    {{indent}}[PLACEHOLDER]
+    {{indent}}...
   </div>
   <span :id="nodeID" v-else-if="isPrimitiveReference">prim({{this.node.value.value}})
+  </span>
+  <span :id="nodeID" v-else-if="isOr">or(<UiIntermediateAstNode
+        :node="node.lhs"
+        :depth="depth"
+    />,
+    <UiIntermediateAstNode
+        :node="node.rhs"
+        :depth="depth"
+    />)
+  </span>
+  <span :id="nodeID" v-else-if="isAnd">and(<UiIntermediateAstNode
+        :node="node.lhs"
+        :depth="depth"
+    />,
+    <UiIntermediateAstNode
+        :node="node.rhs"
+        :depth="depth"
+    />)
+  </span>
+  <span :id="nodeID" v-else-if="isEqualTo">eq(<UiIntermediateAstNode
+        :node="node.lhs"
+        :depth="depth"
+    />,
+    <UiIntermediateAstNode
+        :node="node.rhs"
+        :depth="depth"
+    />)
   </span>
   <span :id="nodeID" v-else-if="isGreaterThan">gt(<UiIntermediateAstNode
         :node="node.lhs"
         :depth="depth"
     />,
+    <UiIntermediateAstNode
+        :node="node.rhs"
+        :depth="depth"
+    />)
+  </span>
+  <span :id="nodeID" v-else-if="isGreaterThanOrEqualTo">gte(<UiIntermediateAstNode
+        :node="node.lhs"
+        :depth="depth"
+    />,
+    <UiIntermediateAstNode
+        :node="node.rhs"
+        :depth="depth"
+    />)
+  </span>
+  <span :id="nodeID" v-else-if="isLessThan">lt(<UiIntermediateAstNode
+        :node="node.lhs"
+        :depth="depth"
+    />,
+    <UiIntermediateAstNode
+        :node="node.rhs"
+        :depth="depth"
+    />)
+  </span>
+  <span :id="nodeID" v-else-if="isLessThanOrEqualTo">lte(<UiIntermediateAstNode
+      :node="node.lhs"
+      :depth="depth"
+  />,
     <UiIntermediateAstNode
         :node="node.rhs"
         :depth="depth"
