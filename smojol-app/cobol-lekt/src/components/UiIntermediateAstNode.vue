@@ -94,6 +94,14 @@ export default defineComponent({
         },
         indent() {
           return "  ".repeat(this.depth);
+        },
+        blockBackgroundColour() {
+          const depth = this.depth + 1;
+          return {
+            backgroundColor: `rgb(${255 - depth * 25}, ${255 - depth * 15}, ${255 - depth * 10})`,
+            transform: `translateX(${depth}px)`
+          }
+          // return {r: 255 - this.depth * 10, g: 255 - this.depth * 20, b: 255 - this.depth * 30};
         }
       }
     }
@@ -101,37 +109,37 @@ export default defineComponent({
 </script>
 
 <template>
-  <div :id="nodeID" v-if="isLabelledCodeBlock">
-    <div>{{indent}}{ {{this.node.name}}-{{depth}}</div>
+  <div :id="nodeID" v-if="isLabelledCodeBlock" :style="blockBackgroundColour">
+    <div>{{ indent }}{ <span class="block-name">{{ this.node.name }}</span></div>
     <UiIntermediateAstNode
         v-for="child in node.childTranspilerNodes"
         :key="child.id"
         :node="child"
         :depth="nextLevel"
     />
-    <div>{{indent}}}</div>
+    <div>{{ indent }}}</div>
   </div>
-  <div :id="nodeID" v-else-if="isCodeBlock">
-    <div>{{indent}}{ {{depth}}</div>
+  <div :id="nodeID" v-else-if="isCodeBlock" :style="blockBackgroundColour">
+    <div>{{ indent }}{</div>
     <UiIntermediateAstNode
         v-for="child in node.childTranspilerNodes"
         :key="child.id"
         :node="child"
         :depth="nextLevel"
     />
-    <div>{{indent}}}</div>
+    <div>{{ indent }}}</div>
   </div>
-  <div :id="nodeID" v-else-if="isDetachedCodeBlock">
-    <div>{{indent}}{ {{depth}}</div>
+  <div :id="nodeID" v-else-if="isDetachedCodeBlock" :style="blockBackgroundColour">
+    <div>{{ indent }}{</div>
     <UiIntermediateAstNode
         v-for="child in node.childTranspilerNodes"
         :key="child.id"
         :node="child"
         :depth="nextLevel"
     />
-    <div>{{indent}}}</div>
+    <div>{{ indent }}}</div>
   </div>
-  <span :id="nodeID" v-else-if="isSymbolReference">ref("{{this.node.name}}")
+  <span :id="nodeID" v-else-if="isSymbolReference">ref("{{ this.node.name }}")
   </span>
   <span :id="nodeID" v-else-if="isValueOf">valueOf(
     <UiIntermediateAstNode
@@ -148,26 +156,29 @@ export default defineComponent({
     )
   </span>
   <div :id="nodeID" v-else-if="isPrint">
-    {{indent}}print(
+    {{ indent }}print(
     <UiIntermediateAstNode
-      v-for="child in node.operands"
-      :key="child.id"
-      :node="child"
-      :depth="depth"
-  />...
+        v-for="child in node.operands"
+        :key="child.id"
+        :node="child"
+        :depth="depth"
+    />
+    ...
     )
   </div>
   <div :id="nodeID" v-else-if="isJump">
-    {{indent}}jump(
+    {{ indent }}<span class="jump">jump(
     <UiIntermediateAstNode
-      :node="node.start"
-      :depth="depth"
-  />, [not yet implemented]
+        :node="node.start"
+        :depth="depth"
+    />
+    , [not yet implemented]
     )
+    </span>
   </div>
   <span :id="nodeID" v-else-if="isJumpIf">
     jumpIf(
-    {{indent}}<UiIntermediateAstNode
+    {{ indent }}<UiIntermediateAstNode
       :node="node.destination"
       :depth="depth"
   />,
@@ -178,59 +189,59 @@ export default defineComponent({
     )
   </span>
   <div :id="nodeID" v-else-if="isPlaceholder">
-    {{indent}}...
+    {{ indent }}...
   </div>
-  <span :id="nodeID" v-else-if="isPrimitiveReference">prim({{this.node.value.value}})
+  <span :id="nodeID" v-else-if="isPrimitiveReference">prim({{ this.node.value.value }})
   </span>
   <span :id="nodeID" v-else-if="isOr">or(<UiIntermediateAstNode
-        :node="node.lhs"
-        :depth="depth"
-    />,
+      :node="node.lhs"
+      :depth="depth"
+  />,
     <UiIntermediateAstNode
         :node="node.rhs"
         :depth="depth"
     />)
   </span>
   <span :id="nodeID" v-else-if="isAnd">and(<UiIntermediateAstNode
-        :node="node.lhs"
-        :depth="depth"
-    />,
+      :node="node.lhs"
+      :depth="depth"
+  />,
     <UiIntermediateAstNode
         :node="node.rhs"
         :depth="depth"
     />)
   </span>
   <span :id="nodeID" v-else-if="isEqualTo">eq(<UiIntermediateAstNode
-        :node="node.lhs"
-        :depth="depth"
-    />,
+      :node="node.lhs"
+      :depth="depth"
+  />,
     <UiIntermediateAstNode
         :node="node.rhs"
         :depth="depth"
     />)
   </span>
   <span :id="nodeID" v-else-if="isGreaterThan">gt(<UiIntermediateAstNode
-        :node="node.lhs"
-        :depth="depth"
-    />,
+      :node="node.lhs"
+      :depth="depth"
+  />,
     <UiIntermediateAstNode
         :node="node.rhs"
         :depth="depth"
     />)
   </span>
   <span :id="nodeID" v-else-if="isGreaterThanOrEqualTo">gte(<UiIntermediateAstNode
-        :node="node.lhs"
-        :depth="depth"
-    />,
+      :node="node.lhs"
+      :depth="depth"
+  />,
     <UiIntermediateAstNode
         :node="node.rhs"
         :depth="depth"
     />)
   </span>
   <span :id="nodeID" v-else-if="isLessThan">lt(<UiIntermediateAstNode
-        :node="node.lhs"
-        :depth="depth"
-    />,
+      :node="node.lhs"
+      :depth="depth"
+  />,
     <UiIntermediateAstNode
         :node="node.rhs"
         :depth="depth"
@@ -246,7 +257,7 @@ export default defineComponent({
     />)
   </span>
   <div :id="nodeID" v-else-if="isIfBlock">
-    {{indent}}if (
+    {{ indent }}if (
     <UiIntermediateAstNode
         :node="node.condition"
         :depth="depth"
@@ -256,7 +267,7 @@ export default defineComponent({
         :node="node.ifThenBlock"
         :depth="depth"
     />
-    {{indent}}else
+    {{ indent }}else
     <UiIntermediateAstNode
         :node="node.ifElseBlock"
         :depth="depth"
@@ -279,5 +290,14 @@ export default defineComponent({
 
 .ast_BOTTOM {
   background-color: greenyellow;
+}
+
+.block-name {
+  background-color: greenyellow;
+  border: solid 2px;
+}
+
+.jump {
+  background-color: gold;
 }
 </style>
