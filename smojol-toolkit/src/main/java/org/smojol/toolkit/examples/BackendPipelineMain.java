@@ -1,6 +1,7 @@
 package org.smojol.toolkit.examples;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
@@ -13,6 +14,7 @@ import org.smojol.common.flowchart.FlowchartOutputFormat;
 import org.smojol.common.id.UUIDProvider;
 import org.smojol.common.pseudocode.BasicBlock;
 import org.smojol.common.resource.LocalFilesystemOperations;
+import org.smojol.common.transpiler.PruneUnreachableTask;
 import org.smojol.common.transpiler.TranspilerFlowgraph;
 import org.smojol.common.transpiler.TranspilerInstruction;
 import org.smojol.common.transpiler.TranspilerNode;
@@ -33,6 +35,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 import static org.jooq.impl.DSL.field;
 import static org.jooq.impl.DSL.table;
@@ -51,29 +55,32 @@ public class BackendPipelineMain {
         TranspilerFlowgraph transpilerFlowgraph = ((AnalysisTaskResultOK) results.get(1)).getDetail();
         Graph<BasicBlock<TranspilerInstruction>, DefaultEdge> blockGraph = transpilerFlowgraph.basicBlockFlowgraph();
         Graph<TranspilerInstruction, DefaultEdge> instructionFlowgraph = transpilerFlowgraph.instructionFlowgraph();
+        PruneUnreachableTask.pruneUnreachableInstructions(transpilerFlowgraph);
         TranspilerNode tree = transpilerFlowgraph.transpilerTree();
-        StringWriter writer = new StringWriter();
-        new JSONExporter<TranspilerInstruction, DefaultEdge>().exportGraph(instructionFlowgraph, writer);
-        String s = writer.toString();
+        ImmutableMap<String, Set<?>> irCFGForDB = ImmutableMap.of("nodes", instructionFlowgraph.vertexSet(), "edges", instructionFlowgraph.edgeSet());
+        Gson gson = BuildTranspilerFlowgraphTask.initGson();
 
         String url = System.getenv("DATABASE_URL");
         String user = System.getenv("DATABASE_USER");
         String password = System.getenv("DATABASE_PASSWORD");
         try (Connection conn = DriverManager.getConnection(url, user, password)) {
             DSLContext using = DSL.using(conn, SQLDialect.MYSQL);
-//            using.insertInto(table("PROJECT"))
-//                    .columns(field("NAME"))
-//                    .values("PROJECT-1").execute();
-            List<Integer> where = using.select(field("ID")).from(table("PROJECT")).where(field("NAME").eq("PROJECT-1")).fetchInto(Integer.class);
+            String projectName = UUID.randomUUID().toString();
+            using.insertInto(table("PROJECT"))
+                    .columns(field("NAME"))
+                    .values(projectName).execute();
+            List<Integer> where = using.select(field("ID")).from(table("PROJECT")).where(field("NAME").eq(projectName)).fetchInto(Integer.class);
 //            JumpIfTranspilerNode transpilerNode = new JumpIfTranspilerNode(new NamedLocationNode("ABCD"), new EqualToNode(new ValueOfNode(new SymbolReferenceNode("A")), new PrimitiveValueTranspilerNode(TypedRecord.typedNumber(10))));
-            Gson gson = BuildTranspilerFlowgraphTask.initGson();
-            String json = new Gson().toJson(tree);
             using.insertInto(table("IR_AST"))
                     .columns(field("PROGRAM_NAME"), field("PROJECT_ID"),
                             field("IR_AST"))
-                    .values(programName, where.getFirst(), json).execute();
+                    .values(programName, where.getFirst(), gson.toJson(tree)).execute();
+            using.insertInto(table("IR_CFG"))
+                    .columns(field("PROGRAM_NAME"), field("PROJECT_ID"),
+                            field("IR_CFG"))
+                    .values(programName, where.getFirst(), gson.toJson(irCFGForDB)).execute();
+
         }
-//        List<String> transpiledCode = new StructuredProgramTheoremFormTranspilerTask(transpilerFlowgraph).run();
         System.out.println("DONE");
     }
 }

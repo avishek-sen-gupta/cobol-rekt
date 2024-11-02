@@ -13,6 +13,7 @@ export default {
     getProjectListing() {
       axios.get("/api/projects")
           .then(response => {
+            console.log(response.data);
             this.projectListing = response.data;
           })
           .catch(function (err) {
@@ -22,6 +23,9 @@ export default {
     },
     loadIntermediateAST(id) {
       this.$emit("load-ir-ast", id);
+    },
+    loadIntermediateCFG(id) {
+      this.$emit("load-ir-cfg", id);
     }
   }
 }
@@ -43,7 +47,14 @@ export default {
             <li v-for="iast in project.astListings"
                 :key="iast.astID"
                 @click="loadIntermediateAST(iast.astID)">
-              I-AST ID: {{ iast.programName }} / {{ iast.astID }}
+              <strong>I-AST</strong>: {{ iast.programName }} / {{ iast.astID }}
+            </li>
+          </ul>
+          <ul>
+            <li v-for="icfg in project.cfgListings"
+                :key="icfg.cfgID"
+                @click="loadIntermediateCFG(icfg.cfgID)">
+              <strong>I-CFG</strong>: {{ icfg.programName }} / {{ icfg.cfgID }}
             </li>
           </ul>
         </li>

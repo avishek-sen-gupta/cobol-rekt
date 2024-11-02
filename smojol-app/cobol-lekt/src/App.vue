@@ -31,6 +31,11 @@ export default {
       // console.log(data);
       this.getIRWithID(data);
     },
+    receiveLoadIntermediateCFGEvent(data) {
+      // console.log("Received event");
+      // console.log(data);
+      this.getCFGWithID(data);
+    },
     testPing() {
       const self = this;
       axios.get("/api/heartbeat")
@@ -57,10 +62,13 @@ export default {
       this.getIRWithID(4);
     },
     getCFG() {
-      axios.get("/api/ir-cfg")
+      this.getCFGWithID(1);
+    },
+    getCFGWithID(id) {
+      axios.get("/api/ir-cfg/" + id)
           .then(response => {
             console.log(response);
-            this.irCFG = response.data;
+            this.irCFG = response.data.cfg;
           })
           .catch(function (err) {
             console.log("There was an error: ");
@@ -104,6 +112,7 @@ export default {
     <InfoPane :node-details="this.nodeDetails"
               style="grid-area: 1 / 3 / 2 / 4"/>
     <ProjectsView @load-ir-ast="receiveLoadIntermediateASTEvent"
+                  @load-ir-cfg="receiveLoadIntermediateCFGEvent"
                   style="grid-area: 2 / 3 / 3 / 4"
     />
   </div>

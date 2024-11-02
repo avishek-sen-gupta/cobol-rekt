@@ -19,7 +19,9 @@ import org.smojol.common.flowchart.FlowchartOutputFormat;
 import org.smojol.common.id.UUIDProvider;
 import org.smojol.common.pseudocode.BasicBlock;
 import org.smojol.common.resource.LocalFilesystemOperations;
-import org.smojol.common.transpiler.*;
+import org.smojol.common.transpiler.PruneUnreachableTask;
+import org.smojol.common.transpiler.TranspilerFlowgraph;
+import org.smojol.common.transpiler.TranspilerInstruction;
 import org.smojol.toolkit.analysis.pipeline.ProgramSearch;
 import org.smojol.toolkit.analysis.task.analysis.CodeTaskRunner;
 import org.smojol.toolkit.interpreter.FullProgram;
@@ -70,16 +72,26 @@ public class ApiMain {
                     }
                     ctx.json(ast.get());
                 })
-                .get("/api/ir-cfg", ctx -> {
+                .get("/api/ir-cfg/{id}", ctx -> {
+//                    Optional<Map<String, Object>> cfg = irCFG(ctx.pathParam("id"), connectionBuilder);
+//                    if (cfg.isEmpty()) {
+//                        ctx.status(404);
+//                        return;
+//                    }
+//                    ctx.json(cfg.get());
                     Graph<TranspilerInstruction, DefaultEdge> cfg = flowgraph();
-                    ctx.json(ImmutableMap.of("nodes", vertices(cfg.vertexSet()), "edges", cfg.edgeSet()));
+                    Set<TranspilerInstruction> instructions = cfg.vertexSet();
+                    ctx.json(ImmutableMap.of("cfg", ImmutableMap.of("nodes", instructions, "edges", cfg.edgeSet())));
                 })
                 .get("/api/projects", ctx -> ctx.json(projectListings(connectionBuilder)))
                 .start(port);
     }
 
-    private static Set<TranspilerInstruction> vertices(Set<TranspilerInstruction> instructions) {
-        return instructions;
+    private static Optional<Map<String, Object>> irCFG(String id, ConnectionBuilder connectionBuilder) throws SQLException {
+        try (Connection conn = connectionBuilder.getConnection()) {
+            DSLContext using = DSL.using(conn, SQLDialect.SQLITE);
+            return new IntermediateASTService().intermediateCFG(Integer.parseInt(id), using);
+        }
     }
 
     private static @NotNull JsonMapper getJsonMapper(Gson gson) {
@@ -103,7 +115,7 @@ public class ApiMain {
     private static List<ProjectListing> projectListings(ConnectionBuilder connectionBuilder) throws SQLException {
         try (Connection conn = connectionBuilder.getConnection()) {
             DSLContext using = DSL.using(conn, SQLDialect.SQLITE);
-            return new IntermediateASTService().intermediateASTListingsByProject(using);
+            return new IntermediateASTService().allProjectEntities(using);
         }
     }
 
