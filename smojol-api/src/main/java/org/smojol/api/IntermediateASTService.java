@@ -9,7 +9,6 @@ import org.jooq.*;
 import org.smojol.api.contract.IntermediateASTListing;
 import org.smojol.api.contract.ProjectListing;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
