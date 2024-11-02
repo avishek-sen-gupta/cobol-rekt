@@ -45,3 +45,5 @@ fileignoreconfig:
   checksum: 1d51d8d376706db4450e1022ff13a3c7b4b063df2e0e016d82bfee90b740152f
 - filename: smojol-api/src/main/java/org/smojol/api/database/ConnectionBuilder.java
   checksum: f05076806e47e9a264139bfad8e1563d58dde5cb191e00515bcc618e33990c0e
+- filename: smojol-app/cobol-lekt/package-lock.json
+  checksum: 8675f4cce8fa71dad6ef7a60ec3072e35ff2f7a56d6b626317a78c20ba66e8a9

@@ -35,7 +35,6 @@ public class IntermediateASTService {
         List<ProjectListing> collectedIntermediateASTs = allIntermediateASTs
                 .map(ast -> (Map<String, String>) ImmutableMap.of("programName", ast.component1(), "astID", ast.component3().toString(), "projectID", ast.component4().toString())).stream()
                 .collect(Collectors.groupingBy(d -> d.get("projectID"))).entrySet().stream()
-//                .map(entry -> (Map<String, Object>) ImmutableMap.of("projectID", entry.getKey(), "asts", entry.getValue())).toList();
                 .map(entry -> new ProjectListing(entry.getKey(), entry.getValue().stream()
                         .map(p -> new IntermediateASTListing(p.get("astID"), p.get("programName")))
                         .toList()))

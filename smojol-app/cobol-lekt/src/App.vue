@@ -1,16 +1,16 @@
 <script>
 import {ref} from "vue";
-import cytoscape from 'cytoscape';
-import cydagre from "cytoscape-dagre";
 import HelloWorld from "@/components/HelloWorld.vue";
 import {TestAstNode} from "@/ts/TestAstNode";
 import axios from "axios";
 import UiIntermediateAstNode from "@/components/UiIntermediateAstNode.vue";
 import ProjectsView from "@/components/ProjectsView.vue";
+import GraphView from "@/components/GraphView.vue";
 
 export default {
   name: 'App',
   components: {
+    GraphView,
     UiIntermediateAstNode,
     HelloWorld,
     ProjectsView
@@ -31,6 +31,9 @@ export default {
     this.drawGraph();
   },
   methods: {
+    updateNodeDetails(data) {
+      this.nodeDetails = data;
+    },
     receiveLoadIntermediateASTEvent(data) {
       console.log("Received event");
       console.log(data);
@@ -49,72 +52,19 @@ export default {
             console.log(response);
             console.log(response.data);
             this.irAST = response.data.ast;
-            const cytoNodes = this.recalculatedNodes(this.irAST);
-            const cytoEdges = this.recalculatedEdges(this.irAST, []);
-            console.log("PRINTTING NODES");
-            console.log(cytoNodes);
-            cytoEdges.forEach(edge => console.log(edge));
-            cydagre(cytoscape);
-            this.cy = cytoscape({
-              container: document.getElementById("cyto"),
-              elements: cytoNodes.concat(cytoEdges),
-              style: [ // the stylesheet for the graph
-                {
-                  selector: 'node',
-                  style: {
-                    'background-color': '#075',
-                    'label': 'data(id)'
-                  }
-                },
-                {
-                  selector: 'edge',
-                  style: {
-                    'width': 3,
-                    'line-color': '#ccc',
-                    'target-arrow-color': '#ccc',
-                    'target-arrow-shape': 'triangle',
-                    'curve-style': 'bezier'
-                  }
-                }
-              ],
-
-              layout: {
-                name: 'breadthfirst',
-                directed: true
-              }
-            });
-            this.cy.on('select', 'node', (event) => {
-              const node = event.target;
-              // console.log(`Node selected: ${node.target.id}`);
-              const nodeData = node.data();
-              console.log(nodeData);
-              this.nodeDetails = {
-                id: nodeData.id,
-                nodeType: nodeData.nodeType,
-              };
-            });
-            this.cy.center();
-
           });
     },
     getIR() {
       this.getIRWithID(4);
     },
     recalculatedNodes(current) {
-      // console.log(current);
-      // console.log("CHILDREN=");
-      // console.log(current.childTranspilerNodes.length);
       const currentGraphNodes = [{data: current}];
       if (current.childTranspilerNodes.length == 0) {
-        // console.log("WAS EMPTY");
         return currentGraphNodes;
       }
       return currentGraphNodes.concat(current.childTranspilerNodes.flatMap(e => this.recalculatedNodes(e)));
     },
     recalculatedEdges(current, thread) {
-      // console.log(current);
-      // console.log("CHILDREN=");
-      // console.log(current.childTranspilerNodes.length);
       const parentNode = thread.length === 0 ? null : thread.at(-1);
       const myEdges = parentNode == null ? [] : [{
         data: {
@@ -170,10 +120,7 @@ export default {
         <UiIntermediateAstNode :node="irAST" :depth="0" v-if="irTreePopulated"/>
       </div>
     </div>
-    <div id="graph-view">
-      <h3>Graph View</h3>
-      <div id="cyto" class="cyto"></div>
-    </div>
+    <GraphView :graph-model="irAST" @node-details-changed="updateNodeDetails"/>
     <div style="display: flex; flex-direction: column;">
       <div id="node-details-pane">
         <h3>Node Data</h3>
@@ -185,8 +132,6 @@ export default {
       <ProjectsView @load-ir-ast="receiveLoadIntermediateASTEvent"/>
     </div>
   </div>
-<!--  <textarea v-model="codeArea" rows="10" columns="10" class="code"/>-->
-<!--  <button @click="updateText">Le Button</button>-->
 </template>
 
 <style>
