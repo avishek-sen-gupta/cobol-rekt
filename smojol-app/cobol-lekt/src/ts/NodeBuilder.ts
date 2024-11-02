@@ -1,10 +1,10 @@
 type CytoEdge = { data: { id: string, source: string, target: string }; }
 type CytoNode = { data: { id: string, [key: string]: any } }
 
-export type ModelNode = { id: string; [key: string]: any };
+export type ModelNode = { id: string; childTranspilerNodes: ModelNode[], [key: string]: any };
 
 export function cytoNodes(current: ModelNode): CytoNode[] {
-    const currentGraphNodes = [{data: current}];
+    const currentGraphNodes: CytoNode[] = [{data: current}];
     if (current.childTranspilerNodes.length === 0) {
         return currentGraphNodes;
     }
