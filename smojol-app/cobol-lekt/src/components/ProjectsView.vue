@@ -1,19 +1,23 @@
 <template>
   <div id="project-listing-pane">
     <div class="pane-heading">Projects
-      <img id="refresh-projects" alt="Refresh" src="../assets/MdRefreshCircle.svg" @click="getProjectListing" style="align-self: center; width: 5%; height: auto"/>
+      <img id="refresh-projects" alt="Refresh" src="../assets/MdRefreshCircle.svg" @click="getProjectListing"
+           style="align-self: center; width: 5%; height: auto"/>
     </div>
     <div id="project-listing-details">
-      <div v-for="project in projectListing"
-           :key="project.projectID">
-        Project ID: {{ project.projectID }}
-        <ul>
-          <li v-for="iast in project.astListings"
-               :key="iast.astID">
-            &emsp;I-AST ID: {{ iast.programName }} / {{ iast.astID }}
-          </li>
-        </ul>
-      </div>
+      <ul>
+        <li v-for="project in projectListing"
+             :key="project.projectID">
+          Project ID: {{ project.projectID }}
+          <ul>
+            <li v-for="iast in project.astListings"
+                :key="iast.astID"
+                @click="loadIntermediateAST(iast.astID)">
+              I-AST ID: {{ iast.programName }} / {{ iast.astID }}
+            </li>
+          </ul>
+        </li>
+      </ul>
     </div>
   </div>
 </template>
@@ -37,6 +41,10 @@ export default {
             this.projectListing = response.data;
           });
     },
+    loadIntermediateAST(id) {
+      console.log("Emitting event : " + id);
+      this.$emit("load-ir-ast", id);
+    }
   }
 }
 </script>

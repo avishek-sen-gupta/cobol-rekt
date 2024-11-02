@@ -31,6 +31,11 @@ export default {
     this.drawGraph();
   },
   methods: {
+    receiveLoadIntermediateASTEvent(data) {
+      console.log("Received event");
+      console.log(data);
+      this.getIRWithID(data);
+    },
     testPing() {
       axios.get("/api/heartbeat")
           .then(response => {
@@ -38,8 +43,8 @@ export default {
             this.heartbeatResult = response.data;
           })
     },
-    getIR() {
-      axios.get("/api/ir-ast/4")
+    getIRWithID(id) {
+      axios.get("/api/ir-ast/" + id)
           .then(response => {
             console.log(response);
             console.log(response.data);
@@ -91,6 +96,9 @@ export default {
             this.cy.center();
 
           });
+    },
+    getIR() {
+      this.getIRWithID(4);
     },
     recalculatedNodes(current) {
       // console.log(current);
@@ -174,7 +182,7 @@ export default {
 
         </div>
       </div>
-      <ProjectsView/>
+      <ProjectsView @load-ir-ast="receiveLoadIntermediateASTEvent"/>
     </div>
   </div>
 <!--  <textarea v-model="codeArea" rows="10" columns="10" class="code"/>-->
