@@ -47,3 +47,21 @@ fileignoreconfig:
   checksum: f05076806e47e9a264139bfad8e1563d58dde5cb191e00515bcc618e33990c0e
 - filename: smojol-app/cobol-lekt/package-lock.json
   checksum: 8675f4cce8fa71dad6ef7a60ec3072e35ff2f7a56d6b626317a78c20ba66e8a9
+- filename: db/migrations/U1__create_person_table.sql
+  checksum: 171095374c29f97ebeef90014e25ceb27c845ac6719c839cb897caafd8794aaf
+- filename: db/migrations/U2__create_project_table.sql
+  checksum: 9d8c5c9669a4e41c89ee9dfcc4cd090ad7631495b9b5a3b722f5cc1b4b81f636
+- filename: db/migrations/U3__create_raw_ast_table.sql
+  checksum: b277f10527452a57f90f425bdacab21b1b75fb8addd5b33cdb8369285cd1e5c5
+- filename: db/migrations/U4__create_ir_ast.sql
+  checksum: 19088e1b8a1feec40af9060d1d5821b79aeb847bab642e7a8a711f7fd67f5b3b
+- filename: db/migrations/V1__create_person_table.sql
+  checksum: 559ef0ecdbb5b83c87fd6e2163140361c4d07dac613f19349f494d2725c83d22
+- filename: db/migrations/V2__create_project_table.sql
+  checksum: bb277f8f2e9b507ef5ef29673a43be91aaf148af3cd8f9219cde6ae080de8161
+- filename: db/migrations/V3__create_raw_ast_table.sql
+  checksum: 7a81b26ad76f816feb52883bb422a9cbe2eeebc8ad0014f3658854672177f510
+- filename: db/migrations/V4__create_ir_ast.sql
+  checksum: 4f63ba6190ee2b30ade6d9e8736ff255841256aa59f4c53d649bf13f44923ac8
+- filename: db/migrations/V5__create_ir_cfg_table.sql
+  checksum: b96aa1585d8b220f0624d6ee32748aee9d086ea26b3552de9de9dd6384d186b8
