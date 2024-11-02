@@ -163,6 +163,9 @@ export default {
 .pane-heading {
   font-size: 1.17em;
   font-weight: bold;
+  background-color: darkblue;
+  color: white;
+  padding-left: 10px;
 }
 
 .headered-pane {
