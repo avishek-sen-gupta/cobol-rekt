@@ -11,7 +11,7 @@ import java.util.Objects;
 
 public class TranspilerInstruction implements FlowNodeLike, InstructionLike {
     public static TranspilerInstruction NULL = new TranspilerInstruction(new NullTranspilerNode(), CodeSentinelType.BODY, "NO-ID");
-    private transient final TranspilerNode ref;
+    private final transient TranspilerNode ref;
     private final CodeSentinelType sentinel;
     private final String id;
 
