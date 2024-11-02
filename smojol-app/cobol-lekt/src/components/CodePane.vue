@@ -23,7 +23,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div id="code-view">
+  <div class="headered-pane" id="code-view">
     <div class="pane-heading">Intermediate Form Source</div>
     <div class="readonly-code code-pane">
       <UiIntermediateAstNode :node="irAST" :depth="0" v-if="irTreePopulated"/>
@@ -32,5 +32,4 @@ export default defineComponent({
 </template>
 
 <style scoped>
-
 </style>

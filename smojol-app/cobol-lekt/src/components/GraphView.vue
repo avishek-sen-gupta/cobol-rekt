@@ -81,7 +81,7 @@ export default defineComponent({
 )</script>
 
 <template>
-  <div id="graph-view">
+  <div class="headered-pane" id="graph-view">
     <div class="pane-heading">Graph View</div>
     <div id="cyto" class="cyto"></div>
   </div>
@@ -89,10 +89,8 @@ export default defineComponent({
 
 <style scoped>
 #cyto {
-  height: 600px;
-  width: 600px;
+  height: 100%;
   background-color: azure;
   border: 1px solid;
-  position: relative;
 }
 </style>

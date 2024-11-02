@@ -14,7 +14,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div id="node-details-pane">
+  <div class="headered-pane" id="node-info-pane">
     <div class="pane-heading">Node Data</div>
     <div id="node-details">
       {{ nodeDetails }}
@@ -23,5 +23,7 @@ export default defineComponent({
 </template>
 
 <style scoped>
-
+#node-details {
+  height: 100%;
+}
 </style>
