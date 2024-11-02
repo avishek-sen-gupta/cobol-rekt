@@ -2,7 +2,7 @@
 
 import cytoscape from "cytoscape";
 import cydagre from "cytoscape-dagre";
-import {asCytoscapeModel, ModelNode} from "@/ts/NodeBuilder";
+import {asCytoscapeModel, ModelNode, TranspilerChildrenAccess} from "@/ts/NodeBuilder";
 import {defineComponent, PropType, ref} from "vue";
 
 export default defineComponent({
@@ -27,7 +27,7 @@ export default defineComponent({
       },
       methods: {
         buildGraph(model: ModelNode) {
-          const cytoscapeModel = asCytoscapeModel(model);
+          const cytoscapeModel = asCytoscapeModel(model, TranspilerChildrenAccess);
           cydagre(cytoscape);
           this.cy = cytoscape({
             container: document.getElementById("cyto"),
