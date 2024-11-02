@@ -1,13 +1,18 @@
 package org.smojol.api;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import org.jetbrains.annotations.NotNull;
 import org.jooq.Record;
 import org.jooq.*;
 import org.smojol.api.contract.IntermediateASTListing;
 import org.smojol.api.contract.ProjectListing;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.jooq.impl.DSL.field;
@@ -37,5 +42,12 @@ public class IntermediateASTService {
                         .toList()))
                 .toList();
         return collectedIntermediateASTs;
+    }
+
+    public Optional<Map<String, Object>> intermediateAST(int id, DSLContext using) {
+        Gson gson = new Gson();
+        @NotNull Result<Record2<Integer, String>> ast = using.select(field("id", Integer.class), field("IR_AST", String.class)).from(IR_AST).where(field("ID", Integer.class).eq(id)).fetch();
+        if (ast.isEmpty()) return Optional.empty();
+        return Optional.of(ImmutableMap.of("id", id, "ast", gson.fromJson(ast.getFirst().component2(), JsonObject.class)));
     }
 }

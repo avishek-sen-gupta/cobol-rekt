@@ -17,35 +17,7 @@ export default {
   },
   setup() {
     const codeArea = ref("Here's some code");
-
-    function updateText() {
-      codeArea.value = "BLAH BLAH";
-    }
-
-    const graph = ref({
-      id: "A",
-      children: [
-        {
-          id: "A1",
-          children: [
-            {
-              id: "AA1",
-              children: []
-            },
-            {
-              id: "AA2",
-              children: []
-            }
-          ]
-        },
-        {
-          id: "A2",
-          children: []
-        }
-      ]
-    });
-    console.log(graph);
-    return {codeArea, updateText: updateText, graph};
+    return {codeArea};
   },
   data() {
     const testGraph = new TestAstNode("A1", "TOP",
@@ -67,11 +39,11 @@ export default {
           })
     },
     getIR() {
-      axios.get("/api/ir-ast")
+      axios.get("/api/ir-ast/4")
           .then(response => {
             console.log(response);
             console.log(response.data);
-            this.irAST = response.data;
+            this.irAST = response.data.ast;
             const cytoNodes = this.recalculatedNodes(this.irAST);
             const cytoEdges = this.recalculatedEdges(this.irAST, []);
             console.log("PRINTTING NODES");
@@ -154,8 +126,6 @@ export default {
   },
   computed: {
     irTreePopulated() {
-      console.log("Checking IR pop");
-      console.log(this.irAST);
       return this.irAST != null;
     }
   }
@@ -272,5 +242,12 @@ export default {
 #top-panel {
   display: flex;
   gap: 10px;
+}
+
+.pane-heading {
+  font-size: 1.17em;
+  font-weight: bold;
+  margin-block-start: 1em;
+  margin-block-end: 1em;
 }
 </style>

@@ -1,6 +1,8 @@
 <template>
   <div id="project-listing-pane">
-    <h3>Projects</h3>
+    <div class="pane-heading">Projects
+      <img id="refresh-projects" alt="Refresh" src="../assets/MdRefreshCircle.svg" @click="getProjectListing" style="align-self: center; width: 5%; height: auto"/>
+    </div>
     <div id="project-listing-details">
       <div v-for="project in projectListing"
            :key="project.projectID">
@@ -25,7 +27,7 @@ export default {
     return {projectListing: null};
   },
   mounted() {
-    this.getProjectListing();
+    // this.getProjectListing();
   },
   methods: {
     getProjectListing() {
