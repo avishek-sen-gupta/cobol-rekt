@@ -87,7 +87,7 @@ export default {
   <div>Last Ping result is: {{ heartbeatResult }}</div>
   <div class="main-panel">
     <div id="code-view">
-      <h3>Intermediate Form Source</h3>
+      <div class="pane-heading">Intermediate Form Source</div>
       <div class="readonly-code ir-window">
         <UiIntermediateAstNode :node="irAST" :depth="0" v-if="irTreePopulated"/>
       </div>
@@ -95,7 +95,7 @@ export default {
     <GraphView :graph-model="irAST" @node-details-changed="updateNodeDetails"/>
     <div style="display: flex; flex-direction: column;">
       <div id="node-details-pane">
-        <h3>Node Data</h3>
+        <div class="pane-heading">Node Data</div>
         <div id="node-details">
           {{ this.nodeDetails }}
 

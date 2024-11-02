@@ -74,7 +74,7 @@ export default defineComponent({
 
 <template>
   <div id="graph-view">
-    <h3>Graph View</h3>
+    <div class="pane-heading">Graph View</div>
     <div id="cyto" class="cyto"></div>
   </div>
 </template>
