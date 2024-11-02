@@ -68,6 +68,10 @@ public class ApiMain {
                     }
                     ctx.json(ast.get());
                 })
+                .get("/api/ir-cfg", ctx -> {
+                    TranspilerNode cfg = flowgraph();
+                    ctx.json(cfg);
+                })
                 .get("/api/projects", ctx -> ctx.json(projectListings(connectionBuilder)))
                 .start(port);
     }
@@ -104,7 +108,7 @@ public class ApiMain {
         }
     }
 
-    private String flowgraph() throws IOException {
+    private static TranspilerNode flowgraph() throws IOException {
         String programName = "test-exp.cbl";
         Map<String, List<AnalysisTaskResult>> analysisResult = new CodeTaskRunner("/Users/asgupta/code/smojol/smojol-test-code",
                 "/Users/asgupta/code/smojol/out/report",
@@ -117,6 +121,6 @@ public class ApiMain {
         Graph<BasicBlock<TranspilerInstruction>, DefaultEdge> blockGraph = transpilerFlowgraph.basicBlockFlowgraph();
         Graph<TranspilerInstruction, DefaultEdge> instructionFlowgraph = transpilerFlowgraph.instructionFlowgraph();
         TranspilerNode tree = transpilerFlowgraph.transpilerTree();
-        return new Gson().toJson(tree);
+        return tree;
     }
 }
