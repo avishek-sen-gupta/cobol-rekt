@@ -19,14 +19,8 @@ export default {
   setup() {
   },
   data() {
-    new TestAstNode("A1", "TOP",
-        [
-          new TestAstNode("AA1", "BOTTOM", [])
-        ]
-    );
     return {heartbeatResult: "UNKNOWN", irAST: null, irCFG: null, nodeDetails: null};
-  }
-  ,
+  },
   mounted() {
   },
   methods: {
