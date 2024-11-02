@@ -1,5 +1,4 @@
 <script>
-import {ref} from "vue";
 import HelloWorld from "@/components/HelloWorld.vue";
 import {TestAstNode} from "@/ts/TestAstNode";
 import axios from "axios";
@@ -18,17 +17,16 @@ export default {
     ProjectsView
   },
   setup() {
-    const codeArea = ref("Here's some code");
-    return {codeArea};
   },
   data() {
-    const testGraph = new TestAstNode("A1", "TOP",
+    new TestAstNode("A1", "TOP",
         [
           new TestAstNode("AA1", "BOTTOM", [])
         ]
     );
-    return {testGraph, heartbeatResult: "UNKNOWN", irAST: null, irCFG: null, nodeDetails: null};
-  },
+    return {heartbeatResult: "UNKNOWN", irAST: null, irCFG: null, nodeDetails: null};
+  }
+  ,
   mounted() {
   },
   methods: {
@@ -77,11 +75,7 @@ export default {
           });
     }
   },
-  computed: {
-    irTreePopulated() {
-      return this.irAST != null;
-    }
-  }
+  computed: {}
 }
 </script>
 
@@ -105,7 +99,7 @@ export default {
     </div>
   </div>
 
-  <HelloWorld header="Welcome to this amazing app"/>
+  <HelloWorld/>
   <div>Last Ping result is: {{ heartbeatResult }}</div>
   <div class="main-panel">
     <CodePane :ir-a-s-t="irAST"/>
