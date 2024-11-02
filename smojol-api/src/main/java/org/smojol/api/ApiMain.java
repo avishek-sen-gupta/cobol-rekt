@@ -1,6 +1,7 @@
 package org.smojol.api;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.javalin.Javalin;
@@ -36,6 +37,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import static org.smojol.toolkit.task.CommandLineAnalysisTask.BUILD_BASE_ANALYSIS;
@@ -69,11 +71,15 @@ public class ApiMain {
                     ctx.json(ast.get());
                 })
                 .get("/api/ir-cfg", ctx -> {
-                    TranspilerNode cfg = flowgraph();
-                    ctx.json(cfg);
+                    Graph<TranspilerInstruction, DefaultEdge> cfg = flowgraph();
+                    ctx.json(ImmutableMap.of("nodes", vertices(cfg.vertexSet()), "edges", cfg.edgeSet()));
                 })
                 .get("/api/projects", ctx -> ctx.json(projectListings(connectionBuilder)))
                 .start(port);
+    }
+
+    private static Set<TranspilerInstruction> vertices(Set<TranspilerInstruction> instructions) {
+        return instructions;
     }
 
     private static @NotNull JsonMapper getJsonMapper(Gson gson) {
@@ -108,7 +114,7 @@ public class ApiMain {
         }
     }
 
-    private static TranspilerNode flowgraph() throws IOException {
+    private static Graph<TranspilerInstruction, DefaultEdge> flowgraph() throws IOException {
         String programName = "test-exp.cbl";
         Map<String, List<AnalysisTaskResult>> analysisResult = new CodeTaskRunner("/Users/asgupta/code/smojol/smojol-test-code",
                 "/Users/asgupta/code/smojol/out/report",
@@ -120,7 +126,7 @@ public class ApiMain {
         TranspilerFlowgraph transpilerFlowgraph = ((AnalysisTaskResultOK) results.get(1)).getDetail();
         Graph<BasicBlock<TranspilerInstruction>, DefaultEdge> blockGraph = transpilerFlowgraph.basicBlockFlowgraph();
         Graph<TranspilerInstruction, DefaultEdge> instructionFlowgraph = transpilerFlowgraph.instructionFlowgraph();
-        TranspilerNode tree = transpilerFlowgraph.transpilerTree();
-        return tree;
+        PruneUnreachableTask.pruneUnreachableInstructions(transpilerFlowgraph);
+        return instructionFlowgraph;
     }
 }

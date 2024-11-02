@@ -25,7 +25,7 @@ export default {
           new TestAstNode("AA1", "BOTTOM", [])
         ]
     );
-    return {testGraph, heartbeatResult: "UNKNOWN", irAST: null, nodeDetails: null};
+    return {testGraph, heartbeatResult: "UNKNOWN", irAST: null, irCFG: null, nodeDetails: null};
   },
   mounted() {
   },
@@ -43,7 +43,7 @@ export default {
           .then(response => {
             console.log(response);
             this.heartbeatResult = response.data;
-          })
+          });
     },
     getIRWithID(id) {
       axios.get("/api/ir-ast/" + id)
@@ -53,6 +53,13 @@ export default {
     },
     getIR() {
       this.getIRWithID(4);
+    },
+    getCFG() {
+      axios.get("/api/ir-cfg")
+          .then(response => {
+            console.log(response);
+            this.irCFG = response.data;
+          });
     }
   },
   computed: {
@@ -70,7 +77,7 @@ export default {
       <button @click="testPing">Test Ping</button>
       <button>Flowchart</button>
       <button @click="getIR">Intermediate Representation</button>
-      <button>Control Flowgraph</button>
+      <button @click="getCFG">Control Flowgraph</button>
       <button>Configure/Run Task(s)</button>
       <button>Capability Mapping</button>
       <button>Node Summarisation</button>
@@ -92,7 +99,7 @@ export default {
         <UiIntermediateAstNode :node="irAST" :depth="0" v-if="irTreePopulated"/>
       </div>
     </div>
-    <GraphView :graph-model="irAST" @node-details-changed="updateNodeDetails"/>
+    <GraphView :digraph-model="irCFG" :tree-model="irAST" @node-details-changed="updateNodeDetails"/>
     <div style="display: flex; flex-direction: column;">
       <div id="node-details-pane">
         <div class="pane-heading">Node Data</div>

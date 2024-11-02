@@ -2,14 +2,20 @@
 
 import cytoscape from "cytoscape";
 import cydagre from "cytoscape-dagre";
-import {asCytoscapeModel, ModelNode, TranspilerChildrenAccess} from "@/ts/NodeBuilder";
+import {asCytoscapeTree, TreeModelNode, TranspilerNodeChildrenAccess} from "@/ts/CytoTree";
 import {defineComponent, PropType, ref} from "vue";
+import {asCytoscapeDigraph, Digraph} from "@/ts/Digraph";
+import {CytoModel} from "@/ts/CytoscapeTypes";
 
 export default defineComponent({
       name: "GraphView",
       props: {
-        graphModel: {
-          type: [Object, null] as PropType<ModelNode | null>,
+        treeModel: {
+          type: [Object, null] as PropType<TreeModelNode | null>,
+          required: true
+        },
+        digraphModel: {
+          type: [Object, null] as PropType<Digraph | null>,
           required: true
         }
       },
@@ -21,13 +27,15 @@ export default defineComponent({
         // this.buildGraph();
       },
       watch: {
-        graphModel(newValue: ModelNode) {
-          this.buildGraph(newValue);
+        treeModel(newValue: TreeModelNode) {
+          this.buildGraph(asCytoscapeTree(newValue, TranspilerNodeChildrenAccess));
+        },
+        digraphModel(newValue: Digraph) {
+          this.buildGraph(asCytoscapeDigraph(newValue));
         }
       },
       methods: {
-        buildGraph(model: ModelNode) {
-          const cytoscapeModel = asCytoscapeModel(model, TranspilerChildrenAccess);
+        buildGraph(cytoscapeModel: CytoModel) {
           cydagre(cytoscape);
           this.cy = cytoscape({
             container: document.getElementById("cyto"),
