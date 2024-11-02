@@ -1,6 +1,5 @@
 <script>
 import HelloWorld from "@/components/HelloWorld.vue";
-import {TestAstNode} from "@/ts/TestAstNode";
 import axios from "axios";
 import ProjectsView from "@/components/ProjectsView.vue";
 import GraphView from "@/components/GraphView.vue";
