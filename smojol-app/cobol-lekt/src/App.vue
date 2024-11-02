@@ -25,18 +25,17 @@ export default {
           new TestAstNode("AA1", "BOTTOM", [])
         ]
     );
-    return {testGraph, heartbeatResult: "UNKNOWN", irAST: null, cy: null, nodeDetails: null};
+    return {testGraph, heartbeatResult: "UNKNOWN", irAST: null, nodeDetails: null};
   },
   mounted() {
-    this.drawGraph();
   },
   methods: {
     updateNodeDetails(data) {
       this.nodeDetails = data;
     },
     receiveLoadIntermediateASTEvent(data) {
-      console.log("Received event");
-      console.log(data);
+      // console.log("Received event");
+      // console.log(data);
       this.getIRWithID(data);
     },
     testPing() {
@@ -49,37 +48,11 @@ export default {
     getIRWithID(id) {
       axios.get("/api/ir-ast/" + id)
           .then(response => {
-            console.log(response);
-            console.log(response.data);
             this.irAST = response.data.ast;
           });
     },
     getIR() {
       this.getIRWithID(4);
-    },
-    recalculatedNodes(current) {
-      const currentGraphNodes = [{data: current}];
-      if (current.childTranspilerNodes.length == 0) {
-        return currentGraphNodes;
-      }
-      return currentGraphNodes.concat(current.childTranspilerNodes.flatMap(e => this.recalculatedNodes(e)));
-    },
-    recalculatedEdges(current, thread) {
-      const parentNode = thread.length === 0 ? null : thread.at(-1);
-      const myEdges = parentNode == null ? [] : [{
-        data: {
-          id: current.id + parentNode.id,
-          source: parentNode.id,
-          target: current.id
-        }
-      }];
-      if (current.childTranspilerNodes.length == 0) {
-        // console.log("WAS EMPTY");
-        return myEdges;
-      }
-      return myEdges.concat(current.childTranspilerNodes.flatMap(e => this.recalculatedEdges(e, thread.concat(current))));
-    },
-    drawGraph() {
     }
   },
   computed: {
@@ -88,7 +61,6 @@ export default {
     }
   }
 }
-
 </script>
 
 <template>
@@ -182,14 +154,6 @@ export default {
 .main-panel {
   display: flex;
   gap: 10px;
-}
-
-#cyto {
-  height: 600px;
-  width: 600px;
-  background-color: azure;
-  border: 1px solid;
-  position: relative;
 }
 
 #top-panel {

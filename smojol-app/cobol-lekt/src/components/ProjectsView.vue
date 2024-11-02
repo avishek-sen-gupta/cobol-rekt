@@ -13,12 +13,10 @@ export default {
     getProjectListing() {
       axios.get("/api/projects")
           .then(response => {
-            console.log(response);
             this.projectListing = response.data;
           });
     },
     loadIntermediateAST(id) {
-      console.log("Emitting event : " + id);
       this.$emit("load-ir-ast", id);
     }
   }

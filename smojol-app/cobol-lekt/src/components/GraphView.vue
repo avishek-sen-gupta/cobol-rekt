@@ -27,14 +27,12 @@ export default defineComponent({
       },
       methods: {
         buildGraph(model: ModelNode) {
-          // if (model === undefined) return;
-          // if (model instanceof String) return;
-          const cytoscapeModel = asCytoscapeModel(model as ModelNode);
+          const cytoscapeModel = asCytoscapeModel(model);
           cydagre(cytoscape);
           this.cy = cytoscape({
             container: document.getElementById("cyto"),
             elements: cytoscapeModel,
-            style: [ // the stylesheet for the graph
+            style: [
               {
                 selector: 'node',
                 style: {
@@ -63,16 +61,10 @@ export default defineComponent({
             const node = event.target;
             // console.log(`Node selected: ${node.target.id}`);
             const nodeData = node.data();
-            console.log(nodeData);
             this.$emit("node-details-changed", {
               id: nodeData.id,
               nodeType: nodeData.nodeType,
             });
-
-            // this.nodeDetails = {
-            //   id: nodeData.id,
-            //   nodeType: nodeData.nodeType,
-            // };
           });
           this.cy.center();
         }
@@ -88,5 +80,11 @@ export default defineComponent({
 </template>
 
 <style scoped>
-
+#cyto {
+  height: 600px;
+  width: 600px;
+  background-color: azure;
+  border: 1px solid;
+  position: relative;
+}
 </style>
