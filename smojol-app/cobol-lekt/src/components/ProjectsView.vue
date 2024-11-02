@@ -14,6 +14,10 @@ export default {
       axios.get("/api/projects")
           .then(response => {
             this.projectListing = response.data;
+          })
+          .catch(function (err) {
+            console.log("There was an error: ");
+            console.log(err);
           });
     },
     loadIntermediateAST(id) {

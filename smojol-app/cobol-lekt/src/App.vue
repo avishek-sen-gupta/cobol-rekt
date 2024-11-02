@@ -3,15 +3,17 @@ import {ref} from "vue";
 import HelloWorld from "@/components/HelloWorld.vue";
 import {TestAstNode} from "@/ts/TestAstNode";
 import axios from "axios";
-import UiIntermediateAstNode from "@/components/UiIntermediateAstNode.vue";
 import ProjectsView from "@/components/ProjectsView.vue";
 import GraphView from "@/components/GraphView.vue";
+import InfoPane from "@/components/InfoPane.vue";
+import CodePane from "@/components/CodePane.vue";
 
 export default {
   name: 'App',
   components: {
+    CodePane,
+    InfoPane,
     GraphView,
-    UiIntermediateAstNode,
     HelloWorld,
     ProjectsView
   },
@@ -39,16 +41,25 @@ export default {
       this.getIRWithID(data);
     },
     testPing() {
+      const self = this;
       axios.get("/api/heartbeat")
           .then(response => {
             console.log(response);
             this.heartbeatResult = response.data;
+          })
+          .catch(function (err) {
+            self.heartbeatResult = "FAIL";
+            console.log(err);
           });
     },
     getIRWithID(id) {
       axios.get("/api/ir-ast/" + id)
           .then(response => {
             this.irAST = response.data.ast;
+          })
+          .catch(function (err) {
+            console.log("There was an error: ");
+            console.log(err);
           });
     },
     getIR() {
@@ -59,6 +70,10 @@ export default {
           .then(response => {
             console.log(response);
             this.irCFG = response.data;
+          })
+          .catch(function (err) {
+            console.log("There was an error: ");
+            console.log(err);
           });
     }
   },
@@ -93,21 +108,10 @@ export default {
   <HelloWorld header="Welcome to this amazing app"/>
   <div>Last Ping result is: {{ heartbeatResult }}</div>
   <div class="main-panel">
-    <div id="code-view">
-      <div class="pane-heading">Intermediate Form Source</div>
-      <div class="readonly-code ir-window">
-        <UiIntermediateAstNode :node="irAST" :depth="0" v-if="irTreePopulated"/>
-      </div>
-    </div>
+    <CodePane :ir-a-s-t="irAST"/>
     <GraphView :digraph-model="irCFG" :tree-model="irAST" @node-details-changed="updateNodeDetails"/>
     <div style="display: flex; flex-direction: column;">
-      <div id="node-details-pane">
-        <div class="pane-heading">Node Data</div>
-        <div id="node-details">
-          {{ this.nodeDetails }}
-
-        </div>
-      </div>
+      <InfoPane :node-details="this.nodeDetails"/>
       <ProjectsView @load-ir-ast="receiveLoadIntermediateASTEvent"/>
     </div>
   </div>
@@ -135,7 +139,7 @@ export default {
   white-space: pre-wrap;
 }
 
-.ir-window {
+.code-pane {
   width: 700px;
   height: 600px;
   overflow-y: scroll;
