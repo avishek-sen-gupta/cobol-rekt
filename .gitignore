@@ -137,7 +137,6 @@ artifacts/
 **/local.env.sh
 **/.run/
 
-test.md
 **/test-code/out/
 
 **/*.sqlite
