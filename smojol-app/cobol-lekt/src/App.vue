@@ -80,7 +80,6 @@ export default {
       <button>Flowchart</button>
       <button @click="getIR">Intermediate Representation</button>
       <button @click="getCFG">Control Flowgraph</button>
-      <button>Configure/Run Task(s)</button>
       <button>Capability Mapping</button>
       <button>Node Summarisation</button>
       <button>T1/T2 Reducibility</button>
@@ -92,21 +91,6 @@ export default {
     </div>
   </div>
 
-  <div class="container">
-    <div style="background-color: red; grid-area: 1 / 1 / 3 / 2">ahahah</div>
-    <div style="background-color: yellow; grid-area: 1 / 2 / 3 / 3">2</div>
-    <div style="background-color: greenyellow; grid-area: 1 / 3 / 2 / 4">2</div>
-    <div style="background-color: lightsalmon; grid-area: 2 / 3 / 3 / 4">3</div>
-    <!--    <div style="background-color: lightsalmon">4</div>-->
-    <!--    <div style="background-color: violet">5</div>-->
-    <!--    <div style="background-color: dodgerblue">6</div>-->
-    <!--    <div style="background-color: red">7</div>-->
-    <!--    <div style="background-color: yellow">8</div>-->
-    <!--    <div style="background-color: greenyellow">9</div>-->
-    <!--    <div style="background-color: lightsalmon">10</div>-->
-    <!--    <div style="background-color: violet">11</div>-->
-    <!--    <div style="background-color: dodgerblue">12</div>-->
-  </div>
   <HelloWorld/>
   <div>Last Ping result is: {{ heartbeatResult }}</div>
   <div class="main-panel">
@@ -142,7 +126,6 @@ export default {
 .readonly-code {
   font-family: "Andale Mono", sans-serif;
   background-color: azure;
-  border: 1px solid azure;
   text-align: left;
   white-space: pre-wrap;
 }
@@ -150,21 +133,18 @@ export default {
 .code-pane {
   height: 100%;
   overflow-y: scroll;
-  border: 1px solid;
 }
 
 #node-details {
   overflow-y: scroll;
-  border: 1px solid;
   background-color: azure;
 }
 
 .functions {
-  display: flex;
-  width: 1000px;
-  height: 100px;
-  flex-wrap: wrap;
-  gap: 5px;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr); /* 6 columns for each button */
+  grid-template-rows: 1fr 1fr; /* 2 rows with equal size */
+  gap: 5px; /* 5px gap between buttons */
 }
 
 .main-panel {
@@ -180,20 +160,13 @@ export default {
   gap: 10px;
 }
 
-.container {
-  height: 200px;
-  display: grid;
-  grid-template-columns: 42% 36% 22%;
-  grid-template-rows: 50% 50%;
-}
-
 .pane-heading {
   font-size: 1.17em;
   font-weight: bold;
 }
 
 .headered-pane {
-  border: 2px solid red;
+  border: 1px solid darkslateblue;
   display: flex;
   flex-flow: column nowrap;
 }

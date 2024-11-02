@@ -60,7 +60,6 @@ a {
 
 #project-listing-details {
   height: 100%;
-  border: 1px solid;
   background-color: azure;
   overflow-y: scroll;
 }

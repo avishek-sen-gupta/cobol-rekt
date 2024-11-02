@@ -91,6 +91,5 @@ export default defineComponent({
 #cyto {
   height: 100%;
   background-color: azure;
-  border: 1px solid;
 }
 </style>
