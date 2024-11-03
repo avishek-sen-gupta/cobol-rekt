@@ -85,7 +85,7 @@ public class ApiMain {
     private static Optional<Map<String, Object>> irCFG(String id, ConnectionBuilder connectionBuilder, Gson gson) throws SQLException {
         try (Connection conn = connectionBuilder.getConnection()) {
             DSLContext using = DSL.using(conn, SQLDialect.SQLITE);
-            return new IntermediateFormService(gson).intermediateCFG(Integer.parseInt(id), using);
+            return new IntermediateFormService(gson, connectionBuilder).intermediateCFG(Integer.parseInt(id), using);
         }
     }
 
@@ -110,14 +110,14 @@ public class ApiMain {
     private static List<ProjectListing> projectListings(ConnectionBuilder connectionBuilder, Gson gson) throws SQLException {
         try (Connection conn = connectionBuilder.getConnection()) {
             DSLContext using = DSL.using(conn, SQLDialect.SQLITE);
-            return new IntermediateFormService(gson).allProjectEntities(using);
+            return new IntermediateFormService(gson, connectionBuilder).allProjectEntities(using);
         }
     }
 
     private static Optional<Map<String, Object>> irAST(String id, ConnectionBuilder connectionBuilder, Gson gson) throws SQLException {
         try (Connection conn = connectionBuilder.getConnection()) {
             DSLContext using = DSL.using(conn, SQLDialect.SQLITE);
-            return new IntermediateFormService(gson).intermediateAST(Integer.parseInt(id), using);
+            return new IntermediateFormService(gson, connectionBuilder).intermediateAST(Integer.parseInt(id), using);
         }
     }
 

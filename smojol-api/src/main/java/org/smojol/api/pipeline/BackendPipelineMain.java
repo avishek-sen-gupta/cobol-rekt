@@ -10,6 +10,7 @@ import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 import org.smojol.api.IntermediateFormService;
 import org.smojol.api.ProjectService;
+import org.smojol.api.database.ConnectionBuilder;
 import org.smojol.common.dialect.LanguageDialect;
 import org.smojol.common.flowchart.FlowchartOutputFormat;
 import org.smojol.common.id.UUIDProvider;
@@ -61,8 +62,14 @@ public class BackendPipelineMain {
         String url = System.getenv("DATABASE_URL");
         String user = System.getenv("DATABASE_USER");
         String password = System.getenv("DATABASE_PASSWORD");
-        IntermediateFormService intermediateFormService = new IntermediateFormService(gson);
-        ProjectService projectService = new ProjectService();
+
+        org.smojol.api.database.ConnectionBuilder connectionBuilder = new ConnectionBuilder(System.getenv("DATABASE_URL"),
+                System.getenv("DATABASE_USER"),
+                System.getenv("DATABASE_PASSWORD"));
+
+        IntermediateFormService intermediateFormService = new IntermediateFormService(gson, connectionBuilder);
+        ProjectService projectService = new ProjectService(connectionBuilder);
+
         try (Connection conn = DriverManager.getConnection(url, user, password)) {
             DSLContext using = DSL.using(conn, SQLDialect.SQLITE);
             String projectName = UUID.randomUUID().toString();
@@ -75,6 +82,4 @@ public class BackendPipelineMain {
         }
         System.out.println("DONE");
     }
-
-
 }
