@@ -6,6 +6,7 @@ import {asCytoscapeTree, TreeModelNode, TranspilerNodeChildrenAccess} from "@/ts
 import {defineComponent, PropType, ref} from "vue";
 import {asCytoscapeDigraph, Digraph} from "@/ts/Digraph";
 import {CytoModel} from "@/ts/CytoscapeTypes";
+import {MutableCenter} from "@/ts/FlippableId";
 
 export default defineComponent({
       name: "GraphView",
@@ -17,6 +18,10 @@ export default defineComponent({
         digraphModel: {
           type: [Object, null] as PropType<Digraph | null>,
           required: true
+        },
+        centerNode: {
+          type: [Object, null] as PropType<MutableCenter | null>,
+          required: true
         }
       },
       setup() {
@@ -26,12 +31,23 @@ export default defineComponent({
       mounted() {
         // this.buildGraph();
       },
+      computed: {
+        refreshedCenterComponent() {
+          console.log("RECOMPUTING...");
+          return this.centerNode;
+        }
+      },
       watch: {
         treeModel(newValue: TreeModelNode) {
           this.buildGraph(asCytoscapeTree(newValue, TranspilerNodeChildrenAccess));
         },
         digraphModel(newValue: Digraph) {
           this.buildGraph(asCytoscapeDigraph(newValue));
+        },
+        centerNode(newValue: MutableCenter) {
+          if (this.cy === null) return;
+          const elementById = this.cy.getElementById(newValue.id);
+          this.cy.center(elementById);
         }
       },
       methods: {

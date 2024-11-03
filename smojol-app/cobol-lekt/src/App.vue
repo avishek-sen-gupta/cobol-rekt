@@ -5,6 +5,8 @@ import ProjectsView from "@/components/ProjectsView.vue";
 import GraphView from "@/components/GraphView.vue";
 import InfoPane from "@/components/InfoPane.vue";
 import CodePane from "@/components/CodePane.vue";
+import {flip} from "@/ts/FlippableId";
+
 
 export default {
   name: 'App',
@@ -18,11 +20,16 @@ export default {
   setup() {
   },
   data() {
-    return {heartbeatResult: "UNKNOWN", irAST: null, irCFG: null, nodeDetails: null};
+    return {heartbeatResult: "UNKNOWN", irAST: null, irCFG: null, nodeDetails: null, centerNode: null};
   },
   mounted() {
   },
   methods: {
+    navigateToCytoNode(data) {
+      console.log("Parent notified");
+      console.log(data.id);
+      this.centerNode = flip(data.id, this.centerNode);
+    },
     updateNodeDetails(data) {
       this.nodeDetails = data;
     },
@@ -102,10 +109,11 @@ export default {
   <HelloWorld/>
   <div>Last Ping result is: {{ heartbeatResult }}</div>
   <div class="main-panel">
-    <CodePane :ir-a-s-t="irAST" style="grid-area: 1 / 1 / 3 / 2"/>
+    <CodePane :ir-a-s-t="irAST" style="grid-area: 1 / 1 / 3 / 2" @sourceNodeClicked="navigateToCytoNode"/>
     <GraphView
         :digraph-model="irCFG"
         :tree-model="irAST"
+        :center-node="centerNode"
         @node-details-changed="updateNodeDetails"
         style="grid-area: 1 / 2 / 3 / 3"
     />

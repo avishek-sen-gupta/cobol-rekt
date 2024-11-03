@@ -14,6 +14,17 @@ export default defineComponent({
           required: true
         }
       },
+      methods: {
+        sourceElementClicked(sourceElement) {
+          this.$emit("sourceNodeClicked", sourceElement);
+          // console.log(sourceElement);
+        },
+        sourceNodeClicked(sourceNode) {
+          // console.log("Bubbling up");
+          // console.log(sourceNode);
+          this.$emit("sourceNodeClicked", sourceNode);
+        }
+      },
       computed: {
         nodeID() {
           return "ast_" + this.node.id;
@@ -160,6 +171,7 @@ export default defineComponent({
         :key="child.id"
         :node="child"
         :depth="nextLevel"
+        @sourceNodeClicked="sourceNodeClicked"
     />
     <div>{{ indent }}}</div>
   </div>
@@ -170,6 +182,7 @@ export default defineComponent({
         :key="child.id"
         :node="child"
         :depth="nextLevel"
+        @sourceNodeClicked="sourceNodeClicked"
     />
     <div>{{ indent }}}</div>
   </div>
@@ -180,6 +193,7 @@ export default defineComponent({
         :key="child.id"
         :node="child"
         :depth="nextLevel"
+        @sourceNodeClicked="sourceNodeClicked"
     />
     <div>{{ indent }}}</div>
   </div>
@@ -191,6 +205,7 @@ export default defineComponent({
         :key="child.id"
         :node="child"
         :depth="depth"
+        @sourceNodeClicked="sourceNodeClicked"
     />
     )
   </span>
@@ -198,6 +213,7 @@ export default defineComponent({
     <UiIntermediateAstNode
         :node="node.expression"
         :depth="depth"
+        @sourceNodeClicked="sourceNodeClicked"
     />
     )
   </span>
@@ -205,6 +221,7 @@ export default defineComponent({
     <UiIntermediateAstNode
         :node="node.expression"
         :depth="depth"
+        @sourceNodeClicked="sourceNodeClicked"
     />
     )
   </span>
@@ -215,6 +232,8 @@ export default defineComponent({
         :key="child.id"
         :node="child"
         :depth="depth"
+        @click="sourceElementClicked(node)"
+        @sourceNodeClicked="sourceNodeClicked"
     />
     ...
     )
@@ -224,18 +243,23 @@ export default defineComponent({
     <UiIntermediateAstNode
         :node="node.destination"
         :depth="depth"
+        @sourceNodeClicked="sourceNodeClicked"
     />,
     <UiIntermediateAstNode
         :node="node.source"
         :depth="depth"
+        @sourceNodeClicked="sourceNodeClicked"
     />
     )
   </div>
-  <div :id="nodeID" v-else-if="isJump">
+  <div :id="nodeID" v-else-if="isJump"
+       @click="sourceElementClicked(node)"
+  >
     {{ indent }}<span class="jump">jump(
     <UiIntermediateAstNode
         :node="node.start"
         :depth="depth"
+        @sourceNodeClicked="sourceNodeClicked"
     />
     , [not yet implemented]
     )
@@ -246,10 +270,12 @@ export default defineComponent({
     {{ indent }}<UiIntermediateAstNode
       :node="node.destination"
       :depth="depth"
+      @sourceNodeClicked="sourceNodeClicked"
   />,
     <UiIntermediateAstNode
         :node="node.condition"
         :depth="depth"
+        @sourceNodeClicked="sourceNodeClicked"
     />
     )
   </span>
@@ -261,20 +287,24 @@ export default defineComponent({
   <span :id="nodeID" v-else-if="isNestedCondition">(<UiIntermediateAstNode
       :node="node.expression"
       :depth="depth"
+      @sourceNodeClicked="sourceNodeClicked"
   />)
   </span>
   <span :id="nodeID" v-else-if="isOr">or(<UiIntermediateAstNode
       :node="node.lhs"
       :depth="depth"
+      @sourceNodeClicked="sourceNodeClicked"
   />,
     <UiIntermediateAstNode
         :node="node.rhs"
         :depth="depth"
+        @sourceNodeClicked="sourceNodeClicked"
     />)
   </span>
   <span :id="nodeID" v-else-if="isAnd">and(<UiIntermediateAstNode
       :node="node.lhs"
       :depth="depth"
+      @sourceNodeClicked="sourceNodeClicked"
   />,
     <UiIntermediateAstNode
         :node="node.rhs"
@@ -284,24 +314,29 @@ export default defineComponent({
   <span :id="nodeID" v-else-if="isEqualTo">eq(<UiIntermediateAstNode
       :node="node.lhs"
       :depth="depth"
+      @sourceNodeClicked="sourceNodeClicked"
   />,
     <UiIntermediateAstNode
         :node="node.rhs"
         :depth="depth"
+        @sourceNodeClicked="sourceNodeClicked"
     />)
   </span>
   <span :id="nodeID" v-else-if="isGreaterThan">gt(<UiIntermediateAstNode
       :node="node.lhs"
       :depth="depth"
+      @sourceNodeClicked="sourceNodeClicked"
   />,
     <UiIntermediateAstNode
         :node="node.rhs"
         :depth="depth"
+        @sourceNodeClicked="sourceNodeClicked"
     />)
   </span>
   <span :id="nodeID" v-else-if="isGreaterThanOrEqualTo">gte(<UiIntermediateAstNode
       :node="node.lhs"
       :depth="depth"
+      @sourceNodeClicked="sourceNodeClicked"
   />,
     <UiIntermediateAstNode
         :node="node.rhs"
@@ -311,71 +346,86 @@ export default defineComponent({
   <span :id="nodeID" v-else-if="isLessThan">lt(<UiIntermediateAstNode
       :node="node.lhs"
       :depth="depth"
+      @sourceNodeClicked="sourceNodeClicked"
   />,
     <UiIntermediateAstNode
         :node="node.rhs"
         :depth="depth"
+        @sourceNodeClicked="sourceNodeClicked"
     />)
   </span>
   <span :id="nodeID" v-else-if="isLessThanOrEqualTo">lte(<UiIntermediateAstNode
       :node="node.lhs"
       :depth="depth"
+      @sourceNodeClicked="sourceNodeClicked"
   />,
     <UiIntermediateAstNode
         :node="node.rhs"
         :depth="depth"
+        @sourceNodeClicked="sourceNodeClicked"
     />)
   </span>
   <span :id="nodeID" v-else-if="isAdd">(<UiIntermediateAstNode
       :node="node.lhs"
       :depth="depth"
+      @sourceNodeClicked="sourceNodeClicked"
   /> +
     <UiIntermediateAstNode
         :node="node.rhs"
         :depth="depth"
+        @sourceNodeClicked="sourceNodeClicked"
     />)
   </span>
   <span :id="nodeID" v-else-if="isSubtract">(<UiIntermediateAstNode
       :node="node.minuend"
       :depth="depth"
+      @sourceNodeClicked="sourceNodeClicked"
   /> -
     <UiIntermediateAstNode
         :node="node.subtrahend"
         :depth="depth"
+        @sourceNodeClicked="sourceNodeClicked"
     />)
   </span>
   <span :id="nodeID" v-else-if="isMultiply">(<UiIntermediateAstNode
       :node="node.lhs"
       :depth="depth"
+      @sourceNodeClicked="sourceNodeClicked"
   /> *
     <UiIntermediateAstNode
         :node="node.rhs"
         :depth="depth"
+        @sourceNodeClicked="sourceNodeClicked"
     />)
   </span>
   <span :id="nodeID" v-else-if="isDivide">(<UiIntermediateAstNode
       :node="node.dividend"
       :depth="depth"
+      @sourceNodeClicked="sourceNodeClicked"
   /> /
     <UiIntermediateAstNode
         :node="node.divisor"
         :depth="depth"
+        @sourceNodeClicked="sourceNodeClicked"
     />)
   </span>
   <span :id="nodeID" v-else-if="isNegative">(-
     <UiIntermediateAstNode
         :node="node.divisor"
         :depth="depth"
+        @sourceNodeClicked="sourceNodeClicked"
     />)
   </span>
   <span :id="nodeID" v-else-if="isExponent">(
     <UiIntermediateAstNode
         :node="node.basis"
         :depth="depth"
+        @sourceNodeClicked="sourceNodeClicked"
     /> ^
     <UiIntermediateAstNode
         :node="node.exponent"
         :depth="depth"
+        @sourceNodeClicked="sourceNodeClicked"
     />
     )
   </span>
@@ -392,16 +442,19 @@ export default defineComponent({
     <UiIntermediateAstNode
         :node="node.condition"
         :depth="depth"
+        @sourceNodeClicked="sourceNodeClicked"
     />
     )
     <UiIntermediateAstNode
         :node="node.ifThenBlock"
         :depth="depth"
+        @sourceNodeClicked="sourceNodeClicked"
     />
     {{ indent }}else
     <UiIntermediateAstNode
         :node="node.ifElseBlock"
         :depth="depth"
+        @sourceNodeClicked="sourceNodeClicked"
     />
   </div>
   <div :id="nodeID" v-else-if="isLoop">
@@ -409,11 +462,13 @@ export default defineComponent({
     <UiIntermediateAstNode
         :node="node.terminateCondition"
         :depth="depth"
+        @sourceNodeClicked="sourceNodeClicked"
     />
     )
     <UiIntermediateAstNode
         :node="node.body"
         :depth="depth"
+        @sourceNodeClicked="sourceNodeClicked"
     />
   </div>
   <div :id="nodeID" v-else-if="isListIteration">
@@ -421,11 +476,13 @@ export default defineComponent({
     <UiIntermediateAstNode
         :node="node.iterable"
         :depth="depth"
+        @sourceNodeClicked="sourceNodeClicked"
     />
     )
     <UiIntermediateAstNode
         :node="node.body"
         :depth="depth"
+        @sourceNodeClicked="sourceNodeClicked"
     />
   </div>
   <span :id="nodeID" v-else :class="{ast_TOP: isTop, ast_BOTTOM: isBottom}">({{ node.nodeType }}
@@ -434,6 +491,7 @@ export default defineComponent({
         :key="child.id"
         :node="child"
         :depth="nextLevel"
+        @sourceNodeClicked="sourceNodeClicked"
     />
   </span>
 </template>
