@@ -238,7 +238,8 @@ export default defineComponent({
     ...
     )
   </div>
-  <div :id="nodeID" v-else-if="isSet">
+  <div :id="nodeID" v-else-if="isSet"
+       @click="sourceElementClicked(node)">
     {{ indent }}set(
     <UiIntermediateAstNode
         :node="node.destination"
@@ -265,7 +266,8 @@ export default defineComponent({
     )
     </span>
   </div>
-  <span :id="nodeID" v-else-if="isJumpIf">
+  <span :id="nodeID" v-else-if="isJumpIf"
+        @click="sourceElementClicked(node)">
     jumpIf(
     {{ indent }}<UiIntermediateAstNode
       :node="node.destination"
