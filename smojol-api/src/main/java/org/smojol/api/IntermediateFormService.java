@@ -9,6 +9,7 @@ import org.jooq.*;
 import org.smojol.api.contract.IntermediateASTListing;
 import org.smojol.api.contract.IntermediateCFGListing;
 import org.smojol.api.contract.ProjectListing;
+import org.smojol.common.transpiler.TranspilerNode;
 
 import java.util.List;
 import java.util.Map;
@@ -21,10 +22,15 @@ import java.util.stream.Stream;
 import static org.jooq.impl.DSL.field;
 import static org.jooq.impl.DSL.table;
 
-public class IntermediateASTService {
+public class IntermediateFormService {
+    private final Gson gson;
     Table<Record> IR_AST = table("IR_AST");
     Table<Record> IR_CFG = table("IR_CFG");
     Table<Record> PROJECT = table("PROJECT");
+
+    public IntermediateFormService(Gson gson) {
+        this.gson = gson;
+    }
 
     Map<String, List<Map<String, String>>> intermediateASTListingsByProject2(DSLContext using) {
         Result<Record4<String, String, Integer, Integer>> allIntermediateASTs = using
@@ -83,19 +89,37 @@ public class IntermediateASTService {
     }
 
     public Optional<Map<String, Object>> intermediateAST(int id, DSLContext using) {
-        Gson gson = new Gson();
         @NotNull Result<Record2<Integer, String>> ast = using.select(field("id", Integer.class), field("IR_AST", String.class)).from(IR_AST).where(field("ID", Integer.class).eq(id)).fetch();
         if (ast.isEmpty()) return Optional.empty();
         return Optional.of(ImmutableMap.of("id", id, "ast", gson.fromJson(ast.getFirst().component2(), JsonObject.class)));
     }
 
     public Optional<Map<String, Object>> intermediateCFG(int id, DSLContext using) {
-        Gson gson = new Gson();
         @NotNull Result<Record2<Integer, String>> ast = using.select(field("id", Integer.class), field("IR_CFG", String.class))
                 .from(IR_CFG)
                 .where(field("ID", Integer.class).eq(id))
                 .fetch();
         if (ast.isEmpty()) return Optional.empty();
         return Optional.of(ImmutableMap.of("id", id, "cfg", gson.fromJson(ast.getFirst().component2(), JsonObject.class)));
+    }
+
+    public long insertIntermediateAST(TranspilerNode tree, String programName, long projectID, DSLContext using) {
+        return using.insertInto(table("IR_AST"))
+                .columns(field("PROGRAM_NAME"), field("PROJECT_ID"),
+                        field("IR_AST"))
+                .values(programName, projectID, gson.toJson(tree))
+                .returningResult(field("ID", Long.class))
+                .fetchOne()
+                .into(Long.class);
+    }
+
+    public long insertIntermediateCFG(Map<String, Set<?>> irCFGForDB, String programName, long projectID, DSLContext using) {
+        return using.insertInto(table("IR_CFG"))
+                .columns(field("PROGRAM_NAME"), field("PROJECT_ID"),
+                        field("IR_CFG"))
+                .values(programName, projectID, this.gson.toJson(irCFGForDB))
+                .returningResult(field("ID", Long.class))
+                .fetchOne()
+                .into(Long.class);
     }
 }

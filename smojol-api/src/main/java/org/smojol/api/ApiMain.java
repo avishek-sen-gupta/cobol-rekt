@@ -52,10 +52,10 @@ public class ApiMain {
         ConnectionBuilder connectionBuilder = new ConnectionBuilder(System.getenv("DATABASE_URL"),
                 System.getenv("DATABASE_USER"),
                 System.getenv("DATABASE_PASSWORD"));
-        runServer(7070, gsonMapper, connectionBuilder);
+        runServer(7070, gsonMapper, connectionBuilder, gson);
     }
 
-    private static void runServer(int port, JsonMapper gsonMapper, ConnectionBuilder connectionBuilder) {
+    private static void runServer(int port, JsonMapper gsonMapper, ConnectionBuilder connectionBuilder, Gson gson) {
         Javalin.create(config -> {
                     config.jsonMapper(gsonMapper);
                     config.staticFiles.add("/static/dist");
@@ -63,7 +63,7 @@ public class ApiMain {
                 })
                 .get("/api/heartbeat", ctx -> ctx.result("Hello World!"))
                 .get("/api/ir-ast/{id}", ctx -> {
-                    Optional<Map<String, Object>> ast = irAST(ctx.pathParam("id"), connectionBuilder);
+                    Optional<Map<String, Object>> ast = irAST(ctx.pathParam("id"), connectionBuilder, gson);
                     if (ast.isEmpty()) {
                         ctx.status(404);
                         return;
@@ -71,21 +71,21 @@ public class ApiMain {
                     ctx.json(ast.get());
                 })
                 .get("/api/ir-cfg/{id}", ctx -> {
-                    Optional<Map<String, Object>> cfg = irCFG(ctx.pathParam("id"), connectionBuilder);
+                    Optional<Map<String, Object>> cfg = irCFG(ctx.pathParam("id"), connectionBuilder, gson);
                     if (cfg.isEmpty()) {
                         ctx.status(404);
                         return;
                     }
                     ctx.json(cfg.get());
                 })
-                .get("/api/projects", ctx -> ctx.json(projectListings(connectionBuilder)))
+                .get("/api/projects", ctx -> ctx.json(projectListings(connectionBuilder, gson)))
                 .start(port);
     }
 
-    private static Optional<Map<String, Object>> irCFG(String id, ConnectionBuilder connectionBuilder) throws SQLException {
+    private static Optional<Map<String, Object>> irCFG(String id, ConnectionBuilder connectionBuilder, Gson gson) throws SQLException {
         try (Connection conn = connectionBuilder.getConnection()) {
             DSLContext using = DSL.using(conn, SQLDialect.SQLITE);
-            return new IntermediateASTService().intermediateCFG(Integer.parseInt(id), using);
+            return new IntermediateFormService(gson).intermediateCFG(Integer.parseInt(id), using);
         }
     }
 
@@ -107,17 +107,17 @@ public class ApiMain {
         return gsonMapper;
     }
 
-    private static List<ProjectListing> projectListings(ConnectionBuilder connectionBuilder) throws SQLException {
+    private static List<ProjectListing> projectListings(ConnectionBuilder connectionBuilder, Gson gson) throws SQLException {
         try (Connection conn = connectionBuilder.getConnection()) {
             DSLContext using = DSL.using(conn, SQLDialect.SQLITE);
-            return new IntermediateASTService().allProjectEntities(using);
+            return new IntermediateFormService(gson).allProjectEntities(using);
         }
     }
 
-    private static Optional<Map<String, Object>> irAST(String id, ConnectionBuilder connectionBuilder) throws SQLException {
+    private static Optional<Map<String, Object>> irAST(String id, ConnectionBuilder connectionBuilder, Gson gson) throws SQLException {
         try (Connection conn = connectionBuilder.getConnection()) {
             DSLContext using = DSL.using(conn, SQLDialect.SQLITE);
-            return new IntermediateASTService().intermediateAST(Integer.parseInt(id), using);
+            return new IntermediateFormService(gson).intermediateAST(Integer.parseInt(id), using);
         }
     }
 

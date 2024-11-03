@@ -1,14 +1,15 @@
-package org.smojol.toolkit.examples;
+package org.smojol.api.pipeline;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.nio.json.JSONExporter;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
+import org.smojol.api.IntermediateFormService;
+import org.smojol.api.ProjectService;
 import org.smojol.common.dialect.LanguageDialect;
 import org.smojol.common.flowchart.FlowchartOutputFormat;
 import org.smojol.common.id.UUIDProvider;
@@ -29,7 +30,6 @@ import org.smojol.toolkit.task.CommandLineAnalysisTask;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -38,8 +38,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import static org.jooq.impl.DSL.field;
-import static org.jooq.impl.DSL.table;
 import static org.smojol.toolkit.task.CommandLineAnalysisTask.BUILD_BASE_ANALYSIS;
 
 public class BackendPipelineMain {
@@ -63,24 +61,20 @@ public class BackendPipelineMain {
         String url = System.getenv("DATABASE_URL");
         String user = System.getenv("DATABASE_USER");
         String password = System.getenv("DATABASE_PASSWORD");
+        IntermediateFormService intermediateFormService = new IntermediateFormService(gson);
+        ProjectService projectService = new ProjectService();
         try (Connection conn = DriverManager.getConnection(url, user, password)) {
-            DSLContext using = DSL.using(conn, SQLDialect.MYSQL);
+            DSLContext using = DSL.using(conn, SQLDialect.SQLITE);
             String projectName = UUID.randomUUID().toString();
-            using.insertInto(table("PROJECT"))
-                    .columns(field("NAME"))
-                    .values(projectName).execute();
-            List<Integer> where = using.select(field("ID")).from(table("PROJECT")).where(field("NAME").eq(projectName)).fetchInto(Integer.class);
-//            JumpIfTranspilerNode transpilerNode = new JumpIfTranspilerNode(new NamedLocationNode("ABCD"), new EqualToNode(new ValueOfNode(new SymbolReferenceNode("A")), new PrimitiveValueTranspilerNode(TypedRecord.typedNumber(10))));
-            using.insertInto(table("IR_AST"))
-                    .columns(field("PROGRAM_NAME"), field("PROJECT_ID"),
-                            field("IR_AST"))
-                    .values(programName, where.getFirst(), gson.toJson(tree)).execute();
-            using.insertInto(table("IR_CFG"))
-                    .columns(field("PROGRAM_NAME"), field("PROJECT_ID"),
-                            field("IR_CFG"))
-                    .values(programName, where.getFirst(), gson.toJson(irCFGForDB)).execute();
-
+            long projectID = projectService.insertProject(projectName, using);
+            long irAstID = intermediateFormService.insertIntermediateAST(tree, programName, projectID, using);
+            long irCfgID = intermediateFormService.insertIntermediateCFG(irCFGForDB, programName, projectID, using);
+            System.out.println(projectID);
+            System.out.println(irAstID);
+            System.out.println(irCfgID);
         }
         System.out.println("DONE");
     }
+
+
 }
