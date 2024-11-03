@@ -151,7 +151,7 @@ export default defineComponent({
         indent() {
           return "  ".repeat(this.depth);
         },
-        blockBackgroundColour() {
+        codeElementClass() {
           const depth = this.depth + 1;
           return {
             backgroundColor: `rgb(${255 - depth * 25}, ${255 - depth * 15}, ${255 - depth * 10})`,
@@ -164,7 +164,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div :id="nodeID" v-if="isLabelledCodeBlock" :style="blockBackgroundColour">
+  <div :id="nodeID" v-if="isLabelledCodeBlock" :style="codeElementClass">
     <div>{{ indent }}{ <span class="block-name">{{ this.node.name }}</span></div>
     <UiIntermediateAstNode
         v-for="child in node.childTranspilerNodes"
@@ -175,7 +175,7 @@ export default defineComponent({
     />
     <div>{{ indent }}}</div>
   </div>
-  <div :id="nodeID" v-else-if="isCodeBlock" :style="blockBackgroundColour">
+  <div :id="nodeID" v-else-if="isCodeBlock" :style="codeElementClass">
     <div>{{ indent }}{</div>
     <UiIntermediateAstNode
         v-for="child in node.childTranspilerNodes"
@@ -186,7 +186,7 @@ export default defineComponent({
     />
     <div>{{ indent }}}</div>
   </div>
-  <div :id="nodeID" v-else-if="isDetachedCodeBlock" :style="blockBackgroundColour">
+  <div :id="nodeID" v-else-if="isDetachedCodeBlock" :style="codeElementClass">
     <div>{{ indent }}{</div>
     <UiIntermediateAstNode
         v-for="child in node.childTranspilerNodes"

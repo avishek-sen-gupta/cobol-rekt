@@ -79,7 +79,7 @@ a {
 #project-listing-details {
   height: 100%;
   background-color: azure;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .refresh-button {

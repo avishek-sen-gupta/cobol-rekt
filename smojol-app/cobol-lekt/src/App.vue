@@ -91,24 +91,18 @@ export default {
   <div id="top-panel">
     <img alt="Cobol-REKT logo" src="./assets/cobol-rekt-banner.png" style="width: 30%; height: auto">
     <div class="functions">
-<!--      <button class="mdl-button mdl-js-button mdl-button&#45;&#45;raised mdl-js-ripple-effect mdl-button&#45;&#45;accent">-->
-<!--        Test Button-->
-<!--      </button>-->
-<!--      <button class="mdl-button mdl-js-button mdl-button&#45;&#45;fab mdl-button&#45;&#45;colored">-->
-<!--        <i class="material-icons">add</i>-->
-<!--      </button>-->
-      <button @click="testPing" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored wrapped-text">Test Ping</button>
-      <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored wrapped-text">Flowchart</button>
-      <button @click="getIR" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored wrapped-text">Intermediate Representation</button>
-      <button @click="getCFG" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored wrapped-text">Control Flowgraph</button>
-      <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored wrapped-text">Capability Mapping</button>
-      <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored wrapped-text">Node Summarisation</button>
-      <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored wrapped-text">T1/T2 Reducibility</button>
-      <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored wrapped-text">Strongly Connected Components</button>
-      <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored wrapped-text">Loop Bodies</button>
-      <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored wrapped-text">Trace Dependencies</button>
-      <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored wrapped-text">Code Patterns</button>
-      <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored wrapped-text">Eliminate GO TOs</button>
+      <button @click="testPing" class="wrapped-text">Test Ping</button>
+      <button class="wrapped-text">Flowchart</button>
+      <button @click="getIR" class="wrapped-text">Intermediate Form</button>
+      <button @click="getCFG" class="wrapped-text">Control Flowgraph</button>
+      <button class="wrapped-text">Capability Mapping</button>
+      <button class="wrapped-text">Node Summarisation</button>
+      <button class="wrapped-text">T1/T2 Reducibility</button>
+      <button class="wrapped-text">SCCs</button>
+      <button class="wrapped-text">Loop Bodies</button>
+      <button class="wrapped-text">Trace Dependencies</button>
+      <button class="wrapped-text">Code Patterns</button>
+      <button class="wrapped-text">Eliminate GO TOs</button>
     </div>
   </div>
 
@@ -155,11 +149,11 @@ export default {
 
 .code-pane {
   height: 100%;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 #node-details {
-  overflow-y: scroll;
+  overflow-y: auto;
   background-color: azure;
 }
 
@@ -186,19 +180,48 @@ export default {
 .pane-heading {
   font-size: 1.17em;
   font-weight: bold;
-  background-color: darkblue;
+  background-color: #5b6e83;
   color: white;
   padding-left: 10px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
 }
 
 .headered-pane {
-  border: 1px solid darkslateblue;
+  border: 1px solid #c3d2e7;
   display: flex;
   flex-flow: column nowrap;
+  border-radius: 10px;
+  overflow: hidden;
 }
 
 .wrapped-text {
-  font-size: 12px;
-  overflow-x: hidden !important;
+  background-color: #5b6e83;
+  border-radius: 8px;
+  border-style: none;
+  box-sizing: border-box;
+  color: #FFFFFF;
+  cursor: pointer;
+  display: inline-block;
+  font-family: "Haas Grot Text R Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  height: 40px;
+  list-style: none;
+  margin: 0;
+  outline: none;
+  padding: 10px 16px;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  transition: color 100ms;
+  vertical-align: baseline;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.wrapped-text:hover {
+  background-color: #42b983;
 }
 </style>
