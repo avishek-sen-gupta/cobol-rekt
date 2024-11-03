@@ -225,14 +225,14 @@ export default defineComponent({
     />
     )
   </span>
-  <div :id="nodeID" v-else-if="isPrint">
+  <div :id="nodeID" v-else-if="isPrint"
+       @click="sourceElementClicked(node)">
     {{ indent }}print(
     <UiIntermediateAstNode
         v-for="child in node.operands"
         :key="child.id"
         :node="child"
         :depth="depth"
-        @click="sourceElementClicked(node)"
         @sourceNodeClicked="sourceNodeClicked"
     />
     ...

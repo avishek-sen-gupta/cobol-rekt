@@ -38,23 +38,29 @@ export default {
       <img id="refresh-projects" alt="Refresh" src="../assets/icons8-refresh-50.png" @click="getProjectListing"
            class="refresh-button"/>
     </div>
-    <div id="project-listing-details">
+    <div id="project-listing-details" class="clt">
       <ul>
         <li v-for="project in projectListing"
             :key="project.projectID">
           Project ID: {{ project.projectID }}
           <ul>
-            <li v-for="iast in project.astListings"
-                :key="iast.astID"
-                @click="loadIntermediateAST(iast.astID)">
-              <strong>I-AST</strong>: {{ iast.programName }} / {{ iast.astID }}
+            <li><strong>AST</strong>
+              <ul>
+                <li v-for="iast in project.astListings"
+                    :key="iast.astID"
+                    @click="loadIntermediateAST(iast.astID)">
+                  {{ iast.programName }} / {{ iast.astID }}
+                </li>
+              </ul>
             </li>
-          </ul>
-          <ul>
-            <li v-for="icfg in project.cfgListings"
-                :key="icfg.cfgID"
-                @click="loadIntermediateCFG(icfg.cfgID)">
-              <strong>I-CFG</strong>: {{ icfg.programName }} / {{ icfg.cfgID }}
+            <li><strong>CFG</strong>
+              <ul>
+                <li v-for="icfg in project.cfgListings"
+                    :key="icfg.cfgID"
+                    @click="loadIntermediateCFG(icfg.cfgID)">
+                  {{ icfg.programName }} / {{ icfg.cfgID }}
+                </li>
+              </ul>
             </li>
           </ul>
         </li>
@@ -89,5 +95,38 @@ a {
 
 .refresh-button:active {
   transform: scale(0.9); /* Scale down slightly on click */
+}
+
+.clt, .clt ul, .clt li {
+  position: relative;
+}
+
+.clt ul {
+  list-style: none;
+  padding-left: 32px;
+}
+
+.clt li::before, .clt li::after {
+  content: "";
+  position: absolute;
+  left: -12px;
+}
+
+.clt li::before {
+  border-top: 1px solid #000;
+  top: 9px;
+  width: 8px;
+  height: 0;
+}
+
+.clt li::after {
+  border-left: 1px solid #000;
+  height: 100%;
+  width: 0px;
+  top: 2px;
+}
+
+.clt ul > li:last-child::after {
+  height: 8px;
 }
 </style>

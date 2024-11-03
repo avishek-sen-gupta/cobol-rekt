@@ -1053,6 +1053,8 @@ This is a list of algorithms written from scratch, for reference or reuse. All o
     - [Enterprise Cobol for Z/OS 6.4 - Language Reference](https://publibfp.dhe.ibm.com/epubs/pdf/igy6lr40.pdf)
 - Graph Theory
     - [Reducible Flowgraphs 0](https://rgrig.blogspot.com/2009/10/dtfloatleftclearleft-summary-of-some.html)
+- UI
+  - [Draw a Tree Structure With Only CSS](https://entropicthoughts.com/draw-a-tree-structure-with-only-css)
 
 The rest of this file is mostly technical notes for my personal documentation.
 
