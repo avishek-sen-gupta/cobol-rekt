@@ -73,15 +73,12 @@ public class ApiMain {
                     ctx.json(ast.get());
                 })
                 .get("/api/ir-cfg/{id}", ctx -> {
-//                    Optional<Map<String, Object>> cfg = irCFG(ctx.pathParam("id"), connectionBuilder);
-//                    if (cfg.isEmpty()) {
-//                        ctx.status(404);
-//                        return;
-//                    }
-//                    ctx.json(cfg.get());
-                    Graph<TranspilerInstruction, DefaultEdge> cfg = flowgraph();
-                    Set<TranspilerInstruction> instructions = cfg.vertexSet();
-                    ctx.json(ImmutableMap.of("cfg", ImmutableMap.of("nodes", instructions, "edges", cfg.edgeSet())));
+                    Optional<Map<String, Object>> cfg = irCFG(ctx.pathParam("id"), connectionBuilder);
+                    if (cfg.isEmpty()) {
+                        ctx.status(404);
+                        return;
+                    }
+                    ctx.json(cfg.get());
                 })
                 .get("/api/projects", ctx -> ctx.json(projectListings(connectionBuilder)))
                 .start(port);
