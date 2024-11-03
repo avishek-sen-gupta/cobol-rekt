@@ -91,18 +91,24 @@ export default {
   <div id="top-panel">
     <img alt="Cobol-REKT logo" src="./assets/cobol-rekt-banner.png" style="width: 30%; height: auto">
     <div class="functions">
-      <button @click="testPing">Test Ping</button>
-      <button>Flowchart</button>
-      <button @click="getIR">Intermediate Representation</button>
-      <button @click="getCFG">Control Flowgraph</button>
-      <button>Capability Mapping</button>
-      <button>Node Summarisation</button>
-      <button>T1/T2 Reducibility</button>
-      <button>Strongly Connected Components</button>
-      <button>Identify Loop Bodies</button>
-      <button>Trace Program Dependencies</button>
-      <button>Code Patterns</button>
-      <button>Eliminate GO TOs</button>
+<!--      <button class="mdl-button mdl-js-button mdl-button&#45;&#45;raised mdl-js-ripple-effect mdl-button&#45;&#45;accent">-->
+<!--        Test Button-->
+<!--      </button>-->
+<!--      <button class="mdl-button mdl-js-button mdl-button&#45;&#45;fab mdl-button&#45;&#45;colored">-->
+<!--        <i class="material-icons">add</i>-->
+<!--      </button>-->
+      <button @click="testPing" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored wrapped-text">Test Ping</button>
+      <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored wrapped-text">Flowchart</button>
+      <button @click="getIR" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored wrapped-text">Intermediate Representation</button>
+      <button @click="getCFG" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored wrapped-text">Control Flowgraph</button>
+      <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored wrapped-text">Capability Mapping</button>
+      <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored wrapped-text">Node Summarisation</button>
+      <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored wrapped-text">T1/T2 Reducibility</button>
+      <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored wrapped-text">Strongly Connected Components</button>
+      <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored wrapped-text">Loop Bodies</button>
+      <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored wrapped-text">Trace Dependencies</button>
+      <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored wrapped-text">Code Patterns</button>
+      <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored wrapped-text">Eliminate GO TOs</button>
     </div>
   </div>
 
@@ -189,5 +195,10 @@ export default {
   border: 1px solid darkslateblue;
   display: flex;
   flex-flow: column nowrap;
+}
+
+.wrapped-text {
+  font-size: 12px;
+  overflow-x: hidden !important;
 }
 </style>
