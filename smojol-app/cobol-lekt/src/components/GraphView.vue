@@ -31,23 +31,25 @@ export default defineComponent({
       mounted() {
         // this.buildGraph();
       },
-      computed: {
-        refreshedCenterComponent() {
-          console.log("RECOMPUTING...");
-          return this.centerNode;
-        }
-      },
-      watch: {
+  watch: {
         treeModel(newValue: TreeModelNode) {
           this.buildGraph(asCytoscapeTree(newValue, TranspilerNodeChildrenAccess));
         },
         digraphModel(newValue: Digraph) {
           this.buildGraph(asCytoscapeDigraph(newValue));
         },
-        centerNode(newValue: MutableCenter) {
+        centerNode(newValue: MutableCenter, oldValue: MutableCenter | null) {
+          console.log(oldValue);
           if (this.cy === null) return;
           const elementById = this.cy.getElementById(newValue.id);
+          if (oldValue !== null) {
+            const oldElementById = this.cy.getElementById(oldValue.id);
+            oldElementById.unselect();
+          }
+
           this.cy.center(elementById);
+          elementById.select();
+          // elementById.flashClass("flashingnode", 3000);
         }
       },
       methods: {
@@ -60,8 +62,23 @@ export default defineComponent({
               {
                 selector: 'node',
                 style: {
-                  'background-color': '#075',
-                  'label': 'data(id)'
+                  'background-color': "purple",
+                  'label': 'data(id)',
+                  "transition-property": "background-color",
+                  'transition-duration': 500,
+                  "transition-timing-function": "ease-in-out",
+                }
+              },
+              {
+                selector: 'node:selected',
+                style: {
+                  "border-color": "red",
+                  "border-width": "2px",
+                  'background-color': 'yellow',
+                  'label': 'data(id)',
+                  "transition-property": "background-color",
+                  'transition-duration': 500,
+                  "transition-timing-function": "ease-in-out",
                 }
               },
               {
@@ -108,4 +125,9 @@ export default defineComponent({
   height: 100%;
   background-color: azure;
 }
+
+.flashingnode {
+  border: 3px solid red;
+  background-color: yellow;
+  transition: background-color 3s ease;}
 </style>
