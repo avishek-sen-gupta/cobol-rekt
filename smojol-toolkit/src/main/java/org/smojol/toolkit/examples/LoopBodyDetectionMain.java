@@ -42,7 +42,7 @@ public class LoopBodyDetectionMain {
         TranspilerFlowgraph transpilerFlowgraph = ((AnalysisTaskResultOK) results.get(1)).getDetail();
         PruneUnreachableTask.pruneUnreachableInstructions(transpilerFlowgraph);
         LoopBodyDetectionTask<TranspilerInstruction, DefaultEdge> loopBodyDetectionTask = new LoopBodyDetectionTask<>(transpilerFlowgraph.instructions().getFirst(), transpilerFlowgraph.instructionFlowgraph(), DefaultEdge.class, CloneEdgeOperation::cloneEdge);
-        Pair<Set<NaturalLoopBody<TranspilerInstruction>>, Set<Set<TranspilerInstruction>>> run = loopBodyDetectionTask.run();
+        Pair<Set<NaturalLoopBody<TranspilerInstruction>>, Set<NaturalLoopBody<TranspilerInstruction>>> run = loopBodyDetectionTask.run();
         System.out.println("DONE");
     }
 }

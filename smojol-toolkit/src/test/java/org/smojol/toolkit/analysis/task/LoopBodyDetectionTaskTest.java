@@ -62,9 +62,9 @@ public class LoopBodyDetectionTaskTest {
         graph.addEdge(v5, v6);
 
         LoopBodyDetectionTask<TestNode, DefaultEdge> task = new LoopBodyDetectionTask<>(v0, graph, DefaultEdge.class, CloneEdgeOperation::cloneEdge);
-        Pair<Set<NaturalLoopBody<TestNode>>, Set<Set<TestNode>>> loopBodies = task.run();
+        Pair<Set<NaturalLoopBody<TestNode>>, Set<NaturalLoopBody<TestNode>>> loopBodies = task.run();
         Set<Set<TestNode>> justReducibleLoopBodies = loopBodies.getLeft().stream().map(NaturalLoopBody::loopNodes).collect(Collectors.toUnmodifiableSet());
-        Set<Set<TestNode>> irreducibleLoopBodies = loopBodies.getRight();
+        Set<Set<TestNode>> irreducibleLoopBodies = loopBodies.getRight().stream().map(NaturalLoopBody::loopNodes).collect(Collectors.toUnmodifiableSet());
         assertEquals(2, loopBodies.getLeft().size());
         assertEquals(1, irreducibleLoopBodies.size());
         assertTrue(justReducibleLoopBodies.contains(ImmutableSet.of(n("1"), n("2"), n("3")))
@@ -91,9 +91,9 @@ public class LoopBodyDetectionTaskTest {
         graph.addEdge(v2, v1);
 
         LoopBodyDetectionTask<TestNode, DefaultEdge> task = new LoopBodyDetectionTask<>(v0, graph, DefaultEdge.class, CloneEdgeOperation::cloneEdge);
-        Pair<Set<NaturalLoopBody<TestNode>>, Set<Set<TestNode>>> loopBodies = task.run();
+        Pair<Set<NaturalLoopBody<TestNode>>, Set<NaturalLoopBody<TestNode>>> loopBodies = task.run();
         Set<NaturalLoopBody<TestNode>> reducibleLoopBodies = loopBodies.getLeft();
-        Set<Set<TestNode>> irreducibleLoopBodies = loopBodies.getRight();
+        Set<Set<TestNode>> irreducibleLoopBodies = loopBodies.getRight().stream().map(NaturalLoopBody::loopNodes).collect(Collectors.toUnmodifiableSet());
         assertEquals(0, reducibleLoopBodies.size());
         assertEquals(1, irreducibleLoopBodies.size());
         assertTrue(irreducibleLoopBodies.contains(ImmutableSet.of(n("1"), n("2"))));
