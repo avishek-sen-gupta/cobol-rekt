@@ -71,6 +71,7 @@ You can see the current backlog [here](https://github.com/users/avishek-sen-gupt
 - [Caveats](#caveats)
 - [Known Issues](#known-issues)
 - [References](#references)
+- [Demo App Setup(WIP)](#demo-app-setup-wip)
 
 ## Introduction
 Cobol-REKT is a continually evolving, actively maintained collection of capabilities helpful for reverse engineering legacy Cobol code. The following is a representative list of the capabilities currently available:
@@ -1058,13 +1059,14 @@ This is a list of algorithms written from scratch, for reference or reuse. All o
 - UI
   - [Draw a Tree Structure With Only CSS](https://entropicthoughts.com/draw-a-tree-structure-with-only-css)
 
-## Demo App Setup
+## Demo App Setup (WIP)
 
 You will need the following set up on your local machine.
 
 - SQLite for the database
 - Flyway for DB migrations
 - NodeJS with ```npm```
+
 
 ### DB setup
 
@@ -1075,34 +1077,40 @@ You will need the following set up on your local machine.
 ### Populating Data
 - You will need some data to be set up to actually see something in the app. You can run ```BackendPipelineMain``` to do this.
 
-### Run UI app server
+Depending upon if you are developing the app or packaging it for production, you can run one of the following steps.
 
-If you are deploying the UI to be served by the API itself, run:
-
-```
-scripts/build-app.sh
-```
-
-and [start the API server](#start-the-api-server), skipping the rest of this section.
+### Deploy app for development
 
 To run the app locally in development mode, go to ```smojol-app/cobol-lekt``` and run ```npm run serve```. This should start the app server (8080 by default).
 
-### Start the API server
+Then, run ```mvn clean verify -Dmaven.test.skip``` as described in [How to Build](#how-to-build).
 
-Run:
+Finally, start the API server (starts on port 7070):
 
 ```
 DATABASE_URL=jdbc:sqlite:/path/to/db/file DATABASE_USER="<db_user>" DATABASE_PASSWORD="<db-password>" java -jar smojol-api/target/smojol-api.jar
 ```
 
-The API server currently starts on port 7070.
+The development server proxies calls to ```api/*``` to ```localhost:7070```, thus bypassing CORS restrictions.
 
+### Deploy for production
 
-[TODO]
+If you are deploying the UI to be served by the API itself, run:
 
-### Test it out!
+```
+scripts/build-all.sh
+```
 
-[TODO]
+Start the API server (starts on port 7070):
+
+```
+DATABASE_URL=jdbc:sqlite:/path/to/db/file DATABASE_USER="<db_user>" DATABASE_PASSWORD="<db-password>" java -jar smojol-api/target/smojol-api.jar
+```
+
+## Test it out!
+
+Hit ```localhost:7070```, and you should see the app.
+
 
 The rest of this file is mostly technical notes for my personal documentation.
 
