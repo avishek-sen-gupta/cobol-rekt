@@ -31,7 +31,7 @@ public class DbContext {
         }
     }
 
-    public static @NotNull DbContext fromSystemEnv() {
+    public static DbContext fromSystemEnv() {
         return new DbContext(
                 System.getenv(DATABASE_URL),
                 System.getenv(DATABASE_USER),

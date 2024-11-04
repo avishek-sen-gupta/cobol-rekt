@@ -3,7 +3,6 @@ package org.smojol.api;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import org.jetbrains.annotations.NotNull;
 import org.jooq.Record;
 import org.jooq.*;
 import org.smojol.api.contract.IntermediateASTListing;
@@ -89,13 +88,13 @@ public class IntermediateFormService {
     }
 
     public Optional<Map<String, Object>> intermediateAST(int id, DSLContext using) {
-        @NotNull Result<Record2<Integer, String>> ast = using.select(field("id", Integer.class), field("IR_AST", String.class)).from(IR_AST).where(field("ID", Integer.class).eq(id)).fetch();
+        Result<Record2<Integer, String>> ast = using.select(field("id", Integer.class), field("IR_AST", String.class)).from(IR_AST).where(field("ID", Integer.class).eq(id)).fetch();
         if (ast.isEmpty()) return Optional.empty();
         return Optional.of(ImmutableMap.of("id", id, "ast", gson.fromJson(ast.getFirst().component2(), JsonObject.class)));
     }
 
     public Optional<Map<String, Object>> intermediateCFG(int id, DSLContext using) {
-        @NotNull Result<Record2<Integer, String>> ast = using.select(field("id", Integer.class), field("IR_CFG", String.class))
+        Result<Record2<Integer, String>> ast = using.select(field("id", Integer.class), field("IR_CFG", String.class))
                 .from(IR_CFG)
                 .where(field("ID", Integer.class).eq(id))
                 .fetch();
