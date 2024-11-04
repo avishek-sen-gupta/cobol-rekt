@@ -13,11 +13,16 @@ import java.sql.SQLException;
 import static org.smojol.api.database.DbContext.fromSystemEnv;
 
 public class ApiMain {
+    public static final int DEFAULT_PORT = 7070;
+
     public static void main(String[] args) throws IOException, URISyntaxException, SQLException {
         Gson gson = new GsonBuilder().create();
         JsonMapper gsonMapper = getJsonMapper(gson);
         DbContext dbContext = fromSystemEnv();
-        new ApiServer().runServer(7070, gsonMapper, gson, dbContext);
+        String portString = System.getenv("PORT");
+
+        int port = portString == null ? DEFAULT_PORT : Integer.parseInt(portString);
+        new ApiServer().runServer(port, gsonMapper, gson, dbContext);
     }
 
     private static JsonMapper getJsonMapper(Gson gson) {

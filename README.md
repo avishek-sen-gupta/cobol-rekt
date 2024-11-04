@@ -1081,17 +1081,17 @@ Depending upon if you are developing the app or packaging it for production, you
 
 ### Deploy app for development
 
-To run the app locally in development mode, go to ```smojol-app/cobol-lekt``` and run ```npm run serve```. This should start the app server (8080 by default).
+Make sure that the app is already built as described in [How to Build](#how-to-build).
 
-Then, run ```mvn clean verify -Dmaven.test.skip``` as described in [How to Build](#how-to-build).
+To run the app locally in development mode, go to ```smojol-app/cobol-lekt``` and run ```npm run serve```. This should start the development server (8080 by default).
 
-Finally, start the API server (starts on port 7070):
+Finally, start the API server (starts on port 7070, if ```PORT``` is not specified):
 
 ```
-DATABASE_URL=jdbc:sqlite:/path/to/db/file DATABASE_USER="<db_user>" DATABASE_PASSWORD="<db-password>" java -jar smojol-api/target/smojol-api.jar
+PORT=<port> DATABASE_URL=jdbc:sqlite:/path/to/db/file DATABASE_USER="<db_user>" DATABASE_PASSWORD="<db-password>" java -jar smojol-api/target/smojol-api.jar
 ```
 
-The development server proxies calls to ```api/*``` to ```localhost:7070```, thus bypassing CORS restrictions.
+The development server proxies calls to ```api/*``` to ```localhost:<port>```, thus bypassing CORS restrictions.
 
 ### Deploy for production
 
@@ -1101,15 +1101,15 @@ If you are deploying the UI to be served by the API itself, run:
 scripts/build-all.sh
 ```
 
-Start the API server (starts on port 7070):
+Start the API server (starts on port 7070, if ```PORT``` is not specified):
 
 ```
-DATABASE_URL=jdbc:sqlite:/path/to/db/file DATABASE_USER="<db_user>" DATABASE_PASSWORD="<db-password>" java -jar smojol-api/target/smojol-api.jar
+PORT=<port> DATABASE_URL=jdbc:sqlite:/path/to/db/file DATABASE_USER="<db_user>" DATABASE_PASSWORD="<db-password>" java -jar smojol-api/target/smojol-api.jar
 ```
 
 ## Test it out!
 
-Hit ```localhost:7070```, and you should see the app.
+Hit ```localhost:<port>```, and you should see the app.
 
 
 The rest of this file is mostly technical notes for my personal documentation.

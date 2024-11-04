@@ -71,3 +71,5 @@ fileignoreconfig:
   checksum: 9a1890534ecbc051bc3866d7cec20611f9a9b800eb0f189c270c683d521aa3bd
 - filename: README.md
   checksum: 6da2c89d18f9096c1547cae26762d8a9ec2d808e80a58c411e3362a69c0779d6
+- filename: README.md
+  checksum: e3e0192e7f8a73434e40b2820d41a5ee15b9f5290e033f492bf49446a19ae56c
