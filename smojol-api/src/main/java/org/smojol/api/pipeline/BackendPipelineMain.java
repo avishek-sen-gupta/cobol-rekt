@@ -10,7 +10,7 @@ import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 import org.smojol.api.IntermediateFormService;
 import org.smojol.api.ProjectService;
-import org.smojol.api.database.ConnectionBuilder;
+import org.smojol.api.database.DbContext;
 import org.smojol.common.dialect.LanguageDialect;
 import org.smojol.common.flowchart.FlowchartOutputFormat;
 import org.smojol.common.id.UUIDProvider;
@@ -63,13 +63,20 @@ public class BackendPipelineMain {
         String user = System.getenv("DATABASE_USER");
         String password = System.getenv("DATABASE_PASSWORD");
 
-        org.smojol.api.database.ConnectionBuilder connectionBuilder = new ConnectionBuilder(System.getenv("DATABASE_URL"),
-                System.getenv("DATABASE_USER"),
-                System.getenv("DATABASE_PASSWORD"));
+        IntermediateFormService intermediateFormService = new IntermediateFormService(gson);
+        ProjectService projectService = new ProjectService();
 
-        IntermediateFormService intermediateFormService = new IntermediateFormService(gson, connectionBuilder);
-        ProjectService projectService = new ProjectService(connectionBuilder);
-
+        DbContext dbContext = new DbContext(url, user, password);
+        long pID = dbContext.execute(using -> {
+            String projectName = UUID.randomUUID().toString();
+            long projectID = projectService.insertProject(projectName, using);
+            long irAstID = intermediateFormService.insertIntermediateAST(tree, programName, projectID, using);
+            long irCfgID = intermediateFormService.insertIntermediateCFG(irCFGForDB, programName, projectID, using);
+            System.out.println(projectID);
+            System.out.println(irAstID);
+            System.out.println(irCfgID);
+            return projectID;
+        });
         try (Connection conn = DriverManager.getConnection(url, user, password)) {
             DSLContext using = DSL.using(conn, SQLDialect.SQLITE);
             String projectName = UUID.randomUUID().toString();
@@ -82,4 +89,5 @@ public class BackendPipelineMain {
         }
         System.out.println("DONE");
     }
+
 }

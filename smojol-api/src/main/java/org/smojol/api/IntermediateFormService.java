@@ -6,15 +6,11 @@ import com.google.gson.JsonObject;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.Record;
 import org.jooq.*;
-import org.jooq.impl.DSL;
 import org.smojol.api.contract.IntermediateASTListing;
 import org.smojol.api.contract.IntermediateCFGListing;
 import org.smojol.api.contract.ProjectListing;
-import org.smojol.api.database.ConnectionBuilder;
 import org.smojol.common.transpiler.TranspilerNode;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -28,31 +24,15 @@ import static org.jooq.impl.DSL.table;
 
 public class IntermediateFormService {
     private final Gson gson;
-    private final ConnectionBuilder connectionBuilder;
     Table<Record> IR_AST = table("IR_AST");
     Table<Record> IR_CFG = table("IR_CFG");
     Table<Record> PROJECT = table("PROJECT");
 
-    public IntermediateFormService(Gson gson, ConnectionBuilder connectionBuilder) {
+    public IntermediateFormService(Gson gson) {
         this.gson = gson;
-        this.connectionBuilder = connectionBuilder;
     }
 
-    public Map<String, List<Map<String, String>>> intermediateASTListingsByProject() throws SQLException {
-        try (Connection conn = connectionBuilder.getConnection()) {
-            DSLContext using = DSL.using(conn, SQLDialect.SQLITE);
-            return intermediateASTListingsByProject_(using);
-        }
-    }
-
-    public Map<String, List<Map<String, String>>> intermediateCFGListingsByProject() throws SQLException {
-        try (Connection conn = connectionBuilder.getConnection()) {
-            DSLContext using = DSL.using(conn, SQLDialect.SQLITE);
-            return intermediateCFGListingsByProject_(using);
-        }
-    }
-
-    private Map<String, List<Map<String, String>>> intermediateASTListingsByProject_(DSLContext using) {
+    private Map<String, List<Map<String, String>>> intermediateASTListingsByProject(DSLContext using) {
         Result<Record4<String, String, Integer, Integer>> allIntermediateASTs = using
                 .select(field("IR_AST.PROGRAM_NAME", String.class),
                         field("IR_AST.IR_AST", String.class),
@@ -70,7 +50,7 @@ public class IntermediateFormService {
         return collectedIntermediateASTs;
     }
 
-    Map<String, List<Map<String, String>>> intermediateCFGListingsByProject_(DSLContext using) {
+    Map<String, List<Map<String, String>>> intermediateCFGListingsByProject(DSLContext using) {
         Result<Record4<String, String, Integer, Integer>> allIntermediateASTs = using
                 .select(field("IR_CFG.PROGRAM_NAME", String.class),
                         field("IR_CFG.IR_CFG", String.class),
@@ -88,9 +68,9 @@ public class IntermediateFormService {
         return collectedIntermediateCFGs;
     }
 
-    public List<ProjectListing> allProjectEntities(DSLContext using) throws SQLException {
-        Map<String, List<Map<String, String>>> astGroupAsMap = intermediateASTListingsByProject_(using);
-        Map<String, List<Map<String, String>>> cfgGroupAsMap = intermediateCFGListingsByProject_(using);
+    public List<ProjectListing> allProjectEntities(DSLContext using) {
+        Map<String, List<Map<String, String>>> astGroupAsMap = intermediateASTListingsByProject(using);
+        Map<String, List<Map<String, String>>> cfgGroupAsMap = intermediateCFGListingsByProject(using);
         Set<Entry<String, List<Map<String, String>>>> cfgsGroupedByProjectID = cfgGroupAsMap.entrySet();
         Set<Entry<String, List<Map<String, String>>>> astsGroupedByProjectID = astGroupAsMap.entrySet();
         Stream<String> cfgUniqueProjectIDs = cfgsGroupedByProjectID.stream().map(Entry::getKey);
