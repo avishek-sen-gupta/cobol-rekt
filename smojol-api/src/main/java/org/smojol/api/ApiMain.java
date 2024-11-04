@@ -17,7 +17,6 @@ public class ApiMain {
         Gson gson = new GsonBuilder().create();
         JsonMapper gsonMapper = getJsonMapper(gson);
         DbContext dbContext = fromSystemEnv();
-
         new ApiServer().runServer(7070, gsonMapper, gson, dbContext);
     }
 

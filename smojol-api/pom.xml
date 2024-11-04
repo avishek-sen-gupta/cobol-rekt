@@ -139,7 +139,7 @@
                         <configuration>
                             <archive>
                                 <manifest>
-                                    <mainClass>org.smojol.api</mainClass>
+                                    <mainClass>org.smojol.api.ApiMain</mainClass>
                                 </manifest>
                             </archive>
                             <descriptorRefs>

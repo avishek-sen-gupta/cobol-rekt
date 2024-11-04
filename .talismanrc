@@ -67,3 +67,5 @@ fileignoreconfig:
   checksum: b96aa1585d8b220f0624d6ee32748aee9d086ea26b3552de9de9dd6384d186b8
 - filename: smojol-api/src/main/java/org/smojol/api/database/DbContext.java
   checksum: b6fc353386f888011c9cea17dc83da012f4e139fcc4e5c2ee502f81c5e3609eb
+- filename: README.md
+  checksum: 9a1890534ecbc051bc3866d7cec20611f9a9b800eb0f189c270c683d521aa3bd

@@ -60,11 +60,12 @@ public class BackendPipelineMain {
         Set<NaturalLoopBody<TranspilerInstruction>> reducibleLoopBodies = loopBodies.getLeft();
         Set<Set<TranspilerInstruction>> irrreducibleLoopBodies = loopBodies.getRight();
         System.out.println("Reducible loop bodies = " + reducibleLoopBodies.size());
-        System.out.println("irreducible loop bodies = " + loopBodies.getRight().size());
+        System.out.println("irreducible loop bodies = " + irrreducibleLoopBodies.size());
         reducibleLoopBodies.forEach(loop -> {
             System.out.println("-----------------------------");
             System.out.println(String.join(",", loop.loopNodes().stream().map(TranspilerInstruction::id).toList()));
             System.out.println("-----------------------------");
+            System.out.println(new Gson().toJson(loop));
         });
 
         ImmutableMap<String, Set<?>> irCFGForDB = ImmutableMap.of("nodes", instructionFlowgraph.vertexSet(), "edges", instructionFlowgraph.edgeSet());

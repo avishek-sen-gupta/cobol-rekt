@@ -31,8 +31,10 @@ public class DbContext {
     }
 
     public static DbContext fromSystemEnv() {
+        String dbURL = System.getenv(DATABASE_URL);
+        System.out.println("DB URL: " + dbURL);
         return new DbContext(
-                System.getenv(DATABASE_URL),
+                dbURL,
                 System.getenv(DATABASE_USER),
                 System.getenv(DATABASE_PASSWORD));
     }

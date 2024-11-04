@@ -106,6 +106,8 @@ This app is ultimately intended to only give a showcase of the capabilities of t
 
 ![Demo App Early](/documentation/demo-app-early.png)
 
+Instructions for setting up the demo app is provided later, and is evolving.
+
 ## Philosophy
 
 Cobol-REKT is more of a **library of useful things** intended to be embedded in more formal reverse engineering workflows/pipelines, rather than being a standalone tool (though you can certainly use it as such). Many of the higher-level wrappers are merely sensible defaults; **you are encouraged to modify them to suit your needs**.
@@ -1055,6 +1057,52 @@ This is a list of algorithms written from scratch, for reference or reuse. All o
     - [Reducible Flowgraphs 0](https://rgrig.blogspot.com/2009/10/dtfloatleftclearleft-summary-of-some.html)
 - UI
   - [Draw a Tree Structure With Only CSS](https://entropicthoughts.com/draw-a-tree-structure-with-only-css)
+
+## Demo App Setup
+
+You will need the following set up on your local machine.
+
+- SQLite for the database
+- Flyway for DB migrations
+- NodeJS with ```npm```
+
+### DB setup
+
+- Run ```up-db.sh```. The script assumes that Flyway is present in ```~/code/flyway```, so you will have to modify that.
+- You can start with a fresh DB by running ```reset-db.sh```.
+
+
+### Populating Data
+- You will need some data to be set up to actually see something in the app. You can run ```BackendPipelineMain``` to do this.
+
+### Run UI app server
+
+If you are deploying the UI to be served by the API itself, run:
+
+```
+scripts/build-app.sh
+```
+
+and [start the API server](#start-the-api-server), skipping the rest of this section.
+
+To run the app locally in development mode, go to ```smojol-app/cobol-lekt``` and run ```npm run serve```. This should start the app server (8080 by default).
+
+### Start the API server
+
+Run:
+
+```
+DATABASE_URL=jdbc:sqlite:/path/to/db/file DATABASE_USER="<db_user>" DATABASE_PASSWORD="<db-password>" java -jar smojol-api/target/smojol-api.jar
+```
+
+The API server currently starts on port 7070.
+
+
+[TODO]
+
+### Test it out!
+
+[TODO]
 
 The rest of this file is mostly technical notes for my personal documentation.
 
