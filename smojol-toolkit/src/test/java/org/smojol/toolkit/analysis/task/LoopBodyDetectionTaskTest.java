@@ -93,10 +93,12 @@ public class LoopBodyDetectionTaskTest {
         LoopBodyDetectionTask<TestNode, DefaultEdge> task = new LoopBodyDetectionTask<>(v0, graph, DefaultEdge.class, CloneEdgeOperation::cloneEdge);
         Pair<Set<NaturalLoopBody<TestNode>>, Set<NaturalLoopBody<TestNode>>> loopBodies = task.run();
         Set<NaturalLoopBody<TestNode>> reducibleLoopBodies = loopBodies.getLeft();
+//        Set<Set<TestNode>> irreducibleLoopBodies = loopBodies.getRight().stream().map(NaturalLoopBody::loopNodes).collect(Collectors.toUnmodifiableSet());
         Set<Set<TestNode>> irreducibleLoopBodies = loopBodies.getRight().stream().map(NaturalLoopBody::loopNodes).collect(Collectors.toUnmodifiableSet());
         assertEquals(0, reducibleLoopBodies.size());
         assertEquals(1, irreducibleLoopBodies.size());
         assertTrue(irreducibleLoopBodies.contains(ImmutableSet.of(n("1"), n("2"))));
+        assertTrue(loopBodies.getRight().stream().findFirst().get().loopHeaders().size() > 1);
     }
 
     private static TestNode n(String id) {

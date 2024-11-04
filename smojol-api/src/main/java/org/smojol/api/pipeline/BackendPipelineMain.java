@@ -38,6 +38,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import static org.jooq.impl.DSL.table;
 import static org.smojol.toolkit.task.CommandLineAnalysisTask.BUILD_BASE_ANALYSIS;
 
 public class BackendPipelineMain {
@@ -58,9 +59,9 @@ public class BackendPipelineMain {
         Pair<Set<NaturalLoopBody<TranspilerInstruction>>, Set<NaturalLoopBody<TranspilerInstruction>>> loopBodies = new LoopBodyDetectionTask<>(transpilerFlowgraph.instructions().getFirst(),
                 transpilerFlowgraph.instructionFlowgraph(), DefaultEdge.class, CloneEdgeOperation::cloneEdge).run();
         Set<NaturalLoopBody<TranspilerInstruction>> reducibleLoopBodies = loopBodies.getLeft();
-        Set<NaturalLoopBody<TranspilerInstruction>> irrreducibleLoopBodies = loopBodies.getRight();
+        Set<NaturalLoopBody<TranspilerInstruction>> irreducibleLoopBodies = loopBodies.getRight();
         System.out.println("Reducible loop bodies = " + reducibleLoopBodies.size());
-        System.out.println("irreducible loop bodies = " + irrreducibleLoopBodies.size());
+        System.out.println("irreducible loop bodies = " + irreducibleLoopBodies.size());
         reducibleLoopBodies.forEach(loop -> {
             System.out.println("-----------------------------");
             System.out.println(String.join(",", loop.loopNodes().stream().map(TranspilerInstruction::id).toList()));
@@ -84,6 +85,9 @@ public class BackendPipelineMain {
             long projectID = projectService.insertProject(projectName, using);
             long irAstID = intermediateFormService.insertIntermediateAST(tree, programName, projectID, using);
             long irCfgID = intermediateFormService.insertIntermediateCFG(irCFGForDB, programName, projectID, using);
+            List<Long> loopBodyIDs = reducibleLoopBodies.stream().map(rlb -> intermediateFormService.insertLoopBody(rlb, programName, projectID, using)).toList();
+
+            loopBodyIDs.forEach(lb -> System.out.println("Loop body ID = " + lb));
             System.out.println(projectID);
             System.out.println(irAstID);
             System.out.println(irCfgID);
@@ -91,5 +95,4 @@ public class BackendPipelineMain {
         });
         System.out.println("DONE, project ID = " + pID);
     }
-
 }

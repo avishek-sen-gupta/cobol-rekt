@@ -8,6 +8,8 @@ import org.jooq.*;
 import org.smojol.api.contract.IntermediateASTListing;
 import org.smojol.api.contract.IntermediateCFGListing;
 import org.smojol.api.contract.ProjectListing;
+import org.smojol.common.analysis.NaturalLoopBody;
+import org.smojol.common.transpiler.TranspilerInstruction;
 import org.smojol.common.transpiler.TranspilerNode;
 
 import java.util.List;
@@ -26,6 +28,7 @@ public class IntermediateFormService {
     Table<Record> IR_AST = table("IR_AST");
     Table<Record> IR_CFG = table("IR_CFG");
     Table<Record> PROJECT = table("PROJECT");
+    Table<Record> LOOP_BODY = table("LOOP_BODY");
 
     public IntermediateFormService(Gson gson) {
         this.gson = gson;
@@ -103,7 +106,7 @@ public class IntermediateFormService {
     }
 
     public long insertIntermediateAST(TranspilerNode tree, String programName, long projectID, DSLContext using) {
-        return using.insertInto(table("IR_AST"))
+        return using.insertInto(IR_AST)
                 .columns(field("PROGRAM_NAME"), field("PROJECT_ID"),
                         field("IR_AST"))
                 .values(programName, projectID, gson.toJson(tree))
@@ -113,10 +116,20 @@ public class IntermediateFormService {
     }
 
     public long insertIntermediateCFG(Map<String, Set<?>> irCFGForDB, String programName, long projectID, DSLContext using) {
-        return using.insertInto(table("IR_CFG"))
+        return using.insertInto(IR_CFG)
                 .columns(field("PROGRAM_NAME"), field("PROJECT_ID"),
                         field("IR_CFG"))
                 .values(programName, projectID, this.gson.toJson(irCFGForDB))
+                .returningResult(field("ID", Long.class))
+                .fetchOne()
+                .into(Long.class);
+    }
+
+    public Long insertLoopBody(NaturalLoopBody<TranspilerInstruction> loopBody, String programName, long projectID, DSLContext using) {
+        return using.insertInto(LOOP_BODY)
+                .columns(field("PROGRAM_NAME"), field("PROJECT_ID"),
+                        field("BODY"))
+                .values(programName, projectID, this.gson.toJson(loopBody))
                 .returningResult(field("ID", Long.class))
                 .fetchOne()
                 .into(Long.class);
