@@ -55,10 +55,10 @@ public class BackendPipelineMain {
         Graph<TranspilerInstruction, DefaultEdge> instructionFlowgraph = transpilerFlowgraph.instructionFlowgraph();
         PruneUnreachableTask.pruneUnreachableInstructions(transpilerFlowgraph);
         TranspilerNode tree = transpilerFlowgraph.transpilerTree();
-        Pair<Set<NaturalLoopBody<TranspilerInstruction>>, Set<Set<TranspilerInstruction>>> loopBodies = new LoopBodyDetectionTask<>(transpilerFlowgraph.instructions().getFirst(),
+        Pair<Set<NaturalLoopBody<TranspilerInstruction>>, Set<NaturalLoopBody<TranspilerInstruction>>> loopBodies = new LoopBodyDetectionTask<>(transpilerFlowgraph.instructions().getFirst(),
                 transpilerFlowgraph.instructionFlowgraph(), DefaultEdge.class, CloneEdgeOperation::cloneEdge).run();
         Set<NaturalLoopBody<TranspilerInstruction>> reducibleLoopBodies = loopBodies.getLeft();
-        Set<Set<TranspilerInstruction>> irrreducibleLoopBodies = loopBodies.getRight();
+        Set<NaturalLoopBody<TranspilerInstruction>> irrreducibleLoopBodies = loopBodies.getRight();
         System.out.println("Reducible loop bodies = " + reducibleLoopBodies.size());
         System.out.println("irreducible loop bodies = " + irrreducibleLoopBodies.size());
         reducibleLoopBodies.forEach(loop -> {
