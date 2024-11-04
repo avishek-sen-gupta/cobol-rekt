@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class LoopBodyDetectionTaskTest {
     @Test
-    public void canDetectLoopBodies1() {
+    public void canDetectReducibleLoopBodies() {
         Graph<TestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
         TestNode v0 = node("0");
         TestNode v6 = node("6");
@@ -75,7 +75,7 @@ public class LoopBodyDetectionTaskTest {
         loopBodies.getLeft().forEach(rlb -> System.out.println(String.join(",", rlb.loopNodes().stream().map(TestNode::id).toList())));
     }
     @Test
-    public void canDetectLoopBodies2() {
+    public void canDetectIrreducibleLoopBodies() {
         Graph<TestNode, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
         TestNode v0 = node("0");
         TestNode v1 = node("1");
