@@ -91,18 +91,18 @@ export default {
   <div id="top-panel">
     <img alt="Cobol-REKT logo" src="./assets/cobol-rekt-banner.png" style="width: 30%; height: auto">
     <div class="functions">
-      <button @click="testPing" class="wrapped-text">Test Ping</button>
-      <button class="wrapped-text">Flowchart</button>
-      <button @click="getIR" class="wrapped-text">Intermediate Form</button>
-      <button @click="getCFG" class="wrapped-text">Control Flowgraph</button>
-      <button class="wrapped-text">Capability Mapping</button>
-      <button class="wrapped-text">Node Summarisation</button>
-      <button class="wrapped-text">T1/T2 Reducibility</button>
-      <button class="wrapped-text">SCCs</button>
-      <button class="wrapped-text">Loop Bodies</button>
-      <button class="wrapped-text">Trace Dependencies</button>
-      <button class="wrapped-text">Code Patterns</button>
-      <button class="wrapped-text">Eliminate GO TOs</button>
+      <button @click="testPing" class="function-button">Test Ping</button>
+      <button class="function-button">Flowchart</button>
+      <button @click="getIR" class="function-button">Intermediate Form</button>
+      <button @click="getCFG" class="function-button">Control Flowgraph</button>
+      <button class="function-button">Capability Mapping</button>
+      <button class="function-button">Node Summarisation</button>
+      <button class="function-button">T1/T2 Reducibility</button>
+      <button class="function-button">SCCs</button>
+      <button class="function-button">Loop Bodies</button>
+      <button class="function-button">Trace Dependencies</button>
+      <button class="function-button">Code Patterns</button>
+      <button class="function-button">Eliminate GO TOs</button>
     </div>
   </div>
 
@@ -195,7 +195,7 @@ export default {
   overflow: hidden;
 }
 
-.wrapped-text {
+.function-button {
   background-color: #5b6e83;
   border-radius: 8px;
   border-style: none;
@@ -214,14 +214,17 @@ export default {
   position: relative;
   text-align: center;
   text-decoration: none;
-  transition: color 100ms;
   vertical-align: baseline;
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
 }
 
-.wrapped-text:hover {
+.function-button:hover {
   background-color: #42b983;
+}
+
+.function-button:active {
+  transform: scale(0.98);
 }
 </style>
