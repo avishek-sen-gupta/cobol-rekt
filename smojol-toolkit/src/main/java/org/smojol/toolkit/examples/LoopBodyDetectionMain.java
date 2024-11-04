@@ -3,6 +3,7 @@ package org.smojol.toolkit.examples;
 import com.google.common.collect.ImmutableList;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.graph.DefaultEdge;
+import org.smojol.common.analysis.NaturalLoopBody;
 import org.smojol.common.dialect.LanguageDialect;
 import org.smojol.common.flowchart.FlowchartOutputFormat;
 import org.smojol.common.id.UUIDProvider;
@@ -12,6 +13,7 @@ import org.smojol.common.transpiler.TranspilerFlowgraph;
 import org.smojol.common.transpiler.TranspilerInstruction;
 import org.smojol.toolkit.analysis.pipeline.ProgramSearch;
 import org.smojol.toolkit.analysis.task.analysis.CodeTaskRunner;
+import org.smojol.toolkit.analysis.task.transpiler.CloneEdgeOperation;
 import org.smojol.toolkit.analysis.task.transpiler.LoopBodyDetectionTask;
 import org.smojol.toolkit.interpreter.FullProgram;
 import org.smojol.toolkit.interpreter.structure.OccursIgnoringFormat1DataStructureBuilder;
@@ -39,8 +41,8 @@ public class LoopBodyDetectionMain {
         List<AnalysisTaskResult> results = result.get(programName);
         TranspilerFlowgraph transpilerFlowgraph = ((AnalysisTaskResultOK) results.get(1)).getDetail();
         PruneUnreachableTask.pruneUnreachableInstructions(transpilerFlowgraph);
-        LoopBodyDetectionTask<TranspilerInstruction, DefaultEdge> loopBodyDetectionTask = new LoopBodyDetectionTask<>(transpilerFlowgraph.instructions().getFirst(), transpilerFlowgraph.instructionFlowgraph(), DefaultEdge.class);
-        Pair<Set<Set<TranspilerInstruction>>, Set<Set<TranspilerInstruction>>> run = loopBodyDetectionTask.run();
+        LoopBodyDetectionTask<TranspilerInstruction, DefaultEdge> loopBodyDetectionTask = new LoopBodyDetectionTask<>(transpilerFlowgraph.instructions().getFirst(), transpilerFlowgraph.instructionFlowgraph(), DefaultEdge.class, CloneEdgeOperation::cloneEdge);
+        Pair<Set<NaturalLoopBody<TranspilerInstruction>>, Set<Set<TranspilerInstruction>>> run = loopBodyDetectionTask.run();
         System.out.println("DONE");
     }
 }

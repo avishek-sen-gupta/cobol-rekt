@@ -9,6 +9,7 @@ import org.jgrapht.alg.connectivity.KosarajuStrongConnectivityInspector;
 import org.jgrapht.alg.interfaces.StrongConnectivityAlgorithm;
 import org.jgrapht.graph.AsSubgraph;
 import org.jgrapht.graph.DefaultEdge;
+import org.smojol.common.analysis.NaturalLoopBody;
 import org.smojol.common.flowchart.MermaidGraph;
 import org.smojol.common.graph.*;
 import org.smojol.common.id.Identifiable;
@@ -17,6 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -31,22 +33,29 @@ public class LoopBodyDetectionTask<V extends Identifiable, E> {
     private final V sourceGraphRoot;
     private final Graph<V, E> sourceGraph;
     private final Class<E> edgeClass;
+    private final Function<E, E> cloneEdge;
 
-    public LoopBodyDetectionTask(V sourceGraphRoot, Graph<V, E> sourceGraph, Class<E> edgeClass) {
+    public LoopBodyDetectionTask(V sourceGraphRoot, Graph<V, E> sourceGraph, Class<E> edgeClass, Function<E, E> cloneEdge) {
         this.sourceGraphRoot = sourceGraphRoot;
         this.sourceGraph = sourceGraph;
         this.edgeClass = edgeClass;
+        this.cloneEdge = cloneEdge;
     }
 
-    public Pair<Set<Set<V>>, Set<Set<V>>> run() {
+    public Pair<Set<NaturalLoopBody<V>>, Set<Set<V>>> run() {
         DepthFirstSearchOrderingTask<V, E> dfsTask = new DepthFirstSearchOrderingTask<>(sourceGraphRoot, sourceGraph, edgeClass);
         DepthFirstSpanningTree<V, E> spanningTree = dfsTask.run();
 
+        LOGGER.info("Building Immediate Dominators...");
         List<Pair<V, V>> immediateDominators = new BuildDominatorsTask<V, E>().immediateDominators(spanningTree);
+        LOGGER.info("Building All Dominators...");
         Map<V, Set<V>> allDominators = new BuildDominatorsTask<V, E>().allDominators(spanningTree.preOrdered(), sourceGraph);
+        LOGGER.info("Building Dominator Tree...");
         DominatorTree<V, E> dominatorTree = new BuildDominatorTreeTask<>(immediateDominators, spanningTree.sourceGraphRoot(), edgeClass).run();
+        LOGGER.info("Building DJ Tree...");
         DJTree<V, E> djTree = new BuildDJTreeTask<>(dominatorTree, spanningTree, allDominators, edgeClass).run();
         Graph<V, E> djGraph = djTree.graph();
+        LOGGER.info("Building DFS Task on DJ Tree...");
         DepthFirstSearchOrderingTask<V, E> dfsTaskOnDJTree = new DepthFirstSearchOrderingTask<>(djTree.root(), djGraph, edgeClass);
         DepthFirstSpanningTree<V, E> djSpanningTree = dfsTaskOnDJTree.run();
         ClassifiedEdges<E> classifiedEdges = djSpanningTree.classifiedEdges();
@@ -59,8 +68,9 @@ public class LoopBodyDetectionTask<V extends Identifiable, E> {
             return o1 < o2 ? -1 : 1;
         }).get();
 
-        Graph<V, E> collapsibleDJGraph = cloneGraph(djGraph, edgeClass);
+        Graph<V, E> collapsibleDJGraph = cloneGraph(djGraph, edgeClass, cloneEdge);
         Set<Set<V>> allReducibleLoopBodies = new HashSet<>();
+        Set<NaturalLoopBody<V>> allReducibleLoopBodies2 = new HashSet<>();
         Set<Set<V>> allIrreducibleLoopBodies = new HashSet<>();
         for (int treeDepth = maxTreeDepth; treeDepth >= 0; treeDepth--) {
             String startOfIterationState = new MermaidGraph<V, E>().draw(collapsibleDJGraph);
@@ -68,9 +78,12 @@ public class LoopBodyDetectionTask<V extends Identifiable, E> {
             Set<E> backEdgesAtTreeDepth = nodesAtTreeDepth.stream().flatMap(node -> collapsibleDJGraph.incomingEdgesOf(node).stream().filter(mutableBackEdges::contains)).collect(Collectors.toUnmodifiableSet());
             Set<E> crossJoinEdges = backEdgesAtTreeDepth.stream().filter(be -> be instanceof CrossJoinEdge).collect(Collectors.toUnmodifiableSet());
             Sets.SetView<E> backJoinEdges = Sets.difference(backEdgesAtTreeDepth, crossJoinEdges);
-            Set<Pair<V, Set<V>>> reducibleLoopBodies = backJoinEdges.stream().map(bje -> ImmutablePair.of(collapsibleDJGraph.getEdgeTarget(bje), new NaturalLoopOfBackEdgeTask<>(bje, collapsibleDJGraph).run())).collect(Collectors.toUnmodifiableSet());
-            reducibleLoopBodies.forEach(loopBody -> collapse(loopBody, collapsibleDJGraph, mutableBackEdges));
-            allReducibleLoopBodies.addAll(reducibleLoopBodies.stream().map(Pair::getRight).toList());
+//            Set<Pair<V, Set<V>>> reducibleLoopBodies = backJoinEdges.stream().map(bje -> ImmutablePair.of(collapsibleDJGraph.getEdgeTarget(bje), new NaturalLoopOfBackEdgeTask<>(bje, collapsibleDJGraph).run())).collect(Collectors.toUnmodifiableSet());
+            Set<NaturalLoopBody<V>> reducibleLoopBodies2 = backJoinEdges.stream().map(bje -> new NaturalLoopBody<>(collapsibleDJGraph.getEdgeTarget(bje), new NaturalLoopOfBackEdgeTask<>(bje, collapsibleDJGraph).run())).collect(Collectors.toUnmodifiableSet());
+//            reducibleLoopBodies.forEach(loopBody -> collapse(loopBody, collapsibleDJGraph, mutableBackEdges));
+            reducibleLoopBodies2.forEach(loopBody -> collapse(loopBody, collapsibleDJGraph, mutableBackEdges));
+//            allReducibleLoopBodies.addAll(reducibleLoopBodies.stream().map(Pair::getRight).toList());
+            allReducibleLoopBodies2.addAll(reducibleLoopBodies2);
             if (crossJoinEdges.isEmpty()) {
                 String endOfIterationState = new MermaidGraph<V, E>().draw(collapsibleDJGraph);
                 continue;
@@ -90,7 +103,11 @@ public class LoopBodyDetectionTask<V extends Identifiable, E> {
             }).collect(Collectors.toUnmodifiableSet());
             allIrreducibleLoopBodies.addAll(irreducibleLoopBodies);
         }
-        return ImmutablePair.of(allReducibleLoopBodies, allIrreducibleLoopBodies);
+        return ImmutablePair.of(allReducibleLoopBodies2, allIrreducibleLoopBodies);
+    }
+
+    private void collapse(NaturalLoopBody<V> reducibleLoop, Graph<V, E> collapsibleDJGraph, Set<E> mutableBackEdges) {
+        collapse(ImmutablePair.of(reducibleLoop.loopHeader(), reducibleLoop.loopNodes()), collapsibleDJGraph, mutableBackEdges);
     }
 
     private void collapse(Pair<V, Set<V>> reducibleLoop, Graph<V, E> collapsibleDJGraph, Set<E> mutableBackEdges) {

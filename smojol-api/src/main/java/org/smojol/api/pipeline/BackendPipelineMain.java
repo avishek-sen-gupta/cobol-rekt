@@ -3,14 +3,13 @@ package org.smojol.api.pipeline;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
-import org.jooq.DSLContext;
-import org.jooq.SQLDialect;
-import org.jooq.impl.DSL;
 import org.smojol.api.IntermediateFormService;
 import org.smojol.api.ProjectService;
 import org.smojol.api.database.DbContext;
+import org.smojol.common.analysis.NaturalLoopBody;
 import org.smojol.common.dialect.LanguageDialect;
 import org.smojol.common.flowchart.FlowchartOutputFormat;
 import org.smojol.common.id.UUIDProvider;
@@ -23,6 +22,8 @@ import org.smojol.common.transpiler.TranspilerNode;
 import org.smojol.toolkit.analysis.pipeline.ProgramSearch;
 import org.smojol.toolkit.analysis.task.analysis.CodeTaskRunner;
 import org.smojol.toolkit.analysis.task.transpiler.BuildTranspilerFlowgraphTask;
+import org.smojol.toolkit.analysis.task.transpiler.CloneEdgeOperation;
+import org.smojol.toolkit.analysis.task.transpiler.LoopBodyDetectionTask;
 import org.smojol.toolkit.interpreter.FullProgram;
 import org.smojol.toolkit.interpreter.structure.OccursIgnoringFormat1DataStructureBuilder;
 import org.smojol.toolkit.task.AnalysisTaskResult;
@@ -31,8 +32,6 @@ import org.smojol.toolkit.task.CommandLineAnalysisTask;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -56,6 +55,18 @@ public class BackendPipelineMain {
         Graph<TranspilerInstruction, DefaultEdge> instructionFlowgraph = transpilerFlowgraph.instructionFlowgraph();
         PruneUnreachableTask.pruneUnreachableInstructions(transpilerFlowgraph);
         TranspilerNode tree = transpilerFlowgraph.transpilerTree();
+        Pair<Set<NaturalLoopBody<TranspilerInstruction>>, Set<Set<TranspilerInstruction>>> loopBodies = new LoopBodyDetectionTask<>(transpilerFlowgraph.instructions().getFirst(),
+                transpilerFlowgraph.instructionFlowgraph(), DefaultEdge.class, CloneEdgeOperation::cloneEdge).run();
+        Set<NaturalLoopBody<TranspilerInstruction>> reducibleLoopBodies = loopBodies.getLeft();
+        Set<Set<TranspilerInstruction>> irrreducibleLoopBodies = loopBodies.getRight();
+        System.out.println("Reducible loop bodies = " + reducibleLoopBodies.size());
+        System.out.println("irreducible loop bodies = " + loopBodies.getRight().size());
+        reducibleLoopBodies.forEach(loop -> {
+            System.out.println("-----------------------------");
+            System.out.println(String.join(",", loop.loopNodes().stream().map(TranspilerInstruction::id).toList()));
+            System.out.println("-----------------------------");
+        });
+
         ImmutableMap<String, Set<?>> irCFGForDB = ImmutableMap.of("nodes", instructionFlowgraph.vertexSet(), "edges", instructionFlowgraph.edgeSet());
         Gson gson = BuildTranspilerFlowgraphTask.initGson();
 
@@ -77,17 +88,7 @@ public class BackendPipelineMain {
             System.out.println(irCfgID);
             return projectID;
         });
-        try (Connection conn = DriverManager.getConnection(url, user, password)) {
-            DSLContext using = DSL.using(conn, SQLDialect.SQLITE);
-            String projectName = UUID.randomUUID().toString();
-            long projectID = projectService.insertProject(projectName, using);
-            long irAstID = intermediateFormService.insertIntermediateAST(tree, programName, projectID, using);
-            long irCfgID = intermediateFormService.insertIntermediateCFG(irCFGForDB, programName, projectID, using);
-            System.out.println(projectID);
-            System.out.println(irAstID);
-            System.out.println(irCfgID);
-        }
-        System.out.println("DONE");
+        System.out.println("DONE, project ID = " + pID);
     }
 
 }

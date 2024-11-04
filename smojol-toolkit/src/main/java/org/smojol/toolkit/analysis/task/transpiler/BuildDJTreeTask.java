@@ -45,8 +45,6 @@ public class BuildDJTreeTask<V extends Identifiable, E> {
                 djTree.addEdge(from, to, new BackJoinEdge());
             else djTree.addEdge(from, to, new CrossJoinEdge());
         });
-//        sourceGraph.edgeSet().forEach(edge -> djTree.addEdge(sourceGraph.getEdgeSource(edge), sourceGraph.getEdgeTarget(edge), new JoinEdge()));
-//        Map<Integer, HashSet<V>> dominatorLevels = dominatorSpanningTree.nodeStats().values().stream().collect(Collectors.toUnmodifiableSet()).stream().collect(Collectors.toMap(NodeDFSStatistics::treeDepth, k -> new HashSet<V>()));
         Set<Integer> dominatorLevels = dominatorSpanningTree.nodeStats().values().stream().map(NodeDFSStatistics::treeDepth).collect(Collectors.toUnmodifiableSet());
         Map<Integer, Set<V>> dominatorLevelMap = dominatorLevels.stream().collect(Collectors.toMap(i -> i, i -> new HashSet<>()));
         dominatorSpanningTree.nodeStats().forEach((key, value) -> {

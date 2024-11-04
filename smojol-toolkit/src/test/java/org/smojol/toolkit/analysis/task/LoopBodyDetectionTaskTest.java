@@ -6,7 +6,9 @@ import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.junit.jupiter.api.Test;
+import org.smojol.common.analysis.NaturalLoopBody;
 import org.smojol.common.graph.TestNode;
+import org.smojol.toolkit.analysis.task.transpiler.CloneEdgeOperation;
 import org.smojol.toolkit.analysis.task.transpiler.LoopBodyDetectionTask;
 
 import java.util.Collection;
@@ -59,18 +61,18 @@ public class LoopBodyDetectionTaskTest {
         graph.addEdge(v5, v7);
         graph.addEdge(v5, v6);
 
-        LoopBodyDetectionTask<TestNode, DefaultEdge> task = new LoopBodyDetectionTask<>(v0, graph, DefaultEdge.class);
-        Pair<Set<Set<TestNode>>, Set<Set<TestNode>>> loopBodies = task.run();
-        Set<Set<TestNode>> reducibleLoopBodies = loopBodies.getLeft();
+        LoopBodyDetectionTask<TestNode, DefaultEdge> task = new LoopBodyDetectionTask<>(v0, graph, DefaultEdge.class, CloneEdgeOperation::cloneEdge);
+        Pair<Set<NaturalLoopBody<TestNode>>, Set<Set<TestNode>>> loopBodies = task.run();
+        Set<Set<TestNode>> justReducibleLoopBodies = loopBodies.getLeft().stream().map(NaturalLoopBody::loopNodes).collect(Collectors.toUnmodifiableSet());
         Set<Set<TestNode>> irreducibleLoopBodies = loopBodies.getRight();
-        assertEquals(2, reducibleLoopBodies.size());
+        assertEquals(2, loopBodies.getLeft().size());
         assertEquals(1, irreducibleLoopBodies.size());
-        assertTrue(reducibleLoopBodies.contains(ImmutableSet.of(n("1"), n("2"), n("3")))
-                || reducibleLoopBodies.contains(ImmutableSet.of(n("1"), n("2"), n("5"))));
-        assertTrue(reducibleLoopBodies.contains(ImmutableSet.of(n("3"), n("4"))));
+        assertTrue(justReducibleLoopBodies.contains(ImmutableSet.of(n("1"), n("2"), n("3")))
+                || justReducibleLoopBodies.contains(ImmutableSet.of(n("1"), n("2"), n("5"))));
+        assertTrue(justReducibleLoopBodies.contains(ImmutableSet.of(n("3"), n("4"))));
         assertEquals(ImmutableSet.of(n("3"), n("5"), n("7"), n("8"), n("9")), irreducibleLoopBodies.stream().flatMap(Collection::stream).collect(Collectors.toUnmodifiableSet()));
 
-        reducibleLoopBodies.forEach(rlb -> System.out.println(String.join(",", rlb.stream().map(TestNode::id).toList())));
+        loopBodies.getLeft().forEach(rlb -> System.out.println(String.join(",", rlb.loopNodes().stream().map(TestNode::id).toList())));
     }
     @Test
     public void canDetectLoopBodies2() {
@@ -88,9 +90,9 @@ public class LoopBodyDetectionTaskTest {
         graph.addEdge(v1, v2);
         graph.addEdge(v2, v1);
 
-        LoopBodyDetectionTask<TestNode, DefaultEdge> task = new LoopBodyDetectionTask<>(v0, graph, DefaultEdge.class);
-        Pair<Set<Set<TestNode>>, Set<Set<TestNode>>> loopBodies = task.run();
-        Set<Set<TestNode>> reducibleLoopBodies = loopBodies.getLeft();
+        LoopBodyDetectionTask<TestNode, DefaultEdge> task = new LoopBodyDetectionTask<>(v0, graph, DefaultEdge.class, CloneEdgeOperation::cloneEdge);
+        Pair<Set<NaturalLoopBody<TestNode>>, Set<Set<TestNode>>> loopBodies = task.run();
+        Set<NaturalLoopBody<TestNode>> reducibleLoopBodies = loopBodies.getLeft();
         Set<Set<TestNode>> irreducibleLoopBodies = loopBodies.getRight();
         assertEquals(0, reducibleLoopBodies.size());
         assertEquals(1, irreducibleLoopBodies.size());

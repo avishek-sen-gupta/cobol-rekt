@@ -32,6 +32,7 @@ public class NaturalLoopOfBackEdgeTask<V extends Identifiable, E> {
     private void run(V current, Set<V> discoveredNodes, Graph<V, E> graph) {
         discoveredNodes.add(current);
         Set<E> incomingEdges = graph.incomingEdgesOf(current);
+        System.out.printf("Incoming edges of %s: %s%n", current.id(), String.join(",", incomingEdges.stream().map(e -> graph.getEdgeSource(e).id()).toList()));
         for (E incomingEdge : incomingEdges) {
             V child = this.graph.getEdgeSource(incomingEdge);
             if (discoveredNodes.contains(child)) continue;
