@@ -98,7 +98,7 @@ public class LoopBodyDetectionTaskTest {
         assertEquals(0, reducibleLoopBodies.size());
         assertEquals(1, irreducibleLoopBodies.size());
         assertTrue(irreducibleLoopBodies.contains(ImmutableSet.of(n("1"), n("2"))));
-        assertTrue(loopBodies.getRight().stream().findFirst().get().loopHeaders().size() > 1);
+        assertEquals(1, loopBodies.getRight().stream().findFirst().get().loopHeaders().size());
     }
 
     private static TestNode n(String id) {
