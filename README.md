@@ -777,7 +777,7 @@ This command encapsulates almost all the tasks that you are likely to run. The d
 
 - ```BUILD_BASE_ANALYSIS```: This task builds the base analysis model which includes the raw AST, the first approximate flowgraph model (used for flowchart generation, and as an intermediate step in the transpilation model building process), and a few other entities. **Please note that ```BUILD_BASE_ANALYSIS` will always be the first task to be run before any of the following tasks, whether specified or not.**
 - ```WRITE_FLOW_AST```: Writes a more useful form of the AST to JSON. This form is used by the interpreter and other analyses.
-- ```FLOW_TO_NEO4J```: This injects the unified model into Neo4J. Exposing more fine-grained options is in progress. This requires the environment variable ```NEO4J_URI```, ```NEO4J_USERNAME```, and ```NEO4J_PASSWORD``` to be defined. If you wish to include comments in the graph, the ```ATTACH_COMMENTS``` needs to have run first.
+- ```FLOW_TO_NEO4J```: This injects the unified model into Neo4J. Exposing more fine-grained options is in progress. This requires the environment variable ```NEO4J_URI```, ```NEO4J_DATABASE``` (if not specified, defaults to ```neo4j```), ```NEO4J_USERNAME```, and ```NEO4J_PASSWORD``` to be defined. If you wish to include comments in the graph, the ```ATTACH_COMMENTS``` needs to have run first.
 - ```ATTACH_COMMENTS```: This parses the original source file (excluding copybooks for now) to find comments and attach them to the nearest subsequent AST node.
 - ```FLOW_TO_GRAPHML```: This exports the unified model to GraphML. Exposing more fine-grained options is in progress.
 - ```WRITE_RAW_AST```: This writes the original parse tree to JSON. Useful for downstream code to build their own AST representations.
