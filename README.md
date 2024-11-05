@@ -1072,8 +1072,10 @@ You will need the following set up on your local machine.
 
 ### DB setup
 
-- Run ```up-db.sh```. The script assumes that Flyway is present in ```~/code/flyway```, so you will have to modify that.
+These steps assume that Liquibase is installed and available on your path.
+
 - You can start with a fresh DB by running ```create-db.sh```.
+- Run ```up-db.sh```.
 - Running ```down-1-db.sh``` rolls back the most recent migration.
 - Running ```reset-db.sh``` rolls the database all the way back before any migrations were run.
 
