@@ -25,7 +25,7 @@ public class CommentExtraction {
         List<String> linesWithoutAreaA = lines.stream().map(l -> l.substring(6)).toList();
         for (String line : linesWithoutAreaA) {
             if (line.startsWith("*")) {
-                if (!containsWords(line) || validCobol(line.substring(1))) continue;
+                if (!containsWords(line)) continue;
                 if (currentBlock == null) currentBlock = new CommentBlock();
                 currentBlock.add(line);
             } else {

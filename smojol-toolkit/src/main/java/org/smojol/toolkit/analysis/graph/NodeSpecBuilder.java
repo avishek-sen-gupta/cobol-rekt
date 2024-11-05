@@ -134,7 +134,7 @@ public class NodeSpecBuilder {
                         TYPE, COMMENT_NODE,
                         ENTITY_TYPE, COMMENT_NODE,
                         ENTITY_CATEGORIES, ImmutableList.of(METADATA.name()),
-                        CODE_SENTINEL_TYPE, CodeSentinelType.BODY,
+                        CODE_SENTINEL_TYPE, CodeSentinelType.BODY.name(),
                         NAMESPACE, namespaceQualifier.getNamespace()
                 ));
     }

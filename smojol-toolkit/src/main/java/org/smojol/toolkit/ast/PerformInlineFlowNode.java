@@ -16,7 +16,7 @@ import java.util.List;
 import static guru.nidi.graphviz.model.Factory.mutGraph;
 import static guru.nidi.graphviz.model.Factory.mutNode;
 
-public class PerformInlineFlowNode extends CobolFlowNode {
+public class PerformInlineFlowNode extends CompositeCobolFlowNode {
     private FlowNode condition;
     @Getter private List<FlowIteration> nestedLoops;
     private List<FlowNode> bodyStatements;
@@ -27,13 +27,14 @@ public class PerformInlineFlowNode extends CobolFlowNode {
 
     @Override
     public void buildInternalFlow() {
+        super.buildInternalFlow();
         CobolParser.PerformStatementContext performStatement = new SyntaxIdentity<CobolParser.PerformStatementContext>(getExecutionContext()).get();
         CobolParser.PerformInlineStatementContext x = performStatement.performInlineStatement();
-        bodyStatements = x.conditionalStatementCall().stream().map(stmt -> nodeService.node(stmt, this, staticFrameContext)).toList();
+//        bodyStatements = x.conditionalStatementCall().stream().map(stmt -> nodeService.node(stmt, this, staticFrameContext)).toList();
         if (isVarying(x)) {
             condition = nodeService.node(x.performType(), this, staticFrameContext);
         }
-        bodyStatements.forEach(FlowNode::buildInternalFlow);
+//        bodyStatements.forEach(FlowNode::buildInternalFlow);
     }
 
     private boolean isVarying(CobolParser.PerformInlineStatementContext performStatement) {
@@ -87,11 +88,6 @@ public class PerformInlineFlowNode extends CobolFlowNode {
         CobolParser.PerformStatementContext performStatement = new SyntaxIdentity<CobolParser.PerformStatementContext>(getExecutionContext()).get();
         CobolParser.PerformInlineStatementContext performInlineStatementContext = performStatement.performInlineStatement();
         nestedLoops = FlowIterationBuilder.build(performInlineStatementContext.performType(), dataStructures);
-        bodyStatements.forEach(stmt -> stmt.resolve(symbolTable, dataStructures));
-    }
-
-    @Override
-    public List<FlowNode> astChildren() {
-        return bodyStatements;
+        astChildren().forEach(stmt -> stmt.resolve(symbolTable, dataStructures));
     }
 }
