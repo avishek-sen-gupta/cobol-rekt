@@ -202,7 +202,7 @@ When generating the AST and CFG, the library allows configuring them to be the s
 
 This provides a rich unified view of the entire program, without having to jump between multiple disconnected views of the source code, for analysis.
 
-This can be done by specifiying the ```INJECT_INTO)NEO4J``` task.
+This can be done by specifiying the ```FLOW_TO_NEO4J``` task.
 
 ![Unified AST-CFG-Data Graph](documentation/unified-ast-cfg-dependency.png)
 
