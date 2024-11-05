@@ -593,6 +593,8 @@ This technique works by first building the Dominator-Join graph (DJ graph), then
 
 Irreducible loop bodies are found by identifying back edges which are also Cross-Join edges, and then using an SCC algorithm to find SCCs in the subgraph induced by all nodes at that level or deeper.
 
+Note that there may be some loops which are not fully connected when visualised in the original graph. **This is not a bug.** This happens because a back-edge target may be the header of a lower level loop which has an exit in the middle of the loop, and was collapsed. The collapsed loop is represented by that single loop header and thus the aforementioned loop exit also appears to come from that loop header (since it is representative of the entire inner loop).
+
 ### Dominator Analysis
 
 Several tasks are required to be run to do dominator analysis.
