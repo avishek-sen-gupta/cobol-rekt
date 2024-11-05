@@ -1,0 +1,124 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "1",
+        "author": "liquibase",
+        "changes": [
+          {
+            "sqlFile": {
+              "path": "../migrations/V1__create_person_table.sql",
+              "relativeToChangelogFile": true
+            }
+          }
+        ],
+        "rollback": {
+          "sqlFile": {
+            "path": "../migrations/U1__create_person_table.sql",
+            "relativeToChangelogFile": true
+          }
+        }
+      }
+    },
+    {
+      "changeSet": {
+        "id": "2",
+        "author": "liquibase",
+        "changes": [
+          {
+            "sqlFile": {
+              "path": "../migrations/V2__create_project_table.sql",
+              "relativeToChangelogFile": true
+            }
+          }
+        ],
+        "rollback": {
+          "sqlFile": {
+            "path": "../migrations/U2__create_project_table.sql",
+            "relativeToChangelogFile": true
+          }
+        }
+      }
+    },
+    {
+      "changeSet": {
+        "id": "3",
+        "author": "liquibase",
+        "changes": [
+          {
+            "sqlFile": {
+              "path": "../migrations/V3__create_raw_ast_table.sql",
+              "relativeToChangelogFile": true
+            }
+          }
+        ],
+        "rollback": {
+          "sqlFile": {
+            "path": "../migrations/U3__create_raw_ast_table.sql",
+            "relativeToChangelogFile": true
+          }
+        }
+      }
+    },
+    {
+      "changeSet": {
+        "id": "4",
+        "author": "liquibase",
+        "changes": [
+          {
+            "sqlFile": {
+              "path": "../migrations/V4__create_ir_ast.sql",
+              "relativeToChangelogFile": true
+            }
+          }
+        ],
+        "rollback": {
+          "sqlFile": {
+            "path": "../migrations/U4__create_ir_ast.sql",
+            "relativeToChangelogFile": true
+          }
+        }
+      }
+    },
+    {
+      "changeSet": {
+        "id": "5",
+        "author": "liquibase",
+        "changes": [
+          {
+            "sqlFile": {
+              "path": "../migrations/V5__create_ir_cfg_table.sql",
+              "relativeToChangelogFile": true
+            }
+          }
+        ],
+        "rollback": {
+          "sqlFile": {
+            "path": "../migrations/U5__create_ir_cfg_table.sql",
+            "relativeToChangelogFile": true
+          }
+        }
+      }
+    },
+    {
+      "changeSet": {
+        "id": "6",
+        "author": "liquibase",
+        "changes": [
+          {
+            "sqlFile": {
+              "path": "../migrations/V6__create_loop_body_table.sql",
+              "relativeToChangelogFile": true
+            }
+          }
+        ],
+        "rollback": {
+          "sqlFile": {
+            "path": "../migrations/U6__create_loop_body_table.sql",
+            "relativeToChangelogFile": true
+          }
+        }
+      }
+    }
+  ]
+}

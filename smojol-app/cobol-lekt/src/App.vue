@@ -72,11 +72,17 @@ export default {
       this.getCFGWithID(1);
     },
     getCFGWithID(id) {
-      axios.get("/api/ir-cfg/" + id)
+      const cfgPromise = axios.get("/api/ir-cfg/" + id)
           .then(response => {
             console.log(response);
             this.irCFG = response.data.cfg;
-          })
+          });
+      // const loopBodyPromise = axios.get("/api/loop-body/" + id)
+      //     .then(response => {
+      //       console.log(response);
+      //       this.irCFG = response.data.cfg;
+      //     });
+      return cfgPromise
           .catch(function (err) {
             console.log("There was an error: ");
             console.log(err);
