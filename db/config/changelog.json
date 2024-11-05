@@ -119,6 +119,26 @@
           }
         }
       }
+    },
+    {
+      "changeSet": {
+        "id": "7",
+        "author": "liquibase",
+        "changes": [
+          {
+            "sqlFile": {
+              "path": "../migrations/V7__create_t1_t2_analysis_table.sql",
+              "relativeToChangelogFile": true
+            }
+          }
+        ],
+        "rollback": {
+          "sqlFile": {
+            "path": "../migrations/U7__create_t1_t2_analysis_table.sql",
+            "relativeToChangelogFile": true
+          }
+        }
+      }
     }
   ]
 }

@@ -20,7 +20,7 @@ export default {
   setup() {
   },
   data() {
-    return {heartbeatResult: "UNKNOWN", irAST: null, irCFG: null, nodeDetails: null, centerNode: null, loopBodies: []};
+    return {heartbeatResult: "UNKNOWN", irAST: null, irCFG: null, nodeDetails: null, centerNode: null, loopBodies: [], t1t2Result: null};
   },
   mounted() {
   },
@@ -59,6 +59,7 @@ export default {
       axios.get("/api/ir-ast/" + id)
           .then(response => {
             this.irAST = response.data.ast;
+            this.t1t2Result = null;
           })
           .catch(function (err) {
             console.log("There was an error: ");
@@ -83,11 +84,17 @@ export default {
             console.log(response);
             return response.data;
           });
+      const t1t2Promise = axios.get("/api/ir-cfg/" + id + "/t1-t2")
+          .then(response => {
+            console.log(response);
+            return response.data;
+          });
 
       try {
-        const [irCFG, loopBodies] = await Promise.all([cfgPromise, loopBodyPromise]);
+        const [irCFG, loopBodies, t1t2Result] = await Promise.all([cfgPromise, loopBodyPromise, t1t2Promise]);
         this.irCFG = irCFG;
         this.loopBodies = loopBodies;
+        this.t1t2Result = t1t2Result;
       } catch(e) {
         console.log("There was an error: ");
         console.log(e);
@@ -125,6 +132,7 @@ export default {
         :digraph-model="irCFG"
         :tree-model="irAST"
         :loopBodies="loopBodies"
+        :t1t2Result="t1t2Result"
         :center-node="centerNode"
         @node-details-changed="updateNodeDetails"
         style="grid-area: 1 / 2 / 3 / 3"

@@ -6,8 +6,9 @@ import {asCytoscapeTree, TreeModelNode, TranspilerNodeChildrenAccess} from "@/ts
 import {defineComponent, PropType, ref} from "vue";
 import {asCytoscapeDigraph, Digraph} from "@/ts/Digraph";
 import {CytoModel} from "@/ts/CytoscapeTypes";
-import {MutableCenter, randomColour} from "@/ts/FlippableId";
+import {MutableCenter} from "@/ts/FlippableId";
 import {LoopBody, LoopNode} from "@/ts/ContractTypes";
+import {randomColour} from "@/ts/Colours";
 
 export default defineComponent({
       name: "GraphView",
@@ -27,6 +28,10 @@ export default defineComponent({
         centerNode: {
           type: [Object, null] as PropType<MutableCenter | null>,
           required: true
+        },
+        t1t2Result: {
+          type: [Object, null] as PropType<{ isReducible: boolean } | null>,
+          required: true
         }
       },
       setup() {
@@ -36,7 +41,13 @@ export default defineComponent({
       mounted() {
         // this.buildGraph();
       },
-  watch: {
+      computed: {
+        isReducible() {
+          if (this.t1t2Result === null) return "";
+          return this.t1t2Result.isReducible ? "Reducible" : "Irreducible";
+        }
+      },
+      watch: {
         treeModel(newValue: TreeModelNode) {
           this.buildGraph(asCytoscapeTree(newValue, TranspilerNodeChildrenAccess));
         },
@@ -60,7 +71,11 @@ export default defineComponent({
           loopBodies.forEach(body => {
             const bodyColour = randomColour();
             const allLoopNodeIDs = body.loopNodes.map(ln => this.cy.getElementById(ln.id));
-            allLoopNodeIDs.forEach(ele => ele.style("background-color", bodyColour));
+            allLoopNodeIDs.forEach(ele => ele.style({
+              "background-color": bodyColour,
+              borderWidth: "1px",
+              borderColor: "black"
+            }));
           })
           // const loopNodes = loopBodies.flatMap(body => body.loopNodes);
           //
@@ -131,7 +146,7 @@ export default defineComponent({
 
 <template>
   <div class="headered-pane" id="graph-view">
-    <div class="pane-heading">Graph View</div>
+    <div class="pane-heading">Graph View <span v-if="t1t2Result != null">({{ isReducible }})</span></div>
     <div id="cyto" class="cyto"></div>
   </div>
 </template>
@@ -145,5 +160,6 @@ export default defineComponent({
 .flashingnode {
   border: 3px solid red;
   background-color: yellow;
-  transition: background-color 3s ease;}
+  transition: background-color 3s ease;
+}
 </style>

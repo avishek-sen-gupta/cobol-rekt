@@ -1066,7 +1066,7 @@ This is a list of algorithms written from scratch, for reference or reuse. All o
 
 You will need the following set up on your local machine.
 
-- SQLite for the database
+- SQLite3 for the database
 - Liquibase for DB migrations
 - NodeJS with ```npm```
 

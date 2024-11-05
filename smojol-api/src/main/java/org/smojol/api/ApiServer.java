@@ -1,6 +1,7 @@
 package org.smojol.api;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import io.javalin.Javalin;
@@ -66,6 +67,11 @@ public class ApiServer {
                 .get("/api/ir-cfg/{id}/loop-body", ctx -> {
                     ctx.json(loopBodies(ctx.pathParam("id"), gson, dbContext));
                 })
+                .get("/api/ir-cfg/{id}/t1-t2", ctx -> {
+                    Optional<Boolean> isReducible = t1t2Analysis(ctx.pathParam("id"), gson, dbContext);
+                    if (isReducible.isEmpty()) ctx.status(404);
+                    ctx.json(ImmutableMap.of("isReducible", isReducible.get()));
+                })
                 .get("/api/projects", ctx -> ctx.json(projectListings(gson, dbContext)))
                 .start(port);
     }
@@ -83,9 +89,13 @@ public class ApiServer {
     }
 
     private static List<JsonObject> loopBodies(String id, Gson gson, DbContext dbContext) throws SQLException {
-        Result<Record2<Integer, String>> loopBodiesFromDB = dbContext.execute(using -> new IntermediateFormService(gson).loopBodiesByCfgID(Integer.parseInt(id), using));
-        List<JsonObject> map = loopBodiesFromDB.map(rec -> gson.fromJson(rec.component2(), JsonObject.class));
-        return map;
+        Result<Record2<Long, String>> loopBodiesFromDB = dbContext.execute(using -> new IntermediateFormService(gson).loopBodiesByCfgID(Long.parseLong(id), using));
+        return loopBodiesFromDB.map(rec -> gson.fromJson(rec.component2(), JsonObject.class));
+    }
+
+    private static Optional<Boolean> t1t2Analysis(String id, Gson gson, DbContext dbContext) throws SQLException {
+        Optional<Boolean> t1t2Result = dbContext.execute(using -> new IntermediateFormService(gson).getT1T2AnalysisResult(Long.parseLong(id), using));
+        return t1t2Result;
     }
 
     private static Graph<TranspilerInstruction, DefaultEdge> flowgraph() throws IOException {

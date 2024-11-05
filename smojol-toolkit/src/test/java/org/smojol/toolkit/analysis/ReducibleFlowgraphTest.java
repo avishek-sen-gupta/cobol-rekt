@@ -9,7 +9,7 @@ import org.smojol.common.graph.TestNode;
 import org.smojol.common.transpiler.FlowgraphReductionResult;
 import org.smojol.common.transpiler.FlowgraphTransformer;
 import org.smojol.common.transpiler.TranspilerInstruction;
-import org.smojol.toolkit.analysis.task.transpiler.IntervalAnalysisTask;
+import org.smojol.toolkit.analysis.task.transpiler.T1_T2_IntervalAnalysisTask;
 import org.smojol.toolkit.analysis.task.transpiler.IrreducibleStronglyConnectedComponentsTask;
 import org.smojol.toolkit.task.AnalysisTaskResult;
 import org.smojol.toolkit.task.AnalysisTaskResultOK;
@@ -111,7 +111,7 @@ public class ReducibleFlowgraphTest {
         AnalysisTaskResult result = new IrreducibleStronglyConnectedComponentsTask<>(graph).run();
         List<Pair<Graph<TestNode, DefaultEdge>, Set<DefaultEdge>>> badSCCs = ((AnalysisTaskResultOK) result).getDetail();
         assertEquals(noImproperSCCs, badSCCs.isEmpty());
-        AnalysisTaskResult secondReducibleTest = new IntervalAnalysisTask<>(graph, n -> n.equals(node("1")), (a, b) -> new DefaultEdge()).run();
+        AnalysisTaskResult secondReducibleTest = new T1_T2_IntervalAnalysisTask<>(graph, n -> n.equals(node("1")), (a, b) -> new DefaultEdge()).run();
         FlowgraphReductionResult<TranspilerInstruction, DefaultEdge> reductions = ((AnalysisTaskResultOK) secondReducibleTest).getDetail();
         assertEquals(shouldBeReducible, reductions.isReducible());
     }

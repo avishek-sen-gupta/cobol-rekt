@@ -16,7 +16,7 @@ import org.smojol.toolkit.analysis.pipeline.BaseAnalysisModel;
 import org.smojol.toolkit.analysis.pipeline.ProgramSearch;
 import org.smojol.toolkit.analysis.task.analysis.CodeTaskRunner;
 import org.smojol.toolkit.analysis.task.transpiler.BuildTranspilerFlowgraphTask;
-import org.smojol.toolkit.analysis.task.transpiler.IntervalAnalysisTask;
+import org.smojol.toolkit.analysis.task.transpiler.T1_T2_IntervalAnalysisTask;
 import org.smojol.toolkit.interpreter.FullProgram;
 import org.smojol.toolkit.interpreter.structure.OccursIgnoringFormat1DataStructureBuilder;
 import org.smojol.toolkit.task.AnalysisTaskResult;
@@ -50,7 +50,7 @@ public class TranspilerInstructionIntervalAnalysisMain {
         System.out.println("Number of nodes = " + transpilerFlowgraph.instructionFlowgraph().vertexSet().size());
         String draw = new MermaidGraph<TranspilerInstruction, DefaultEdge>().draw(transpilerFlowgraph.instructionFlowgraph());
         PruneUnreachableTask.pruneUnreachableInstructions(transpilerFlowgraph);
-        AnalysisTaskResultOK intervalAnalysisResult = (AnalysisTaskResultOK) new IntervalAnalysisTask<>(transpilerFlowgraph.instructionFlowgraph(), IntervalAnalysisTask.IS_ROOT, IntervalAnalysisTask.NEW_DEFAULT_EDGE).run();
+        AnalysisTaskResultOK intervalAnalysisResult = (AnalysisTaskResultOK) new T1_T2_IntervalAnalysisTask<>(transpilerFlowgraph.instructionFlowgraph(), T1_T2_IntervalAnalysisTask.IS_ROOT, T1_T2_IntervalAnalysisTask.NEW_DEFAULT_EDGE).run();
         FlowgraphReductionResult<TranspilerInstruction, DefaultEdge> reductionResult = intervalAnalysisResult.getDetail();
         System.out.println(reductionResult.evolutions().getLast());
         System.out.println(reductionResult.isReducible());

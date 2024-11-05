@@ -13,7 +13,7 @@ import org.smojol.common.transpiler.PruneUnreachableTask;
 import org.smojol.common.transpiler.TranspilerFlowgraph;
 import org.smojol.common.transpiler.TranspilerInstruction;
 import org.smojol.toolkit.analysis.task.analysis.CodeTaskRunner;
-import org.smojol.toolkit.analysis.task.transpiler.IntervalAnalysisTask;
+import org.smojol.toolkit.analysis.task.transpiler.T1_T2_IntervalAnalysisTask;
 import org.smojol.toolkit.analysis.pipeline.ProgramSearch;
 import org.smojol.toolkit.interpreter.FullProgram;
 import org.smojol.toolkit.interpreter.structure.OccursIgnoringFormat1DataStructureBuilder;
@@ -45,7 +45,7 @@ public class BasicBlockIntervalAnalysisMain {
         Function<BasicBlock<TranspilerInstruction>, Boolean> IS_ROOT = block -> block == transpilerFlowgraph.basicBlocks().getFirst();
         BiFunction<BasicBlock<TranspilerInstruction>, BasicBlock<TranspilerInstruction>, DefaultEdge> DEFAULT_EDGE = (b1, b2) -> new DefaultEdge();
         PruneUnreachableTask.pruneUnreachables(blockGraph, IS_ROOT);
-        IntervalAnalysisTask<BasicBlock<TranspilerInstruction>, DefaultEdge> reductionTask = new IntervalAnalysisTask<>(blockGraph, IS_ROOT, DEFAULT_EDGE);
+        T1_T2_IntervalAnalysisTask<BasicBlock<TranspilerInstruction>, DefaultEdge> reductionTask = new T1_T2_IntervalAnalysisTask<>(blockGraph, IS_ROOT, DEFAULT_EDGE);
         AnalysisTaskResultOK intervalAnalysisResult = (AnalysisTaskResultOK) reductionTask.run();
         FlowgraphReductionResult<BasicBlock<TranspilerInstruction>, DefaultEdge> reductionResult = intervalAnalysisResult.getDetail();
         System.out.println("DONE");
