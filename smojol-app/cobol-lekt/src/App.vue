@@ -26,8 +26,8 @@ export default {
   },
   methods: {
     navigateToCytoNode(data) {
-      console.log("Parent notified");
-      console.log(data.id);
+      // console.log("Parent notified");
+      // console.log(data.id);
       this.centerNode = flip(data.id, this.centerNode);
     },
     updateNodeDetails(data) {
@@ -92,13 +92,6 @@ export default {
         console.log("There was an error: ");
         console.log(e);
       }
-      // console.log("RESPONSE");
-      //
-      // return cfgPromise
-      //     .catch(function (err) {
-      //       console.log("There was an error: ");
-      //       console.log(err);
-      //     });
     }
   },
   computed: {}

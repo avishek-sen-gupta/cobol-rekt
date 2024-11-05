@@ -54,14 +54,11 @@ export default defineComponent({
 
           this.cy.center(elementById);
           elementById.select();
-          // elementById.flashClass("flashingnode", 3000);
         },
         loopBodies(newValue: LoopBody[]) {
-          console.log("FOUND LOOP BODIES");
           const loopNodes = newValue.flatMap(body => body.loopNodes);
           const allLoopNodeIDs = loopNodes.map(ln => this.cy.getElementById(ln.id));
           allLoopNodeIDs.forEach(ele => ele.style("background-color", "green"))
-          console.log(newValue);
         }
       },
       methods: {
