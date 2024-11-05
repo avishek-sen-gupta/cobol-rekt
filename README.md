@@ -10,7 +10,7 @@ Cobol-REKT is an evolving toolkit of capabilities helpful for **reverse engineer
 
 Engineers can pick components from this library to incorporate into their reverse engineering analysis workflows, or more cohesive products suitable for wider audiences like analysts.
 
-**This is also why Cobol-REKT does not have a UI (though there may be one in the future for showcase purposes).**
+**This is also why Cobol-REKT does not have a UI (though there is one in the works for showcase purposes).**
 
 An important aspirational aim of this library is to serve as a testbed for some of the following:
 
