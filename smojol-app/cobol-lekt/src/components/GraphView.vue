@@ -6,7 +6,7 @@ import {asCytoscapeTree, TreeModelNode, TranspilerNodeChildrenAccess} from "@/ts
 import {defineComponent, PropType, ref} from "vue";
 import {asCytoscapeDigraph, Digraph} from "@/ts/Digraph";
 import {CytoModel} from "@/ts/CytoscapeTypes";
-import {MutableCenter} from "@/ts/FlippableId";
+import {MutableCenter, randomColour} from "@/ts/FlippableId";
 import {LoopBody, LoopNode} from "@/ts/ContractTypes";
 
 export default defineComponent({
@@ -55,10 +55,17 @@ export default defineComponent({
           this.cy.center(elementById);
           elementById.select();
         },
-        loopBodies(newValue: LoopBody[]) {
-          const loopNodes = newValue.flatMap(body => body.loopNodes);
-          const allLoopNodeIDs = loopNodes.map(ln => this.cy.getElementById(ln.id));
-          allLoopNodeIDs.forEach(ele => ele.style("background-color", "green"))
+        loopBodies(loopBodies: LoopBody[]) {
+          // const l = [loopBodies[2]];
+          loopBodies.forEach(body => {
+            const bodyColour = randomColour();
+            const allLoopNodeIDs = body.loopNodes.map(ln => this.cy.getElementById(ln.id));
+            allLoopNodeIDs.forEach(ele => ele.style("background-color", bodyColour));
+          })
+          // const loopNodes = loopBodies.flatMap(body => body.loopNodes);
+          //
+          // const allLoopNodeIDs = loopNodes.map(ln => this.cy.getElementById(ln.id));
+          // allLoopNodeIDs.forEach(ele => ele.style("background-color", "green"))
         }
       },
       methods: {

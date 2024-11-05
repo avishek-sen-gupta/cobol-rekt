@@ -1120,10 +1120,15 @@ Some screenshots:
 
 #### Loop Bodies with Control Flowgraph
 
-This shows nodes which comprise natural loops (both reducible and irreducible) highlighted in green as part of the Control Flowgraph.
+This shows nodes which comprise natural loops (both reducible and irreducible) highlighted in amber as part of the Control Flowgraph.
 
 ![Loop Bodies in CFG](documentation/demo-app-cfg-loop-bodies.png)
 
+#### Nested Loop Bodies with Control Flowgraph
+
+This shows an example of nested natural loops. The deep purple nodes at the bottom form an inner loop which is in turn nested inside a bigger loop consisting of nodes highlighted in green (and of course, the nodes of the inner loop).
+
+![Nested Loop Bodies in CFG](documentation/demo-app-cfg-nested-loop-bodies.png)
 
 The rest of this file is mostly technical notes for my personal documentation.
 
