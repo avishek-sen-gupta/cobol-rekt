@@ -7,12 +7,17 @@ import {defineComponent, PropType, ref} from "vue";
 import {asCytoscapeDigraph, Digraph} from "@/ts/Digraph";
 import {CytoModel} from "@/ts/CytoscapeTypes";
 import {MutableCenter} from "@/ts/FlippableId";
+import {LoopBody, LoopNode} from "@/ts/ContractTypes";
 
 export default defineComponent({
       name: "GraphView",
       props: {
         treeModel: {
           type: [Object, null] as PropType<TreeModelNode | null>,
+          required: true
+        },
+        loopBodies: {
+          type: Object as PropType<LoopNode[]>,
           required: true
         },
         digraphModel: {
@@ -50,6 +55,13 @@ export default defineComponent({
           this.cy.center(elementById);
           elementById.select();
           // elementById.flashClass("flashingnode", 3000);
+        },
+        loopBodies(newValue: LoopBody[]) {
+          console.log("FOUND LOOP BODIES");
+          const loopNodes = newValue.flatMap(body => body.loopNodes);
+          const allLoopNodeIDs = loopNodes.map(ln => this.cy.getElementById(ln.id));
+          allLoopNodeIDs.forEach(ele => ele.style("background-color", "green"))
+          console.log(newValue);
         }
       },
       methods: {

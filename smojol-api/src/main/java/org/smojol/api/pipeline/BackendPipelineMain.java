@@ -84,7 +84,7 @@ public class BackendPipelineMain {
             long projectID = projectService.insertProject(projectName, using);
             long irAstID = intermediateFormService.insertIntermediateAST(tree, programName, projectID, using);
             long irCfgID = intermediateFormService.insertIntermediateCFG(irCFGForDB, programName, projectID, using);
-            List<Long> loopBodyIDs = reducibleLoopBodies.stream().map(rlb -> intermediateFormService.insertLoopBody(rlb, programName, projectID, using)).toList();
+            List<Long> loopBodyIDs = reducibleLoopBodies.stream().map(rlb -> intermediateFormService.insertLoopBody(rlb, programName, irCfgID, using)).toList();
 
             loopBodyIDs.forEach(lb -> System.out.println("Loop body ID = " + lb));
             System.out.println(projectID);

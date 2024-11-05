@@ -3,6 +3,7 @@ package org.smojol.api;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import org.jetbrains.annotations.NotNull;
 import org.jooq.Record;
 import org.jooq.*;
 import org.smojol.api.contract.IntermediateASTListing;
@@ -24,6 +25,9 @@ import static org.jooq.impl.DSL.field;
 import static org.jooq.impl.DSL.table;
 
 public class IntermediateFormService {
+    public static final String PROGRAM_NAME = "PROGRAM_NAME";
+    public static final String PROJECT_ID = "PROJECT_ID";
+    public static final String ID = "id";
     private final Gson gson;
     Table<Record> IR_AST = table("IR_AST");
     Table<Record> IR_CFG = table("IR_CFG");
@@ -39,7 +43,7 @@ public class IntermediateFormService {
                 .select(field("IR_AST.PROGRAM_NAME", String.class),
                         field("IR_AST.IR_AST", String.class),
                         field("IR_AST.ID", Integer.class),
-                        field("PROJECT.ID", Integer.class).as("PROJECT_ID"))
+                        field("PROJECT.ID", Integer.class).as(PROJECT_ID))
                 .from(IR_AST)
                 .leftOuterJoin(PROJECT)
                 .on(field("IR_AST.PROJECT_ID", Integer.class)
@@ -57,7 +61,7 @@ public class IntermediateFormService {
                 .select(field("IR_CFG.PROGRAM_NAME", String.class),
                         field("IR_CFG.IR_CFG", String.class),
                         field("IR_CFG.ID", Integer.class),
-                        field("PROJECT.ID", Integer.class).as("PROJECT_ID"))
+                        field("PROJECT.ID", Integer.class).as(PROJECT_ID))
                 .from(IR_CFG)
                 .leftOuterJoin(PROJECT)
                 .on(field("IR_CFG.PROJECT_ID", Integer.class)
@@ -91,7 +95,7 @@ public class IntermediateFormService {
     }
 
     public Optional<Map<String, Object>> intermediateAST(int id, DSLContext using) {
-        Result<Record2<Integer, String>> ast = using.select(field("id", Integer.class), field("IR_AST", String.class)).from(IR_AST).where(field("ID", Integer.class).eq(id)).fetch();
+        Result<Record2<Integer, String>> ast = using.select(field(ID, Integer.class), field("IR_AST", String.class)).from(IR_AST).where(field("ID", Integer.class).eq(id)).fetch();
         if (ast.isEmpty()) return Optional.empty();
         return Optional.of(ImmutableMap.of("id", id, "ast", gson.fromJson(ast.getFirst().component2(), JsonObject.class)));
     }
@@ -107,7 +111,7 @@ public class IntermediateFormService {
 
     public long insertIntermediateAST(TranspilerNode tree, String programName, long projectID, DSLContext using) {
         return using.insertInto(IR_AST)
-                .columns(field("PROGRAM_NAME"), field("PROJECT_ID"),
+                .columns(field(PROGRAM_NAME), field(PROJECT_ID),
                         field("IR_AST"))
                 .values(programName, projectID, gson.toJson(tree))
                 .returningResult(field("ID", Long.class))
@@ -117,7 +121,7 @@ public class IntermediateFormService {
 
     public long insertIntermediateCFG(Map<String, Set<?>> irCFGForDB, String programName, long projectID, DSLContext using) {
         return using.insertInto(IR_CFG)
-                .columns(field("PROGRAM_NAME"), field("PROJECT_ID"),
+                .columns(field(PROGRAM_NAME), field(PROJECT_ID),
                         field("IR_CFG"))
                 .values(programName, projectID, this.gson.toJson(irCFGForDB))
                 .returningResult(field("ID", Long.class))
@@ -127,11 +131,18 @@ public class IntermediateFormService {
 
     public Long insertLoopBody(NaturalLoopBody<TranspilerInstruction> loopBody, String programName, long projectID, DSLContext using) {
         return using.insertInto(LOOP_BODY)
-                .columns(field("PROGRAM_NAME"), field("PROJECT_ID"),
+                .columns(field(PROGRAM_NAME), field("CFG_ID"),
                         field("BODY"))
                 .values(programName, projectID, this.gson.toJson(loopBody))
                 .returningResult(field("ID", Long.class))
                 .fetchOne()
                 .into(Long.class);
+    }
+
+    public @NotNull Result<Record2<Integer, String>> loopBodiesByCfgID(int cfgID, DSLContext using) {
+        return using.select(field(ID, Integer.class), field("BODY", String.class))
+                .from(LOOP_BODY)
+                .where(field("CFG_ID", Integer.class).eq(cfgID))
+                .fetch();
     }
 }

@@ -81,3 +81,5 @@ fileignoreconfig:
   checksum: c3cd1a6fb94ce7bcccfc132cc62583dcd4f0d6ffee517ad988c21986feb9f8cd
 - filename: db/migrations/V6__create_loop_body_table.sql
   checksum: 9604e1384809a2ce35da5cac7c59ee79de796e668ccd9a8db97573ffd3da8618
+- filename: db/migrations/V6__create_loop_body_table.sql
+  checksum: 16500107ccaa7dadc313d47923ddbae1d2553f678299dc94fcb7560dff208343

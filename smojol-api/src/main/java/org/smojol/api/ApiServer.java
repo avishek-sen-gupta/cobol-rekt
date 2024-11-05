@@ -2,10 +2,13 @@ package org.smojol.api;
 
 import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import io.javalin.Javalin;
 import io.javalin.json.JsonMapper;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
+import org.jooq.Record2;
+import org.jooq.Result;
 import org.smojol.api.contract.ProjectListing;
 import org.smojol.api.database.DbContext;
 import org.smojol.common.dialect.LanguageDialect;
@@ -60,6 +63,9 @@ public class ApiServer {
                     }
                     ctx.json(cfg.get());
                 })
+                .get("/api/ir-cfg/{id}/loop-body", ctx -> {
+                    ctx.json(loopBodies(ctx.pathParam("id"), gson, dbContext));
+                })
                 .get("/api/projects", ctx -> ctx.json(projectListings(gson, dbContext)))
                 .start(port);
     }
@@ -74,6 +80,12 @@ public class ApiServer {
 
     private static Optional<Map<String, Object>> irCFG(String id, Gson gson, DbContext dbContext) throws SQLException {
         return dbContext.execute(using -> new IntermediateFormService(gson).intermediateCFG(Integer.parseInt(id), using));
+    }
+
+    private static List<JsonObject> loopBodies(String id, Gson gson, DbContext dbContext) throws SQLException {
+        Result<Record2<Integer, String>> loopBodiesFromDB = dbContext.execute(using -> new IntermediateFormService(gson).loopBodiesByCfgID(Integer.parseInt(id), using));
+        List<JsonObject> map = loopBodiesFromDB.map(rec -> gson.fromJson(rec.component2(), JsonObject.class));
+        return map;
     }
 
     private static Graph<TranspilerInstruction, DefaultEdge> flowgraph() throws IOException {

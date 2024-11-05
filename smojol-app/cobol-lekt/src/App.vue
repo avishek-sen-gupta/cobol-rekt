@@ -20,7 +20,7 @@ export default {
   setup() {
   },
   data() {
-    return {heartbeatResult: "UNKNOWN", irAST: null, irCFG: null, nodeDetails: null, centerNode: null};
+    return {heartbeatResult: "UNKNOWN", irAST: null, irCFG: null, nodeDetails: null, centerNode: null, loopBodies: []};
   },
   mounted() {
   },
@@ -71,22 +71,34 @@ export default {
     getCFG() {
       this.getCFGWithID(1);
     },
-    getCFGWithID(id) {
+    async getCFGWithID(id) {
       const cfgPromise = axios.get("/api/ir-cfg/" + id)
           .then(response => {
             console.log(response);
             this.irCFG = response.data.cfg;
+            return response.data.cfg;
           });
-      // const loopBodyPromise = axios.get("/api/loop-body/" + id)
-      //     .then(response => {
-      //       console.log(response);
-      //       this.irCFG = response.data.cfg;
+      const loopBodyPromise = axios.get("/api/ir-cfg/" + id + "/loop-body")
+          .then(response => {
+            console.log(response);
+            return response.data;
+          });
+
+      try {
+        const [irCFG, loopBodies] = await Promise.all([cfgPromise, loopBodyPromise]);
+        this.irCFG = irCFG;
+        this.loopBodies = loopBodies;
+      } catch(e) {
+        console.log("There was an error: ");
+        console.log(e);
+      }
+      // console.log("RESPONSE");
+      //
+      // return cfgPromise
+      //     .catch(function (err) {
+      //       console.log("There was an error: ");
+      //       console.log(err);
       //     });
-      return cfgPromise
-          .catch(function (err) {
-            console.log("There was an error: ");
-            console.log(err);
-          });
     }
   },
   computed: {}
@@ -119,6 +131,7 @@ export default {
     <GraphView
         :digraph-model="irCFG"
         :tree-model="irAST"
+        :loopBodies="loopBodies"
         :center-node="centerNode"
         @node-details-changed="updateNodeDetails"
         style="grid-area: 1 / 2 / 3 / 3"
