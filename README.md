@@ -1116,6 +1116,14 @@ PORT=<port> DATABASE_URL=jdbc:sqlite:/path/to/db/file DATABASE_USER="<db_user>" 
 
 Hit ```localhost:<port>```, and you should see the app.
 
+Some screenshots:
+
+#### Loop Bodies with Control Flowgraph
+
+This shows nodes which comprise natural loops (both reducible and irreducible) highlighted in green as part of the Control Flowgraph.
+
+![Loop Bodies in CFG](documentation/demo-app-cfg-loop-bodies.png)
+
 
 The rest of this file is mostly technical notes for my personal documentation.
 
