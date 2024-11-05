@@ -1066,15 +1066,16 @@ This is a list of algorithms written from scratch, for reference or reuse. All o
 You will need the following set up on your local machine.
 
 - SQLite for the database
-- Flyway for DB migrations
+- Liquibase for DB migrations
 - NodeJS with ```npm```
 
 
 ### DB setup
 
 - Run ```up-db.sh```. The script assumes that Flyway is present in ```~/code/flyway```, so you will have to modify that.
-- You can start with a fresh DB by running ```reset-db.sh```.
-
+- You can start with a fresh DB by running ```create-db.sh```.
+- Running ```down-1-db.sh``` rolls back the most recent migration.
+- Running ```reset-db.sh``` rolls the database all the way back before any migrations were run.
 
 ### Populating Data
 - You will need some data to be set up to actually see something in the app. You can run ```BackendPipelineMain``` to do this.
