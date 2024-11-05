@@ -129,7 +129,7 @@ In addition, the support for Neo4J allows you to build custom graph analyses as 
 - [NetworkX](https://networkx.org/) for Python-based graph analyses
 - An implementation of the gSpan algorithm for Frequent Subgraph Mining is adapted from [https://github.com/betterenvi/gSpan].
 - [Neo4J](https://neo4j.com/) is required for using tasks involving Neo4J. The APOC and GDS plugins will need to be installed. All the tasks have also been tested using Neo4J Desktop.
-- A subscription to OpenAI's GPT-4o (or your choice of deployment) will be needed for capabilities which use LLMs. The tasks have been tested using Azure's OpenAI offering.
+- A subscription to Azure's OpenAI API is currently needed for capabilities which use LLMs.
 - [VAVR](https://github.com/vavr-io/vavr) for functional lists used in zipper classes for AST navigation and manipulation.
 - The [demo app](#demo-app-very-early---wip) is being developed using Vue.js.
 - ```RuntimeTypeAdapterFactory``` from Gson for some serialisation use-cases.
@@ -214,6 +214,11 @@ This can be done by specifiying the ```FLOW_TO_NEO4J``` task.
 The OpenAI integration can be leveraged to summarise nodes in a bottom-up fashion (i.e., summarise leaf nodes first, then use those summaries to generate summarise the parent nodes, and so on).
 
 The following diagram shows the AST, the Control Flow Graph, and the data structures graph. The yellow nodes are the summary nodes (generated through an LLM) attached to the AST (to provide explanations) and the data structures (to infer domains).
+
+You will need to have configured the following two environment variables:
+
+- ```AZURE_OPENAI_API_KEY```
+- ```AZURE_OPENAI_ENDPOINT```
 
 ![ast-cfg-structs-graph](documentation/ast-and-cfg-structs-graph.png)
 
