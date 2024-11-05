@@ -148,7 +148,7 @@ export default {
 
 <style>
 #app {
-  font-family: "Roboto Thin", sans-serif;
+  font-family: "Roboto Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
@@ -199,8 +199,6 @@ export default {
 }
 
 .pane-heading {
-  font-size: 1.17em;
-  font-weight: bold;
   background-color: #5b6e83;
   color: white;
   padding-left: 10px;
