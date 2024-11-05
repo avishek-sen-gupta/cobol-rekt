@@ -72,6 +72,7 @@ You can see the current backlog [here](https://github.com/users/avishek-sen-gupt
 - [Known Issues](#known-issues)
 - [References](#references)
 - [Demo App Setup(WIP)](#demo-app-setup-wip)
+- [Demo App Screenshots](#demo-app-screenshots)
 
 ## Introduction
 Cobol-REKT is a continually evolving, actively maintained collection of capabilities helpful for reverse engineering legacy Cobol code. The following is a representative list of the capabilities currently available:
@@ -1116,7 +1117,7 @@ PORT=<port> DATABASE_URL=jdbc:sqlite:/path/to/db/file DATABASE_USER="<db_user>" 
 
 Hit ```localhost:<port>```, and you should see the app.
 
-Some screenshots:
+### Demo App screenshots
 
 #### Loop Bodies with Control Flowgraph
 
