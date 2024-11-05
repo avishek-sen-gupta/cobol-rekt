@@ -33,7 +33,7 @@ export default {
 
 <template>
   <div class="headered-pane" id="project-listing-pane">
-    <div class="pane-heading">
+    <div class="pane-heading" style="display: flex; align-items: center;">
       <span>Projects</span>
       <img id="refresh-projects" alt="Refresh" src="../assets/icons8-refresh-50.png" @click="getProjectListing"
            class="refresh-button"/>

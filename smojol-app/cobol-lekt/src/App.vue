@@ -148,7 +148,7 @@ export default {
 
 <style>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: "Roboto Thin", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
@@ -186,6 +186,7 @@ export default {
 
 .main-panel {
   height: 600px;
+  width: 99%;
   display: grid;
   grid-template-columns: 42% 36% 22%;
   grid-template-rows: 50% 50%;
@@ -203,6 +204,8 @@ export default {
   background-color: #5b6e83;
   color: white;
   padding-left: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
 }
