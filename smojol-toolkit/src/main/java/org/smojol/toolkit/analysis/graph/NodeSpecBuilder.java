@@ -112,6 +112,13 @@ public class NodeSpecBuilder {
         return new NodeSpec(ImmutableList.of(AST_NODE), finalCriteria);
     }
 
+    public NodeSpec cfgNodeCriteria(Map<String, Object> criteria) {
+        HashMap<String, Object> finalCriteria = new HashMap<>();
+        finalCriteria.put(NAMESPACE, namespaceQualifier.getNamespace());
+        finalCriteria.putAll(criteria);
+        return new NodeSpec(ImmutableList.of(CFG_NODE), finalCriteria);
+    }
+
     public TypedGraphVertex newCodeVertex(FlowNodeLike node) {
         return new TypedCodeVertex(node, namespaceQualifier.getNamespace());
     }

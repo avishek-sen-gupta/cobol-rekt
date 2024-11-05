@@ -67,7 +67,7 @@ export default {
           });
     },
     getIR() {
-      this.getIRWithID(4);
+      this.getIRWithID(1);
     },
     getCFG() {
       this.getCFGWithID(1);

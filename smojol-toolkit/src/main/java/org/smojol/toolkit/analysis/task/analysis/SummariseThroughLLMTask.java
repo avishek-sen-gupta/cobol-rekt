@@ -15,6 +15,7 @@ import org.smojol.toolkit.analysis.graph.SummariseAction;
 
 import java.util.Map;
 
+import static com.mojo.woof.NodeProperties.SECTION_SOURCE;
 import static com.mojo.woof.NodeProperties.TYPE;
 import static com.mojo.woof.NodeRelations.CONTAINS_CODE;
 import static com.mojo.woof.NodeRelations.CONTAINS_DATA;
@@ -39,8 +40,8 @@ public class SummariseThroughLLMTask implements AnalysisTask {
     }
 
     private static void summariseThroughLLM(NodeSpecBuilder qualifier, GraphSDK sdk) {
-        Record neo4jProgramRoot = sdk.findNodes(qualifier.astNodeCriteria(Map.of(TYPE, FlowNodeType.PROCEDURE_DIVISION_BODY.toString()))).getFirst();
-        Record neo4jDataStructuresRoot = sdk.findNodes(qualifier.dataNodeSearchCriteria(Map.of(TYPE, "ROOT"))).getFirst();
+        Record neo4jProgramRoot = sdk.findNodes(qualifier.cfgNodeCriteria(Map.of(TYPE, FlowNodeType.PROCEDURE_DIVISION_BODY.toString()))).getFirst();
+        Record neo4jDataStructuresRoot = sdk.findNodes(qualifier.dataNodeSearchCriteria(Map.of(SECTION_SOURCE, "ROOT"))).getFirst();
         Advisor advisor = new Advisor(OpenAICredentials.fromEnv());
         // Summarises AST bottom-up
         sdk.traverse(neo4jProgramRoot, new SummariseAction(advisor, sdk), CONTAINS_CODE);

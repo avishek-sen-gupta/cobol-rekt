@@ -77,10 +77,6 @@ export default defineComponent({
               borderColor: "black"
             }));
           })
-          // const loopNodes = loopBodies.flatMap(body => body.loopNodes);
-          //
-          // const allLoopNodeIDs = loopNodes.map(ln => this.cy.getElementById(ln.id));
-          // allLoopNodeIDs.forEach(ele => ele.style("background-color", "green"))
         }
       },
       methods: {

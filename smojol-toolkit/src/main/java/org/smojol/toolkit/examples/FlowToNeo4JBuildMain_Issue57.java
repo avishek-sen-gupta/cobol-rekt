@@ -10,7 +10,6 @@ import org.smojol.toolkit.analysis.task.analysis.CodeTaskRunner;
 import org.smojol.toolkit.interpreter.FullProgram;
 import org.smojol.toolkit.interpreter.structure.OccursIgnoringFormat1DataStructureBuilder;
 import org.smojol.toolkit.task.AnalysisTaskResult;
-import org.smojol.toolkit.task.CommandLineAnalysisTask;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,7 +20,7 @@ import static org.smojol.toolkit.task.CommandLineAnalysisTask.*;
 import static org.smojol.toolkit.task.CommandLineAnalysisTask.ATTACH_COMMENTS;
 import static org.smojol.toolkit.task.CommandLineAnalysisTask.BUILD_BASE_ANALYSIS;
 
-public class FlowToNeo4JBuildMain {
+public class FlowToNeo4JBuildMain_Issue57 {
     public static void main(String[] args) throws IOException, InterruptedException {
         Map<String, List<AnalysisTaskResult>> result = new CodeTaskRunner("/Users/asgupta/code/smojol/smojol-test-code",
                 "/Users/asgupta/code/smojol/out/report",
