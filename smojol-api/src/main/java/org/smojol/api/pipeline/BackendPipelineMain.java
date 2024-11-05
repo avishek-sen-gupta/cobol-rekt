@@ -41,7 +41,8 @@ import static org.smojol.toolkit.task.CommandLineAnalysisTask.BUILD_BASE_ANALYSI
 
 public class BackendPipelineMain {
     public static void main(String[] args) throws IOException, InterruptedException, SQLException {
-        String programName = "test-exp.cbl";
+//        String programName = "test-exp.cbl";
+        String programName = "simple-loop.cbl";
         Map<String, List<AnalysisTaskResult>> analysisResult = new CodeTaskRunner("/Users/asgupta/code/smojol/smojol-test-code",
                 "/Users/asgupta/code/smojol/out/report",
                 ImmutableList.of(new File("/Users/asgupta/code/smojol/smojol-test-code")),
