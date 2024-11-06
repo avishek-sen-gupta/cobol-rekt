@@ -20,11 +20,10 @@ import org.smojol.toolkit.task.AnalysisTaskResultOK;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import static org.smojol.toolkit.task.CommandLineAnalysisTask.*;
+import static org.smojol.toolkit.task.CommandLineAnalysisTask.BUILD_BASE_ANALYSIS;
 
 public class FlowToGraphMLBuildMain_Issue57 {
     public static void main(String[] args) throws IOException, InterruptedException {
