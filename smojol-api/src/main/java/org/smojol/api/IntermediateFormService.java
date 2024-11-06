@@ -1,5 +1,6 @@
 package org.smojol.api;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -11,6 +12,7 @@ import org.jooq.*;
 import org.smojol.api.contract.IntermediateASTListing;
 import org.smojol.api.contract.IntermediateCFGListing;
 import org.smojol.api.contract.ProjectListing;
+import org.smojol.api.contract.UnifiedFlowModelListing;
 import org.smojol.common.analysis.NaturalLoopBody;
 import org.smojol.common.transpiler.FlowgraphReductionResult;
 import org.smojol.common.transpiler.TranspilerInstruction;
@@ -52,6 +54,23 @@ public class IntermediateFormService {
         return collectedIntermediateASTs;
     }
 
+    Map<String, List<Map<String, String>>> unifiedFlowListingsByProject(DSLContext using) {
+        @NotNull Result<Record3<String, Long, Long>> allFlowModels = using
+                .select(field("UNIFIED_FLOW.PROGRAM_NAME", String.class),
+                        field("UNIFIED_FLOW.ID", Long.class),
+                        field("PROJECT.ID", Long.class).as(PROJECT_ID))
+                .from(UNIFIED_FLOW)
+                .leftOuterJoin(PROJECT)
+                .on(field("UNIFIED_FLOW.PROJECT_ID", Long.class)
+                        .eq(field("PROJECT.ID", Long.class)))
+                .fetch();
+        Map<String, List<Map<String, String>>> collectedFlowModels = allFlowModels
+                .map(cfg -> (Map<String, String>) ImmutableMap.of("programName", cfg.component1(), "flowModelID", cfg.component2().toString(), "projectID", cfg.component3().toString())).stream()
+                .collect(Collectors.groupingBy(d -> d.get("projectID"))).entrySet().stream()
+                .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+        return collectedFlowModels;
+    }
+
     Map<String, List<Map<String, String>>> intermediateCFGListingsByProject(DSLContext using) {
         @NotNull Result<Record4<String, String, Long, Long>> allIntermediateASTs = using
                 .select(field("IR_CFG.PROGRAM_NAME", String.class),
@@ -73,21 +92,46 @@ public class IntermediateFormService {
     public List<ProjectListing> allProjectEntities(DSLContext using) {
         Map<String, List<Map<String, String>>> astGroupAsMap = intermediateASTListingsByProject(using);
         Map<String, List<Map<String, String>>> cfgGroupAsMap = intermediateCFGListingsByProject(using);
+        Map<String, List<Map<String, String>>> unifiedFlowGroupAsMap = unifiedFlowListingsByProject(using);
         Set<Entry<String, List<Map<String, String>>>> cfgsGroupedByProjectID = cfgGroupAsMap.entrySet();
         Set<Entry<String, List<Map<String, String>>>> astsGroupedByProjectID = astGroupAsMap.entrySet();
+        Set<Entry<String, List<Map<String, String>>>> unifiedFlowGroupedByProjectID = unifiedFlowGroupAsMap.entrySet();
         Stream<String> cfgUniqueProjectIDs = cfgsGroupedByProjectID.stream().map(Entry::getKey);
         Stream<String> astUniqueProjectIDs = astsGroupedByProjectID.stream().map(Entry::getKey);
-        Set<String> allUniqueProjectIDs = Stream.concat(cfgUniqueProjectIDs, astUniqueProjectIDs).collect(Collectors.toUnmodifiableSet());
+        Stream<String> unifiedFlowUniqueProjectIDs = unifiedFlowGroupedByProjectID.stream().map(Entry::getKey);
+        Set<String> allUniqueProjectIDs = Stream.of(cfgUniqueProjectIDs, astUniqueProjectIDs, unifiedFlowUniqueProjectIDs).flatMap(s -> s).collect(Collectors.toUnmodifiableSet());
 
         List<ProjectListing> projectListings = allUniqueProjectIDs.stream().map(pid -> new ProjectListing(pid,
-                astGroupAsMap.get(pid).stream()
-                        .map(ast -> new IntermediateASTListing(ast.get("astID"), ast.get("programName")))
-                        .toList(),
-                cfgGroupAsMap.get(pid).stream()
-                        .map(cfg -> new IntermediateCFGListing(cfg.get("cfgID"), cfg.get("programName")))
-                        .toList())).toList();
+                irASTs(pid, astGroupAsMap),
+                irCFGs(pid, cfgGroupAsMap),
+                flowModels(pid, unifiedFlowGroupAsMap)
+                )).toList();
 
         return projectListings;
+    }
+
+    private static @NotNull List<IntermediateCFGListing> irCFGs(String pid, Map<String, List<Map<String, String>>> cfgGroupAsMap) {
+        List<Map<String, String>> irCFGsForProject = cfgGroupAsMap.get(pid);
+        if (irCFGsForProject == null) return ImmutableList.of();
+        return irCFGsForProject.stream()
+                .map(cfg -> new IntermediateCFGListing(cfg.get("cfgID"), cfg.get("programName")))
+                .toList();
+    }
+
+    private static @NotNull List<IntermediateASTListing> irASTs(String pid, Map<String, List<Map<String, String>>> astGroupAsMap) {
+        List<Map<String, String>> irASTsForProject = astGroupAsMap.get(pid);
+        if (irASTsForProject == null) return ImmutableList.of();
+        return irASTsForProject.stream()
+                .map(ast -> new IntermediateASTListing(ast.get("astID"), ast.get("programName")))
+                .toList();
+    }
+
+    private static @NotNull List<UnifiedFlowModelListing> flowModels(String pid, Map<String, List<Map<String, String>>> unifiedFlowGroupAsMap) {
+        List<Map<String, String>> modelsForProject = unifiedFlowGroupAsMap.get(pid);
+        if (modelsForProject == null) return ImmutableList.of();
+        return modelsForProject.stream()
+                .map(cfg -> new UnifiedFlowModelListing(cfg.get("flowModelID"), cfg.get("programName")))
+                .toList();
     }
 
     public Optional<Map<String, Object>> intermediateAST(long id, DSLContext using) {

@@ -26,6 +26,10 @@ export default {
     },
     loadIntermediateCFG(id) {
       this.$emit("load-ir-cfg", id);
+    },
+    loadFlowModel(id) {
+      console.log("Not doing anything yet...");
+      this.$emit("load-flow-model", id);
     }
   }
 }
@@ -59,6 +63,15 @@ export default {
                     :key="icfg.cfgID"
                     @click="loadIntermediateCFG(icfg.cfgID)">
                   {{ icfg.programName }} / {{ icfg.cfgID }}
+                </li>
+              </ul>
+            </li>
+            <li><strong>Flow Model</strong>
+              <ul>
+                <li v-for="flowModel in project.unifiedFlowModelListings"
+                    :key="flowModel.flowModelID"
+                    @click="loadFlowModel(flowModel.flowModelID)">
+                  {{ flowModel.programName }} / {{ flowModel.flowModelID }}
                 </li>
               </ul>
             </li>
