@@ -91,3 +91,5 @@ fileignoreconfig:
   checksum: 06ee54e75466dba0dbf7507b155e36850183fa0b69bce82a8f94d7acbb1ff553
 - filename: db/migrations/V8__create_unified_flow_table.sql
   checksum: 5d1231eee8fb4ee6990114a77062857ff7d96b3f28bac095306f32ed4c6f56db
+- filename: db/migrations/V8__create_unified_flow_table.sql
+  checksum: c617b4e7ba7e8e7712639908720f04c1d38a0f65a93d30e235bb0e0429088145

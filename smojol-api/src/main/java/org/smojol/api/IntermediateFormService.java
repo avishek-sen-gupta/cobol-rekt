@@ -7,7 +7,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
-import org.jooq.Record;
 import org.jooq.*;
 import org.smojol.api.contract.IntermediateASTListing;
 import org.smojol.api.contract.IntermediateCFGListing;
@@ -26,21 +25,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.jooq.impl.DSL.field;
-import static org.jooq.impl.DSL.table;
+import static org.smojol.api.pipeline.DbConstants.*;
 
 public class IntermediateFormService {
-    public static final @NotNull Field<String> PROGRAM_NAME_FIELD = field("PROGRAM_NAME", String.class);
-    public static final String PROJECT_ID = "PROJECT_ID";
-    public static final @NotNull Field<Long> PROJECT_ID_FIELD = field(PROJECT_ID, Long.class);
-    public static Field<Long> ID_FIELD = field("ID", Long.class);
-    public static final @NotNull Field<Long> CFG_ID_FIELD = field("CFG_ID", Long.class);
-    public static final @NotNull Field<String> BODY_FIELD = field("BODY", String.class);
     private final Gson gson;
-    private static final @NotNull Table<Record> IR_AST = table("IR_AST");
-    private static final @NotNull Table<Record> IR_CFG = table("IR_CFG");
-    private static final @NotNull Table<Record> PROJECT = table("PROJECT");
-    private static final @NotNull Table<Record> LOOP_BODY = table("LOOP_BODY");
-    private static final @NotNull Table<Record> T1_T2_ANALYSIS = table("T1_T2_ANALYSIS");
 
     public IntermediateFormService(Gson gson) {
         this.gson = gson;

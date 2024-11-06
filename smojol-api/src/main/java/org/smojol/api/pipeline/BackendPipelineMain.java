@@ -9,6 +9,7 @@ import org.jgrapht.graph.DefaultEdge;
 import org.jooq.DSLContext;
 import org.smojol.api.IntermediateFormService;
 import org.smojol.api.ProjectService;
+import org.smojol.api.SourceService;
 import org.smojol.api.database.DbContext;
 import org.smojol.common.analysis.NaturalLoopBody;
 import org.smojol.common.dialect.LanguageDialect;
@@ -97,21 +98,22 @@ public class BackendPipelineMain {
 
         IntermediateFormService intermediateFormService = new IntermediateFormService(gson);
         ProjectService projectService = new ProjectService();
+        SourceService sourceService = new SourceService(gson);
 
         DbContext dbContext = new DbContext(url, user, password);
         long pID = dbContext.execute(using -> {
             String projectName = UUID.randomUUID().toString();
             long projectID = projectService.insertProject(projectName, using);
             insertIntermediateArtifacts(reducibleLoopBodies, programName, reductionResult, using, intermediateFormService, tree, projectID, irCFGForDB);
-            insertSourceArtifacts(unifiedModel, using);
+            insertSourceArtifacts(unifiedModel, programName, projectID, sourceService, using);
             return projectID;
         });
 
         System.out.println("DONE, project ID = " + pID);
     }
 
-    private static void insertSourceArtifacts(SerialisableUnifiedModel unifiedModel, DSLContext using) {
-
+    private static Long insertSourceArtifacts(SerialisableUnifiedModel unifiedModel, String programName, long projectID, SourceService sourceService, DSLContext using) {
+       return  sourceService.insertUnifiedModel(unifiedModel, programName, projectID, using);
     }
 
     private static void insertIntermediateArtifacts(Set<NaturalLoopBody<TranspilerInstruction>> reducibleLoopBodies, String programName, FlowgraphReductionResult<TranspilerInstruction, DefaultEdge> reductionResult, DSLContext using, IntermediateFormService intermediateFormService, TranspilerNode tree, long projectID, ImmutableMap<String, Set<?>> irCFGForDB) {
