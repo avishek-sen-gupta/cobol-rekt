@@ -12,7 +12,17 @@ type UnifiedModelGraph = {
 
 export function unifiedModelToDigraph(model: UnifiedModelGraph): Digraph {
     console.log("Not converting yet");
-    const cytoNodes: DigraphNode[] = model.codeVertices.concat(model.dataVertices);
+    const unifiedModelCodeVertices: DigraphNode[] = model.codeVertices.map(cv => ({
+        id: cv.id,
+        label: cv.label,
+        type: cv.type
+    }));
+    const unifiedModelDataVertices: DigraphNode[] = model.dataVertices.map(dv => ({
+        id: dv.id,
+        name: dv.name,
+        type: dv.dataType
+    }));
+    const cytoNodes: DigraphNode[] = unifiedModelCodeVertices.concat(unifiedModelDataVertices);
     const edges: DigraphEdge[] = model.edges.map((dge) => ({
         id: dge.id,
         source: {id: dge.fromNodeID},

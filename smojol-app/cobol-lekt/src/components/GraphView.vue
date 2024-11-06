@@ -131,10 +131,7 @@ export default defineComponent({
             const node = event.target;
             // console.log(`Node selected: ${node.target.id}`);
             const nodeData = node.data();
-            this.$emit("node-details-changed", {
-              id: nodeData.id,
-              nodeType: nodeData.nodeType,
-            });
+            this.$emit("node-details-changed", nodeData);
           });
           this.cy.center();
         }

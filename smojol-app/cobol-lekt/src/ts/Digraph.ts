@@ -6,7 +6,7 @@ export type Digraph = { nodes: DigraphNode[], edges: DigraphEdge[] };
 
 export function cytoDigraphNodes(graph: Digraph): CytoNode[] {
     return graph.nodes.map((dgn) => {
-        return {data: {id: dgn.id, dgn}};
+        return {data: {id: dgn.id, info: dgn}};
     });
 }
 
