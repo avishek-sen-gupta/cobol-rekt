@@ -165,7 +165,7 @@ export default defineComponent({
 
 <template>
   <div :id="nodeID" v-if="isLabelledCodeBlock" :style="codeElementClass">
-    <div>{{ indent }}{ <span class="block-name">{{ this.node.name }}</span></div>
+    <div>{{ indent }}{ <span class="block-name" @click="sourceElementClicked(node)">{{ this.node.name }}</span></div>
     <UiIntermediateAstNode
         v-for="child in node.childTranspilerNodes"
         :key="child.id"
