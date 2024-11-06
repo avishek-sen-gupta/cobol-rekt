@@ -152,8 +152,8 @@ export default {
   <div class="main-panel">
     <CodePane :ir-a-s-t="irAST" style="grid-area: 1 / 1 / 3 / 2" @sourceNodeClicked="navigateToCytoNode"/>
     <GraphView
-        :digraph-model="irCFG"
-        :tree-model="irAST"
+        :intermediate-cfg-digraph="irCFG"
+        :intermediate-ast="irAST"
         :loopBodies="loopBodies"
         :t1t2Result="t1t2Result"
         :center-node="centerNode"

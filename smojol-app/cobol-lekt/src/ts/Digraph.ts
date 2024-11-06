@@ -1,7 +1,7 @@
 import {CytoEdge, CytoModel, CytoNode} from "@/ts/CytoscapeTypes";
 
-type DigraphNode = { id: string, [key: string]: any };
-type DigraphEdge = { source: DigraphNode, target: DigraphNode, [key: string]: any };
+export type DigraphNode = { id: string, [key: string]: any };
+export type DigraphEdge = { source: DigraphNode, target: DigraphNode, [key: string]: any };
 export type Digraph = { nodes: DigraphNode[], edges: DigraphEdge[] };
 
 export function cytoDigraphNodes(graph: Digraph): CytoNode[] {

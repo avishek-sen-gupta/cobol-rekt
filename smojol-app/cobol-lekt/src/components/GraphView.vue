@@ -13,7 +13,7 @@ import {randomColour} from "@/ts/Colours";
 export default defineComponent({
       name: "GraphView",
       props: {
-        treeModel: {
+        intermediateAst: {
           type: [Object, null] as PropType<TreeModelNode | null>,
           required: true
         },
@@ -21,7 +21,7 @@ export default defineComponent({
           type: Object as PropType<LoopNode[]>,
           required: true
         },
-        digraphModel: {
+        intermediateCfgDigraph: {
           type: [Object, null] as PropType<Digraph | null>,
           required: true
         },
@@ -52,10 +52,13 @@ export default defineComponent({
         }
       },
       watch: {
-        treeModel(newValue: TreeModelNode) {
+        intermediateAst(newValue: TreeModelNode) {
           this.buildGraph(asCytoscapeTree(newValue, TranspilerNodeChildrenAccess));
         },
-        digraphModel(newValue: Digraph) {
+        intermediateCfgDigraph(newValue: Digraph) {
+          this.buildGraph(asCytoscapeDigraph(newValue));
+        },
+        flowModel(newValue: Digraph) {
           this.buildGraph(asCytoscapeDigraph(newValue));
         },
         centerNode(newValue: MutableCenter) {
