@@ -29,9 +29,12 @@ import static org.jooq.impl.DSL.field;
 import static org.jooq.impl.DSL.table;
 
 public class IntermediateFormService {
-    public static final String PROGRAM_NAME = "PROGRAM_NAME";
+    public static final @NotNull Field<String> PROGRAM_NAME_FIELD = field("PROGRAM_NAME", String.class);
     public static final String PROJECT_ID = "PROJECT_ID";
-    public static final String ID = "id";
+    public static final @NotNull Field<Long> PROJECT_ID_FIELD = field(PROJECT_ID, Long.class);
+    public static Field<Long> ID_FIELD = field("ID", Long.class);
+    public static final @NotNull Field<Long> CFG_ID_FIELD = field("CFG_ID", Long.class);
+    public static final @NotNull Field<String> BODY_FIELD = field("BODY", String.class);
     private final Gson gson;
     private static final @NotNull Table<Record> IR_AST = table("IR_AST");
     private static final @NotNull Table<Record> IR_CFG = table("IR_CFG");
@@ -100,15 +103,15 @@ public class IntermediateFormService {
     }
 
     public Optional<Map<String, Object>> intermediateAST(long id, DSLContext using) {
-        @NotNull Result<Record2<Long, String>> ast = using.select(field(ID, Long.class), field("IR_AST", String.class)).from(IR_AST).where(field("ID", Long.class).eq(id)).fetch();
+        @NotNull Result<Record2<Long, String>> ast = using.select(ID_FIELD, field("IR_AST", String.class)).from(IR_AST).where(ID_FIELD.eq(id)).fetch();
         if (ast.isEmpty()) return Optional.empty();
         return Optional.of(ImmutableMap.of("id", id, "ast", gson.fromJson(ast.getFirst().component2(), JsonObject.class)));
     }
 
     public Optional<Map<String, Object>> intermediateCFG(long id, DSLContext using) {
-        @NotNull Result<Record2<Long, String>> ast = using.select(field("id", Long.class), field("IR_CFG", String.class))
+        @NotNull Result<Record2<Long, String>> ast = using.select(ID_FIELD, field("IR_CFG", String.class))
                 .from(IR_CFG)
-                .where(field("ID", Long.class).eq(id))
+                .where(ID_FIELD.eq(id))
                 .fetch();
         if (ast.isEmpty()) return Optional.empty();
         return Optional.of(ImmutableMap.of("id", id, "cfg", gson.fromJson(ast.getFirst().component2(), JsonObject.class)));
@@ -116,40 +119,40 @@ public class IntermediateFormService {
 
     public long insertIntermediateAST(TranspilerNode tree, String programName, long projectID, DSLContext using) {
         return using.insertInto(IR_AST)
-                .columns(field(PROGRAM_NAME, String.class),
-                        field(PROJECT_ID, Long.class),
+                .columns(PROGRAM_NAME_FIELD,
+                        PROJECT_ID_FIELD,
                         field("IR_AST", String.class))
                 .values(programName, projectID, gson.toJson(tree))
-                .returningResult(field("ID", Long.class))
+                .returningResult(ID_FIELD)
                 .fetchOne()
                 .into(Long.class);
     }
 
     public long insertIntermediateCFG(Map<String, Set<?>> irCFGForDB, String programName, long projectID, DSLContext using) {
         return using.insertInto(IR_CFG)
-                .columns(field(PROGRAM_NAME, String.class),
-                        field(PROJECT_ID, Long.class),
+                .columns(PROGRAM_NAME_FIELD,
+                        PROJECT_ID_FIELD,
                         field("IR_CFG", String.class))
                 .values(programName, projectID, this.gson.toJson(irCFGForDB))
-                .returningResult(field("ID", Long.class))
+                .returningResult(ID_FIELD)
                 .fetchOne()
                 .into(Long.class);
     }
 
     public Long insertLoopBody(NaturalLoopBody<TranspilerInstruction> loopBody, long irCfgID, DSLContext using) {
         return using.insertInto(LOOP_BODY)
-                .columns(field("CFG_ID", Long.class),
-                        field("BODY", String.class))
+                .columns(CFG_ID_FIELD,
+                        BODY_FIELD)
                 .values(irCfgID, this.gson.toJson(loopBody))
-                .returningResult(field("ID", Long.class))
+                .returningResult(ID_FIELD)
                 .fetchOne()
                 .into(Long.class);
     }
 
     public @NotNull Result<Record2<Long, String>> loopBodiesByCfgID(long cfgID, DSLContext using) {
-        return using.select(field(ID, Long.class), field("BODY", String.class))
+        return using.select(ID_FIELD, BODY_FIELD)
                 .from(LOOP_BODY)
-                .where(field("CFG_ID", Long.class).eq(cfgID))
+                .where(CFG_ID_FIELD.eq(cfgID))
                 .fetch();
     }
 
@@ -161,23 +164,23 @@ public class IntermediateFormService {
         Graph<TranspilerInstruction, DefaultEdge> limitFlowgraph = reductionResult.limitFlowGraph();
         Map<String, Set<?>> limitFlowGraphForDB = ImmutableMap.of("nodes", limitFlowgraph.vertexSet(), "edges", limitFlowgraph.edgeSet());
         return using.insertInto(T1_T2_ANALYSIS)
-                .columns(field("CFG_ID", Long.class),
+                .columns(CFG_ID_FIELD,
                         field("IS_REDUCIBLE", Boolean.class),
                         field("LIMIT_FLOW_GRAPH", String.class
                         ))
                 .values(irCfgID, reductionResult.isReducible(), this.gson.toJson(limitFlowGraphForDB))
-                .returningResult(field("ID", Long.class))
+                .returningResult(ID_FIELD)
                 .fetchOne()
                 .into(Long.class);
     }
 
     public Optional<Boolean> getT1T2AnalysisResult(long irCfgID, DSLContext using) {
         @Nullable Record3<Long, Boolean, String> t1t2Result = using.select(
-                        field(ID, Long.class),
+                        ID_FIELD,
                         field("IS_REDUCIBLE", Boolean.class),
                         field("LIMIT_FLOW_GRAPH", String.class))
                 .from(T1_T2_ANALYSIS)
-                .where(field("CFG_ID", Long.class).eq(irCfgID))
+                .where(CFG_ID_FIELD.eq(irCfgID))
                 .fetchOne();
         return t1t2Result != null ? Optional.of(t1t2Result.component2()) : Optional.empty();
     }

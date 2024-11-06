@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
+import org.jooq.DSLContext;
 import org.smojol.api.IntermediateFormService;
 import org.smojol.api.ProjectService;
 import org.smojol.api.database.DbContext;
@@ -81,10 +82,10 @@ public class BackendPipelineMain {
             System.out.println(new Gson().toJson(loop));
         });
 
-        insertIntoDB(transpilerFlowgraph, reducibleLoopBodies, programName, reductionResult);
+        insertIntoDB(transpilerFlowgraph, reducibleLoopBodies, programName, reductionResult, unifiedModel);
     }
 
-    private static void insertIntoDB(TranspilerFlowgraph transpilerFlowgraph, Set<NaturalLoopBody<TranspilerInstruction>> reducibleLoopBodies, String programName, FlowgraphReductionResult<TranspilerInstruction, DefaultEdge> reductionResult) throws SQLException {
+    private static void insertIntoDB(TranspilerFlowgraph transpilerFlowgraph, Set<NaturalLoopBody<TranspilerInstruction>> reducibleLoopBodies, String programName, FlowgraphReductionResult<TranspilerInstruction, DefaultEdge> reductionResult, SerialisableUnifiedModel unifiedModel) throws SQLException {
         Graph<TranspilerInstruction, DefaultEdge> instructionFlowgraph = transpilerFlowgraph.instructionFlowgraph();
         TranspilerNode tree = transpilerFlowgraph.transpilerTree();
         ImmutableMap<String, Set<?>> irCFGForDB = ImmutableMap.of("nodes", instructionFlowgraph.vertexSet(), "edges", instructionFlowgraph.edgeSet());
@@ -101,18 +102,27 @@ public class BackendPipelineMain {
         long pID = dbContext.execute(using -> {
             String projectName = UUID.randomUUID().toString();
             long projectID = projectService.insertProject(projectName, using);
-            long irAstID = intermediateFormService.insertIntermediateAST(tree, programName, projectID, using);
-            long irCfgID = intermediateFormService.insertIntermediateCFG(irCFGForDB, programName, projectID, using);
-            List<Long> loopBodyIDs = intermediateFormService.insertLoopBody(reducibleLoopBodies, irCfgID, using);
-            intermediateFormService.insertT1T2AnalysisResult(reductionResult, irCfgID, using);
-
-            loopBodyIDs.forEach(lb -> System.out.println("Loop body ID = " + lb));
-            System.out.println(projectID);
-            System.out.println(irAstID);
-            System.out.println(irCfgID);
+            insertIntermediateArtifacts(reducibleLoopBodies, programName, reductionResult, using, intermediateFormService, tree, projectID, irCFGForDB);
+            insertSourceArtifacts(unifiedModel, using);
             return projectID;
         });
 
         System.out.println("DONE, project ID = " + pID);
+    }
+
+    private static void insertSourceArtifacts(SerialisableUnifiedModel unifiedModel, DSLContext using) {
+
+    }
+
+    private static void insertIntermediateArtifacts(Set<NaturalLoopBody<TranspilerInstruction>> reducibleLoopBodies, String programName, FlowgraphReductionResult<TranspilerInstruction, DefaultEdge> reductionResult, DSLContext using, IntermediateFormService intermediateFormService, TranspilerNode tree, long projectID, ImmutableMap<String, Set<?>> irCFGForDB) {
+        long irAstID = intermediateFormService.insertIntermediateAST(tree, programName, projectID, using);
+        long irCfgID = intermediateFormService.insertIntermediateCFG(irCFGForDB, programName, projectID, using);
+        List<Long> loopBodyIDs = intermediateFormService.insertLoopBody(reducibleLoopBodies, irCfgID, using);
+        intermediateFormService.insertT1T2AnalysisResult(reductionResult, irCfgID, using);
+
+        loopBodyIDs.forEach(lb -> System.out.println("Loop body ID = " + lb));
+        System.out.println(projectID);
+        System.out.println(irAstID);
+        System.out.println(irCfgID);
     }
 }
