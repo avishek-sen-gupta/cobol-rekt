@@ -16,8 +16,13 @@ import org.smojol.common.id.UUIDProvider;
 import org.smojol.common.pseudocode.BasicBlock;
 import org.smojol.common.resource.LocalFilesystemOperations;
 import org.smojol.common.transpiler.*;
+import org.smojol.toolkit.analysis.graph.NamespaceQualifier;
+import org.smojol.toolkit.analysis.graph.NodeSpecBuilder;
+import org.smojol.toolkit.analysis.graph.graphml.SerialisableUnifiedModel;
+import org.smojol.toolkit.analysis.pipeline.BaseAnalysisModel;
 import org.smojol.toolkit.analysis.pipeline.ProgramSearch;
 import org.smojol.toolkit.analysis.task.analysis.CodeTaskRunner;
+import org.smojol.toolkit.analysis.task.analysis.UnifiedFlowModelTask;
 import org.smojol.toolkit.analysis.task.transpiler.BuildTranspilerFlowgraphTask;
 import org.smojol.toolkit.analysis.task.transpiler.CloneEdgeOperation;
 import org.smojol.toolkit.analysis.task.transpiler.LoopBodyDetectionTask;
@@ -50,6 +55,10 @@ public class BackendPipelineMain {
                 LanguageDialect.IDMS, new FullProgram(FlowchartOutputFormat.MERMAID), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder(), new ProgramSearch(), new LocalFilesystemOperations())
                 .runForPrograms(ImmutableList.of(BUILD_BASE_ANALYSIS, CommandLineAnalysisTask.BUILD_TRANSPILER_FLOWGRAPH), ImmutableList.of(programName));
         List<AnalysisTaskResult> results = analysisResult.get(programName);
+
+        BaseAnalysisModel baseModel = ((AnalysisTaskResultOK) results.getFirst()).getDetail();
+        SerialisableUnifiedModel unifiedModel = new UnifiedFlowModelTask(baseModel.flowRoot(), baseModel.dataStructures(), new NodeSpecBuilder(new NamespaceQualifier("TEST_NAMESPACE"))).run();
+
         TranspilerFlowgraph transpilerFlowgraph = ((AnalysisTaskResultOK) results.get(1)).getDetail();
         Graph<BasicBlock<TranspilerInstruction>, DefaultEdge> blockGraph = transpilerFlowgraph.basicBlockFlowgraph();
         Graph<TranspilerInstruction, DefaultEdge> instructionFlowgraph = transpilerFlowgraph.instructionFlowgraph();
@@ -95,7 +104,6 @@ public class BackendPipelineMain {
             long irAstID = intermediateFormService.insertIntermediateAST(tree, programName, projectID, using);
             long irCfgID = intermediateFormService.insertIntermediateCFG(irCFGForDB, programName, projectID, using);
             List<Long> loopBodyIDs = intermediateFormService.insertLoopBody(reducibleLoopBodies, irCfgID, using);
-//            List<Long> loopBodyIDs = reducibleLoopBodies.stream().map(rlb -> intermediateFormService.insertLoopBody(rlb, irCfgID, using)).toList();
             intermediateFormService.insertT1T2AnalysisResult(reductionResult, irCfgID, using);
 
             loopBodyIDs.forEach(lb -> System.out.println("Loop body ID = " + lb));

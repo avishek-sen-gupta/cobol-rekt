@@ -87,3 +87,7 @@ fileignoreconfig:
   checksum: c3530af21a19776af0a20e2ab469490e3bb1b5ac4c7d64a84fef132946103079
 - filename: db/migrations/V7__create_t1_t2_analysis_table.sql
   checksum: 59bc72977a67c9090f6fe7aabf4b05e8ef172c9ce99c58898047d544505903ca
+- filename: db/migrations/U8__create_unified_flow_table.sql
+  checksum: 06ee54e75466dba0dbf7507b155e36850183fa0b69bce82a8f94d7acbb1ff553
+- filename: db/migrations/V8__create_unified_flow_table.sql
+  checksum: 5d1231eee8fb4ee6990114a77062857ff7d96b3f28bac095306f32ed4c6f56db

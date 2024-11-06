@@ -139,6 +139,26 @@
           }
         }
       }
+    },
+    {
+      "changeSet": {
+        "id": "8",
+        "author": "liquibase",
+        "changes": [
+          {
+            "sqlFile": {
+              "path": "../migrations/V8__create_unified_flow_table.sql",
+              "relativeToChangelogFile": true
+            }
+          }
+        ],
+        "rollback": {
+          "sqlFile": {
+            "path": "../migrations/U8__create_unified_flow_table.sql",
+            "relativeToChangelogFile": true
+          }
+        }
+      }
     }
   ]
 }
