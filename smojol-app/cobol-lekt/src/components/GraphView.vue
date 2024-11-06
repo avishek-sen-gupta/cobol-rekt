@@ -32,6 +32,10 @@ export default defineComponent({
         t1t2Result: {
           type: [Object, null] as PropType<{ isReducible: boolean } | null>,
           required: true
+        },
+        flowModel: {
+          type: [Object, null] as PropType<Digraph | null>,
+          required: true
         }
       },
       setup() {

@@ -105,7 +105,7 @@ public class IntermediateFormService {
                 irASTs(pid, astGroupAsMap),
                 irCFGs(pid, cfgGroupAsMap),
                 flowModels(pid, unifiedFlowGroupAsMap)
-                )).toList();
+        )).toList();
 
         return projectListings;
     }
@@ -135,7 +135,10 @@ public class IntermediateFormService {
     }
 
     public Optional<Map<String, Object>> intermediateAST(long id, DSLContext using) {
-        @NotNull Result<Record2<Long, String>> ast = using.select(ID_FIELD, field("IR_AST", String.class)).from(IR_AST).where(ID_FIELD.eq(id)).fetch();
+        @NotNull Result<Record2<Long, String>> ast = using.select(ID_FIELD, field("IR_AST", String.class))
+                .from(IR_AST)
+                .where(ID_FIELD.eq(id))
+                .fetch();
         if (ast.isEmpty()) return Optional.empty();
         return Optional.of(ImmutableMap.of("id", id, "ast", gson.fromJson(ast.getFirst().component2(), JsonObject.class)));
     }

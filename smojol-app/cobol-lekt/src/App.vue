@@ -6,6 +6,7 @@ import GraphView from "@/components/GraphView.vue";
 import InfoPane from "@/components/InfoPane.vue";
 import CodePane from "@/components/CodePane.vue";
 import {flip} from "@/ts/FlippableId";
+import {unifiedModelToDigraph} from "@/ts/UnifiedFlowModel";
 
 
 export default {
@@ -20,7 +21,16 @@ export default {
   setup() {
   },
   data() {
-    return {heartbeatResult: "UNKNOWN", irAST: null, irCFG: null, nodeDetails: null, centerNode: null, loopBodies: [], t1t2Result: null};
+    return {
+      heartbeatResult: "UNKNOWN",
+      irAST: null,
+      irCFG: null,
+      nodeDetails: null,
+      centerNode: null,
+      loopBodies: [],
+      t1t2Result: null,
+      flowModel: null
+    };
   },
   mounted() {
   },
@@ -42,6 +52,11 @@ export default {
       // console.log("Received event");
       // console.log(data);
       this.getCFGWithID(data);
+    },
+    receiveLoadFlowModelEvent(data) {
+      // console.log("Received event");
+      // console.log(data);
+      this.getFlowModelWithID(data);
     },
     testPing() {
       const self = this;
@@ -72,6 +87,14 @@ export default {
     getCFG() {
       this.getCFGWithID(1);
     },
+    async getFlowModelWithID(id) {
+      axios.get("/api/flow-model/" + id)
+          .then(response => {
+            console.log(response);
+            this.flowModel = unifiedModelToDigraph(response.data.body);
+            return response.data.body;
+          });
+    },
     async getCFGWithID(id) {
       const cfgPromise = axios.get("/api/ir-cfg/" + id)
           .then(response => {
@@ -95,7 +118,7 @@ export default {
         this.irCFG = irCFG;
         this.loopBodies = loopBodies;
         this.t1t2Result = t1t2Result;
-      } catch(e) {
+      } catch (e) {
         console.log("There was an error: ");
         console.log(e);
       }
@@ -134,6 +157,7 @@ export default {
         :loopBodies="loopBodies"
         :t1t2Result="t1t2Result"
         :center-node="centerNode"
+        :flow-model="flowModel"
         @node-details-changed="updateNodeDetails"
         style="grid-area: 1 / 2 / 3 / 3"
     />
@@ -141,6 +165,7 @@ export default {
               style="grid-area: 1 / 3 / 2 / 4"/>
     <ProjectsView @load-ir-ast="receiveLoadIntermediateASTEvent"
                   @load-ir-cfg="receiveLoadIntermediateCFGEvent"
+                  @load-flow-model="receiveLoadFlowModelEvent"
                   style="grid-area: 2 / 3 / 3 / 4"
     />
   </div>

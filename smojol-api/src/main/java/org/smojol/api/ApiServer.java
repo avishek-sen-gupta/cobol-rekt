@@ -48,6 +48,14 @@ public class ApiServer {
                     config.requestLogger.http((ctx, ms) -> LOGGER.info("Got a request: " + ctx.path()));
                 })
                 .get("/api/heartbeat", ctx -> ctx.result("Hello World!"))
+                .get("/api/flow-model/{id}", ctx -> {
+                    Optional<Map<String, Object>> flowModel = flowModel(ctx.pathParam("id"), gson, dbContext);
+                    if (flowModel.isEmpty()) {
+                        ctx.status(404);
+                        return;
+                    }
+                    ctx.json(flowModel.get());
+                })
                 .get("/api/ir-ast/{id}", ctx -> {
                     Optional<Map<String, Object>> ast = irAST(ctx.pathParam("id"), gson, dbContext);
                     if (ast.isEmpty()) {
@@ -78,6 +86,10 @@ public class ApiServer {
 
     private static List<ProjectListing> projectListings(Gson gson, DbContext dbContext) throws SQLException {
         return dbContext.execute(using -> new IntermediateFormService(gson).allProjectEntities(using));
+    }
+
+    private static Optional<Map<String, Object>> flowModel(String id, Gson gson, DbContext dbContext) throws SQLException {
+        return dbContext.execute(using -> new SourceService(gson).flowModel(Integer.parseInt(id), using));
     }
 
     private static Optional<Map<String, Object>> irAST(String id, Gson gson, DbContext dbContext) throws SQLException {
