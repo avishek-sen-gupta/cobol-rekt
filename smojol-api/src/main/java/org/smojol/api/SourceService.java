@@ -12,7 +12,6 @@ import org.smojol.toolkit.analysis.graph.graphml.SerialisableUnifiedModel;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.jooq.impl.DSL.field;
 import static org.smojol.api.pipeline.DbConstants.*;
 
 public class SourceService {
