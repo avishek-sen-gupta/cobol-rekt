@@ -2,7 +2,7 @@
 
 import cytoscape from "cytoscape";
 import cydagre from "cytoscape-dagre";
-import {asCytoscapeTree, TreeModelNode, TranspilerNodeChildrenAccess} from "@/ts/CytoTree";
+import {asCytoscapeTree, TranspilerNodeChildrenAccess, TreeModelNode} from "@/ts/CytoTree";
 import {defineComponent, PropType, ref} from "vue";
 import {asCytoscapeDigraph, Digraph} from "@/ts/Digraph";
 import {CytoModel} from "@/ts/CytoscapeTypes";
@@ -54,23 +54,18 @@ export default defineComponent({
         digraphModel(newValue: Digraph) {
           this.buildGraph(asCytoscapeDigraph(newValue));
         },
-        centerNode(newValue: MutableCenter, oldValue: MutableCenter | null) {
-          console.log(oldValue);
+        centerNode(newValue: MutableCenter) {
           if (this.cy === null) return;
           const elementById = this.cy.getElementById(newValue.id);
-          if (oldValue !== null) {
-            const oldElementById = this.cy.getElementById(oldValue.id);
-            oldElementById.unselect();
-          }
-
+          this.cy.elements().not(elementById).unselect();
           this.cy.center(elementById);
           elementById.select();
         },
         loopBodies(loopBodies: LoopBody[]) {
-          // const l = [loopBodies[2]];
+          if (this.cy === null) return;
           loopBodies.forEach(body => {
             const bodyColour = randomColour();
-            const allLoopNodeIDs = body.loopNodes.map(ln => this.cy.getElementById(ln.id));
+            const allLoopNodeIDs = body.loopNodes.map(ln => this.cy!.getElementById(ln.id));
             allLoopNodeIDs.forEach(ele => ele.style({
               "background-color": bodyColour,
               borderWidth: "1px",
