@@ -92,7 +92,6 @@ public class JGraphTGraphBuilder {
                     from.id(), to.id(), e.getRelationshipType());
         }).toList();
         return new SerialisableUnifiedModel(serialisableCodeVertices, serialisableDataVertices, serialisableEdges);
-//        return ImmutableList.of(serialisableNodes, edges);
     }
 
     public void writeToGraphML(File outputPath) {
