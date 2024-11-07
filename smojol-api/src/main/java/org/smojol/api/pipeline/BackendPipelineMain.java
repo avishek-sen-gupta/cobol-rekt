@@ -23,6 +23,7 @@ import org.smojol.toolkit.analysis.graph.NodeSpecBuilder;
 import org.smojol.toolkit.analysis.graph.graphml.SerialisableUnifiedModel;
 import org.smojol.toolkit.analysis.pipeline.BaseAnalysisModel;
 import org.smojol.toolkit.analysis.pipeline.ProgramSearch;
+import org.smojol.toolkit.analysis.task.analysis.BuildFlowchartMarkupTask;
 import org.smojol.toolkit.analysis.task.analysis.CodeTaskRunner;
 import org.smojol.toolkit.analysis.task.analysis.UnifiedFlowModelTask;
 import org.smojol.toolkit.analysis.task.transpiler.BuildTranspilerFlowgraphTask;
@@ -48,8 +49,8 @@ import static org.smojol.toolkit.task.CommandLineAnalysisTask.BUILD_BASE_ANALYSI
 
 public class BackendPipelineMain {
     public static void main(String[] args) throws IOException, InterruptedException, SQLException {
-//        String programName = "test-exp.cbl";
-        String programName = "simple-loop.cbl";
+        String programName = "test-exp.cbl";
+//        String programName = "simple-loop.cbl";
         Map<String, List<AnalysisTaskResult>> analysisResult = new CodeTaskRunner("/Users/asgupta/code/smojol/smojol-test-code",
                 "/Users/asgupta/code/smojol/out/report",
                 ImmutableList.of(new File("/Users/asgupta/code/smojol/smojol-test-code")),
@@ -61,6 +62,7 @@ public class BackendPipelineMain {
         BaseAnalysisModel baseModel = ((AnalysisTaskResultOK) results.getFirst()).getDetail();
         SerialisableUnifiedModel unifiedModel = new UnifiedFlowModelTask(baseModel.flowRoot(), baseModel.dataStructures(), new NodeSpecBuilder(new NamespaceQualifier("TEST_NAMESPACE"))).run();
 
+        String flowchartMarkup = new BuildFlowchartMarkupTask(baseModel.flowRoot()).run();
         TranspilerFlowgraph transpilerFlowgraph = ((AnalysisTaskResultOK) results.get(1)).getDetail();
         Graph<BasicBlock<TranspilerInstruction>, DefaultEdge> blockGraph = transpilerFlowgraph.basicBlockFlowgraph();
         Graph<TranspilerInstruction, DefaultEdge> instructionFlowgraph = transpilerFlowgraph.instructionFlowgraph();
@@ -83,10 +85,10 @@ public class BackendPipelineMain {
             System.out.println(new Gson().toJson(loop));
         });
 
-        insertIntoDB(transpilerFlowgraph, reducibleLoopBodies, programName, reductionResult, unifiedModel);
+        insertIntoDB(transpilerFlowgraph, reducibleLoopBodies, programName, reductionResult, unifiedModel, flowchartMarkup);
     }
 
-    private static void insertIntoDB(TranspilerFlowgraph transpilerFlowgraph, Set<NaturalLoopBody<TranspilerInstruction>> reducibleLoopBodies, String programName, FlowgraphReductionResult<TranspilerInstruction, DefaultEdge> reductionResult, SerialisableUnifiedModel unifiedModel) throws SQLException {
+    private static void insertIntoDB(TranspilerFlowgraph transpilerFlowgraph, Set<NaturalLoopBody<TranspilerInstruction>> reducibleLoopBodies, String programName, FlowgraphReductionResult<TranspilerInstruction, DefaultEdge> reductionResult, SerialisableUnifiedModel unifiedModel, String flowchartMarkup) throws SQLException {
         Graph<TranspilerInstruction, DefaultEdge> instructionFlowgraph = transpilerFlowgraph.instructionFlowgraph();
         TranspilerNode tree = transpilerFlowgraph.transpilerTree();
         ImmutableMap<String, Set<?>> irCFGForDB = ImmutableMap.of("nodes", instructionFlowgraph.vertexSet(), "edges", instructionFlowgraph.edgeSet());
@@ -105,15 +107,16 @@ public class BackendPipelineMain {
             String projectName = UUID.randomUUID().toString();
             long projectID = projectService.insertProject(projectName, using);
             insertIntermediateArtifacts(reducibleLoopBodies, programName, reductionResult, using, intermediateFormService, tree, projectID, irCFGForDB);
-            insertSourceArtifacts(unifiedModel, programName, projectID, sourceService, using);
+            insertSourceArtifacts(unifiedModel, programName, projectID, sourceService, flowchartMarkup, using);
             return projectID;
         });
 
         System.out.println("DONE, project ID = " + pID);
     }
 
-    private static Long insertSourceArtifacts(SerialisableUnifiedModel unifiedModel, String programName, long projectID, SourceService sourceService, DSLContext using) {
-       return  sourceService.insertUnifiedModel(unifiedModel, programName, projectID, using);
+    private static void insertSourceArtifacts(SerialisableUnifiedModel unifiedModel, String programName, long projectID, SourceService sourceService, String flowchartMarkup, DSLContext using) {
+        long unifiedModelID = sourceService.insertUnifiedModel(unifiedModel, programName, projectID, using);
+        long flowchartID = sourceService.insertFlowchart(flowchartMarkup, programName, projectID, "PROCEDURE_DIVISION", using);
     }
 
     private static void insertIntermediateArtifacts(Set<NaturalLoopBody<TranspilerInstruction>> reducibleLoopBodies, String programName, FlowgraphReductionResult<TranspilerInstruction, DefaultEdge> reductionResult, DSLContext using, IntermediateFormService intermediateFormService, TranspilerNode tree, long projectID, ImmutableMap<String, Set<?>> irCFGForDB) {

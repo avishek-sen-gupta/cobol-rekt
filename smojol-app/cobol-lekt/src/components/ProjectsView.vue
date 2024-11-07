@@ -75,6 +75,15 @@ export default {
                 </li>
               </ul>
             </li>
+            <li><strong>Flowchart</strong>
+              <ul>
+                <li v-for="flowchart in project.flowchartListings"
+                    :key="flowchart.flowchartID"
+                    @click="loadFlowModel(flowchart.flowchartID)">
+                  {{ flowchart.programName }} / {{ flowchart.flowchartID }}
+                </li>
+              </ul>
+            </li>
           </ul>
         </li>
       </ul>

@@ -159,6 +159,26 @@
           }
         }
       }
+    },
+    {
+      "changeSet": {
+        "id": "9",
+        "author": "liquibase",
+        "changes": [
+          {
+            "sqlFile": {
+              "path": "../migrations/V9__create_flowchart_table.sql",
+              "relativeToChangelogFile": true
+            }
+          }
+        ],
+        "rollback": {
+          "sqlFile": {
+            "path": "../migrations/U9__create_flowchart_table.sql",
+            "relativeToChangelogFile": true
+          }
+        }
+      }
     }
   ]
 }

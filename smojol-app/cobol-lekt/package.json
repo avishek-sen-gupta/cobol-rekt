@@ -10,6 +10,7 @@
   "dependencies": {
     "@types/cytoscape": "^3.21.8",
     "@types/cytoscape-dagre": "^2.3.3",
+    "@viz-js/viz": "^3.11.0",
     "axios": "^1.7.7",
     "core-js": "^3.8.3",
     "cytoscape": "^3.30.3",

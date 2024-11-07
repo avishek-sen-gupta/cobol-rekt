@@ -9,10 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jooq.*;
-import org.smojol.api.contract.IntermediateASTListing;
-import org.smojol.api.contract.IntermediateCFGListing;
-import org.smojol.api.contract.ProjectListing;
-import org.smojol.api.contract.UnifiedFlowModelListing;
+import org.smojol.api.contract.*;
 import org.smojol.common.analysis.NaturalLoopBody;
 import org.smojol.common.transpiler.FlowgraphReductionResult;
 import org.smojol.common.transpiler.TranspilerInstruction;
@@ -27,6 +24,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.jooq.impl.DSL.field;
+import static org.smojol.api.SourceService.FLOWCHART;
 import static org.smojol.api.pipeline.DbConstants.*;
 
 public class IntermediateFormService {
@@ -71,6 +69,23 @@ public class IntermediateFormService {
         return collectedFlowModels;
     }
 
+    Map<String, List<Map<String, String>>> flowchartListingsByProject(DSLContext using) {
+        @NotNull Result<Record3<String, Long, Long>> allFlowModels = using
+                .select(field("FLOWCHART.PROGRAM_NAME", String.class),
+                        field("FLOWCHART.ID", Long.class),
+                        field("PROJECT.ID", Long.class).as(PROJECT_ID))
+                .from(FLOWCHART)
+                .leftOuterJoin(PROJECT)
+                .on(field("FLOWCHART.PROJECT_ID", Long.class)
+                        .eq(field("PROJECT.ID", Long.class)))
+                .fetch();
+        Map<String, List<Map<String, String>>> collectedFlowcharts = allFlowModels
+                .map(cfg -> (Map<String, String>) ImmutableMap.of("programName", cfg.component1(), "flowchartID", cfg.component2().toString(), "projectID", cfg.component3().toString())).stream()
+                .collect(Collectors.groupingBy(d -> d.get("projectID"))).entrySet().stream()
+                .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+        return collectedFlowcharts;
+    }
+
     Map<String, List<Map<String, String>>> intermediateCFGListingsByProject(DSLContext using) {
         @NotNull Result<Record4<String, String, Long, Long>> allIntermediateASTs = using
                 .select(field("IR_CFG.PROGRAM_NAME", String.class),
@@ -93,18 +108,22 @@ public class IntermediateFormService {
         Map<String, List<Map<String, String>>> astGroupAsMap = intermediateASTListingsByProject(using);
         Map<String, List<Map<String, String>>> cfgGroupAsMap = intermediateCFGListingsByProject(using);
         Map<String, List<Map<String, String>>> unifiedFlowGroupAsMap = unifiedFlowListingsByProject(using);
+        Map<String, List<Map<String, String>>> flowchartGroupAsMap = flowchartListingsByProject(using);
         Set<Entry<String, List<Map<String, String>>>> cfgsGroupedByProjectID = cfgGroupAsMap.entrySet();
         Set<Entry<String, List<Map<String, String>>>> astsGroupedByProjectID = astGroupAsMap.entrySet();
         Set<Entry<String, List<Map<String, String>>>> unifiedFlowGroupedByProjectID = unifiedFlowGroupAsMap.entrySet();
+        Set<Entry<String, List<Map<String, String>>>> flowchartsGroupedByProjectID = flowchartGroupAsMap.entrySet();
         Stream<String> cfgUniqueProjectIDs = cfgsGroupedByProjectID.stream().map(Entry::getKey);
         Stream<String> astUniqueProjectIDs = astsGroupedByProjectID.stream().map(Entry::getKey);
         Stream<String> unifiedFlowUniqueProjectIDs = unifiedFlowGroupedByProjectID.stream().map(Entry::getKey);
-        Set<String> allUniqueProjectIDs = Stream.of(cfgUniqueProjectIDs, astUniqueProjectIDs, unifiedFlowUniqueProjectIDs).flatMap(s -> s).collect(Collectors.toUnmodifiableSet());
+        Stream<String> flowchartUniqueProjectIDs = flowchartsGroupedByProjectID.stream().map(Entry::getKey);
+        Set<String> allUniqueProjectIDs = Stream.of(cfgUniqueProjectIDs, astUniqueProjectIDs, unifiedFlowUniqueProjectIDs, flowchartUniqueProjectIDs).flatMap(s -> s).collect(Collectors.toUnmodifiableSet());
 
         List<ProjectListing> projectListings = allUniqueProjectIDs.stream().map(pid -> new ProjectListing(pid,
                 irASTs(pid, astGroupAsMap),
                 irCFGs(pid, cfgGroupAsMap),
-                flowModels(pid, unifiedFlowGroupAsMap)
+                flowModels(pid, unifiedFlowGroupAsMap),
+                flowcharts(pid, flowchartGroupAsMap)
         )).toList();
 
         return projectListings;
@@ -131,6 +150,14 @@ public class IntermediateFormService {
         if (modelsForProject == null) return ImmutableList.of();
         return modelsForProject.stream()
                 .map(cfg -> new UnifiedFlowModelListing(cfg.get("flowModelID"), cfg.get("programName")))
+                .toList();
+    }
+
+    private static @NotNull List<FlowchartListing> flowcharts(String pid, Map<String, List<Map<String, String>>> unifiedFlowGroupAsMap) {
+        List<Map<String, String>> modelsForProject = unifiedFlowGroupAsMap.get(pid);
+        if (modelsForProject == null) return ImmutableList.of();
+        return modelsForProject.stream()
+                .map(cfg -> new FlowchartListing(cfg.get("flowchartID"), cfg.get("programName")))
                 .toList();
     }
 
