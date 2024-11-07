@@ -28,8 +28,10 @@ export default {
       this.$emit("load-ir-cfg", id);
     },
     loadFlowModel(id) {
-      console.log("Not doing anything yet...");
       this.$emit("load-flow-model", id);
+    },
+    loadFlowchart(id) {
+      this.$emit("load-flowchart", id);
     }
   }
 }
@@ -79,7 +81,7 @@ export default {
               <ul>
                 <li v-for="flowchart in project.flowchartListings"
                     :key="flowchart.flowchartID"
-                    @click="loadFlowModel(flowchart.flowchartID)">
+                    @click="loadFlowchart(flowchart.flowchartID)">
                   {{ flowchart.programName }} / {{ flowchart.flowchartID }}
                 </li>
               </ul>
