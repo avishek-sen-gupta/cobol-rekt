@@ -117,7 +117,7 @@ Currently, the app showcases the following capabilities:
 - Flow Model
 - Loop Body detection
 
-Instructions for setting up the demo app is provided later, and is evolving.
+Instructions for setting up the demo app are provided [later](#demo-app-setup-wip), and will evolve.
 
 ## Philosophy
 
