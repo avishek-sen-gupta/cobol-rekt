@@ -18,7 +18,8 @@
     "typescript": "^5.6.3",
     "vue": "^3.2.13",
     "vue-class-component": "^8.0.0-0",
-    "vue-router": "^4.4.5"
+    "vue-router": "^4.4.5",
+    "vue-zoomable": "^1.2.3"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

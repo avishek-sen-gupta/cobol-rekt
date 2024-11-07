@@ -7,7 +7,7 @@ import InfoPane from "@/components/InfoPane.vue";
 import CodePane from "@/components/CodePane.vue";
 import {flip} from "@/ts/FlippableId";
 import {unifiedModelToDigraph} from "@/ts/UnifiedFlowModel";
-import {instance} from "@viz-js/viz";
+import ImageView from "@/components/ImageView.vue";
 
 export default {
   name: 'App',
@@ -16,7 +16,8 @@ export default {
     InfoPane,
     GraphView,
     HelloWorld,
-    ProjectsView
+    ProjectsView,
+    ImageView
   },
   setup() {
   },
@@ -29,18 +30,11 @@ export default {
       centerNode: null,
       loopBodies: [],
       t1t2Result: null,
-      flowModel: null
+      flowModel: null,
+      flowchart: `digraph {}`,
     };
   },
   mounted() {
-    instance().then(viz => {
-      const svg = viz.renderSVGElement(`digraph {a -> b}`, {
-        graphAttributes: {
-          splines: "ortho"
-        }
-      });
-      document.getElementById("flowchart").appendChild(svg);
-    });
   },
   methods: {
     navigateToCytoNode(data) {
@@ -112,7 +106,7 @@ export default {
       axios.get("/api/flowchart/" + id)
           .then(response => {
             console.log(response);
-            this.flowchart = response.data.body;
+            this.flowchart = response.data.markup;
             return response.data.body;
           });
     },
@@ -191,9 +185,8 @@ export default {
                   style="grid-area: 2 / 3 / 3 / 4"
     />
   </div>
-  LOL
-  <div id="flowchart" style="height: 300px; border: 1px solid;">
-
+  <div style="padding-top: 20px;">
+    <ImageView :flowchart="flowchart"></ImageView>
   </div>
 </template>
 
