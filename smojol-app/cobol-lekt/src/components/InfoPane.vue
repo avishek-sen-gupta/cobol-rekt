@@ -25,5 +25,6 @@ export default defineComponent({
 <style scoped>
 #node-details {
   height: 100%;
+  font-family: Monaco,sans-serif;
 }
 </style>
