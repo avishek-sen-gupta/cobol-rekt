@@ -108,6 +108,15 @@ This app is ultimately intended to only give a showcase of the capabilities of t
 
 ![Demo App Early](/documentation/demo-app-early.png)
 
+Currently, the app showcases the following capabilities:
+
+- Flowcharts
+- Intermediate Representation AST + Code
+- IR Control Flowgraph
+- T1-T2 Reducibility Test
+- Flow Model
+- Loop Body detection
+
 Instructions for setting up the demo app is provided later, and is evolving.
 
 ## Philosophy
