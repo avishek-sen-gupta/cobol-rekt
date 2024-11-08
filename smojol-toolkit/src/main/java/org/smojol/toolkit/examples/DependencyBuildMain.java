@@ -1,9 +1,14 @@
 package org.smojol.toolkit.examples;
 
 import com.google.common.collect.ImmutableList;
+import com.mojo.woof.GraphSDK;
+import com.mojo.woof.Neo4JDriverBuilder;
 import org.smojol.common.dialect.LanguageDialect;
 import org.smojol.common.resource.LocalFilesystemOperations;
+import org.smojol.toolkit.analysis.graph.NamespaceQualifier;
+import org.smojol.toolkit.analysis.graph.NodeSpecBuilder;
 import org.smojol.toolkit.analysis.task.analysis.AnalyseProgramDependenciesTask;
+import org.smojol.toolkit.analysis.task.analysis.InjectProgramDependenciesIntoNeo4JTask;
 import org.smojol.toolkit.task.AnalysisTaskResult;
 import org.smojol.toolkit.task.AnalysisTaskResultError;
 import org.smojol.toolkit.task.AnalysisTaskResultOK;
@@ -26,7 +31,7 @@ public class DependencyBuildMain {
             case AnalysisTaskResultError e -> throw new RuntimeException(e.getException());
         };
 
-//        new InjectProgramDependenciesIntoNeo4JTask(new NodeSpecBuilder(new NamespaceQualifier("DEP-GRAPH")),
-//                new GraphSDK(new Neo4JDriverBuilder().fromEnv())).run(sourceGraphRoot);
+        new InjectProgramDependenciesIntoNeo4JTask(new NodeSpecBuilder(new NamespaceQualifier("DEP-GRAPH")),
+                new GraphSDK(new Neo4JDriverBuilder().fromEnv())).run(root);
     }
 }
