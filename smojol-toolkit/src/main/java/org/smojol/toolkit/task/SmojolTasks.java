@@ -152,7 +152,7 @@ public class SmojolTasks {
     public AnalysisTask BUILD_PROGRAM_DEPENDENCIES = new AnalysisTask() {
         @Override
         public AnalysisTaskResult run() {
-            return new ProgramDependenciesTask(baseModel.flowRoot(), baseModel.rawAST(), baseModel.dataStructures(), baseModel.symbolTable(), sourceConfig.programName()).run();
+            return new ProgramDependenciesTask(baseModel.flowRoot()).run();
         }
     };
 
