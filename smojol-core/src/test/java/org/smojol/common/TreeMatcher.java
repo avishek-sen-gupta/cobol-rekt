@@ -62,6 +62,10 @@ public class TreeMatcher {
         return new TreeMatcher(n -> n instanceof TranspilerCodeBlockNode, Arrays.asList(childMatchers));
     }
 
+    public static TreeMatcher labelledBlock_(TreeMatcher... childMatchers) {
+        return new TreeMatcher(n -> n instanceof LabelledTranspilerCodeBlockNode, Arrays.asList(childMatchers));
+    }
+
     public static TreeMatcher labelledBlock_(String blockName, TreeMatcher... childMatchers) {
         return new TreeMatcher(n -> n instanceof LabelledTranspilerCodeBlockNode l && blockName.equals(l.getName()), Arrays.asList(childMatchers));
     }
