@@ -292,4 +292,45 @@ export default {
 .function-button:active {
   transform: scale(0.98);
 }
+
+.clt, .clt ul, .clt li {
+  position: relative;
+}
+
+.clt ul {
+  list-style: none;
+  padding-left: 32px;
+}
+
+.clt li::before, .clt li::after {
+  content: "";
+  position: absolute;
+  left: -12px;
+}
+
+.clt li::before {
+  border-top: 1px solid #000;
+  top: 9px;
+  width: 8px;
+  height: 0;
+}
+
+.clt li::after {
+  border-left: 1px solid #000;
+  height: 100%;
+  width: 0px;
+  top: 2px;
+}
+
+.clt ul > li:last-child::after {
+  height: 8px;
+}
+
+.clickable-item {
+  font-size: 1.8em;
+  padding: 0;
+  border: none;
+  background: none;
+}
+
 </style>
