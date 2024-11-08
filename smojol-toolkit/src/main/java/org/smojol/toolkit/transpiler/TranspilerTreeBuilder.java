@@ -31,6 +31,7 @@ public class TranspilerTreeBuilder {
             case NextSentenceFlowNode n -> new JumpTranspilerNode(new NextLocationNode());
             case ExitFlowNode n -> new ExitTranspilerNode();
             case StopFlowNode n -> new JumpTranspilerNode(new ProgramTerminalLocationNode());
+            case CallFlowNode c -> CallTranspilerNodeBuilder.build(c.callTarget());
             default -> new PlaceholderTranspilerNode(node.originalText());
         };
     }
