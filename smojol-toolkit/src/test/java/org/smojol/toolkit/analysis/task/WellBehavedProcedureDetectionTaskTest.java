@@ -1,4 +1,4 @@
-package org.smojol.common;
+package org.smojol.toolkit.analysis.task;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -6,8 +6,11 @@ import org.junit.jupiter.api.Test;
 import org.smojol.common.ast.FlowNodeType;
 import org.smojol.common.transpiler.*;
 import org.smojol.common.vm.type.TypedRecord;
+import org.smojol.toolkit.analysis.task.transpiler.WellBehavedProcedureDetectionTask;
 
-import static org.smojol.common.TreeMatcher.*;
+import java.util.Set;
+
+import static org.smojol.common.transpiler.TreeMatcher.*;
 
 public class WellBehavedProcedureDetectionTaskTest {
     @Test
@@ -15,7 +18,7 @@ public class WellBehavedProcedureDetectionTaskTest {
         TranspilerNode set1 = set("ABC", 30);
         TranspilerNode set2 = set("DEF", 40);
         EqualToNode condition = new EqualToNode(new SymbolReferenceNode("abcd"), new PrimitiveValueTranspilerNode(TypedRecord.TRUE));
-        TranspilerNode gotoSomeplace = new JumpTranspilerNode(new NamedLocationNode("SEC-A"));
+        TranspilerNode gotoSomeplace = new JumpTranspilerNode(new NamedLocationNode("SEC-B"), new NamedLocationNode("SEC-B"));
         IfTranspilerNode ifStmt = new IfTranspilerNode(condition, new TranspilerCodeBlockNode(ImmutableList.of(gotoSomeplace, set("abcd", 12))));
         TranspilerNode sectionA = new LabelledTranspilerCodeBlockNode("SEC-A", ImmutableList.of(ifStmt, set1, set2), ImmutableMap.of("type", FlowNodeType.SECTION));
         TranspilerNode sectionB = new LabelledTranspilerCodeBlockNode("SEC-B", ImmutableList.of(set1, set2), ImmutableMap.of("type", FlowNodeType.SECTION));
@@ -34,6 +37,7 @@ public class WellBehavedProcedureDetectionTaskTest {
                         set_()
                 )
         ).verify(program);
+        Set<TranspilerNode> wellBehavedProcedures = new WellBehavedProcedureDetectionTask(program).run();
     }
 
     private static SetTranspilerNode set(String variable, int value) {

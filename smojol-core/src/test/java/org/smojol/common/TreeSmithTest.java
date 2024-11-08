@@ -12,7 +12,7 @@ import org.smojol.common.vm.type.TypedRecord;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.smojol.common.TreeMatcher.*;
+import static org.smojol.common.transpiler.TreeMatcher.*;
 
 public class TreeSmithTest {
     @Test

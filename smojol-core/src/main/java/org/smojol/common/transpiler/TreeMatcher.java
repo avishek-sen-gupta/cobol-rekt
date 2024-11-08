@@ -1,7 +1,6 @@
-package org.smojol.common;
+package org.smojol.common.transpiler;
 
 import com.google.common.collect.ImmutableList;
-import org.smojol.common.transpiler.*;
 
 import java.util.Arrays;
 import java.util.List;

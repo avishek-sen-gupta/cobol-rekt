@@ -8,7 +8,7 @@ import org.smojol.common.transpiler.*;
 import org.smojol.common.vm.type.TypedRecord;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.smojol.common.TreeMatcher.*;
+import static org.smojol.common.transpiler.TreeMatcher.*;
 
 public class TreeFormatterTest {
     @Test

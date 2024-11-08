@@ -1,4 +1,4 @@
-package org.smojol.common;
+package org.smojol.common.transpiler;
 
 import java.util.List;
 
