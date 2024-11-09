@@ -22,14 +22,14 @@ public class BuildFlowchartMarkupTask {
 
     public String run() {
         MutableGraph graph = Factory.mutGraph("example1").setDirected(true).setCluster(true);
-        FlowNodeVisitor chartVisitor = new FlowNodeGraphvizVisitor(graph, buildOverlay(), VisitContext::ALWAYS_VISIT);
+        FlowNodeVisitor chartVisitor = new FlowNodeGraphvizVisitor(graph, buildOverlay(root), VisitContext::ALWAYS_VISIT);
         root.accept(chartVisitor, 1);
         return Graphviz.fromGraph(graph).engine(Engine.DOT)
                 .render(Format.DOT)
                 .toString();
     }
 
-    public ChartOverlay buildOverlay() {
+    public static ChartOverlay buildOverlay(FlowNode root) {
         FlowNodeOverlayVisitor compressionVisitor = new FlowNodeOverlayVisitor(root);
         root.accept(compressionVisitor, 1);
         compressionVisitor.report();

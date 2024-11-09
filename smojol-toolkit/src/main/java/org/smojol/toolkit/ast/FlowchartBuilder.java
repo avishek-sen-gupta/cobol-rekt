@@ -12,6 +12,7 @@ import org.smojol.common.ast.VisitContext;
 import org.smojol.common.flowchart.ChartOverlay;
 import org.smojol.common.flowchart.FlowchartOutputFormat;
 import org.smojol.common.flowchart.GraphGenerator;
+import org.smojol.toolkit.analysis.task.analysis.BuildFlowchartMarkupTask;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,9 +31,7 @@ public class FlowchartBuilder {
     }
 
     public void build(String dotFilePath, String imageOutputPath, FlowchartOutputFormat outputFormat) throws IOException, InterruptedException {
-        ChartOverlay chartOverlay = runWithOverlay(root);
-//        FlowNodeVisitor chartVisitor = new FlowNodeGraphvizVisitor(graph, chartOverlay, VisitContext::ALWAYS_VISIT);
-//        root.accept(chartVisitor, 1);
+        ChartOverlay chartOverlay = BuildFlowchartMarkupTask.buildOverlay(root);
         buildChartGraphic(VisitContext::ALWAYS_VISIT, root, chartOverlay);
         write(dotFilePath);
         new GraphGenerator(outputFormat).generateImage(dotFilePath, imageOutputPath);
@@ -51,16 +50,5 @@ public class FlowchartBuilder {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private ChartOverlay runWithOverlay(FlowNode root) {
-        return buildOverlay(root);
-    }
-
-    private ChartOverlay buildOverlay(FlowNode root) {
-        FlowNodeOverlayVisitor compressionVisitor = new FlowNodeOverlayVisitor(root);
-        root.accept(compressionVisitor, 1);
-        compressionVisitor.report();
-        return compressionVisitor.overlay();
     }
 }
