@@ -34,7 +34,7 @@ public class ReachingConditionBuildMain {
                 "/Users/asgupta/code/smojol/out/report",
                 ImmutableList.of(new File("/Users/asgupta/code/smojol/smojol-test-code")),
                 "/Users/asgupta/code/smojol/che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar",
-                LanguageDialect.IDMS, new FullProgram(FlowchartOutputFormat.PNG), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder(), new ProgramSearch(), new LocalFilesystemOperations())
+                LanguageDialect.IDMS, new FullProgram(FlowchartOutputFormat.PNG, new UUIDProvider()), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder(), new ProgramSearch(), new LocalFilesystemOperations())
                 .runForPrograms(ImmutableList.of(BUILD_BASE_ANALYSIS), ImmutableList.of("reaching-condition-test.cbl"));
 
         AnalysisTaskResult value = result.values().stream().toList().getFirst().getFirst();

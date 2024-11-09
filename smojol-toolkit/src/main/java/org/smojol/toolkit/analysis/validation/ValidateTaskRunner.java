@@ -14,7 +14,6 @@ import org.smojol.toolkit.analysis.pipeline.*;
 import org.smojol.toolkit.analysis.error.ParseDiagnosticRuntimeError;
 import org.smojol.toolkit.analysis.pipeline.config.SourceConfig;
 import org.smojol.common.dependency.ComponentsBuilder;
-import org.smojol.toolkit.ast.FlowchartBuilderImpl;
 import org.smojol.common.ast.CobolTreeVisualiser;
 import org.smojol.common.id.UUIDProvider;
 import org.smojol.common.navigation.EntityNavigatorBuilder;
@@ -75,7 +74,7 @@ public class ValidateTaskRunner {
 
     public ProgramValidationErrors run(List<File> copyBookPaths, String absoluteDialectJarPath, String programFilename, String sourceDir, LanguageDialect dialect, DataStructureValidation dataStructureValidation) {
         ComponentsBuilder ops = new ComponentsBuilder(new CobolTreeVisualiser(),
-                FlowchartBuilderImpl::build, new EntityNavigatorBuilder(), new UnresolvedReferenceDoNothingStrategy(),
+                new EntityNavigatorBuilder(), new UnresolvedReferenceDoNothingStrategy(),
                 new OccursIgnoringFormat1DataStructureBuilder(), new UUIDProvider(), resourceOperations);
 
         Pair<File, String> programPath = programSearch.run(programFilename, sourceDir);

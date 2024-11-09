@@ -20,7 +20,6 @@ import org.smojol.toolkit.analysis.pipeline.config.GraphMLExportConfig;
 import org.smojol.toolkit.analysis.pipeline.config.SourceConfig;
 import org.smojol.toolkit.analysis.task.analysis.BuildSeedModelTask;
 import org.smojol.toolkit.analysis.task.analysis.ExportToGraphMLTask;
-import org.smojol.toolkit.ast.FlowchartBuilderImpl;
 import org.smojol.toolkit.interpreter.structure.OccursIgnoringFormat1DataStructureBuilder;
 import org.smojol.toolkit.task.AnalysisTaskResult;
 import org.smojol.toolkit.task.AnalysisTaskResultError;
@@ -40,7 +39,7 @@ public class ExportToGraphMLTaskRegressionTest {
                 ImmutableList.of(new File("../smojol-test-code")),
                 "../che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar");
         LocalFilesystemOperations resourceOperations = new LocalFilesystemOperations();
-        ComponentsBuilder ops = new ComponentsBuilder(new CobolTreeVisualiser(), FlowchartBuilderImpl::build,
+        ComponentsBuilder ops = new ComponentsBuilder(new CobolTreeVisualiser(),
                 new EntityNavigatorBuilder(), new UnresolvedReferenceThrowStrategy(),
                 new OccursIgnoringFormat1DataStructureBuilder(), new UUIDProvider(), resourceOperations);
         ParsePipeline pipeline = new ParsePipeline(sourceConfig, ops, LanguageDialect.COBOL);

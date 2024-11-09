@@ -12,7 +12,6 @@ import org.smojol.toolkit.analysis.error.ParseDiagnosticRuntimeError;
 import org.smojol.toolkit.analysis.graph.neo4j.NodeReferenceStrategy;
 import org.smojol.common.dependency.ComponentsBuilder;
 import org.smojol.toolkit.analysis.pipeline.config.*;
-import org.smojol.toolkit.ast.FlowchartBuilderImpl;
 import org.smojol.common.ast.CobolTreeVisualiser;
 import org.smojol.common.id.IdProvider;
 import org.smojol.common.navigation.EntityNavigatorBuilder;
@@ -136,7 +135,7 @@ public class CodeTaskRunner {
         GraphMLExportConfig graphMLOutputConfig = new GraphMLExportConfig(graphMLExportOutputDir, graphMLExportOutputPath);
         CFGOutputConfig cfgOutputConfig = new CFGOutputConfig(cfgOutputDir, cfgOutputPath);
         ComponentsBuilder ops = new ComponentsBuilder(new CobolTreeVisualiser(resourceOperations),
-                FlowchartBuilderImpl::build, new EntityNavigatorBuilder(), new UnresolvedReferenceThrowStrategy(),
+                new EntityNavigatorBuilder(), new UnresolvedReferenceThrowStrategy(),
                 format1DataStructureBuilder, idProvider, resourceOperations);
         ParsePipeline pipeline = new ParsePipeline(sourceConfig, ops, dialect);
         GraphBuildConfig graphBuildConfig = new GraphBuildConfig(

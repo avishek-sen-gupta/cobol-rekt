@@ -2,10 +2,10 @@ package org.smojol.toolkit.analysis.task.interpret;
 
 import com.google.common.collect.ImmutableList;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.smojol.common.ast.*;
+import org.smojol.common.ast.CobolTreeVisualiser;
+import org.smojol.common.ast.FlowNode;
 import org.smojol.common.dependency.ComponentsBuilder;
 import org.smojol.common.dialect.LanguageDialect;
-import org.smojol.common.flowchart.FlowchartBuilder;
 import org.smojol.common.id.UUIDProvider;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.navigation.EntityNavigatorBuilder;
@@ -20,13 +20,17 @@ import org.smojol.common.vm.strategy.UnresolvedReferenceDoNothingStrategy;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.toolkit.analysis.pipeline.ParsePipeline;
 import org.smojol.toolkit.analysis.pipeline.config.SourceConfig;
+import org.smojol.toolkit.ast.BuildFlowNodesTask;
 import org.smojol.toolkit.ast.DisplayFlowNode;
-import org.smojol.toolkit.ast.FlowchartBuilderImpl;
+import org.smojol.toolkit.ast.FlowNodeServiceImpl;
 import org.smojol.toolkit.interpreter.interpreter.CobolBreakpointer;
 import org.smojol.toolkit.interpreter.interpreter.CobolInterpreterFactory;
 import org.smojol.toolkit.interpreter.interpreter.RunLogger;
 import org.smojol.toolkit.interpreter.structure.DefaultFormat1DataStructureBuilder;
-import org.smojol.toolkit.task.*;
+import org.smojol.toolkit.task.AnalysisTask;
+import org.smojol.toolkit.task.AnalysisTaskResult;
+import org.smojol.toolkit.task.AnalysisTaskResultError;
+import org.smojol.toolkit.task.AnalysisTaskResultOK;
 
 import java.io.IOException;
 import java.util.logging.Logger;
@@ -49,16 +53,16 @@ public class InterpretTask implements AnalysisTask {
     @Override
     public AnalysisTaskResult run() {
         ComponentsBuilder ops = new ComponentsBuilder(new CobolTreeVisualiser(),
-                FlowchartBuilderImpl::build, new EntityNavigatorBuilder(), new UnresolvedReferenceDoNothingStrategy(),
+                new EntityNavigatorBuilder(), new UnresolvedReferenceDoNothingStrategy(),
                 new DefaultFormat1DataStructureBuilder(), new UUIDProvider(), resourceOperations);
         ParsePipeline pipeline = new ParsePipeline(sourceConfig, ops, dialect);
         try {
             CobolEntityNavigator navigator = pipeline.parse();
-            FlowchartBuilder flowcharter = pipeline.flowcharter();
             CobolDataStructure dataStructures = pipeline.getDataStructures();
             ParseTree procedure = navigator.procedureDivisionBody(navigator.getRoot());
-            flowcharter.buildFlowAST(procedure).buildControlFlow().buildOverlay();
-            FlowNode root = flowcharter.getRoot();
+            FlowNode root = new BuildFlowNodesTask(new FlowNodeServiceImpl(navigator, dataStructures, ops.getIdProvider())).run(procedure);
+//            flowcharter.buildFlowAST(procedure).buildControlFlow().buildOverlay();
+//            FlowNode root = flowcharter.getRoot();
             root.resolve(new SmojolSymbolTable(dataStructures, new SymbolReferenceBuilder(ops.getIdProvider())), dataStructures);
 
 //            new FlowNodeASTTraversal<FlowNode>().accept(sourceGraphRoot, new FlowNodeSymbolExtractorVisitor(sourceGraphRoot, dataStructures, new SmojolSymbolTable(dataStructures, new SymbolReferenceBuilder(new UUIDProvider()))));

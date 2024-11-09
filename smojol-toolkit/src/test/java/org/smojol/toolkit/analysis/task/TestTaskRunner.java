@@ -40,7 +40,7 @@ public class TestTaskRunner {
                 dir("test-code/out"),
                 ImmutableList.of(new File(dir(sourceDir))),
                 dir("che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar"),
-                LanguageDialect.COBOL, new FullProgram(FlowchartOutputFormat.MERMAID), new UUIDProvider(), structureBuildStrategy, new ProgramSearch(resourceOperations), resourceOperations)
+                LanguageDialect.COBOL, new FullProgram(FlowchartOutputFormat.MERMAID, new UUIDProvider()), new UUIDProvider(), structureBuildStrategy, new ProgramSearch(resourceOperations), resourceOperations)
                 .runForPrograms(ImmutableList.of(task), ImmutableList.of(programName));
         return results.get(programName).get(1);
     }

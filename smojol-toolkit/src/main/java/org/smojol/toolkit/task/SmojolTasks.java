@@ -131,7 +131,7 @@ public class SmojolTasks {
     public AnalysisTask DRAW_FLOWCHART = new AnalysisTask() {
         @Override
         public AnalysisTaskResult run() {
-            return new DrawFlowchartTask(pipeline.flowcharter(), baseModel.navigator(), flowchartOutputWriter, sourceConfig, resourceOperations).run();
+            return new DrawFlowchartTask(baseModel.navigator(), flowchartOutputWriter, sourceConfig, resourceOperations, baseModel.flowRoot()).run();
         }
     };
 

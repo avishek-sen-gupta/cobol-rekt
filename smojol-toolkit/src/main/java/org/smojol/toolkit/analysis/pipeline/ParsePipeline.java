@@ -32,7 +32,6 @@ import org.eclipse.lsp.cobol.core.preprocessor.delegates.GrammarPreprocessor;
 import org.eclipse.lsp.cobol.dialects.TrueDialectServiceImpl;
 import org.eclipse.lsp.cobol.dialects.ibm.*;
 import org.smojol.common.dependency.ComponentsBuilder;
-import org.smojol.common.flowchart.FlowchartBuilder;
 import org.smojol.common.idms.DialectIntegratorListener;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.navigation.EntityNavigatorBuilder;
@@ -155,14 +154,6 @@ public class ParsePipeline {
         dataStructures = dataStructureValidation.run(ops.getDataStructureBuilder(navigator));
         LOGGER.info(gson.toJson(timingResult));
         return navigator;
-    }
-
-    /**
-     * Returns the builder which will create the flow tree
-     * @return FlowchartBuilder
-     */
-    public FlowchartBuilder flowcharter() {
-        return ops.getFlowchartBuilderFactory().apply(navigator, dataStructures, ops.getIdProvider());
     }
 
     private static Pipeline setupPipeline(Injector diCtx, CleanerPreprocessor preprocessor) {
