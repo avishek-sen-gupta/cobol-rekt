@@ -205,12 +205,20 @@ public class Format1DataStructure extends CobolDataStructure {
             return ImmutablePair.of(new ZonedDecimalDataTypeSpec(8, 0), 8);
         else if (!isComposite) {
             LOGGER.info("Calculating type spec for single data structure: " + dataDescription.getText());
-            return new DataLayoutBuilder().size(dataDescription.dataPictureClause().getFirst().pictureString().getFirst().getText());
+            return spec(dataDescription);
         } else {
             structures.forEach(CobolDataStructure::calculateMemoryRequirements);
             Integer groupSize = primaryDefinitions().stream().map(CobolDataStructure::size).reduce(0, Integer::sum);
             return ImmutablePair.of(new GroupDataTypeSpec(groupSize), groupSize);
         }
+    }
+
+    private Pair<DataTypeSpec, Integer> spec(CobolParser.DataDescriptionEntryFormat1Context dataDescription) {
+        if (!dataDescription.dataUsageClause().isEmpty()
+                && (dataDescription.dataUsageClause(0).usageFormat().COMP_1() != null
+                || dataDescription.dataUsageClause(0).usageFormat().COMPUTATIONAL_1() != null))
+            return ImmutablePair.of(new Comp1DataTypeSpec(), 4);
+        return new DataLayoutBuilder().size(dataDescription.dataPictureClause().getFirst().pictureString().getFirst().getText());
     }
 
     protected List<CobolDataStructure> primaryDefinitions() {

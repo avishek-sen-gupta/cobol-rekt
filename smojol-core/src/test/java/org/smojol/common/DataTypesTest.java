@@ -381,24 +381,24 @@ public class DataTypesTest {
 
     @Test
     public void canAllocateCorrectNumberOfBytesBasedOnNumberOfDigitsInComp3DataType() {
-        assertEquals(3, new Comp3lDataTypeSpec(3, 2, Comp3SignType.UNSIGNED).sizeInBytes());
-        assertEquals(3, new Comp3lDataTypeSpec(2, 2, Comp3SignType.UNSIGNED).sizeInBytes());
+        assertEquals(3, new Comp3DataTypeSpec(3, 2, Comp3SignType.UNSIGNED).sizeInBytes());
+        assertEquals(3, new Comp3DataTypeSpec(2, 2, Comp3SignType.UNSIGNED).sizeInBytes());
     }
 
     @Test
     public void canReadUnsignedComp3Item() {
-        Comp3lDataTypeSpec comp3lDataTypeSpec = new Comp3lDataTypeSpec(3, 2, Comp3SignType.UNSIGNED);
-        MemoryRegion memoryRegion = new MemoryRegion(comp3lDataTypeSpec.sizeInBytes());
-        MemoryLayout layout = new MemoryLayout(memoryRegion.fullAccess(), comp3lDataTypeSpec);
+        Comp3DataTypeSpec comp3DataTypeSpec = new Comp3DataTypeSpec(3, 2, Comp3SignType.UNSIGNED);
+        MemoryRegion memoryRegion = new MemoryRegion(comp3DataTypeSpec.sizeInBytes());
+        MemoryLayout layout = new MemoryLayout(memoryRegion.fullAccess(), comp3DataTypeSpec);
         memoryRegion.write(HexMapper.asBytes(ImmutableList.of(0x01, 0x23, 0x4F)));
         assertEquals(1234.0, layout.read());
     }
 
     @Test
     public void canWriteUnsignedComp3Item() {
-        Comp3lDataTypeSpec comp3lDataTypeSpec = new Comp3lDataTypeSpec(2, 2, Comp3SignType.UNSIGNED);
-        MemoryRegion memoryRegion = new MemoryRegion(comp3lDataTypeSpec.sizeInBytes());
-        MemoryLayout layout = new MemoryLayout(memoryRegion.fullAccess(), comp3lDataTypeSpec);
+        Comp3DataTypeSpec comp3DataTypeSpec = new Comp3DataTypeSpec(2, 2, Comp3SignType.UNSIGNED);
+        MemoryRegion memoryRegion = new MemoryRegion(comp3DataTypeSpec.sizeInBytes());
+        MemoryLayout layout = new MemoryLayout(memoryRegion.fullAccess(), comp3DataTypeSpec);
         layout.set("12.34");
         assertMemory(memoryRegion, "01:23:4F");
         assertEquals("12.34", layout.readFormatted().toString());
@@ -406,9 +406,9 @@ public class DataTypesTest {
 
     @Test
     public void canTruncateLongerItemsUnsignedComp3Item() {
-        Comp3lDataTypeSpec comp3lDataTypeSpec = new Comp3lDataTypeSpec(2, 2, Comp3SignType.UNSIGNED);
-        MemoryRegion memoryRegion = new MemoryRegion(comp3lDataTypeSpec.sizeInBytes());
-        MemoryLayout layout = new MemoryLayout(memoryRegion.fullAccess(), comp3lDataTypeSpec);
+        Comp3DataTypeSpec comp3DataTypeSpec = new Comp3DataTypeSpec(2, 2, Comp3SignType.UNSIGNED);
+        MemoryRegion memoryRegion = new MemoryRegion(comp3DataTypeSpec.sizeInBytes());
+        MemoryLayout layout = new MemoryLayout(memoryRegion.fullAccess(), comp3DataTypeSpec);
         layout.set("1234.56");
         assertMemory(memoryRegion, "03:45:6F");
         assertEquals("34.56", layout.readFormatted().toString());
@@ -416,9 +416,9 @@ public class DataTypesTest {
 
     @Test
     public void canTruncateIntegersUnsignedComp3Item() {
-        Comp3lDataTypeSpec comp3lDataTypeSpec = new Comp3lDataTypeSpec(2, 2, Comp3SignType.UNSIGNED);
-        MemoryRegion memoryRegion = new MemoryRegion(comp3lDataTypeSpec.sizeInBytes());
-        MemoryLayout layout = new MemoryLayout(memoryRegion.fullAccess(), comp3lDataTypeSpec);
+        Comp3DataTypeSpec comp3DataTypeSpec = new Comp3DataTypeSpec(2, 2, Comp3SignType.UNSIGNED);
+        MemoryRegion memoryRegion = new MemoryRegion(comp3DataTypeSpec.sizeInBytes());
+        MemoryLayout layout = new MemoryLayout(memoryRegion.fullAccess(), comp3DataTypeSpec);
         layout.set("1234");
         assertMemory(memoryRegion, "03:40:0F");
         assertEquals("34.0", layout.readFormatted().toString());
@@ -426,13 +426,13 @@ public class DataTypesTest {
 
     @Test
     public void canPerformArithmeticOperationsWithUnsignedComp3Data() {
-        Comp3lDataTypeSpec comp3lDataTypeSpec = new Comp3lDataTypeSpec(2, 2, Comp3SignType.UNSIGNED);
-        MemoryRegion memoryRegion1 = new MemoryRegion(comp3lDataTypeSpec.sizeInBytes());
-        MemoryRegion memoryRegion2 = new MemoryRegion(comp3lDataTypeSpec.sizeInBytes());
-        MemoryRegion resultMemoryRegion = new MemoryRegion(comp3lDataTypeSpec.sizeInBytes());
-        MemoryLayout layout1 = new MemoryLayout(memoryRegion1.fullAccess(), comp3lDataTypeSpec);
-        MemoryLayout layout2 = new MemoryLayout(memoryRegion2.fullAccess(), comp3lDataTypeSpec);
-        MemoryLayout resultLayout = new MemoryLayout(resultMemoryRegion.fullAccess(), comp3lDataTypeSpec);
+        Comp3DataTypeSpec comp3DataTypeSpec = new Comp3DataTypeSpec(2, 2, Comp3SignType.UNSIGNED);
+        MemoryRegion memoryRegion1 = new MemoryRegion(comp3DataTypeSpec.sizeInBytes());
+        MemoryRegion memoryRegion2 = new MemoryRegion(comp3DataTypeSpec.sizeInBytes());
+        MemoryRegion resultMemoryRegion = new MemoryRegion(comp3DataTypeSpec.sizeInBytes());
+        MemoryLayout layout1 = new MemoryLayout(memoryRegion1.fullAccess(), comp3DataTypeSpec);
+        MemoryLayout layout2 = new MemoryLayout(memoryRegion2.fullAccess(), comp3DataTypeSpec);
+        MemoryLayout resultLayout = new MemoryLayout(resultMemoryRegion.fullAccess(), comp3DataTypeSpec);
         layout1.set("12.34");
         layout2.set("12.34");
         double sum = (Double) layout1.readFormatted() + (Double) layout2.readFormatted();
@@ -443,18 +443,18 @@ public class DataTypesTest {
 
     @Test
     public void canReadSignedComp3Item() {
-        Comp3lDataTypeSpec comp3lDataTypeSpec = new Comp3lDataTypeSpec(3, 2, Comp3SignType.SIGNED);
-        MemoryRegion memoryRegion = new MemoryRegion(comp3lDataTypeSpec.sizeInBytes());
-        MemoryLayout layout = new MemoryLayout(memoryRegion.fullAccess(), comp3lDataTypeSpec);
+        Comp3DataTypeSpec comp3DataTypeSpec = new Comp3DataTypeSpec(3, 2, Comp3SignType.SIGNED);
+        MemoryRegion memoryRegion = new MemoryRegion(comp3DataTypeSpec.sizeInBytes());
+        MemoryLayout layout = new MemoryLayout(memoryRegion.fullAccess(), comp3DataTypeSpec);
         memoryRegion.write(HexMapper.asBytes(ImmutableList.of(0x01, 0x23, 0x4D)));
         assertEquals(-1234.0, layout.read());
     }
 
     @Test
     public void canWritePositiveAndNegativeSignedComp3Item() {
-        Comp3lDataTypeSpec comp3lDataTypeSpec = new Comp3lDataTypeSpec(2, 2, Comp3SignType.SIGNED);
-        MemoryRegion memoryRegion = new MemoryRegion(comp3lDataTypeSpec.sizeInBytes());
-        MemoryLayout layout = new MemoryLayout(memoryRegion.fullAccess(), comp3lDataTypeSpec);
+        Comp3DataTypeSpec comp3DataTypeSpec = new Comp3DataTypeSpec(2, 2, Comp3SignType.SIGNED);
+        MemoryRegion memoryRegion = new MemoryRegion(comp3DataTypeSpec.sizeInBytes());
+        MemoryLayout layout = new MemoryLayout(memoryRegion.fullAccess(), comp3DataTypeSpec);
         layout.set("-12.34");
         assertMemory(memoryRegion, "01:23:4D");
         assertEquals(-1234.0, layout.read());

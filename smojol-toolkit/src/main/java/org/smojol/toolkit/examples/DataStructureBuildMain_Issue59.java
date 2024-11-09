@@ -31,7 +31,7 @@ public class DataStructureBuildMain_Issue59 {
                 new OccursIgnoringFormat1DataStructureBuilder(),
                 new ProgramSearch(),
                 new LocalFilesystemOperations())
-                .runForPrograms(ImmutableList.of(BUILD_BASE_ANALYSIS), ImmutableList.of("test-exp.cbl"));
+                .runForPrograms(ImmutableList.of(BUILD_BASE_ANALYSIS), ImmutableList.of("test-comp-1.cbl"));
         AnalysisTaskResultOK ok = (AnalysisTaskResultOK) result.values().stream().toList().getFirst().getFirst();
         BaseAnalysisModel base = ok.getDetail();
         System.out.println("DONE");

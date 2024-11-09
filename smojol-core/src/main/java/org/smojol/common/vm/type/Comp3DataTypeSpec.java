@@ -11,19 +11,18 @@ import org.smojol.common.vm.structure.ConversionStrategy;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Comp3lDataTypeSpec extends DataTypeSpec {
+public class Comp3DataTypeSpec extends DataTypeSpec {
     public static final String BYTE_0X0 = Character.toString(0x00);
-    public static final String CHARACTER_ZERO = "0";
     @Getter
     private final Comp3SignType signType;
     private final int leftSideDigits;
     private final int rightSideDigits;
 
-    public Comp3lDataTypeSpec(int leftSideDigits, int rightSideDigits) {
+    public Comp3DataTypeSpec(int leftSideDigits, int rightSideDigits) {
         this(leftSideDigits, rightSideDigits, Comp3SignType.UNSIGNED);
     }
 
-    public Comp3lDataTypeSpec(int leftSideDigits, int rightSideDigits, Comp3SignType signType) {
+    public Comp3DataTypeSpec(int leftSideDigits, int rightSideDigits, Comp3SignType signType) {
         super(new DecimalPointAligner(leftSideDigits, rightSideDigits));
         this.signType = signType;
         this.leftSideDigits = leftSideDigits;
