@@ -2,9 +2,11 @@ package org.smojol.toolkit.ast;
 
 import com.google.common.collect.ImmutableList;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.ast.*;
 import org.smojol.common.vm.stack.StackFrames;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class IfThenFlowNode extends CompositeCobolFlowNode {
@@ -30,6 +32,16 @@ public class IfThenFlowNode extends CompositeCobolFlowNode {
     @Override
     public void linkParentToChild(FlowNodeVisitor visitor, int level) {
         visitor.visitParentChildLink(this, internalTreeRoot, new VisitContext(level), nodeService, CHILD_IS_CONDITIONAL_STATEMENT);
+    }
+
+    @Override
+    public List<? extends ParseTree> getChildren() {
+        List<ParseTree> children = new ArrayList<>();
+        for (int i = 0; i < executionContext.getChildCount(); i++) {
+            if (!(executionContext.getChild(i) instanceof CobolParser.ConditionalStatementCallContext)) continue;
+            children.add(executionContext.getChild(i));
+        }
+        return children;
     }
 
     @Override

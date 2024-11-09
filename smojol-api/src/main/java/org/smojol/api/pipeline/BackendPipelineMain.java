@@ -86,7 +86,7 @@ public class BackendPipelineMain {
             System.out.println(new Gson().toJson(loop));
         });
 
-//        insertIntoDB(transpilerFlowgraph, reducibleLoopBodies, programName, reductionResult, unifiedModel, flowchartMarkup);
+        insertIntoDB(transpilerFlowgraph, reducibleLoopBodies, programName, reductionResult, unifiedModel, flowchartMarkup);
         List<JumpTranspilerNode> gotos = tree.allOfType(JumpTranspilerNode.class);
         List<JumpTranspilerNode> demoGotos = gotos.stream().filter(g -> g.getStart() instanceof NamedLocationNode).toList();
         TreeSmith treeSmith = new TreeSmith(tree);

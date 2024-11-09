@@ -33,7 +33,7 @@ public class FlowchartBuildMain {
                 .runForPrograms(ImmutableList.of(
                         BUILD_BASE_ANALYSIS,
                         DRAW_FLOWCHART),
-                        ImmutableList.of("test-exp.cbl"));
+                        ImmutableList.of("simple-if.cbl"));
         System.out.println("DONE");
     }
 }

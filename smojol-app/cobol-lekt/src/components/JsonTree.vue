@@ -7,7 +7,7 @@ export default defineComponent({
       name: "JsonTree",
       props: {
         entryValue: {
-          type: Object,
+          type: null,
           required: true
         },
         entryKey: {

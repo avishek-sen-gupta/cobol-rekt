@@ -39,6 +39,12 @@ public class ConditionalStatementFlowNode extends CobolFlowNode {
     }
 
     @Override
+    public void acceptUnvisited(FlowNodeVisitor visitor, int level) {
+        super.acceptUnvisited(visitor, level);
+        actualStatement.acceptUnvisited(visitor, level);
+    }
+
+    @Override
     public String name() {
         return executionContext.getText();
     }

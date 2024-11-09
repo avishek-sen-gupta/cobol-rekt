@@ -56,8 +56,11 @@ public class CobolFlowNodeFactory {
 
         else if (SyntaxIdentity.isOfType(parseTree, CobolParser.DialectStatementContext.class))
             return DialectFlowNodeFactory.flowNode(parseTree, scope, nodeService, stackFrames);
-        else if (SyntaxIdentity.isOfType(parseTree, CobolParser.ConditionalStatementCallContext.class))
-            return new ConditionalStatementFlowNode(parseTree, scope, nodeService, stackFrames);
+        else if (SyntaxIdentity.isOfType(parseTree, CobolParser.ConditionalStatementCallContext.class)) {
+            CobolParser.StatementContext innerStatement = ((CobolParser.ConditionalStatementCallContext) parseTree).statement();
+            return newNode(innerStatement, scope, nodeService, stackFrames);
+//            return new ConditionalStatementFlowNode(parseTree, scope, nodeService, stackFrames);
+        }
         // This needs to come last in all the statement classifications, or things will break
         else if (SyntaxIdentity.isOfType(parseTree, CobolParser.StatementContext.class))
             return new GenericStatementFlowNode(parseTree, scope, nodeService, stackFrames);
@@ -141,8 +144,11 @@ public class CobolFlowNodeFactory {
 
         else if (SyntaxIdentity.isOfType(parseTree, CobolParser.DialectStatementContext.class))
             return DialectFlowNodeFactory.flowNode(parseTree, scope, nodeService, stackFrames);
-        else if (SyntaxIdentity.isOfType(parseTree, CobolParser.ConditionalStatementCallContext.class))
-            return new ConditionalStatementFlowNode(parseTree, scope, nodeService, stackFrames);
+        else if (SyntaxIdentity.isOfType(parseTree, CobolParser.ConditionalStatementCallContext.class)) {
+            CobolParser.StatementContext innerStatement = ((CobolParser.ConditionalStatementCallContext) parseTree).statement();
+            return newNode(innerStatement, scope, nodeService, stackFrames);
+//            return new ConditionalStatementFlowNode(parseTree, scope, nodeService, stackFrames);
+        }
         // This needs to come last in all the statement classifications, or things will break
 
         else if (SyntaxIdentity.isOfType(parseTree, CobolParser.PerformTypeContext.class))
