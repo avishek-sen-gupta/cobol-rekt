@@ -334,7 +334,7 @@ export default {
 }
 
 .hoverable:hover {
-  background-color: #5b6e83;
+  background-color: indigo;
   color: white;
 }
 </style>

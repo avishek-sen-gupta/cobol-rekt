@@ -7,7 +7,7 @@ import {defineComponent, PropType, ref} from "vue";
 import {asCytoscapeDigraph, Digraph} from "@/ts/Digraph";
 import {CytoModel} from "@/ts/CytoscapeTypes";
 import {MutableCenter} from "@/ts/FlippableId";
-import {LoopBody, LoopNode} from "@/ts/ContractTypes";
+import {LoopBody, LoopNode} from "@/ts/LoopTypes";
 import {randomColour} from "@/ts/Colours";
 
 export default defineComponent({
