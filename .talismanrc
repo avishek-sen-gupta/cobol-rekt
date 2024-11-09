@@ -103,3 +103,5 @@ fileignoreconfig:
   checksum: 419fd47a1f271daf25687c1852c6aab7be9a0b056074a0bd96d95c7423578b11
 - filename: smojol-api/src/main/java/org/smojol/api/pipeline/BackendPipelineMain.java
   checksum: c6bdf7f696522d3d0c895f1bb0e36a76ef8517b079dd587a01c57131cb73e661
+- filename: smojol-api/src/main/java/org/smojol/api/pipeline/BackendPipelineMain.java
+  checksum: 3077cce73d73004dad2ce5d2ff0c68c961db11c277442e29d9736efa30cd66f3

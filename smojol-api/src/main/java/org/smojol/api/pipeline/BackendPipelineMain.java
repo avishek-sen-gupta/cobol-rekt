@@ -86,41 +86,36 @@ public class BackendPipelineMain {
             System.out.println(new Gson().toJson(loop));
         });
 
-        long projectID = insertIntoDB(transpilerFlowgraph, reducibleLoopBodies, programName, reductionResult, unifiedModel, flowchartMarkup);
+        String url = System.getenv("DATABASE_URL");
+        String user = System.getenv("DATABASE_USER");
+        String password = System.getenv("DATABASE_PASSWORD");
+
+        DbContext dbContext = new DbContext(url, user, password);
+        long projectID = insertIntoDB(transpilerFlowgraph, reducibleLoopBodies, programName, reductionResult, unifiedModel, flowchartMarkup, dbContext);
         List<JumpTranspilerNode> gotos = tree.allOfType(JumpTranspilerNode.class);
         List<JumpTranspilerNode> demoGotos = gotos.stream().filter(g -> g.getStart() instanceof NamedLocationNode).toList();
         TreeSmith treeSmith = new TreeSmith(tree);
         Boolean allEliminated = demoGotos.stream().map(treeSmith::eliminateGoto).reduce(true, (a, b) -> a && b);
         System.out.println("Worked: " + allEliminated);
-        insertRestructuredAST(tree, programName, projectID);
+        insertRestructuredAST(tree, programName, projectID, dbContext);
     }
 
-    private static void insertRestructuredAST(TranspilerNode tree, String programName, long projectID) throws SQLException {
-        String url = System.getenv("DATABASE_URL");
-        String user = System.getenv("DATABASE_USER");
-        String password = System.getenv("DATABASE_PASSWORD");
+    private static void insertRestructuredAST(TranspilerNode tree, String programName, long projectID, DbContext dbContext) throws SQLException {
         Gson gson = BuildTranspilerFlowgraphTask.initGson();
-
         IntermediateFormService intermediateFormService = new IntermediateFormService(gson);
-        DbContext dbContext = new DbContext(url, user, password);
         dbContext.execute(using -> intermediateFormService.insertIntermediateAST(tree, programName + " [Refactored]", projectID, using));
     }
 
-    private static long insertIntoDB(TranspilerFlowgraph transpilerFlowgraph, Set<NaturalLoopBody<TranspilerInstruction>> reducibleLoopBodies, String programName, FlowgraphReductionResult<TranspilerInstruction, DefaultEdge> reductionResult, SerialisableUnifiedModel unifiedModel, String flowchartMarkup) throws SQLException {
+    private static long insertIntoDB(TranspilerFlowgraph transpilerFlowgraph, Set<NaturalLoopBody<TranspilerInstruction>> reducibleLoopBodies, String programName, FlowgraphReductionResult<TranspilerInstruction, DefaultEdge> reductionResult, SerialisableUnifiedModel unifiedModel, String flowchartMarkup, DbContext dbContext) throws SQLException {
         Graph<TranspilerInstruction, DefaultEdge> instructionFlowgraph = transpilerFlowgraph.instructionFlowgraph();
         TranspilerNode tree = transpilerFlowgraph.transpilerTree();
         ImmutableMap<String, Set<?>> irCFGForDB = ImmutableMap.of("nodes", instructionFlowgraph.vertexSet(), "edges", instructionFlowgraph.edgeSet());
         Gson gson = BuildTranspilerFlowgraphTask.initGson();
 
-        String url = System.getenv("DATABASE_URL");
-        String user = System.getenv("DATABASE_USER");
-        String password = System.getenv("DATABASE_PASSWORD");
-
         IntermediateFormService intermediateFormService = new IntermediateFormService(gson);
         ProjectService projectService = new ProjectService();
         SourceService sourceService = new SourceService(gson);
 
-        DbContext dbContext = new DbContext(url, user, password);
         long pID = dbContext.execute(using -> {
             String projectName = UUID.randomUUID().toString();
             long projectID = projectService.insertProject(projectName, using);
