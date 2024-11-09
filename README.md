@@ -116,6 +116,7 @@ Currently, the app showcases the following capabilities:
 - T1-T2 Reducibility Test
 - Flow Model
 - Loop Body detection
+- GO TO elimination
 
 Instructions for setting up the demo app are provided [later](#demo-app-setup-wip), and will evolve.
 

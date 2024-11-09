@@ -55,7 +55,7 @@ export default {
                 <li v-for="iast in project.astListings"
                     :key="iast.astID"
                     @click="loadIntermediateAST(iast.astID)">
-                  {{ iast.programName }} / {{ iast.astID }}
+                  <span class="hoverable">{{ iast.programName }} / {{ iast.astID }}</span>
                 </li>
               </ul>
             </li>
@@ -64,7 +64,7 @@ export default {
                 <li v-for="icfg in project.cfgListings"
                     :key="icfg.cfgID"
                     @click="loadIntermediateCFG(icfg.cfgID)">
-                  {{ icfg.programName }} / {{ icfg.cfgID }}
+                  <span class="hoverable">{{ icfg.programName }} / {{ icfg.cfgID }}</span>
                 </li>
               </ul>
             </li>
@@ -73,7 +73,7 @@ export default {
                 <li v-for="flowModel in project.unifiedFlowModelListings"
                     :key="flowModel.flowModelID"
                     @click="loadFlowModel(flowModel.flowModelID)">
-                  {{ flowModel.programName }} / {{ flowModel.flowModelID }}
+                  <span class="hoverable">{{ flowModel.programName }} / {{ flowModel.flowModelID }}</span>
                 </li>
               </ul>
             </li>
@@ -82,7 +82,7 @@ export default {
                 <li v-for="flowchart in project.flowchartListings"
                     :key="flowchart.flowchartID"
                     @click="loadFlowchart(flowchart.flowchartID)">
-                  {{ flowchart.programName }} / {{ flowchart.flowchartID }}
+                  <span class="hoverable">{{ flowchart.programName }} / {{ flowchart.flowchartID }}</span>
                 </li>
               </ul>
             </li>
