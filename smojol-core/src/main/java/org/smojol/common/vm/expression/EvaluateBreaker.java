@@ -79,9 +79,15 @@ public class EvaluateBreaker {
             return new SimpleConditionExpression(associatedSubject, new PrimitiveCobolExpression(TypedRecord.typedBoolean(Boolean.parseBoolean(evaluateConditionContext.booleanLiteral().getText()))));
         else if (evaluateConditionContext.ANY() != null)
             return new SimpleConditionExpression(associatedSubject, new PrimitiveCobolExpression(TypedRecord.TRUE));
-        List<CobolExpression> args = ImmutableList.of(associatedSubject, cobolExpressionBuilder.arithmetic(evaluateConditionContext.evaluateValue().arithmeticExpression()),
-                cobolExpressionBuilder.arithmetic(evaluateConditionContext.evaluateThrough().evaluateValue().arithmeticExpression()));
-        FunctionCallExpression isInRangeCall = new FunctionCallExpression("isInRange", args);
+        CobolExpression fromExpression = cobolExpressionBuilder.arithmetic(evaluateConditionContext.evaluateValue().arithmeticExpression());
+        List<CobolExpression> argRange = ImmutableList.of(associatedSubject, fromExpression,
+                throughExpression(evaluateConditionContext, fromExpression));
+        FunctionCallExpression isInRangeCall = new FunctionCallExpression("isInRange", argRange);
         return evaluateConditionContext.NOT() != null ? new NotExpression(isInRangeCall) : isInRangeCall;
+    }
+
+    private CobolExpression throughExpression(CobolParser.EvaluateConditionContext evaluateConditionContext, CobolExpression defaultRhsExpression) {
+        if (evaluateConditionContext.evaluateThrough() == null) return defaultRhsExpression;
+        return cobolExpressionBuilder.arithmetic(evaluateConditionContext.evaluateThrough().evaluateValue().arithmeticExpression());
     }
 }
