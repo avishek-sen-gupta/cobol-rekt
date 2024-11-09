@@ -966,24 +966,19 @@ Interprets the COBOL source
 The simplest way to invoke tasks associated with the ```CodeTaskRunner``` through the API is using ```CodeTaskRunner```, like so:
 
 ```
-        String programName = "implicit-loop.cbl";
+        UUIDProvider idProvider = new UUIDProvider();
         Map<String, List<AnalysisTaskResult>> result = new CodeTaskRunner("/path/to/src",
                 "/path/to/report",
                 ImmutableList.of(new File("/path/1/to/cpy"),
                         new File("/path/2/to/cpy"),
                 new File("/path/3/to/cpy")),                "/path/to/dialect-idms.jar",
-                LanguageDialect.IDMS, new FullProgram(FlowchartOutputFormat.MERMAID), 
-                new UUIDProvider(), 
-                new OccursIgnoringFormat1DataStructureBuilder(), 
-                new ProgramSearch(), 
+                LanguageDialect.IDMS, new FullProgram(FlowchartOutputFormat.PNG, idProvider), idProvider, new OccursIgnoringFormat1DataStructureBuilder(),
+                new ProgramSearch(),
                 new LocalFilesystemOperations())
-                    .runForPrograms(ImmutableList.of(
-                        BUILD_BASE_ANALYSIS, 
-                        BUILD_TRANSPILER_FLOWGRAPH), 
-                        ImmutableList.of(programName));
-        List<AnalysisTaskResult> results = result.get(programName);
-        TranspilerFlowgraph transpilerFlowgraph = ((AnalysisTaskResultOK) results.get(1)).getDetail();
-        TranspilerNode tree = transpilerFlowgraph.transpilerTree();
+                .runForPrograms(ImmutableList.of(
+                        BUILD_BASE_ANALYSIS,
+                        DRAW_FLOWCHART),
+                        ImmutableList.of("test-exp.cbl"));
 ```
 
 The above performs the base analysis and then the actual analysis we are interested, namely, building the transpilation model. There are a lot of dependencies needing to be specified as of now; simpler defaults will be added going forward.

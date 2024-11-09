@@ -22,12 +22,18 @@ import static org.smojol.toolkit.task.CommandLineAnalysisTask.BUILD_BASE_ANALYSI
 
 public class FlowchartBuildMain {
     public static void main(String[] args) throws IOException, InterruptedException {
+        UUIDProvider idProvider = new UUIDProvider();
         Map<String, List<AnalysisTaskResult>> result = new CodeTaskRunner("/Users/asgupta/code/smojol/smojol-test-code",
                 "/Users/asgupta/code/smojol/out/report",
                 ImmutableList.of(new File("/Users/asgupta/code/smojol/smojol-test-code")),
                 "/Users/asgupta/code/smojol/che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar",
-                LanguageDialect.IDMS, new FullProgram(FlowchartOutputFormat.PNG, new UUIDProvider()), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder(), new ProgramSearch(), new LocalFilesystemOperations())
-                .runForPrograms(ImmutableList.of(BUILD_BASE_ANALYSIS, DRAW_FLOWCHART), ImmutableList.of("test-exp.cbl"));
+                LanguageDialect.IDMS, new FullProgram(FlowchartOutputFormat.PNG, idProvider), idProvider, new OccursIgnoringFormat1DataStructureBuilder(),
+                new ProgramSearch(),
+                new LocalFilesystemOperations())
+                .runForPrograms(ImmutableList.of(
+                        BUILD_BASE_ANALYSIS,
+                        DRAW_FLOWCHART),
+                        ImmutableList.of("test-exp.cbl"));
         System.out.println("DONE");
     }
 }
