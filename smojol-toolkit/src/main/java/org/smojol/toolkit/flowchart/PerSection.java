@@ -6,7 +6,6 @@ import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.FlowNodeService;
 import org.smojol.common.flowchart.FlowchartOutputFormat;
 import org.smojol.common.id.IdProvider;
-import org.smojol.common.id.UUIDProvider;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.vm.strategy.UnresolvedReferenceDoNothingStrategy;
 import org.smojol.common.vm.structure.Format1DataStructure;

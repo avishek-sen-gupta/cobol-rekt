@@ -29,7 +29,6 @@ public class DrawFlowchartTask implements AnalysisTask {
         try {
 
             flowchartOutputWriter.createOutputDirs();
-//            flowchartOutputWriter.draw(navigator, root, sourceConfig, flowcharter);
             flowchartOutputWriter.draw(navigator, root, sourceConfig);
             return AnalysisTaskResult.OK(CommandLineAnalysisTask.DRAW_FLOWCHART);
         } catch (IOException | InterruptedException e) {
