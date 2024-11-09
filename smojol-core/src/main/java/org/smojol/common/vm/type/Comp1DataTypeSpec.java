@@ -35,6 +35,6 @@ public class Comp1DataTypeSpec extends DataTypeSpec {
 
     @Override
     public MemoryLayout index(int i, MemoryAccess access) {
-        return null;
+        throw new UnsupportedOperationException("COMP-1 operations not supported yet!");
     }
 }
