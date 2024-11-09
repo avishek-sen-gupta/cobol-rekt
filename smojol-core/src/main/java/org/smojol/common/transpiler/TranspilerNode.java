@@ -16,7 +16,8 @@ import java.util.stream.Stream;
 public abstract class TranspilerNode implements Identifiable, GenericTreeNode<TranspilerNode> {
     private final String nodeType = this.getClass().getSimpleName();
     protected final Map<String, Object> properties;
-    @Getter private final List<SemanticCategory> categories;
+    @Getter
+    private final List<SemanticCategory> categories;
     protected final List<TranspilerNode> childTranspilerNodes = new ArrayList<>();
     protected final String id;
 
@@ -128,6 +129,10 @@ public abstract class TranspilerNode implements Identifiable, GenericTreeNode<Tr
 
     public List<TranspilerNode> findAllRecursive(Predicate<TranspilerNode> p) {
         return findAllRecursive_(this, p).toList();
+    }
+
+    public <T extends TranspilerNode> List<T> allOfType(Class<T> nodeType) {
+        return findAllRecursive(t -> t.getClass() == nodeType).stream().map(n -> (T) n).toList();
     }
 
     private Stream<TranspilerNode> findAllRecursive_(TranspilerNode node, Predicate<TranspilerNode> p) {
