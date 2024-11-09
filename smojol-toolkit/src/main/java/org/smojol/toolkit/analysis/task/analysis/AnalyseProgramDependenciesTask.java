@@ -55,9 +55,10 @@ public class AnalyseProgramDependenciesTask {
         String srcDir = searchResult.getRight();
         LOGGER.info("Found " + foundFile.getName() + " in " + srcDir);
         try {
+            UUIDProvider idProvider = new UUIDProvider();
             Map<String, List<AnalysisTaskResult>> results = new CodeTaskRunner(srcDir,
                     reportRootDir, copyBookPaths, dialectJarPath,
-                    dialect, new FullProgram(FlowchartOutputFormat.SVG, new UUIDProvider()), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder(), programSearch, resourceOperations)
+                    dialect, new FullProgram(FlowchartOutputFormat.SVG, idProvider), idProvider, new OccursIgnoringFormat1DataStructureBuilder(), programSearch, resourceOperations)
                     .runForPrograms(ImmutableList.of(BUILD_BASE_ANALYSIS, CommandLineAnalysisTask.BUILD_PROGRAM_DEPENDENCIES), ImmutableList.of(foundFile.getName()));
             AnalysisTaskResult first = results.get(program.getName()).get(1);
             List<CallTarget> dependencies = switch (first) {

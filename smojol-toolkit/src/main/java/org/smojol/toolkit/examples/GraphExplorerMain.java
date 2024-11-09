@@ -19,10 +19,11 @@ import static org.smojol.toolkit.task.CommandLineAnalysisTask.BUILD_BASE_ANALYSI
 public class GraphExplorerMain {
     public static void main(String[] args) throws IOException {
         String dialectJarPath = "/Users/asgupta/code/smojol/che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar";
+        UUIDProvider idProvider = new UUIDProvider();
         new CodeTaskRunner("/Users/asgupta/code/smojol/smojol-test-code",
                 "/Users/asgupta/code/smojol/out/report",
                 ImmutableList.of(new File("/Users/asgupta/code/smojol/smojol-test-code")),
-                dialectJarPath, LanguageDialect.COBOL   , new FullProgram(PNG, new UUIDProvider()), new UUIDProvider(), new OccursIgnoringFormat1DataStructureBuilder(), new ProgramSearch(), new LocalFilesystemOperations())
+                dialectJarPath, LanguageDialect.COBOL   , new FullProgram(PNG, idProvider), idProvider, new OccursIgnoringFormat1DataStructureBuilder(), new ProgramSearch(), new LocalFilesystemOperations())
                 .runForPrograms(ImmutableList.of(
                         BUILD_BASE_ANALYSIS,
                         CommandLineAnalysisTask.FLOW_TO_NEO4J,
