@@ -104,7 +104,7 @@ Cobol-REKT is a continually evolving, actively maintained collection of capabili
 
 ## Demo App (Very Early - WIP)
 
-This app is ultimately intended to only give a showcase of the capabilities of the library, and is currently in a nascent state and not ready for use. Nevertheless, the screenshot below shows the user navigating the syntax highlighted Intermediate Representation source, with the IR Syntax Tree is shown in the graph. The top right pane shows the currently selected node information, and the bottom right pane shows the available projects.
+This app is ultimately intended to only give a showcase of the capabilities of the library, and is currently in a nascent state and not ready for use. Nevertheless, the screenshot below shows the user navigating the syntax highlighted Intermediate Representation source, with the IR Control Flowgraph shown in the graph. The top right pane shows the currently selected node information, and the bottom right pane shows the available projects.
 
 ![Demo App Early](/documentation/demo-app-early.png)
 
@@ -117,6 +117,7 @@ Currently, the app showcases the following capabilities:
 - Flow Model
 - Loop Body detection
 - GO TO elimination
+- Original Source
 
 Instructions for setting up the demo app are provided [later](#demo-app-setup-wip), and will evolve.
 
@@ -1149,6 +1150,18 @@ The screenshot below shows nodes which comprise natural loops (both reducible an
 The screenshot below shows an example of nested natural loops. The deep purple nodes at the bottom form an inner loop which is in turn nested inside a bigger loop consisting of nodes highlighted in green (and of course, the nodes of the inner loop).
 
 ![Nested Loop Bodies in CFG](documentation/demo-app-cfg-nested-loop-bodies.png)
+
+#### Intermediate Representation AST
+
+The screenshot below shows the user navigating through the AST of the intermediate source.
+
+![Intermediate AST Navigation](documentation/demo-app-early-ir-ast.png)
+
+#### Eliminated GO TOs
+
+The screenshot below shows the IR source with all ```GO TO```s eliminated. The only jumps which remain would be translated directly into ```break``` and ```continue``` statements in structured programming languages.
+
+![IR Source without GOTOs](documentation/demo-app-early-no-gotos.png)
 
 The rest of this file is mostly technical notes for my personal documentation.
 

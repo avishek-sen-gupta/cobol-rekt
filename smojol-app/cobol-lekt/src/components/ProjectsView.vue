@@ -53,7 +53,7 @@ export default {
             :key="project.projectID">
           Project ID: {{ project.projectID }}
           <ul>
-            <li><strong>AST</strong>
+            <li><strong>Source</strong>
               <ul>
                 <li v-for="rawAST in project.rawASTListings"
                     :key="rawAST.astID"
@@ -62,7 +62,7 @@ export default {
                 </li>
               </ul>
             </li>
-            <li><strong>AST</strong>
+            <li><strong>Intermediate</strong>
               <ul>
                 <li v-for="iast in project.astListings"
                     :key="iast.astID"
