@@ -24,6 +24,9 @@ export default {
     loadIntermediateAST(id) {
       this.$emit("load-ir-ast", id);
     },
+    loadRawAST(id) {
+      this.$emit("load-raw-ast", id);
+    },
     loadIntermediateCFG(id) {
       this.$emit("load-ir-cfg", id);
     },
@@ -50,6 +53,15 @@ export default {
             :key="project.projectID">
           Project ID: {{ project.projectID }}
           <ul>
+            <li><strong>AST</strong>
+              <ul>
+                <li v-for="rawAST in project.rawASTListings"
+                    :key="rawAST.astID"
+                    @click="loadRawAST(rawAST.rawASTID)">
+                  <span class="hoverable">{{ rawAST.programName }} / {{ rawAST.rawASTID }}</span>
+                </li>
+              </ul>
+            </li>
             <li><strong>AST</strong>
               <ul>
                 <li v-for="iast in project.astListings"

@@ -1,147 +1,172 @@
-<script>
+<script lang="ts">
 import HelloWorld from "@/components/HelloWorld.vue";
 import axios from "axios";
 import ProjectsView from "@/components/ProjectsView.vue";
 import GraphView from "@/components/GraphView.vue";
 import InfoPane from "@/components/InfoPane.vue";
 import CodePane from "@/components/CodePane.vue";
-import {flip} from "@/ts/FlippableId";
+import {flip, MutableCenter} from "@/ts/FlippableId";
 import {unifiedModelToDigraph} from "@/ts/UnifiedFlowModel";
 import ImageView from "@/components/ImageView.vue";
+import {defineComponent, ref} from "vue";
+import {Digraph} from "./ts/Digraph";
 
-export default {
-  name: 'App',
-  components: {
-    CodePane,
-    InfoPane,
-    GraphView,
-    HelloWorld,
-    ProjectsView,
-    ImageView
-  },
-  setup() {
-  },
-  data() {
-    return {
-      heartbeatResult: "UNKNOWN",
-      irAST: null,
-      irCFG: null,
-      nodeDetails: null,
-      centerNode: null,
-      loopBodies: [],
-      t1t2Result: null,
-      flowModel: null,
-      flowchart: `digraph {}`,
-    };
-  },
-  mounted() {
-  },
-  methods: {
-    navigateToCytoNode(data) {
-      // console.log("Parent notified");
-      // console.log(data.id);
-      this.centerNode = flip(data.id, this.centerNode);
-    },
-    updateNodeDetails(data) {
-      this.nodeDetails = data;
-    },
-    receiveLoadIntermediateASTEvent(data) {
-      // console.log("Received event");
-      // console.log(data);
-      this.getIRWithID(data);
-    },
-    receiveLoadIntermediateCFGEvent(data) {
-      // console.log("Received event");
-      // console.log(data);
-      this.getCFGWithID(data);
-    },
-    receiveLoadFlowModelEvent(data) {
-      // console.log("Received event");
-      // console.log(data);
-      this.getFlowModelWithID(data);
-    },
-    receiveLoadFlowchartEvent(data) {
-      // console.log("Received event");
-      // console.log(data);
-      this.getFlowchartWithID(data);
-    },
-    testPing() {
-      const self = this;
-      axios.get("/api/heartbeat")
-          .then(response => {
-            console.log(response);
-            this.heartbeatResult = response.data;
-          })
-          .catch(function (err) {
-            self.heartbeatResult = "FAIL";
-            console.log(err);
-          });
-    },
-    getIRWithID(id) {
-      axios.get("/api/ir-ast/" + id)
-          .then(response => {
-            this.irAST = response.data.ast;
-            this.t1t2Result = null;
-          })
-          .catch(function (err) {
+export default defineComponent({
+      name: 'App',
+      components: {
+        CodePane,
+        InfoPane,
+        GraphView,
+        HelloWorld,
+        ProjectsView,
+        ImageView
+      },
+      setup() {
+        const flowModel = ref<Digraph | null>(null);
+        const centerNode = ref<MutableCenter | null>(null);
+        const nodeDetails = ref<any | null>(null);
+        const source = ref<any | null>(null);
+        return {flowModel, centerNode, nodeDetails, source};
+      },
+      data() {
+        return {
+          heartbeatResult: "UNKNOWN",
+          irAST: null,
+          irCFG: null,
+          // nodeDetails: null,
+          // centerNode: null,
+          loopBodies: [],
+          t1t2Result: null,
+          // flowModel: null,
+          flowchart: `digraph {}`,
+        };
+      },
+      mounted() {
+      },
+      methods: {
+        navigateToCytoNode(data: { id: string, [key: string]: any }) {
+          // console.log("Parent notified");
+          // console.log(data.id);
+          this.centerNode = flip(data.id, this.centerNode!);
+        },
+        updateNodeDetails(data: any) {
+          this.nodeDetails = data;
+        },
+        receiveLoadIntermediateASTEvent(data: Number) {
+          // console.log("Received event");
+          // console.log(data);
+          this.getIRWithID(data);
+        },
+        receiveLoadRawASTEvent(data: Number) {
+          // console.log("Received event");
+          // console.log(data);
+          this.getRawASTWithID(data);
+        },
+        receiveLoadIntermediateCFGEvent(data: Number) {
+          // console.log("Received event");
+          // console.log(data);
+          this.getCFGWithID(data);
+        },
+        receiveLoadFlowModelEvent(data: Number) {
+          // console.log("Received event");
+          // console.log(data);
+          this.getFlowModelWithID(data);
+        },
+        receiveLoadFlowchartEvent(data: Number) {
+          // console.log("Received event");
+          // console.log(data);
+          this.getFlowchartWithID(data);
+        },
+        testPing() {
+          const self = this;
+          axios.get("/api/heartbeat")
+              .then(response => {
+                console.log(response);
+                this.heartbeatResult = response.data;
+              })
+              .catch(function (err) {
+                self.heartbeatResult = "FAIL";
+                console.log(err);
+              });
+        },
+        getIRWithID(id: Number) {
+          axios.get("/api/ir-ast/" + id)
+              .then(response => {
+                this.irAST = response.data.ast;
+                this.t1t2Result = null;
+              })
+              .catch(function (err) {
+                console.log("There was an error: ");
+                console.log(err);
+              });
+        },
+        getRawASTWithID(id: Number) {
+          axios.get("/api/raw-ast/" + id)
+              .then(response => {
+                this.t1t2Result = null;
+                this.source = response.data;
+                console.log("GOT SOURCE")
+                console.log(this.source);
+              })
+              .catch(function (err) {
+                console.log("There was an error: ");
+                console.log(err);
+              });
+        },
+        getIR() {
+          this.getIRWithID(1);
+        },
+        getCFG() {
+          this.getCFGWithID(1);
+        },
+        async getFlowModelWithID(id: Number) {
+          axios.get("/api/flow-model/" + id)
+              .then(response => {
+                console.log(response);
+                this.flowModel = unifiedModelToDigraph(response.data.body);
+                return response.data.body;
+              });
+        },
+        async getFlowchartWithID(id: Number) {
+          axios.get("/api/flowchart/" + id)
+              .then(response => {
+                console.log(response);
+                this.flowchart = response.data.markup;
+                return response.data.body;
+              });
+        },
+        async getCFGWithID(id: Number) {
+          const cfgPromise = axios.get("/api/ir-cfg/" + id)
+              .then(response => {
+                console.log(response);
+                this.irCFG = response.data.cfg;
+                return response.data.cfg;
+              });
+          const loopBodyPromise = axios.get("/api/ir-cfg/" + id + "/loop-body")
+              .then(response => {
+                console.log(response);
+                return response.data;
+              });
+          const t1t2Promise = axios.get("/api/ir-cfg/" + id + "/t1-t2")
+              .then(response => {
+                console.log(response);
+                return response.data;
+              });
+
+          try {
+            const [irCFG, loopBodies, t1t2Result] = await Promise.all([cfgPromise, loopBodyPromise, t1t2Promise]);
+            this.irCFG = irCFG;
+            this.loopBodies = loopBodies;
+            this.t1t2Result = t1t2Result;
+          } catch (e) {
             console.log("There was an error: ");
-            console.log(err);
-          });
-    },
-    getIR() {
-      this.getIRWithID(1);
-    },
-    getCFG() {
-      this.getCFGWithID(1);
-    },
-    async getFlowModelWithID(id) {
-      axios.get("/api/flow-model/" + id)
-          .then(response => {
-            console.log(response);
-            this.flowModel = unifiedModelToDigraph(response.data.body);
-            return response.data.body;
-          });
-    },
-    async getFlowchartWithID(id) {
-      axios.get("/api/flowchart/" + id)
-          .then(response => {
-            console.log(response);
-            this.flowchart = response.data.markup;
-            return response.data.body;
-          });
-    },
-    async getCFGWithID(id) {
-      const cfgPromise = axios.get("/api/ir-cfg/" + id)
-          .then(response => {
-            console.log(response);
-            this.irCFG = response.data.cfg;
-            return response.data.cfg;
-          });
-      const loopBodyPromise = axios.get("/api/ir-cfg/" + id + "/loop-body")
-          .then(response => {
-            console.log(response);
-            return response.data;
-          });
-      const t1t2Promise = axios.get("/api/ir-cfg/" + id + "/t1-t2")
-          .then(response => {
-            console.log(response);
-            return response.data;
-          });
-
-      try {
-        const [irCFG, loopBodies, t1t2Result] = await Promise.all([cfgPromise, loopBodyPromise, t1t2Promise]);
-        this.irCFG = irCFG;
-        this.loopBodies = loopBodies;
-        this.t1t2Result = t1t2Result;
-      } catch (e) {
-        console.log("There was an error: ");
-        console.log(e);
-      }
+            console.log(e);
+          }
+        }
+      },
+      computed: {}
     }
-  },
-  computed: {}
-}
-</script>
+)</script>
 
 <template>
   <div id="top-panel">
@@ -165,7 +190,8 @@ export default {
   <HelloWorld/>
   <div>Last Ping result is: {{ heartbeatResult }}</div>
   <div class="main-panel">
-    <CodePane :ir-a-s-t="irAST" style="grid-area: 1 / 1 / 3 / 2" @sourceNodeClicked="navigateToCytoNode"/>
+    <CodePane :ir-a-s-t="irAST"
+              style="grid-area: 1 / 1 / 3 / 2" @sourceNodeClicked="navigateToCytoNode"/>
     <GraphView
         :intermediate-cfg-digraph="irCFG"
         :intermediate-ast="irAST"
@@ -176,12 +202,13 @@ export default {
         @node-details-changed="updateNodeDetails"
         style="grid-area: 1 / 2 / 3 / 3"
     />
-    <InfoPane :node-details="this.nodeDetails"
+    <InfoPane :node-details="nodeDetails"
               style="grid-area: 1 / 3 / 2 / 4"/>
     <ProjectsView @load-ir-ast="receiveLoadIntermediateASTEvent"
                   @load-ir-cfg="receiveLoadIntermediateCFGEvent"
                   @load-flow-model="receiveLoadFlowModelEvent"
                   @load-flowchart="receiveLoadFlowchartEvent"
+                  @load-raw-ast="receiveLoadRawASTEvent"
                   style="grid-area: 2 / 3 / 3 / 4"
     />
   </div>

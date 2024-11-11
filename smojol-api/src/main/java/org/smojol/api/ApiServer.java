@@ -56,6 +56,14 @@ public class ApiServer {
                     }
                     ctx.json(flowModel.get());
                 })
+                .get("/api/raw-ast/{id}", ctx -> {
+                    Optional<Map<String, Object>> rawAST = rawAST(ctx.pathParam("id"), gson, dbContext);
+                    if (rawAST.isEmpty()) {
+                        ctx.status(404);
+                        return;
+                    }
+                    ctx.json(rawAST.get());
+                })
                 .get("/api/flow-model/{id}", ctx -> {
                     Optional<Map<String, Object>> flowModel = flowModel(ctx.pathParam("id"), gson, dbContext);
                     if (flowModel.isEmpty()) {
@@ -98,6 +106,10 @@ public class ApiServer {
 
     private static Optional<Map<String, Object>> flowModel(String id, Gson gson, DbContext dbContext) throws SQLException {
         return dbContext.execute(using -> new SourceService(gson).flowModel(Integer.parseInt(id), using));
+    }
+
+    private static Optional<Map<String, Object>> rawAST(String id, Gson gson, DbContext dbContext) throws SQLException {
+        return dbContext.execute(using -> new SourceService(gson).rawAST(Integer.parseInt(id), using));
     }
 
     private static Optional<Map<String, Object>> flowchart(String id, Gson gson, DbContext dbContext) throws SQLException {

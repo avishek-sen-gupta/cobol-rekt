@@ -6,5 +6,6 @@ public record ProjectListing(String projectID,
                              List<IntermediateASTListing> astListings,
                              List<IntermediateCFGListing> cfgListings,
                              List<UnifiedFlowModelListing> unifiedFlowModelListings,
-                             List<FlowchartListing> flowchartListings) {
+                             List<FlowchartListing> flowchartListings,
+                             List<RawASTListing> rawASTListings) {
 }

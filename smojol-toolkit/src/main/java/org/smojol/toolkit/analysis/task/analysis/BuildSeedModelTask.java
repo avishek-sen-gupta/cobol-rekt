@@ -1,6 +1,8 @@
 package org.smojol.toolkit.analysis.task.analysis;
 
 import org.eclipse.lsp.cobol.core.CobolParser;
+import org.smojol.common.ast.BuildSerialisableASTTask;
+import org.smojol.common.ast.CobolContextAugmentedTreeNode;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.FlowNodeService;
 import org.smojol.common.id.IdProvider;
@@ -31,6 +33,7 @@ public class BuildSeedModelTask implements AnalysisTask {
         try {
             CobolEntityNavigator navigator = pipeline.parse();
             CobolParser.ProcedureDivisionBodyContext rawAST = navigator.procedureDivisionBody(navigator.getRoot());
+            CobolContextAugmentedTreeNode serialisableAST = new BuildSerialisableASTTask().run(rawAST, navigator);
             CobolDataStructure dataStructures = pipeline.getDataStructures();
 //            FlowchartBuilder flowcharter = pipeline.flowcharter();
             SmojolSymbolTable symbolTable = new SmojolSymbolTable(dataStructures, new SymbolReferenceBuilder(idProvider));
@@ -40,7 +43,7 @@ public class BuildSeedModelTask implements AnalysisTask {
 //            FlowNode flowRoot = flowcharter.getRoot();
             flowRoot.resolve(symbolTable, dataStructures);
             return AnalysisTaskResult.OK("BUILD_SEED_MODEL", new BaseAnalysisModel(navigator, rawAST, dataStructures,
-                    symbolTable, flowRoot));
+                    symbolTable, flowRoot, serialisableAST));
         } catch (IOException e) {
             return AnalysisTaskResult.ERROR(e, "BUILD_SEED_MODEL");
         }

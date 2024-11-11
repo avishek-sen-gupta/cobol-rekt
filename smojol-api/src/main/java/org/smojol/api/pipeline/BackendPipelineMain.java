@@ -12,6 +12,7 @@ import org.smojol.api.ProjectService;
 import org.smojol.api.SourceService;
 import org.smojol.api.database.DbContext;
 import org.smojol.common.analysis.NaturalLoopBody;
+import org.smojol.common.ast.CobolContextAugmentedTreeNode;
 import org.smojol.common.dialect.LanguageDialect;
 import org.smojol.common.flowchart.FlowchartOutputFormat;
 import org.smojol.common.id.UUIDProvider;
@@ -91,7 +92,7 @@ public class BackendPipelineMain {
         String password = System.getenv("DATABASE_PASSWORD");
 
         DbContext dbContext = new DbContext(url, user, password);
-        long projectID = insertIntoDB(transpilerFlowgraph, reducibleLoopBodies, programName, reductionResult, unifiedModel, flowchartMarkup, dbContext);
+        long projectID = insertIntoDB(transpilerFlowgraph, reducibleLoopBodies, programName, reductionResult, unifiedModel, flowchartMarkup, dbContext, baseModel.serialisableAST());
         List<JumpTranspilerNode> gotos = tree.allOfType(JumpTranspilerNode.class);
         List<JumpTranspilerNode> demoGotos = gotos.stream().filter(g -> g.getStart() instanceof NamedLocationNode).toList();
         TreeSmith treeSmith = new TreeSmith(tree);
@@ -106,7 +107,7 @@ public class BackendPipelineMain {
         dbContext.execute(using -> intermediateFormService.insertIntermediateAST(tree, programName + " [Refactored]", projectID, using));
     }
 
-    private static long insertIntoDB(TranspilerFlowgraph transpilerFlowgraph, Set<NaturalLoopBody<TranspilerInstruction>> reducibleLoopBodies, String programName, FlowgraphReductionResult<TranspilerInstruction, DefaultEdge> reductionResult, SerialisableUnifiedModel unifiedModel, String flowchartMarkup, DbContext dbContext) throws SQLException {
+    private static long insertIntoDB(TranspilerFlowgraph transpilerFlowgraph, Set<NaturalLoopBody<TranspilerInstruction>> reducibleLoopBodies, String programName, FlowgraphReductionResult<TranspilerInstruction, DefaultEdge> reductionResult, SerialisableUnifiedModel unifiedModel, String flowchartMarkup, DbContext dbContext, CobolContextAugmentedTreeNode serialisableAST) throws SQLException {
         Graph<TranspilerInstruction, DefaultEdge> instructionFlowgraph = transpilerFlowgraph.instructionFlowgraph();
         TranspilerNode tree = transpilerFlowgraph.transpilerTree();
         ImmutableMap<String, Set<?>> irCFGForDB = ImmutableMap.of("nodes", instructionFlowgraph.vertexSet(), "edges", instructionFlowgraph.edgeSet());
@@ -120,7 +121,7 @@ public class BackendPipelineMain {
             String projectName = UUID.randomUUID().toString();
             long projectID = projectService.insertProject(projectName, using);
             insertIntermediateArtifacts(reducibleLoopBodies, programName, reductionResult, using, intermediateFormService, tree, projectID, irCFGForDB);
-            insertSourceArtifacts(unifiedModel, programName, projectID, sourceService, flowchartMarkup, using);
+            insertSourceArtifacts(unifiedModel, programName, projectID, sourceService, flowchartMarkup, using, serialisableAST);
             return projectID;
         });
 
@@ -128,9 +129,10 @@ public class BackendPipelineMain {
         return pID;
     }
 
-    private static void insertSourceArtifacts(SerialisableUnifiedModel unifiedModel, String programName, long projectID, SourceService sourceService, String flowchartMarkup, DSLContext using) {
+    private static void insertSourceArtifacts(SerialisableUnifiedModel unifiedModel, String programName, long projectID, SourceService sourceService, String flowchartMarkup, DSLContext using, CobolContextAugmentedTreeNode serialisableAST) {
         long unifiedModelID = sourceService.insertUnifiedModel(unifiedModel, programName, projectID, using);
         long flowchartID = sourceService.insertFlowchart(flowchartMarkup, programName, projectID, "PROCEDURE_DIVISION", using);
+        long rawASTID = sourceService.insertRawAST(serialisableAST, programName, projectID, using);
     }
 
     private static void insertIntermediateArtifacts(Set<NaturalLoopBody<TranspilerInstruction>> reducibleLoopBodies, String programName, FlowgraphReductionResult<TranspilerInstruction, DefaultEdge> reductionResult, DSLContext using, IntermediateFormService intermediateFormService, TranspilerNode tree, long projectID, ImmutableMap<String, Set<?>> irCFGForDB) {

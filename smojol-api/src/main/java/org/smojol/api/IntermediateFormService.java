@@ -25,6 +25,7 @@ import java.util.stream.Stream;
 
 import static org.jooq.impl.DSL.field;
 import static org.smojol.api.SourceService.FLOWCHART;
+import static org.smojol.api.SourceService.RAW_AST;
 import static org.smojol.api.pipeline.DbConstants.*;
 
 public class IntermediateFormService {
@@ -86,6 +87,23 @@ public class IntermediateFormService {
         return collectedFlowcharts;
     }
 
+    Map<String, List<Map<String, String>>> rawASTListingsByProject(DSLContext using) {
+        @NotNull Result<Record3<String, Long, Long>> allRawASTs = using
+                .select(field("RAW_AST.PROGRAM_NAME", String.class),
+                        field("RAW_AST.ID", Long.class),
+                        field("PROJECT.ID", Long.class).as(PROJECT_ID))
+                .from(RAW_AST)
+                .leftOuterJoin(PROJECT)
+                .on(field("RAW_AST.PROJECT_ID", Long.class)
+                        .eq(field("PROJECT.ID", Long.class)))
+                .fetch();
+        Map<String, List<Map<String, String>>> collectedRawASTs = allRawASTs
+                .map(cfg -> (Map<String, String>) ImmutableMap.of("programName", cfg.component1(), "rawASTID", cfg.component2().toString(), "projectID", cfg.component3().toString())).stream()
+                .collect(Collectors.groupingBy(d -> d.get("projectID"))).entrySet().stream()
+                .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+        return collectedRawASTs;
+    }
+
     Map<String, List<Map<String, String>>> intermediateCFGListingsByProject(DSLContext using) {
         @NotNull Result<Record4<String, String, Long, Long>> allIntermediateASTs = using
                 .select(field("IR_CFG.PROGRAM_NAME", String.class),
@@ -109,21 +127,25 @@ public class IntermediateFormService {
         Map<String, List<Map<String, String>>> cfgGroupAsMap = intermediateCFGListingsByProject(using);
         Map<String, List<Map<String, String>>> unifiedFlowGroupAsMap = unifiedFlowListingsByProject(using);
         Map<String, List<Map<String, String>>> flowchartGroupAsMap = flowchartListingsByProject(using);
+        Map<String, List<Map<String, String>>> rawASTGroupAsMap = rawASTListingsByProject(using);
         Set<Entry<String, List<Map<String, String>>>> cfgsGroupedByProjectID = cfgGroupAsMap.entrySet();
         Set<Entry<String, List<Map<String, String>>>> astsGroupedByProjectID = astGroupAsMap.entrySet();
         Set<Entry<String, List<Map<String, String>>>> unifiedFlowGroupedByProjectID = unifiedFlowGroupAsMap.entrySet();
         Set<Entry<String, List<Map<String, String>>>> flowchartsGroupedByProjectID = flowchartGroupAsMap.entrySet();
+        Set<Entry<String, List<Map<String, String>>>> rawASTsGroupedByProjectID = rawASTGroupAsMap.entrySet();
         Stream<String> cfgUniqueProjectIDs = cfgsGroupedByProjectID.stream().map(Entry::getKey);
         Stream<String> astUniqueProjectIDs = astsGroupedByProjectID.stream().map(Entry::getKey);
         Stream<String> unifiedFlowUniqueProjectIDs = unifiedFlowGroupedByProjectID.stream().map(Entry::getKey);
         Stream<String> flowchartUniqueProjectIDs = flowchartsGroupedByProjectID.stream().map(Entry::getKey);
-        Set<String> allUniqueProjectIDs = Stream.of(cfgUniqueProjectIDs, astUniqueProjectIDs, unifiedFlowUniqueProjectIDs, flowchartUniqueProjectIDs).flatMap(s -> s).collect(Collectors.toUnmodifiableSet());
+        Stream<String> rawASTUniqueProjectIDs = rawASTsGroupedByProjectID.stream().map(Entry::getKey);
+        Set<String> allUniqueProjectIDs = Stream.of(cfgUniqueProjectIDs, astUniqueProjectIDs, unifiedFlowUniqueProjectIDs, flowchartUniqueProjectIDs, rawASTUniqueProjectIDs).flatMap(s -> s).collect(Collectors.toUnmodifiableSet());
 
         List<ProjectListing> projectListings = allUniqueProjectIDs.stream().map(pid -> new ProjectListing(pid,
                 irASTs(pid, astGroupAsMap),
                 irCFGs(pid, cfgGroupAsMap),
                 flowModels(pid, unifiedFlowGroupAsMap),
-                flowcharts(pid, flowchartGroupAsMap)
+                flowcharts(pid, flowchartGroupAsMap),
+                rawASTs(pid, rawASTGroupAsMap)
         )).toList();
 
         return projectListings;
@@ -158,6 +180,14 @@ public class IntermediateFormService {
         if (modelsForProject == null) return ImmutableList.of();
         return modelsForProject.stream()
                 .map(cfg -> new FlowchartListing(cfg.get("flowchartID"), cfg.get("programName")))
+                .toList();
+    }
+
+    private static @NotNull List<RawASTListing> rawASTs(String pid, Map<String, List<Map<String, String>>> rawASTsGroupAsMap) {
+        List<Map<String, String>> modelsForProject = rawASTsGroupAsMap.get(pid);
+        if (modelsForProject == null) return ImmutableList.of();
+        return modelsForProject.stream()
+                .map(cfg -> new RawASTListing(cfg.get("rawASTID"), cfg.get("programName")))
                 .toList();
     }
 

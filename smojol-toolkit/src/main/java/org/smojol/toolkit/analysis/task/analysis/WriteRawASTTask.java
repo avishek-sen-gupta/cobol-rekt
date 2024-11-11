@@ -1,6 +1,8 @@
 package org.smojol.toolkit.analysis.task.analysis;
 
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.smojol.common.ast.BuildSerialisableASTTask;
+import org.smojol.common.ast.CobolContextAugmentedTreeNode;
 import org.smojol.common.flowchart.ConsoleColors;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.resource.ResourceOperations;
@@ -33,8 +35,9 @@ public class WriteRawASTTask implements AnalysisTask {
             LOGGER.info(String.format("AST Output Dir is: %s", rawAstOutputConfig.astOutputDir()));
             resourceOperations.createDirectories(rawAstOutputConfig.astOutputDir());
 //            Files.createDirectories(rawAstOutputConfig.astOutputDir());
-            rawAstOutputConfig.visualiser().writeCobolAST(tree, rawAstOutputConfig.cobolParseTreeOutputPath(), false, navigator);
-            return AnalysisTaskResult.OK(CommandLineAnalysisTask.WRITE_RAW_AST);
+            CobolContextAugmentedTreeNode serialisableAST = new BuildSerialisableASTTask().run(tree, navigator);
+            rawAstOutputConfig.visualiser().writeCobolAST(serialisableAST, rawAstOutputConfig.cobolParseTreeOutputPath(), false);
+            return AnalysisTaskResult.OK(CommandLineAnalysisTask.WRITE_RAW_AST, serialisableAST);
         } catch (IOException e) {
             return AnalysisTaskResult.ERROR(e, CommandLineAnalysisTask.WRITE_RAW_AST);
         }

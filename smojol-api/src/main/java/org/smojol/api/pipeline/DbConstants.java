@@ -15,6 +15,7 @@ public class DbConstants {
     public static final @NotNull Field<Long> ID_FIELD = field("ID", Long.class);
     public static final @NotNull Field<Long> CFG_ID_FIELD = field("CFG_ID", Long.class);
     public static final @NotNull Field<String> BODY_FIELD = field("BODY", String.class);
+    public static final @NotNull Field<String> AST_BODY_FIELD = field("AST", String.class);
     public static final @NotNull Table<Record> IR_AST = table("IR_AST");
     public static final @NotNull Table<Record> IR_CFG = table("IR_CFG");
     public static final @NotNull Table<Record> PROJECT = table("PROJECT");
