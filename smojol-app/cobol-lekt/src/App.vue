@@ -10,6 +10,7 @@ import {unifiedModelToDigraph} from "@/ts/UnifiedFlowModel";
 import ImageView from "@/components/ImageView.vue";
 import {defineComponent, ref} from "vue";
 import {Digraph} from "./ts/Digraph";
+import RawSource from "./components/RawSource.vue";
 
 export default defineComponent({
       name: 'App',
@@ -19,7 +20,8 @@ export default defineComponent({
         GraphView,
         HelloWorld,
         ProjectsView,
-        ImageView
+        ImageView,
+        RawSource
       },
       setup() {
         const flowModel = ref<Digraph | null>(null);
@@ -211,10 +213,11 @@ export default defineComponent({
                   @load-raw-ast="receiveLoadRawASTEvent"
                   style="grid-area: 2 / 3 / 3 / 4"
     />
+    <ImageView :flowchart="flowchart" style="grid-area: 3 / 1 / 4 / 2"></ImageView>
+    <RawSource :source="source"/>
   </div>
-  <div style="padding-top: 20px;">
-    <ImageView :flowchart="flowchart"></ImageView>
-  </div>
+  <!--  <div style="padding-top: 20px;">-->
+  <!--  </div>-->
 </template>
 
 <style>
@@ -233,9 +236,17 @@ export default defineComponent({
 
 .readonly-code {
   font-family: "Andale Mono", sans-serif;
-  background-color: azure;
   text-align: left;
   white-space: pre-wrap;
+}
+
+.scope-theme {
+  background-color: azure;
+}
+
+.borland-theme {
+  background-color: darkblue;
+  color: yellow;
 }
 
 .code-pane {
@@ -256,11 +267,11 @@ export default defineComponent({
 }
 
 .main-panel {
-  height: 600px;
+  height: 1000px;
   width: 99%;
   display: grid;
   grid-template-columns: 42% 36% 22%;
-  grid-template-rows: 50% 50%;
+  grid-template-rows: 25% 25% 50%;
   gap: 5px;
 }
 
