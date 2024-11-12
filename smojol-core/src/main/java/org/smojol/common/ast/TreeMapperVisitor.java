@@ -13,5 +13,5 @@ public abstract class TreeMapperVisitor<T, R> {
     public abstract void enter(T node);
     public abstract void exit(T node);
     public abstract TreeMapperVisitor<T, R> scope(T n);
-    public abstract R processChildResults(T node, List<R> childResults);
+    public abstract R processChildResults(T node, List<R> mappedChildren);
 }

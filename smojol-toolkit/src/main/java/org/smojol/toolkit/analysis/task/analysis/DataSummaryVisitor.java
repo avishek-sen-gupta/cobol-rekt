@@ -1,55 +1,45 @@
 package org.smojol.toolkit.analysis.task.analysis;
 
-import com.google.common.collect.ImmutableList;
-import com.mojo.woof.*;
-import org.neo4j.driver.Record;
+import com.mojo.woof.Advisor;
 import org.smojol.common.ast.TreeMapperVisitor;
+import org.smojol.common.vm.structure.CobolDataStructure;
 
 import java.util.List;
-import java.util.logging.Logger;
 
-public class DataSummaryVisitor extends TreeMapperVisitor<Record, ActionResult> {
-    private static final Logger LOGGER = Logger.getLogger(DataSummaryVisitor.class.getName());
+public class DataSummaryVisitor extends TreeMapperVisitor<CobolDataStructure, SummaryTree> {
     private final Advisor advisor;
-    private final GraphSDK sdk;
 
-    public DataSummaryVisitor(Advisor advisor, GraphSDK sdk) {
+    public DataSummaryVisitor(Advisor advisor) {
         super(null);
         this.advisor = advisor;
-        this.sdk = sdk;
     }
 
     @Override
-    public void visit(Record node) {
-
-    }
-
-    @Override
-    public void enter(Record node) {
-
-    }
-
-    @Override
-    public void exit(Record node) {
-
-    }
-
-    @Override
-    public TreeMapperVisitor<Record, ActionResult> scope(Record n) {
-        return this;
-    }
-
-    @Override
-    public ActionResult processChildResults(Record node, List<ActionResult> childResults) {
-        List<String> childStrings = childResults.stream().map(ActionResult::toString).toList();
-        String s = NodeAccess.name(node) + " is of type " + NodeAccess.type(node) + " and is composed of [" + String.join(",", childStrings) + "]";
-        String prompt = "You are a domain expert. This is a variable associated with workflows in this domain. Without any extra text, deduce what this variable represents. Be as precise as possible. Summaries of child data structures follow: " + s;
-        LOGGER.info("Prompt is : " + prompt);
-        List<String> advice = advisor.advise(prompt);
+    public SummaryTree processChildResults(CobolDataStructure node, List<SummaryTree> mappedChildren) {
+        List<String> childStrings = mappedChildren.stream().map(SummaryTree::toString).toList();
+        String s = node.name() + " composed of [" + String.join(",", childStrings) + "]";
+        List<String> advice = advisor.advise("Summarise the following: " + node.content() + ", given the following child summaries: " + s);
         String summary = advice.stream().reduce("", (a, b) -> a + b);
-//        List<String> domains = Arrays.asList(summary.split(","));
-//        domains.forEach(domain -> sdk.createSummary(domain, node));
-        sdk.createSummary(summary, node);
-        return new DataStructureSummaryActionResult(ImmutableList.of(summary));
+        return new SummaryTree(summary, mappedChildren);
+    }
+
+    @Override
+    public void visit(CobolDataStructure node) {
+
+    }
+
+    @Override
+    public void enter(CobolDataStructure node) {
+
+    }
+
+    @Override
+    public void exit(CobolDataStructure node) {
+
+    }
+
+    @Override
+    public TreeMapperVisitor<CobolDataStructure, SummaryTree> scope(CobolDataStructure n) {
+        return null;
     }
 }

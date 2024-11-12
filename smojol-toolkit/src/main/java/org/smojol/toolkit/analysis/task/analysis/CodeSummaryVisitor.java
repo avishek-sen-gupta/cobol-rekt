@@ -1,50 +1,45 @@
 package org.smojol.toolkit.analysis.task.analysis;
 
-import com.mojo.woof.*;
-import org.neo4j.driver.Record;
+import com.mojo.woof.Advisor;
+import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.TreeMapperVisitor;
 
 import java.util.List;
 
-import static com.mojo.woof.NodeAccess.source;
-
-public class CodeSummaryVisitor extends TreeMapperVisitor<Record, ActionResult> {
+public class CodeSummaryVisitor extends TreeMapperVisitor<FlowNode, SummaryTree> {
     private final Advisor advisor;
-    private final GraphSDK sdk;
 
-    public CodeSummaryVisitor(Advisor advisor, GraphSDK sdk) {
+    public CodeSummaryVisitor(Advisor advisor) {
         super(null);
         this.advisor = advisor;
-        this.sdk = sdk;
     }
 
     @Override
-    public void visit(Record node) {
-
-    }
-
-    @Override
-    public void enter(Record node) {
+    public void visit(FlowNode node) {
 
     }
 
     @Override
-    public void exit(Record node) {
+    public void enter(FlowNode node) {
 
     }
 
     @Override
-    public TreeMapperVisitor<Record, ActionResult> scope(Record n) {
+    public void exit(FlowNode node) {
+
+    }
+
+    @Override
+    public TreeMapperVisitor<FlowNode, SummaryTree> scope(FlowNode n) {
         return this;
     }
 
     @Override
-    public ActionResult processChildResults(Record node, List<ActionResult> childResults) {
-        List<String> childStrings = childResults.stream().map(ActionResult::toString).toList();
-        String s = NodeAccess.type(node) + " composed of [" + String.join(",", childStrings) + "]";
-        List<String> advice = advisor.advise("Summarise the following: " + source(node) + ", given the following child summaries: " + s);
+    public SummaryTree processChildResults(FlowNode node, List<SummaryTree> mappedChildren) {
+        List<String> childStrings = mappedChildren.stream().map(SummaryTree::toString).toList();
+        String s = node.type() + " composed of [" + String.join(",", childStrings) + "]";
+        List<String> advice = advisor.advise("Summarise the following: " + node.originalText() + ", given the following child summaries: " + s);
         String summary = advice.stream().reduce("", (a, b) -> a + b);
-        sdk.createSummary(summary, node);
-        return new SummaryActionResult(summary);
+        return new SummaryTree(summary, mappedChildren);
     }
 }

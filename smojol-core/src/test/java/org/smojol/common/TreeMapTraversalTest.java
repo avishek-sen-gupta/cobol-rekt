@@ -29,7 +29,7 @@ public class TreeMapTraversalTest {
 
 class NodeSummariser extends TreeMapperVisitor<TestTreeNode, SummarisedTestTreeNode> {
 
-    public NodeSummariser() {
+    NodeSummariser() {
         super(null);
     }
 
@@ -54,8 +54,8 @@ class NodeSummariser extends TreeMapperVisitor<TestTreeNode, SummarisedTestTreeN
     }
 
     @Override
-    public SummarisedTestTreeNode processChildResults(TestTreeNode node, List<SummarisedTestTreeNode> childResults) {
-        return new SummarisedTestTreeNode(node.id(), "SOME SUMMARY OF " + node.label(), childResults);
+    public SummarisedTestTreeNode processChildResults(TestTreeNode node, List<SummarisedTestTreeNode> mappedChildren) {
+        return new SummarisedTestTreeNode(node.id(), "SOME SUMMARY OF " + node.label(), mappedChildren);
     }
 }
 

@@ -56,11 +56,8 @@ public class SummariseThroughLLMTask implements AnalysisTask {
         // Summarises AST bottom-up
         Function<Record, List<Record>> codeChildrenFn = n -> sdk.directChildren(n, CONTAINS_CODE);
         Function<Record, List<Record>> dataChildrenFn = n -> sdk.directChildren(n, CONTAINS_DATA);
-        new TreeMapperTraversal<Record, ActionResult>().accept(neo4jProgramRoot, new CodeSummaryVisitor(advisor, sdk), codeChildrenFn);
-        new TreeMapperTraversal<Record, ActionResult>().accept(neo4jDataStructuresRoot, new DataSummaryVisitor(advisor, sdk), dataChildrenFn);
-//        sdk.traverse(neo4jProgramRoot, new SummariseAction(advisor, sdk), CONTAINS_CODE);
-        // Summarises data structures
-//        sdk.traverse(neo4jDataStructuresRoot, new DataStructureSummariseAction(advisor, sdk), CONTAINS_DATA);
+        new TreeMapperTraversal<Record, ActionResult>().accept(neo4jProgramRoot, new Neo4JCodeSummaryVisitor(advisor, sdk), codeChildrenFn);
+        new TreeMapperTraversal<Record, ActionResult>().accept(neo4jDataStructuresRoot, new Neo4JDataSummaryVisitor(advisor, sdk), dataChildrenFn);
     }
 
     private static List<Record> directChildren(Record record) {
