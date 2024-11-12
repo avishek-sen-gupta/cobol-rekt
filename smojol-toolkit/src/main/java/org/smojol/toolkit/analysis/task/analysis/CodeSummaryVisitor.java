@@ -2,13 +2,13 @@ package org.smojol.toolkit.analysis.task.analysis;
 
 import com.mojo.woof.*;
 import org.neo4j.driver.Record;
-import org.smojol.common.ast.AggregatingFlowNodeASTVisitor;
+import org.smojol.common.ast.TreeMapperVisitor;
 
 import java.util.List;
 
 import static com.mojo.woof.NodeAccess.source;
 
-public class CodeSummaryVisitor extends AggregatingFlowNodeASTVisitor<Record, ActionResult> {
+public class CodeSummaryVisitor extends TreeMapperVisitor<Record, ActionResult> {
     private final Advisor advisor;
     private final GraphSDK sdk;
 
@@ -34,7 +34,7 @@ public class CodeSummaryVisitor extends AggregatingFlowNodeASTVisitor<Record, Ac
     }
 
     @Override
-    public AggregatingFlowNodeASTVisitor<Record, ActionResult> scope(Record n) {
+    public TreeMapperVisitor<Record, ActionResult> scope(Record n) {
         return this;
     }
 

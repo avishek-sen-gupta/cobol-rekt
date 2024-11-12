@@ -3,12 +3,12 @@ package org.smojol.toolkit.analysis.task.analysis;
 import com.google.common.collect.ImmutableList;
 import com.mojo.woof.*;
 import org.neo4j.driver.Record;
-import org.smojol.common.ast.AggregatingFlowNodeASTVisitor;
+import org.smojol.common.ast.TreeMapperVisitor;
 
 import java.util.List;
 import java.util.logging.Logger;
 
-public class DataSummaryVisitor extends AggregatingFlowNodeASTVisitor<Record, ActionResult> {
+public class DataSummaryVisitor extends TreeMapperVisitor<Record, ActionResult> {
     private static final Logger LOGGER = Logger.getLogger(DataSummaryVisitor.class.getName());
     private final Advisor advisor;
     private final GraphSDK sdk;
@@ -35,7 +35,7 @@ public class DataSummaryVisitor extends AggregatingFlowNodeASTVisitor<Record, Ac
     }
 
     @Override
-    public AggregatingFlowNodeASTVisitor<Record, ActionResult> scope(Record n) {
+    public TreeMapperVisitor<Record, ActionResult> scope(Record n) {
         return this;
     }
 

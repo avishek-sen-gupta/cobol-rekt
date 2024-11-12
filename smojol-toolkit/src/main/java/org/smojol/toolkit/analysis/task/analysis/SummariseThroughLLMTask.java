@@ -3,7 +3,7 @@ package org.smojol.toolkit.analysis.task.analysis;
 import com.mojo.woof.*;
 import org.neo4j.driver.Record;
 import org.smojol.common.ast.FlowNodeType;
-import org.smojol.common.navigation.AggregatingTreeTraversal;
+import org.smojol.common.navigation.TreeMapperTraversal;
 import org.smojol.toolkit.analysis.graph.DataStructureSummariseAction;
 import org.smojol.toolkit.analysis.graph.NodeSpecBuilder;
 import org.smojol.toolkit.analysis.graph.SummariseAction;
@@ -56,8 +56,8 @@ public class SummariseThroughLLMTask implements AnalysisTask {
         // Summarises AST bottom-up
         Function<Record, List<Record>> codeChildrenFn = n -> sdk.directChildren(n, CONTAINS_CODE);
         Function<Record, List<Record>> dataChildrenFn = n -> sdk.directChildren(n, CONTAINS_DATA);
-        new AggregatingTreeTraversal<Record, ActionResult>().accept(neo4jProgramRoot, new CodeSummaryVisitor(advisor, sdk), codeChildrenFn);
-        new AggregatingTreeTraversal<Record, ActionResult>().accept(neo4jDataStructuresRoot, new DataSummaryVisitor(advisor, sdk), dataChildrenFn);
+        new TreeMapperTraversal<Record, ActionResult>().accept(neo4jProgramRoot, new CodeSummaryVisitor(advisor, sdk), codeChildrenFn);
+        new TreeMapperTraversal<Record, ActionResult>().accept(neo4jDataStructuresRoot, new DataSummaryVisitor(advisor, sdk), dataChildrenFn);
 //        sdk.traverse(neo4jProgramRoot, new SummariseAction(advisor, sdk), CONTAINS_CODE);
         // Summarises data structures
 //        sdk.traverse(neo4jDataStructuresRoot, new DataStructureSummariseAction(advisor, sdk), CONTAINS_DATA);

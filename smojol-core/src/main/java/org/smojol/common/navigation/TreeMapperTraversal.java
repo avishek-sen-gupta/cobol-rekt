@@ -1,15 +1,15 @@
 package org.smojol.common.navigation;
 
-import org.smojol.common.ast.AggregatingFlowNodeASTVisitor;
+import org.smojol.common.ast.TreeMapperVisitor;
 
 import java.util.List;
 import java.util.function.Function;
 import java.util.logging.Logger;
 
-public class AggregatingTreeTraversal<T, R> {
-    private static final Logger LOGGER = Logger.getLogger(AggregatingFlowNodeASTVisitor.class.getName());
+public class TreeMapperTraversal<T, R> {
+    private static final Logger LOGGER = Logger.getLogger(TreeMapperVisitor.class.getName());
 
-    public R accept(T node, AggregatingFlowNodeASTVisitor<T, R> visitor, Function<T, List<T>> childrenFn) {
+    public R accept(T node, TreeMapperVisitor<T, R> visitor, Function<T, List<T>> childrenFn) {
         visitor.enter(node);
         visitor.visit(node);
         LOGGER.finer("Checking node : " + node.toString());
