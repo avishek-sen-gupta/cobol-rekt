@@ -1,19 +1,19 @@
 package org.smojol.toolkit.analysis.task.analysis;
 
-import com.mojo.woof.Advisor;
-import com.mojo.woof.GraphSDK;
-import com.mojo.woof.Neo4JDriverBuilder;
-import com.mojo.woof.OpenAICredentials;
+import com.mojo.woof.*;
 import org.neo4j.driver.Record;
 import org.smojol.common.ast.FlowNodeType;
-import org.smojol.toolkit.task.CommandLineAnalysisTask;
-import org.smojol.toolkit.task.AnalysisTask;
-import org.smojol.toolkit.task.AnalysisTaskResult;
+import org.smojol.common.navigation.AggregatingTreeTraversal;
 import org.smojol.toolkit.analysis.graph.DataStructureSummariseAction;
 import org.smojol.toolkit.analysis.graph.NodeSpecBuilder;
 import org.smojol.toolkit.analysis.graph.SummariseAction;
+import org.smojol.toolkit.task.AnalysisTask;
+import org.smojol.toolkit.task.AnalysisTaskResult;
+import org.smojol.toolkit.task.CommandLineAnalysisTask;
 
+import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import static com.mojo.woof.NodeProperties.SECTION_SOURCE;
 import static com.mojo.woof.NodeProperties.TYPE;
@@ -32,7 +32,7 @@ public class SummariseThroughLLMTask implements AnalysisTask {
     @Override
     public AnalysisTaskResult run() {
         try (GraphSDK graphSDK = new GraphSDK(neo4JDriverBuilder.fromEnv())) {
-            summariseThroughLLM(qualifier, graphSDK);
+            summariseThroughLLM2(qualifier, graphSDK);
             return AnalysisTaskResult.OK(CommandLineAnalysisTask.SUMMARISE_THROUGH_LLM);
         } catch (Exception e) {
             return AnalysisTaskResult.ERROR(e, CommandLineAnalysisTask.SUMMARISE_THROUGH_LLM);
@@ -47,5 +47,23 @@ public class SummariseThroughLLMTask implements AnalysisTask {
         sdk.traverse(neo4jProgramRoot, new SummariseAction(advisor, sdk), CONTAINS_CODE);
         // Summarises data structures
         sdk.traverse(neo4jDataStructuresRoot, new DataStructureSummariseAction(advisor, sdk), CONTAINS_DATA);
+    }
+
+    private static void summariseThroughLLM2(NodeSpecBuilder qualifier, GraphSDK sdk) {
+        Record neo4jProgramRoot = sdk.findNodes(qualifier.cfgNodeCriteria(Map.of(TYPE, FlowNodeType.PROCEDURE_DIVISION_BODY.toString()))).getFirst();
+        Record neo4jDataStructuresRoot = sdk.findNodes(qualifier.dataNodeSearchCriteria(Map.of(SECTION_SOURCE, "ROOT"))).getFirst();
+        Advisor advisor = new Advisor(OpenAICredentials.fromEnv());
+        // Summarises AST bottom-up
+        Function<Record, List<Record>> codeChildrenFn = n -> sdk.directChildren(n, CONTAINS_CODE);
+        Function<Record, List<Record>> dataChildrenFn = n -> sdk.directChildren(n, CONTAINS_DATA);
+        new AggregatingTreeTraversal<Record, ActionResult>().accept(neo4jProgramRoot, new CodeSummaryVisitor(advisor, sdk), codeChildrenFn);
+        new AggregatingTreeTraversal<Record, ActionResult>().accept(neo4jDataStructuresRoot, new DataSummaryVisitor(advisor, sdk), dataChildrenFn);
+//        sdk.traverse(neo4jProgramRoot, new SummariseAction(advisor, sdk), CONTAINS_CODE);
+        // Summarises data structures
+//        sdk.traverse(neo4jDataStructuresRoot, new DataStructureSummariseAction(advisor, sdk), CONTAINS_DATA);
+    }
+
+    private static List<Record> directChildren(Record record) {
+        return null;
     }
 }
