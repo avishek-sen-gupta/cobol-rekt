@@ -119,8 +119,9 @@ Currently, the app showcases the following capabilities:
 - GO TO elimination
 - Original Source
 
-Instructions for setting up the demo app are provided [later](#demo-app-setup-wip), and will evolve.
+Instructions for setting up the demo app are provided [later](#demo-app-setup-wip), and will evolve. The video below shows some of the capabilities of the library.
 
+[![Video Link](documentation/demo-app-early-showcase-link.png)](https://youtu.be/TRcKx9kAlKI)
 ## Philosophy
 
 Cobol-REKT is more of a **library of useful things** intended to be embedded in more formal reverse engineering workflows/pipelines, rather than being a standalone tool (though you can certainly use it as such). Many of the higher-level wrappers are merely sensible defaults; **you are encouraged to modify them to suit your needs**.
