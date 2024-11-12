@@ -810,6 +810,7 @@ This command encapsulates almost all the tasks that you are likely to run. The d
 - ```BUILD_PROGRAM_DEPENDENCIES``` (ALPHA): Builds direct program dependencies from ```CALL``` and IDMS ```TRANSFER CONTROL``` statements. Indirect dependencies are not traced. For tracing the full dependency graph, see the ```dependency``` task.
 - ```COMPARE_CODE``` (ALPHA): Builds a map of inter-paragraph similarity based on node edit distances (using the Zhang-Shasha algorithm). Work in Progress.
 - ```SUMMARISE_THROUGH_LLM```: Summarises nodes depth-first, but starting at the leaves using an LLM.
+- ```WRITE_LLM_SUMMARY```: does the same thing as the previous task, but outputs the summaries as nested JSON.
 
 For example, if you wanted to run all of the above, you could run the following command:
 
@@ -836,7 +837,8 @@ Implements various operations useful for reverse engineering Cobol code
                                DRAW_FLOWCHART, WRITE_FLOW_AST, WRITE_CFG,
                                ATTACH_COMMENTS, WRITE_DATA_STRUCTURES,
                                BUILD_PROGRAM_DEPENDENCIES, COMPARE_CODE,
-                               EXPORT_UNIFIED_TO_JSON, EXPORT_MERMAID)
+                               EXPORT_UNIFIED_TO_JSON, EXPORT_MERMAID,
+                               SUMMARISE_THROUGH_LLM, WRITE_LLM_SUMMARY)
       -cp, --copyBooksDir=<copyBookDirs>[,<copyBookDirs>...]
                              Copybook directories (repeatable)
   -d, --dialect=<dialect>    The COBOL dialect (COBOL, IDMS)

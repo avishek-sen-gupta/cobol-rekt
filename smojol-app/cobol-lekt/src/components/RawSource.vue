@@ -1,8 +1,6 @@
 <script lang="ts">
 
 import {defineComponent, PropType} from "vue";
-import {TreeModelNode} from "@/ts/CytoTree";
-import UiIntermediateAstNode from "@/components/UiIntermediateAstNode.vue";
 
 export default defineComponent({
   components: {},
