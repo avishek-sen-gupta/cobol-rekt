@@ -29,7 +29,7 @@ public class SummariseThroughLLMMain_Issue58 {
                 new OccursIgnoringFormat1DataStructureBuilder(),
                 new ProgramSearch(),
                 new LocalFilesystemOperations())
-                .runForPrograms(ImmutableList.of(BUILD_BASE_ANALYSIS, ATTACH_COMMENTS, FLOW_TO_NEO4J, SUMMARISE_THROUGH_LLM), ImmutableList.of("test-exp.cbl"));
+                .runForPrograms(ImmutableList.of(BUILD_BASE_ANALYSIS, ATTACH_COMMENTS, WRITE_LLM_SUMMARY), ImmutableList.of("test-exp.cbl"));
         result.forEach((key, results) -> {
             System.out.println(key);
             results.forEach(System.out::println);

@@ -33,6 +33,7 @@ public class SmojolTasks {
     private final OutputArtifactConfig mermaidOutputConfig;
     private final OutputArtifactConfig transpilerModelOutputConfig;
     private final GraphBuildConfig graphBuildConfig;
+    private final OutputArtifactConfig llmOutputConfig;
     private final IdProvider idProvider;
     private final ResourceOperations resourceOperations;
     private final Neo4JDriverBuilder neo4JDriverBuilder;
@@ -40,7 +41,7 @@ public class SmojolTasks {
     private final NodeSpecBuilder qualifier;
     private BaseAnalysisModel baseModel;
 
-    public SmojolTasks(ParsePipeline pipeline, SourceConfig sourceConfig, FlowchartOutputWriter flowchartOutputWriter, RawASTOutputConfig rawAstOutputConfig, GraphMLExportConfig graphMLOutputConfig, FlowASTOutputConfig flowASTOutputConfig, CFGOutputConfig cfgOutputConfig, GraphBuildConfig graphBuildConfig, OutputArtifactConfig dataStructuresOutputConfig, OutputArtifactConfig unifiedModelOutputConfig, OutputArtifactConfig similarityOutputConfig, OutputArtifactConfig mermaidOutputConfig, OutputArtifactConfig transpilerModelOutputConfig, IdProvider idProvider, ResourceOperations resourceOperations, Neo4JDriverBuilder neo4JDriverBuilder) {
+    public SmojolTasks(ParsePipeline pipeline, SourceConfig sourceConfig, FlowchartOutputWriter flowchartOutputWriter, RawASTOutputConfig rawAstOutputConfig, GraphMLExportConfig graphMLOutputConfig, FlowASTOutputConfig flowASTOutputConfig, CFGOutputConfig cfgOutputConfig, GraphBuildConfig graphBuildConfig, OutputArtifactConfig dataStructuresOutputConfig, OutputArtifactConfig unifiedModelOutputConfig, OutputArtifactConfig similarityOutputConfig, OutputArtifactConfig mermaidOutputConfig, OutputArtifactConfig transpilerModelOutputConfig, OutputArtifactConfig llmOutputConfig, IdProvider idProvider, ResourceOperations resourceOperations, Neo4JDriverBuilder neo4JDriverBuilder) {
         this.pipeline = pipeline;
         this.sourceConfig = sourceConfig;
         this.flowchartOutputWriter = flowchartOutputWriter;
@@ -53,6 +54,7 @@ public class SmojolTasks {
         this.cfgOutputConfig = cfgOutputConfig;
         this.mermaidOutputConfig = mermaidOutputConfig;
         this.transpilerModelOutputConfig = transpilerModelOutputConfig;
+        this.llmOutputConfig = llmOutputConfig;
         this.idProvider = idProvider;
         this.graphBuildConfig = graphBuildConfig;
         this.resourceOperations = resourceOperations;
@@ -163,6 +165,13 @@ public class SmojolTasks {
         }
     };
 
+    public AnalysisTask WRITE_LLM_SUMMARY = new AnalysisTask() {
+        @Override
+        public AnalysisTaskResult run() {
+            return new WriteLLMSummaryTask(baseModel.flowRoot(), baseModel.dataStructures(), llmOutputConfig, resourceOperations).run();
+        }
+    };
+
     public AnalysisTask BUILD_BASE_ANALYSIS = new AnalysisTask() {
         @Override
         public AnalysisTaskResult run() {
@@ -193,6 +202,7 @@ public class SmojolTasks {
             case BUILD_PROGRAM_DEPENDENCIES -> BUILD_PROGRAM_DEPENDENCIES;
             case EXPORT_UNIFIED_TO_JSON -> EXPORT_UNIFIED_TO_JSON;
             case COMPARE_CODE -> COMPARE_CODE;
+            case WRITE_LLM_SUMMARY -> WRITE_LLM_SUMMARY;
             case SUMMARISE_THROUGH_LLM -> SUMMARISE_THROUGH_LLM;
             case BUILD_TRANSPILER_FLOWGRAPH -> BUILD_TRANSPILER_FLOWGRAPH;
             case DO_NOTHING -> nullTask(DO_NOTHING);

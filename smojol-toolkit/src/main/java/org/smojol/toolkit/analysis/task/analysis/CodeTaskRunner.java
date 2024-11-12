@@ -43,6 +43,7 @@ public class CodeTaskRunner {
     private static final String SIMILARITY_DIR = "similarity";
     private static final String UNIFIED_MODEL_DIR = "unified_model";
     private static final String TRANSPILER_MODEL_DIR = "transpiler_model";
+    private static final String LLM_SUMMARY_DIR = "llm_summary";
     private static final String MERMAID_DIR = "mermaid";
     private final String sourceDir;
     private final List<File> copyBookPaths;
@@ -117,6 +118,7 @@ public class CodeTaskRunner {
         Path similarityOutputDir = Paths.get(reportRootDir, programReportDir, SIMILARITY_DIR).toAbsolutePath().normalize();
         Path unifiedModelOutputDir = Paths.get(reportRootDir, programReportDir, UNIFIED_MODEL_DIR).toAbsolutePath().normalize();
         Path transpilerModelOutputDir = Paths.get(reportRootDir, programReportDir, TRANSPILER_MODEL_DIR).toAbsolutePath().normalize();
+        Path llmSummaryOutputDir = Paths.get(reportRootDir, programReportDir, LLM_SUMMARY_DIR).toAbsolutePath().normalize();
         String graphMLExportOutputPath = graphMLExportOutputDir.resolve(String.format("%s.graphml", programFilename)).toAbsolutePath().normalize().toString();
         String cfgOutputPath = cfgOutputDir.resolve(String.format("cfg-%s.json", programFilename)).toAbsolutePath().normalize().toString();
         String cobolParseTreeOutputPath = astOutputDir.resolve(String.format("cobol-%s.json", programFilename)).toAbsolutePath().normalize().toString();
@@ -127,6 +129,7 @@ public class CodeTaskRunner {
         OutputArtifactConfig similarityOutputConfig = new OutputArtifactConfig(similarityOutputDir, programFilename + "-similarity.json");
         OutputArtifactConfig unifiedModelOutputConfig = new OutputArtifactConfig(unifiedModelOutputDir, programFilename + "-unified.json");
         OutputArtifactConfig transpilerModelOutputConfig = new OutputArtifactConfig(transpilerModelOutputDir, programFilename + "-transpiler-model.json");
+        OutputArtifactConfig llmOutputConfig = new OutputArtifactConfig(llmSummaryOutputDir, programFilename + "-llm-summary.json");
 
         FlowchartOutputWriter flowchartOutputWriter = new FlowchartOutputWriter(flowchartGenerationStrategy, dotFileOutputDir, imageOutputDir);
         RawASTOutputConfig rawAstOutputConfig = new RawASTOutputConfig(astOutputDir, cobolParseTreeOutputPath, new CobolTreeVisualiser());
@@ -148,7 +151,7 @@ public class CodeTaskRunner {
                 flowASTOutputConfig, cfgOutputConfig,
                 graphBuildConfig, dataStructuresOutputConfig, unifiedModelOutputConfig, similarityOutputConfig,
                 mermaidOutputConfig, transpilerModelOutputConfig,
-                idProvider, resourceOperations, new Neo4JDriverBuilder());
+                llmOutputConfig, idProvider, resourceOperations, new Neo4JDriverBuilder());
         return tasks.getFirst() != CommandLineAnalysisTask.BUILD_BASE_ANALYSIS
                 ? pipelineTasks.run(Stream.concat(Stream.of(CommandLineAnalysisTask.BUILD_BASE_ANALYSIS), tasks.stream()).toList())
                 : pipelineTasks.run(tasks);

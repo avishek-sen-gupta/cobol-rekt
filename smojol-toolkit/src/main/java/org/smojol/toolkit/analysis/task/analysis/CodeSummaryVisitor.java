@@ -1,10 +1,12 @@
 package org.smojol.toolkit.analysis.task.analysis;
 
+import com.google.common.collect.ImmutableMap;
 import com.mojo.woof.Advisor;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.TreeMapperVisitor;
 
 import java.util.List;
+import java.util.Map;
 
 public class CodeSummaryVisitor extends TreeMapperVisitor<FlowNode, SummaryTree> {
     private final Advisor advisor;
@@ -40,6 +42,14 @@ public class CodeSummaryVisitor extends TreeMapperVisitor<FlowNode, SummaryTree>
         String s = node.type() + " composed of [" + String.join(",", childStrings) + "]";
         List<String> advice = advisor.advise("Summarise the following: " + node.originalText() + ", given the following child summaries: " + s);
         String summary = advice.stream().reduce("", (a, b) -> a + b);
-        return new SummaryTree(summary, mappedChildren);
+        return new SummaryTree(summary, asMap(node), mappedChildren);
+    }
+
+    private Map<String, String> asMap(FlowNode node) {
+        return ImmutableMap.of(
+                "id", node.id(),
+                "text", node.originalText(),
+                "type", node.type().name()
+        );
     }
 }
