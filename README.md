@@ -60,6 +60,7 @@ You can see the current backlog [here](https://github.com/users/avishek-sen-gupt
   - [Dominator Analysis](#dominator-analysis)
   - [Reaching Conditions (aka "How did I get here?")](#reaching-conditions-aka-how-did-i-get-here)
   - [AST Restructuring to eliminate ```GO TO```s (WIP)](#ast-refactoring-to-eliminate-go-tos)
+  - [Procedural Structure Identification (WIP)](#procedural-structure-identification-wip)
 - [Running against AWS Card Demo](#running-against-aws-card-demo)
 - [Developer Guide](#developer-guide)
   - [How to Build](#how-to-build)
@@ -752,6 +753,10 @@ Here are some points to note regarding this technique:
 - These operations mutate the original AST. If you are concerned about preserving the original AST, consider having another copy. Potentially, I may experiment with a functional data structure, like the ones in VAVR, to have immutability semantics.
 
 This is probably best used for smaller scale refactorings, like eliminating jumps inside a section. For larger scale refactorings, a different approach (potentially based on [Automatic compiler restructuring of COBOL programs into a proc per paragraph model - Patent US5778232A (Expired 2016)](https://patents.google.com/patent/US5778232A/en)) might give better results.
+
+## Procedural Structure Identification (WIP)
+
+WIP...
 
 ## Running against AWS Card Demo
 
