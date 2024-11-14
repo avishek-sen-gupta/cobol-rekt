@@ -30,7 +30,7 @@ You can see the current backlog [here](https://github.com/users/avishek-sen-gupt
 - [Demo App (WIP)](#demo-app-very-early---wip)
 - [Major Dependencies](#major-dependencies)
 - [Reverse Engineering Use Cases](#reverse-engineering-use-cases)
-- [Roadmap](#roadmap)
+- [Roadmap](#feature-map-current-and-tentative)
 - [Flowchart Generation](#flowchart-generation)
 - [Parse Tree Generation](#parse-tree-generation)
 - [Control Flow Generation](#control-flow-generation)
@@ -161,12 +161,41 @@ Some reverse engineering use cases are listed below. Descriptions of the capabil
 - Try out new rules?
 - Identify different flows in the report - use cases for forward engineering
 
-## Roadmap
+### Feature Map (Current and Tentative)
 
-- Integrating Domain Knowledge
-- Eliminate GO TO's in intermediate representation, to enable transformation into structured programming constructs.
-- Deeper Dataflow Analysis
-- IDMS Identify UI interactions and participants (```INSPECT```, ```MAP IN```, ```INQUIRE MAP```, Panel Definition parsing)
+```mermaid
+flowchart LR
+    parsed_source[Parsed Source] --> ir_source[Intermediate Representation];
+    ir_source --> basic_blocks[Basic Block Extraction];
+    parsed_source --> symbol_table[Symbol Table];
+    ir_source --> interpret[Interpretation];
+    ir_source --> control_flowgraph[Control Flowgraph];
+    symbol_table --> interpret;
+    parsed_source --> summary[Summarisation];
+    parsed_source --> capabilities[Capabilities];
+    control_flowgraph --> loop_id[Loop Identification];
+    control_flowgraph --> reaching_cond[Reaching Conditions];
+    control_flowgraph --> t1_t2[T1-T2 Reducibility Analysis];
+    t1_t2 --> scc[Strongly Connected Components];
+    scc --> loop_body[Loop Body Detection];
+    control_flowgraph --> loop_body;
+    ir_source --> eliminate_goto[Eliminate GO TO];
+    t1_t2 --> cns[Controlled Node Splitting];
+    control_flowgraph --> cns;
+    t1_t2 --> structure_id[Procedural Structure Identification];
+    ir_source --> program_dependency[Inter-program dependency];
+    symbol_table --> dataflow[Dataflow Analysis];
+    control_flowgraph --> dataflow;
+    control_flowgraph --> probabilistic_reasoning[Probabilistic Reasoning???];
+    dataflow --> probabilistic_reasoning;
+    capabilities --> probabilistic_reasoning;
+    program_dependency --> system_view[System View];
+    symbol_table --> system_view;
+    control_flowgraph --> system_view;
+    capabilities --> system_view;
+    system_view --> architecture_analysis[Architecture Analysis]
+    architecture_analysis --> architecture_mapping[Architecture Mapping];
+```
 
 ## Flowchart Generation
 
