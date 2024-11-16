@@ -3,6 +3,7 @@ package org.smojol.toolkit.analysis.task;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
 import org.junit.jupiter.api.Test;
@@ -73,15 +74,19 @@ public class RangeBodyTaskTest {
         List<TranspilerInstruction> instructions = new BuildTranspilerInstructionsFromIntermediateTreeTask(program, new IncrementingIdProvider()).run();
         Graph<TranspilerInstruction, DefaultEdge> instructionFlowgraph = new BuildImplicitInstructionControlFlowgraphTask(instructions, ImmutableList.of()).run();
 
-        Set<ProcedureRange> procedureRanges = new ProcedureBodyTask().run(program, instructions, instructionFlowgraph);
+        Set<Pair<ProcedureRange, Set<ProcedureRange>>> rangesWithChildren = new ProcedureBodyTask().run(program, instructions, instructionFlowgraph);
+        Set<ProcedureRange> procedureRanges = rangesWithChildren.stream().map(Pair::getLeft).collect(Collectors.toUnmodifiableSet());
         Set<Integer> graphVertexCardinalities = procedureRanges.stream().map(procRange -> procRange.body().vertexSet().size()).collect(Collectors.toUnmodifiableSet());
         assertEquals(ImmutableSet.of(21, 33), graphVertexCardinalities);
-        ProcedureRange range33 = procedureRanges.stream().filter(bbr -> bbr.body().vertexSet().size() == 33).findFirst().get();
-        ProcedureRange range21 = procedureRanges.stream().filter(bbr -> bbr.body().vertexSet().size() == 21).findFirst().get();
+        Pair<ProcedureRange, Set<ProcedureRange>> range33WithChildren = rangesWithChildren.stream().filter(rwc -> rwc.getLeft().body().vertexSet().size() == 33).findFirst().get();
+        Pair<ProcedureRange, Set<ProcedureRange>> range21WithChildren = rangesWithChildren.stream().filter(rwc -> rwc.getLeft().body().vertexSet().size() == 21).findFirst().get();
+        ProcedureRange range33 = range33WithChildren.getLeft();
+        ProcedureRange range21 = range21WithChildren.getLeft();
         SLIFORangeCriterionTask slifoRangeCriterionTask = new SLIFORangeCriterionTask(procedureRanges);
-        Set<ProcedureRange> rangesTerminatingInCurrentRange = slifoRangeCriterionTask.rangesTerminatingIn(range33);
-//        Set<Pair<Pair<TranspilerInstruction, TranspilerInstruction>, Graph<TranspilerInstruction, DefaultEdge>>> invokedRanges = slifoRangeCriterionTask.invokedRanges(range33);
-        assertEquals(ImmutableSet.of(range21), rangesTerminatingInCurrentRange);
+        Set<ProcedureRange> rangesTerminatingInRange33 = slifoRangeCriterionTask.rangesTerminatingIn(range33);
+        assertEquals(ImmutableSet.of(range21), rangesTerminatingInRange33);
+        assertEquals(ImmutableSet.of(range33), range21WithChildren.getRight());
+        assertEquals(ImmutableSet.of(range21, range33), range33WithChildren.getRight());
     }
 
 

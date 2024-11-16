@@ -33,9 +33,7 @@ public class RangeBodyTask {
     }
 
     public ProcedureRange run(Pair<TranspilerInstruction, TranspilerInstruction> range) {
-//        return ImmutablePair.of(ImmutablePair.of(range.getLeft(), range.getRight()),
-//                new AsSubgraph<>(flowgraph, trace(range.getLeft(), range.getRight(), ImmutableSet.of())));
-        return new ProcedureRange(range.getLeft(), range.getRight(), new AsSubgraph<>(flowgraph, trace(range.getLeft(), range.getRight(), ImmutableSet.of())), ImmutableSet.of());
+        return new ProcedureRange(range.getLeft(), range.getRight(), new AsSubgraph<>(flowgraph, trace(range.getLeft(), range.getRight(), ImmutableSet.of())));
     }
 
     private Set<TranspilerInstruction> trace(TranspilerInstruction current, TranspilerInstruction rangeExitVertex, Set<TranspilerInstruction> visited) {
