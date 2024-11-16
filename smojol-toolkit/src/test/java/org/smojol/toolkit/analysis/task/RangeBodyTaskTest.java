@@ -2,6 +2,8 @@ package org.smojol.toolkit.analysis.task;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
 import org.junit.jupiter.api.Test;
@@ -14,6 +16,9 @@ import org.smojol.toolkit.analysis.task.transpiler.CallRangesTask;
 import org.smojol.toolkit.analysis.task.transpiler.RangeBodyTask;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.smojol.common.transpiler.TreeMatcher.*;
@@ -38,8 +43,42 @@ public class RangeBodyTaskTest {
         List<TranspilerInstruction> instructions = new BuildTranspilerInstructionsFromIntermediateTreeTask(program, new IncrementingIdProvider()).run();
         Graph<TranspilerInstruction, DefaultEdge> instructionFlowgraph = new BuildInstructionFlowgraphTask(instructions, program, ImmutableList.of()).run();
 
-        Graph<TranspilerInstruction, DefaultEdge> body = new RangeBodyTask(instructionFlowgraph).run("A1", "A1");
-        assertEquals(9, body.vertexSet().size());
+        Pair<Pair<TranspilerNode, TranspilerNode>, Graph<TranspilerInstruction, DefaultEdge>> body = new RangeBodyTask(instructionFlowgraph).run("A1", "A1");
+        assertEquals(9, body.getRight().vertexSet().size());
+    }
+
+    @Test
+    public void canCalculateRangeBodyGivenRanges() {
+        JumpTranspilerNode jump_A1_C1 = new JumpTranspilerNode(new NamedLocationNode("A1"), new NamedLocationNode("C1"));
+        JumpTranspilerNode jump_A1_B1 = new JumpTranspilerNode(new NamedLocationNode("A1"), new NamedLocationNode("B1"));
+        LabelledTranspilerCodeBlockNode a1 = new LabelledTranspilerCodeBlockNode("A1", ImmutableList.of(c(), c(), jump_A1_C1), ImmutableMap.of());
+        LabelledTranspilerCodeBlockNode b1 = new LabelledTranspilerCodeBlockNode("B1", ImmutableList.of(c(), c()), ImmutableMap.of());
+        LabelledTranspilerCodeBlockNode c1 = new LabelledTranspilerCodeBlockNode("C1", ImmutableList.of(c(), c(), jump_A1_B1), ImmutableMap.of());
+        TranspilerCodeBlockNode program = new TranspilerCodeBlockNode(ImmutableList.of(a1, b1, c1));
+        block_(
+                labelledBlock_(
+                        print_(),
+                        print_(),
+                        jump_()
+
+                ),
+                labelledBlock_(
+                        print_(),
+                        print_()
+                ),
+                labelledBlock_(
+                        print_(),
+                        print_(),
+                        jump_()
+                )
+        ).verify(program);
+
+        List<TranspilerInstruction> instructions = new BuildTranspilerInstructionsFromIntermediateTreeTask(program, new IncrementingIdProvider()).run();
+        Graph<TranspilerInstruction, DefaultEdge> instructionFlowgraph = new BuildImplicitInstructionControlFlowgraphTask(instructions, program, ImmutableList.of()).run();
+
+        Set<Pair<Pair<TranspilerNode, TranspilerNode>, Graph<TranspilerInstruction, DefaultEdge>>> rangeBodies = new CallRangesTask(program, instructions).run().stream().map(range -> new RangeBodyTask(instructionFlowgraph).run(range)).collect(Collectors.toUnmodifiableSet());
+        Set<Integer> graphVertexCardinalities = rangeBodies.stream().map(rangeBody -> rangeBody.getRight().vertexSet().size()).collect(Collectors.toUnmodifiableSet());
+        assertEquals(ImmutableSet.of(21, 33), graphVertexCardinalities);
     }
 
     private static PrintTranspilerNode c() {
