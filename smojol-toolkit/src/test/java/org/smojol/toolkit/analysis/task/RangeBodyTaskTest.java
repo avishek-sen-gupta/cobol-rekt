@@ -16,14 +16,15 @@ import org.smojol.toolkit.analysis.task.transpiler.RangeBodyTask;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.smojol.common.transpiler.TreeMatcher.*;
 
 public class RangeBodyTaskTest {
     @Test
     public void canCalculateRangeBody() {
-        LabelledTranspilerCodeBlockNode a1 = new LabelledTranspilerCodeBlockNode("A1", ImmutableList.of(c(), c()), ImmutableMap.of());
-        LabelledTranspilerCodeBlockNode b1 = new LabelledTranspilerCodeBlockNode("B1", ImmutableList.of(c(), c()), ImmutableMap.of());
+        LabelledTranspilerCodeBlockNode a1 = new LabelledTranspilerCodeBlockNode("A1", ImmutableList.of(p(), p()), ImmutableMap.of());
+        LabelledTranspilerCodeBlockNode b1 = new LabelledTranspilerCodeBlockNode("B1", ImmutableList.of(p(), p()), ImmutableMap.of());
         TranspilerCodeBlockNode program = new TranspilerCodeBlockNode(ImmutableList.of(a1, b1));
         block_(
                 labelledBlock_(
@@ -37,9 +38,9 @@ public class RangeBodyTaskTest {
         ).verify(program);
 
         List<TranspilerInstruction> instructions = new BuildTranspilerInstructionsFromIntermediateTreeTask(program, new IncrementingIdProvider()).run();
-        Graph<TranspilerInstruction, DefaultEdge> instructionFlowgraph = new BuildImplicitInstructionControlFlowgraphTask(instructions, ImmutableList.of()).run();
+        Graph<TranspilerInstruction, DefaultEdge> implicitCFG = new BuildImplicitInstructionControlFlowgraphTask(instructions, ImmutableList.of()).run();
 
-        ProcedureRange range = new RangeBodyTask(instructionFlowgraph).run("A1", "A1");
+        ProcedureRange range = new RangeBodyTask(implicitCFG).run("A1", "A1");
         assertEquals(9, range.body().vertexSet().size());
     }
 
@@ -47,9 +48,9 @@ public class RangeBodyTaskTest {
     public void canCalculateRangeBodyGivenRanges() {
         JumpTranspilerNode jump_A1_C1 = new JumpTranspilerNode(new NamedLocationNode("A1"), new NamedLocationNode("C1"));
         JumpTranspilerNode jump_A1_B1 = new JumpTranspilerNode(new NamedLocationNode("A1"), new NamedLocationNode("B1"));
-        LabelledTranspilerCodeBlockNode a1 = new LabelledTranspilerCodeBlockNode("A1", ImmutableList.of(c(), c(), jump_A1_C1), ImmutableMap.of());
-        LabelledTranspilerCodeBlockNode b1 = new LabelledTranspilerCodeBlockNode("B1", ImmutableList.of(c(), c()), ImmutableMap.of());
-        LabelledTranspilerCodeBlockNode c1 = new LabelledTranspilerCodeBlockNode("C1", ImmutableList.of(c(), c(), jump_A1_B1), ImmutableMap.of());
+        LabelledTranspilerCodeBlockNode a1 = new LabelledTranspilerCodeBlockNode("A1", ImmutableList.of(p(), p(), jump_A1_C1), ImmutableMap.of());
+        LabelledTranspilerCodeBlockNode b1 = new LabelledTranspilerCodeBlockNode("B1", ImmutableList.of(p(), p()), ImmutableMap.of());
+        LabelledTranspilerCodeBlockNode c1 = new LabelledTranspilerCodeBlockNode("C1", ImmutableList.of(p(), p(), jump_A1_B1), ImmutableMap.of());
         TranspilerCodeBlockNode program = new TranspilerCodeBlockNode(ImmutableList.of(a1, b1, c1));
         block_(
                 labelledBlock_(
@@ -70,9 +71,9 @@ public class RangeBodyTaskTest {
         ).verify(program);
 
         List<TranspilerInstruction> instructions = new BuildTranspilerInstructionsFromIntermediateTreeTask(program, new IncrementingIdProvider()).run();
-        Graph<TranspilerInstruction, DefaultEdge> instructionFlowgraph = new BuildImplicitInstructionControlFlowgraphTask(instructions, ImmutableList.of()).run();
+        Graph<TranspilerInstruction, DefaultEdge> implicitCFG = new BuildImplicitInstructionControlFlowgraphTask(instructions, ImmutableList.of()).run();
 
-        Set<Pair<ProcedureRange, Set<ProcedureRange>>> rangesWithChildren = new ProcedureBodyTask().run(program, instructions, instructionFlowgraph);
+        Set<Pair<ProcedureRange, Set<ProcedureRange>>> rangesWithChildren = new ProcedureBodyTask(program, instructions, implicitCFG).run();
         assertEquals(2, rangesWithChildren.size());
         Pair<ProcedureRange, Set<ProcedureRange>> range33WithChildren = rangesWithChildren.stream().filter(rwc -> rwc.getLeft().body().vertexSet().size() == 33).findFirst().get();
         Pair<ProcedureRange, Set<ProcedureRange>> range21WithChildren = rangesWithChildren.stream().filter(rwc -> rwc.getLeft().body().vertexSet().size() == 21).findFirst().get();
@@ -90,9 +91,9 @@ public class RangeBodyTaskTest {
     @Test
     public void canDetermineSLIFORangeBaseCase() {
         JumpTranspilerNode jump_B1 = new JumpTranspilerNode(new NamedLocationNode("B1"), new NamedLocationNode("B1"));
-        LabelledTranspilerCodeBlockNode a1 = new LabelledTranspilerCodeBlockNode("A1", ImmutableList.of(c(), c(), jump_B1, new JumpTranspilerNode(new ProgramTerminalLocationNode())), ImmutableMap.of());
-        LabelledTranspilerCodeBlockNode b1 = new LabelledTranspilerCodeBlockNode("B1", ImmutableList.of(c(), c()), ImmutableMap.of());
-        LabelledTranspilerCodeBlockNode c1 = new LabelledTranspilerCodeBlockNode("C1", ImmutableList.of(c(), c()), ImmutableMap.of());
+        LabelledTranspilerCodeBlockNode a1 = new LabelledTranspilerCodeBlockNode("A1", ImmutableList.of(p(), p(), jump_B1, new JumpTranspilerNode(new ProgramTerminalLocationNode())), ImmutableMap.of());
+        LabelledTranspilerCodeBlockNode b1 = new LabelledTranspilerCodeBlockNode("B1", ImmutableList.of(p(), p()), ImmutableMap.of());
+        LabelledTranspilerCodeBlockNode c1 = new LabelledTranspilerCodeBlockNode("C1", ImmutableList.of(p(), p()), ImmutableMap.of());
         TranspilerCodeBlockNode program = new TranspilerCodeBlockNode(ImmutableList.of(a1, b1, c1));
         block_(
                 labelledBlock_(
@@ -112,9 +113,9 @@ public class RangeBodyTaskTest {
         ).verify(program);
 
         List<TranspilerInstruction> instructions = new BuildTranspilerInstructionsFromIntermediateTreeTask(program, new IncrementingIdProvider()).run();
-        Graph<TranspilerInstruction, DefaultEdge> instructionFlowgraph = new BuildImplicitInstructionControlFlowgraphTask(instructions, ImmutableList.of()).run();
+        Graph<TranspilerInstruction, DefaultEdge> implicitCFG = new BuildImplicitInstructionControlFlowgraphTask(instructions, ImmutableList.of()).run();
 
-        Set<Pair<ProcedureRange, Set<ProcedureRange>>> rangesWithChildren = new ProcedureBodyTask().run(program, instructions, instructionFlowgraph);
+        Set<Pair<ProcedureRange, Set<ProcedureRange>>> rangesWithChildren = new ProcedureBodyTask(program, instructions, implicitCFG).run();
         SLIFORangeCriterionTask slifoRangeCriterionTask = new SLIFORangeCriterionTask(rangesWithChildren);
         assertEquals(1, rangesWithChildren.size());
         Pair<ProcedureRange, Set<ProcedureRange>> rangeWithChildren = rangesWithChildren.stream().findFirst().get();
@@ -129,9 +130,9 @@ public class RangeBodyTaskTest {
     public void canDetermineSLIFORangesInductively() {
         JumpTranspilerNode jump_B1 = new JumpTranspilerNode(new NamedLocationNode("B1"), new NamedLocationNode("B1"));
         JumpTranspilerNode jump_C1 = new JumpTranspilerNode(new NamedLocationNode("C1"), new NamedLocationNode("C1"));
-        LabelledTranspilerCodeBlockNode a1 = new LabelledTranspilerCodeBlockNode("A1", ImmutableList.of(c(), c(), jump_B1, new JumpTranspilerNode(new ProgramTerminalLocationNode())), ImmutableMap.of());
-        LabelledTranspilerCodeBlockNode b1 = new LabelledTranspilerCodeBlockNode("B1", ImmutableList.of(c(), c(), jump_C1), ImmutableMap.of());
-        LabelledTranspilerCodeBlockNode c1 = new LabelledTranspilerCodeBlockNode("C1", ImmutableList.of(c(), c()), ImmutableMap.of());
+        LabelledTranspilerCodeBlockNode a1 = new LabelledTranspilerCodeBlockNode("A1", ImmutableList.of(p(), p(), jump_B1, new JumpTranspilerNode(new ProgramTerminalLocationNode())), ImmutableMap.of());
+        LabelledTranspilerCodeBlockNode b1 = new LabelledTranspilerCodeBlockNode("B1", ImmutableList.of(p(), p(), jump_C1), ImmutableMap.of());
+        LabelledTranspilerCodeBlockNode c1 = new LabelledTranspilerCodeBlockNode("C1", ImmutableList.of(p(), p()), ImmutableMap.of());
         TranspilerCodeBlockNode program = new TranspilerCodeBlockNode(ImmutableList.of(a1, b1, c1));
         block_(
                 labelledBlock_(
@@ -152,18 +153,15 @@ public class RangeBodyTaskTest {
         ).verify(program);
 
         List<TranspilerInstruction> instructions = new BuildTranspilerInstructionsFromIntermediateTreeTask(program, new IncrementingIdProvider()).run();
-        Graph<TranspilerInstruction, DefaultEdge> instructionFlowgraph = new BuildImplicitInstructionControlFlowgraphTask(instructions, ImmutableList.of()).run();
-
-        Set<Pair<ProcedureRange, Set<ProcedureRange>>> rangesWithChildren = new ProcedureBodyTask().run(program, instructions, instructionFlowgraph);
-        SLIFORangeCriterionTask slifoRangeCriterionTask = new SLIFORangeCriterionTask(rangesWithChildren);
+        Graph<TranspilerInstruction, DefaultEdge> implicitCFG = new BuildImplicitInstructionControlFlowgraphTask(instructions, ImmutableList.of()).run();
+        Set<Pair<ProcedureRange, Set<ProcedureRange>>> rangesWithChildren = new ProcedureBodyTask(program, instructions, implicitCFG).run();
+        SLIFORangeCriterionTask task = new SLIFORangeCriterionTask(rangesWithChildren);
         assertEquals(2, rangesWithChildren.size());
-        Pair<ProcedureRange, Set<ProcedureRange>> rangeB1WithChildren = rangesWithChildren.stream().filter(rwc -> rwc.getLeft().body().vertexSet().size() == 12).findFirst().get();
-        Pair<ProcedureRange, Set<ProcedureRange>> rangeC1WithChildren = rangesWithChildren.stream().filter(rwc -> rwc.getLeft().body().vertexSet().size() == 9).findFirst().get();
-        assertTrue(slifoRangeCriterionTask.isSLIFO(rangeC1WithChildren, ImmutableSet.of()));
-        assertTrue(slifoRangeCriterionTask.isSLIFO(rangeB1WithChildren, ImmutableSet.of(rangeC1WithChildren.getLeft())));
+        Set<Pair<ProcedureRange, Set<ProcedureRange>>> allSLIFORanges = task.allSLIFORanges(rangesWithChildren);
+        assertEquals(2, allSLIFORanges.size());
     }
 
-    private static PrintTranspilerNode c() {
+    private static PrintTranspilerNode p() {
         return new PrintTranspilerNode(ImmutableList.of());
     }
 }

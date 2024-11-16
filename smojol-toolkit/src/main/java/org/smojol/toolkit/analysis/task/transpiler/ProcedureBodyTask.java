@@ -11,7 +11,17 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ProcedureBodyTask {
-    public Set<Pair<ProcedureRange, Set<ProcedureRange>>> run(TranspilerCodeBlockNode program, List<TranspilerInstruction> instructions, Graph<TranspilerInstruction, DefaultEdge> instructionFlowgraph) {
+    private final TranspilerCodeBlockNode program;
+    private final List<TranspilerInstruction> instructions;
+    private final Graph<TranspilerInstruction, DefaultEdge> instructionFlowgraph;
+
+    public ProcedureBodyTask(TranspilerCodeBlockNode program, List<TranspilerInstruction> instructions, Graph<TranspilerInstruction, DefaultEdge> instructionFlowgraph) {
+        this.program = program;
+        this.instructions = instructions;
+        this.instructionFlowgraph = instructionFlowgraph;
+    }
+
+    public Set<Pair<ProcedureRange, Set<ProcedureRange>>> run() {
         Set<ProcedureRange> bodiesWithoutChildren = new CallRangesTask(program, instructions).run().stream().map(range -> new RangeBodyTask(instructionFlowgraph).run(range)).collect(Collectors.toUnmodifiableSet());
         return rangesWithChildren(bodiesWithoutChildren);
     }

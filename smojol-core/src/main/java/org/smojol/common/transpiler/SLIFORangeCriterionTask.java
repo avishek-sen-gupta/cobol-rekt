@@ -28,6 +28,21 @@ public class SLIFORangeCriterionTask {
         Set<ProcedureRange> invokedRanges = rangeWithChildren.getRight();
         return Sets.difference(rangesTerminatingInRange, existingSLIFORanges).isEmpty()
                 && Sets.difference(invokedRanges, existingSLIFORanges).isEmpty();
-//        return rangesTerminatingInRange.isEmpty() && invokedRanges.isEmpty();
+    }
+
+    public Set<Pair<ProcedureRange, Set<ProcedureRange>>> allSLIFORanges(Set<Pair<ProcedureRange, Set<ProcedureRange>>> rangesWithChildren, Set<Pair<ProcedureRange, Set<ProcedureRange>>> existingSLIFORanges) {
+        Set<Pair<ProcedureRange, Set<ProcedureRange>>> newlyDiscoveredSLIFOProcedures = rangesWithChildren.stream()
+                .filter(rwc -> isSLIFO(rwc, existingSLIFORanges.stream()
+                        .map(Pair::getLeft)
+                        .collect(Collectors.toUnmodifiableSet())))
+                .collect(Collectors.toUnmodifiableSet());
+        if (newlyDiscoveredSLIFOProcedures.isEmpty()) return ImmutableSet.of();
+        return Sets.union(newlyDiscoveredSLIFOProcedures, allSLIFORanges(
+                Sets.difference(rangesWithChildren, newlyDiscoveredSLIFOProcedures),
+                Sets.union(existingSLIFORanges, newlyDiscoveredSLIFOProcedures)));
+    }
+
+    public Set<Pair<ProcedureRange, Set<ProcedureRange>>> allSLIFORanges(Set<Pair<ProcedureRange, Set<ProcedureRange>>> rangesWithChildren) {
+        return allSLIFORanges(rangesWithChildren, ImmutableSet.of());
     }
 }
