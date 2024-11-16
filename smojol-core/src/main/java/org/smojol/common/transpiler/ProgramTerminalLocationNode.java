@@ -6,4 +6,9 @@ public class ProgramTerminalLocationNode extends LocationNode {
     public String description() {
         return "programEnd()";
     }
+
+    @Override
+    public String name() {
+        return "TERM";
+    }
 }

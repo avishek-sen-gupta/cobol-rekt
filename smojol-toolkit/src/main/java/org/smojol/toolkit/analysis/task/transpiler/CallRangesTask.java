@@ -1,0 +1,51 @@
+package org.smojol.toolkit.analysis.task.transpiler;
+
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+import org.smojol.common.pseudocode.CodeSentinelType;
+import org.smojol.common.transpiler.*;
+
+import java.util.List;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+public class CallRangesTask {
+    private final TranspilerCodeBlockNode tree;
+    private final List<TranspilerInstruction> instructions;
+
+    public CallRangesTask(TranspilerCodeBlockNode tree, List<TranspilerInstruction> instructions) {
+        this.tree = tree;
+        this.instructions = instructions;
+    }
+
+    public Set<Pair<TranspilerInstruction, TranspilerInstruction>> run() {
+        Set<TranspilerNode> allCalls = findAllRecursive(tree, n -> n instanceof JumpTranspilerNode l && l.getEnd() != LocationNode.NULL).stream().collect(Collectors.toUnmodifiableSet());
+        return allCalls.stream().map(call -> {
+            TranspilerNode entryBlock = labelledBlock(((JumpTranspilerNode) call).getStart());
+            TranspilerNode exitBlock = labelledBlock(((JumpTranspilerNode) call).getEnd());
+            return ImmutablePair.of(
+                    entryOrExitVertex(entryBlock, CodeSentinelType.ENTER),
+                    entryOrExitVertex(exitBlock, CodeSentinelType.EXIT));
+        }).collect(Collectors.toUnmodifiableSet());
+    }
+
+    private TranspilerNode labelledBlock(LocationNode locationNode) {
+        return findAllRecursive(tree, n -> n instanceof LabelledTranspilerCodeBlockNode l && l.getName().equals(locationNode.name())).stream().findFirst().get();
+    }
+
+    private TranspilerInstruction entryOrExitVertex(TranspilerNode entryBlock, CodeSentinelType sentinelType) {
+        return instructions.stream().filter(instr -> instr.ref() == entryBlock && instr.sentinel() == sentinelType).findFirst().get();
+    }
+
+    private Set<TranspilerNode> findAllRecursive(TranspilerNode current, Function<TranspilerNode, Boolean> match) {
+        if (match.apply(current))
+            return Stream.concat(Stream.of(current), childResults(current, match)).collect(Collectors.toUnmodifiableSet());
+        return childResults(current, match).collect(Collectors.toUnmodifiableSet());
+    }
+
+    private Stream<TranspilerNode> childResults(TranspilerNode current, Function<TranspilerNode, Boolean> match) {
+        return current.astChildren().stream().flatMap(c -> findAllRecursive(c, match).stream());
+    }
+}

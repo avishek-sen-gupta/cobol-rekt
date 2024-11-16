@@ -57,6 +57,14 @@ public class TreeMatcher {
         return new TreeMatcher(n -> n instanceof SetTranspilerNode);
     }
 
+    public static TreeMatcher print_() {
+        return new TreeMatcher(n -> n instanceof PrintTranspilerNode);
+    }
+
+    public static TreeMatcher jump_() {
+        return new TreeMatcher(n -> n instanceof JumpTranspilerNode);
+    }
+
     public static TreeMatcher block_(TreeMatcher... childMatchers) {
         return new TreeMatcher(n -> n instanceof TranspilerCodeBlockNode, Arrays.asList(childMatchers));
     }

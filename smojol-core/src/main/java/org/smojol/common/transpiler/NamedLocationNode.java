@@ -13,4 +13,9 @@ public class NamedLocationNode extends LocationNode {
     public String description() {
         return String.format("loc(%s)", name);
     }
+
+    @Override
+    public String name() {
+        return name;
+    }
 }

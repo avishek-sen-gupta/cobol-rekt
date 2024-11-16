@@ -5,4 +5,9 @@ public class ExitIterationScopeLocationNode extends LocationNode {
     public String description() {
         return "break()";
     }
+
+    @Override
+    public String name() {
+        return "break";
+    }
 }

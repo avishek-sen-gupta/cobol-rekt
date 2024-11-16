@@ -17,4 +17,9 @@ public class IdLocationNode extends LocationNode {
     public String description() {
         return String.format("loc(id=%s)", destination.id());
     }
+
+    @Override
+    public String name() {
+        return destination.id();
+    }
 }

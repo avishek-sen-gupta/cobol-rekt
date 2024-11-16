@@ -13,4 +13,9 @@ public class InstructionLocationNode extends LocationNode {
     public String description() {
         return String.format("loc(%s)", node.id());
     }
+
+    @Override
+    public String name() {
+        return node.id;
+    }
 }

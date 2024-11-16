@@ -26,6 +26,10 @@ public class TranspilerCodeBlockNode extends TranspilerNode {
         super(childTranspilerNodes, additionalAttributes, ImmutableList.of(SemanticCategory.CODE_BLOCK));
     }
 
+    public TranspilerCodeBlockNode(List<TranspilerNode> children, Map<String, Object> properties, List<SemanticCategory> categories) {
+        super(children, properties, categories);
+    }
+
     public boolean isEmpty() {
         return childTranspilerNodes.isEmpty();
     }

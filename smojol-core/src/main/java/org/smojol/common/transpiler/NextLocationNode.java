@@ -5,4 +5,9 @@ public class NextLocationNode extends LocationNode {
     public String description() {
         return "next()";
     }
+
+    @Override
+    public String name() {
+        return "continue";
+    }
 }

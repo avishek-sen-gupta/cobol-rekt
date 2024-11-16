@@ -6,6 +6,11 @@ import org.smojol.common.ast.SemanticCategory;
 public abstract class LocationNode extends TranspilerNode {
     public static LocationNode NULL = new LocationNode() {
         @Override
+        public String name() {
+            return "NULL";
+        }
+
+        @Override
         public String description() {
             return "[NULL]";
         }
@@ -13,4 +18,5 @@ public abstract class LocationNode extends TranspilerNode {
     public LocationNode() {
         super(ImmutableList.of(SemanticCategory.ADDRESS));
     }
+    public abstract String name();
 }

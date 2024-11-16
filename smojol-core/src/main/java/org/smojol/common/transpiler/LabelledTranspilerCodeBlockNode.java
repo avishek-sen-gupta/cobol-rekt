@@ -7,8 +7,9 @@ import org.smojol.common.ast.SemanticCategory;
 import java.util.List;
 import java.util.Map;
 
-public class LabelledTranspilerCodeBlockNode extends TranspilerNode {
-    @Getter private final String name;
+@Getter
+public class LabelledTranspilerCodeBlockNode extends TranspilerCodeBlockNode {
+    private final String name;
 
     public LabelledTranspilerCodeBlockNode(String name, List<TranspilerNode> children, Map<String, Object> properties) {
         super(children, properties, ImmutableList.of(SemanticCategory.CODE_BLOCK));
