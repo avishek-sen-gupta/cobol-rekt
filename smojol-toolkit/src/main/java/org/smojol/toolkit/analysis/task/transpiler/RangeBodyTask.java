@@ -7,7 +7,9 @@ import org.jgrapht.Graph;
 import org.jgrapht.graph.AsSubgraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.smojol.common.pseudocode.CodeSentinelType;
-import org.smojol.common.transpiler.*;
+import org.smojol.common.transpiler.LabelledTranspilerCodeBlockNode;
+import org.smojol.common.transpiler.ProcedureRange;
+import org.smojol.common.transpiler.TranspilerInstruction;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -20,7 +22,7 @@ public class RangeBodyTask {
         this.flowgraph = flowgraph;
     }
 
-    public Pair<Pair<TranspilerInstruction, TranspilerInstruction>, Graph<TranspilerInstruction, DefaultEdge>> run(String start, String end) {
+    public ProcedureRange run(String start, String end) {
         TranspilerInstruction rangeEntryVertex = flowgraph.vertexSet().stream().filter(v -> v.ref() instanceof LabelledTranspilerCodeBlockNode l
                 && l.getName().equals(start)
                 && v.sentinel() == CodeSentinelType.ENTER).findFirst().get();
@@ -30,9 +32,10 @@ public class RangeBodyTask {
         return run(ImmutablePair.of(rangeEntryVertex, rangeExitVertex));
     }
 
-    public Pair<Pair<TranspilerInstruction, TranspilerInstruction>, Graph<TranspilerInstruction, DefaultEdge>> run(Pair<TranspilerInstruction, TranspilerInstruction> range) {
-        return ImmutablePair.of(ImmutablePair.of(range.getLeft(), range.getRight()),
-                new AsSubgraph<>(flowgraph, trace(range.getLeft(), range.getRight(), ImmutableSet.of())));
+    public ProcedureRange run(Pair<TranspilerInstruction, TranspilerInstruction> range) {
+//        return ImmutablePair.of(ImmutablePair.of(range.getLeft(), range.getRight()),
+//                new AsSubgraph<>(flowgraph, trace(range.getLeft(), range.getRight(), ImmutableSet.of())));
+        return new ProcedureRange(range.getLeft(), range.getRight(), new AsSubgraph<>(flowgraph, trace(range.getLeft(), range.getRight(), ImmutableSet.of())), ImmutableSet.of());
     }
 
     private Set<TranspilerInstruction> trace(TranspilerInstruction current, TranspilerInstruction rangeExitVertex, Set<TranspilerInstruction> visited) {
@@ -41,16 +44,9 @@ public class RangeBodyTask {
         Set<DefaultEdge> outgoing = flowgraph.outgoingEdgesOf(current);
         return Stream.concat(Stream.of(current), outgoing.stream()
                         .map(flowgraph::getEdgeTarget)
-//                        .filter(this::isNotProcedureCall)
                         .flatMap(o -> trace(o, rangeExitVertex,
                                 Stream.concat(visited.stream(), Stream.of(current))
                                         .collect(Collectors.toUnmodifiableSet())).stream()))
                 .collect(Collectors.toSet());
-    }
-
-    private boolean isNotProcedureCall(TranspilerInstruction transpilerInstruction) {
-        return !(transpilerInstruction.ref() instanceof JumpTranspilerNode)
-                || (transpilerInstruction.ref() instanceof JumpTranspilerNode j
-                && j.getEnd() == LocationNode.NULL);
     }
 }

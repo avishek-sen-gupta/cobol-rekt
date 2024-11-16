@@ -3,8 +3,6 @@ package org.smojol.toolkit.analysis.task;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
 import org.junit.jupiter.api.Test;
@@ -12,7 +10,7 @@ import org.smojol.common.id.IncrementingIdProvider;
 import org.smojol.common.transpiler.*;
 import org.smojol.common.vm.type.TypedRecord;
 import org.smojol.toolkit.analysis.task.transpiler.BuildTranspilerInstructionsFromIntermediateTreeTask;
-import org.smojol.toolkit.analysis.task.transpiler.CallRangesTask;
+import org.smojol.toolkit.analysis.task.transpiler.ProcedureBodyTask;
 import org.smojol.toolkit.analysis.task.transpiler.RangeBodyTask;
 
 import java.util.List;
@@ -42,8 +40,8 @@ public class RangeBodyTaskTest {
         List<TranspilerInstruction> instructions = new BuildTranspilerInstructionsFromIntermediateTreeTask(program, new IncrementingIdProvider()).run();
         Graph<TranspilerInstruction, DefaultEdge> instructionFlowgraph = new BuildImplicitInstructionControlFlowgraphTask(instructions, ImmutableList.of()).run();
 
-        Pair<Pair<TranspilerInstruction, TranspilerInstruction>, Graph<TranspilerInstruction, DefaultEdge>> body = new RangeBodyTask(instructionFlowgraph).run("A1", "A1");
-        assertEquals(9, body.getRight().vertexSet().size());
+        ProcedureRange range = new RangeBodyTask(instructionFlowgraph).run("A1", "A1");
+        assertEquals(9, range.body().vertexSet().size());
     }
 
     @Test
@@ -75,14 +73,17 @@ public class RangeBodyTaskTest {
         List<TranspilerInstruction> instructions = new BuildTranspilerInstructionsFromIntermediateTreeTask(program, new IncrementingIdProvider()).run();
         Graph<TranspilerInstruction, DefaultEdge> instructionFlowgraph = new BuildImplicitInstructionControlFlowgraphTask(instructions, ImmutableList.of()).run();
 
-        Set<Pair<Pair<TranspilerInstruction, TranspilerInstruction>, Graph<TranspilerInstruction, DefaultEdge>>> rangeBodies = new CallRangesTask(program, instructions).run().stream().map(range -> new RangeBodyTask(instructionFlowgraph).run(range)).collect(Collectors.toUnmodifiableSet());
-        Set<Integer> graphVertexCardinalities = rangeBodies.stream().map(rangeBody -> rangeBody.getRight().vertexSet().size()).collect(Collectors.toUnmodifiableSet());
+        Set<ProcedureRange> procedureRanges = new ProcedureBodyTask().run(program, instructions, instructionFlowgraph);
+        Set<Integer> graphVertexCardinalities = procedureRanges.stream().map(procRange -> procRange.body().vertexSet().size()).collect(Collectors.toUnmodifiableSet());
         assertEquals(ImmutableSet.of(21, 33), graphVertexCardinalities);
-        Pair<Pair<TranspilerInstruction, TranspilerInstruction>, Graph<TranspilerInstruction, DefaultEdge>> range33 = rangeBodies.stream().filter(bbr -> bbr.getRight().vertexSet().size() == 33).findFirst().get();
-        Pair<Pair<TranspilerInstruction, TranspilerInstruction>, Graph<TranspilerInstruction, DefaultEdge>> range21 = rangeBodies.stream().filter(bbr -> bbr.getRight().vertexSet().size() == 21).findFirst().get();
-        Set<Pair<Pair<TranspilerInstruction, TranspilerInstruction>, Graph<TranspilerInstruction, DefaultEdge>>> rangesTerminatingInCurrentRange = new SLIFO_RangeCriterionTask(rangeBodies).rangesTerminatingIn(range33);
+        ProcedureRange range33 = procedureRanges.stream().filter(bbr -> bbr.body().vertexSet().size() == 33).findFirst().get();
+        ProcedureRange range21 = procedureRanges.stream().filter(bbr -> bbr.body().vertexSet().size() == 21).findFirst().get();
+        SLIFO_RangeCriterionTask slifoRangeCriterionTask = new SLIFO_RangeCriterionTask(procedureRanges);
+        Set<ProcedureRange> rangesTerminatingInCurrentRange = slifoRangeCriterionTask.rangesTerminatingIn(range33);
+//        Set<Pair<Pair<TranspilerInstruction, TranspilerInstruction>, Graph<TranspilerInstruction, DefaultEdge>>> invokedRanges = slifoRangeCriterionTask.invokedRanges(range33);
         assertEquals(ImmutableSet.of(range21), rangesTerminatingInCurrentRange);
     }
+
 
 
     private static PrintTranspilerNode c() {
