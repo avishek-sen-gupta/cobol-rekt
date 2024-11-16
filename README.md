@@ -785,7 +785,9 @@ This is probably best used for smaller scale refactorings, like eliminating jump
 
 ## Procedural Structure Identification (WIP)
 
-WIP...
+This can determine which sections can be isolated into completely independent (behaviour-wise) functions, which ultimately helps in decomposing a monolithic COBOL program into modular components. It uses the technique of identifying sections which are SLIFO (Structural Last-In First-Out) in nature, as characterised in [Identifying Procedural Structure in Cobol Programs](https://dl.acm.org/doi/pdf/10.1145/316158.316163).
+
+See ```SLIFORangeMain``` for a preliminary example. This is still a work in progress.
 
 ## Running against AWS Card Demo
 

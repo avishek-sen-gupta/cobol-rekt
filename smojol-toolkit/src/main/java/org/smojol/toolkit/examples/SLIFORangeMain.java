@@ -47,6 +47,7 @@ public class SLIFORangeMain {
         Set<Pair<ProcedureRange, Set<ProcedureRange>>> rangesWithChildren = new ProcedureBodyTask(tree, instructions, implicitCFG).run();
         SLIFORangeCriterionTask task = new SLIFORangeCriterionTask(rangesWithChildren);
         Set<Pair<ProcedureRange, Set<ProcedureRange>>> allSLIFORanges = task.allSLIFORanges(rangesWithChildren);
+        allSLIFORanges.forEach(range -> System.out.println(range.getLeft()));
 
         System.out.println("DONE");
     }
