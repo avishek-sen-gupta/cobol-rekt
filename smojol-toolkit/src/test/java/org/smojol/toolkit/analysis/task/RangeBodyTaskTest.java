@@ -9,16 +9,15 @@ import org.jgrapht.graph.DefaultEdge;
 import org.junit.jupiter.api.Test;
 import org.smojol.common.id.IncrementingIdProvider;
 import org.smojol.common.transpiler.*;
-import org.smojol.common.vm.type.TypedRecord;
 import org.smojol.toolkit.analysis.task.transpiler.BuildTranspilerInstructionsFromIntermediateTreeTask;
 import org.smojol.toolkit.analysis.task.transpiler.ProcedureBodyTask;
 import org.smojol.toolkit.analysis.task.transpiler.RangeBodyTask;
 
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.smojol.common.transpiler.TreeMatcher.*;
 
 public class RangeBodyTaskTest {
@@ -75,27 +74,60 @@ public class RangeBodyTaskTest {
         Graph<TranspilerInstruction, DefaultEdge> instructionFlowgraph = new BuildImplicitInstructionControlFlowgraphTask(instructions, ImmutableList.of()).run();
 
         Set<Pair<ProcedureRange, Set<ProcedureRange>>> rangesWithChildren = new ProcedureBodyTask().run(program, instructions, instructionFlowgraph);
-        Set<ProcedureRange> procedureRanges = rangesWithChildren.stream().map(Pair::getLeft).collect(Collectors.toUnmodifiableSet());
-        Set<Integer> graphVertexCardinalities = procedureRanges.stream().map(procRange -> procRange.body().vertexSet().size()).collect(Collectors.toUnmodifiableSet());
-        assertEquals(ImmutableSet.of(21, 33), graphVertexCardinalities);
+        assertEquals(2, rangesWithChildren.size());
         Pair<ProcedureRange, Set<ProcedureRange>> range33WithChildren = rangesWithChildren.stream().filter(rwc -> rwc.getLeft().body().vertexSet().size() == 33).findFirst().get();
         Pair<ProcedureRange, Set<ProcedureRange>> range21WithChildren = rangesWithChildren.stream().filter(rwc -> rwc.getLeft().body().vertexSet().size() == 21).findFirst().get();
+        assertEquals(33, range33WithChildren.getLeft().body().vertexSet().size());
+        assertEquals(21, range21WithChildren.getLeft().body().vertexSet().size());
         ProcedureRange range33 = range33WithChildren.getLeft();
         ProcedureRange range21 = range21WithChildren.getLeft();
-        SLIFORangeCriterionTask slifoRangeCriterionTask = new SLIFORangeCriterionTask(procedureRanges);
+        SLIFORangeCriterionTask slifoRangeCriterionTask = new SLIFORangeCriterionTask(rangesWithChildren);
         Set<ProcedureRange> rangesTerminatingInRange33 = slifoRangeCriterionTask.rangesTerminatingIn(range33);
         assertEquals(ImmutableSet.of(range21), rangesTerminatingInRange33);
         assertEquals(ImmutableSet.of(range33), range21WithChildren.getRight());
         assertEquals(ImmutableSet.of(range21, range33), range33WithChildren.getRight());
     }
 
+    @Test
+    public void canDetermineSLIFORange() {
+        JumpTranspilerNode jump_B1 = new JumpTranspilerNode(new NamedLocationNode("B1"), new NamedLocationNode("B1"));
+        LabelledTranspilerCodeBlockNode a1 = new LabelledTranspilerCodeBlockNode("A1", ImmutableList.of(c(), c(), jump_B1, new JumpTranspilerNode(new ProgramTerminalLocationNode())), ImmutableMap.of());
+        LabelledTranspilerCodeBlockNode b1 = new LabelledTranspilerCodeBlockNode("B1", ImmutableList.of(c(), c()), ImmutableMap.of());
+        LabelledTranspilerCodeBlockNode c1 = new LabelledTranspilerCodeBlockNode("C1", ImmutableList.of(c(), c()), ImmutableMap.of());
+        TranspilerCodeBlockNode program = new TranspilerCodeBlockNode(ImmutableList.of(a1, b1, c1));
+        block_(
+                labelledBlock_(
+                        print_(),
+                        print_(),
+                        jump_(),
+                        jump_()
+                ),
+                labelledBlock_(
+                        print_(),
+                        print_()
+                ),
+                labelledBlock_(
+                        print_(),
+                        print_()
+                )
+        ).verify(program);
 
+        List<TranspilerInstruction> instructions = new BuildTranspilerInstructionsFromIntermediateTreeTask(program, new IncrementingIdProvider()).run();
+        Graph<TranspilerInstruction, DefaultEdge> instructionFlowgraph = new BuildImplicitInstructionControlFlowgraphTask(instructions, ImmutableList.of()).run();
+
+        Set<Pair<ProcedureRange, Set<ProcedureRange>>> rangesWithChildren = new ProcedureBodyTask().run(program, instructions, instructionFlowgraph);
+        SLIFORangeCriterionTask slifoRangeCriterionTask = new SLIFORangeCriterionTask(rangesWithChildren);
+        assertEquals(1, rangesWithChildren.size());
+        Pair<ProcedureRange, Set<ProcedureRange>> rangeWithChildren = rangesWithChildren.stream().findFirst().get();
+        slifoRangeCriterionTask.isSLIFO(rangeWithChildren);
+        ProcedureRange range = rangeWithChildren.getLeft();
+        Set<ProcedureRange> rangesTerminatingInRange = slifoRangeCriterionTask.rangesTerminatingIn(range);
+        assertEquals(ImmutableSet.of(), rangesTerminatingInRange);
+        assertEquals(ImmutableSet.of(), rangeWithChildren.getRight());
+        assertTrue(slifoRangeCriterionTask.isSLIFO(rangeWithChildren));
+    }
 
     private static PrintTranspilerNode c() {
         return new PrintTranspilerNode(ImmutableList.of());
-    }
-
-    private static SetTranspilerNode set(String variable, int value) {
-        return new SetTranspilerNode(new SymbolReferenceNode(variable), new PrimitiveValueTranspilerNode(TypedRecord.typedNumber(value)));
     }
 }
