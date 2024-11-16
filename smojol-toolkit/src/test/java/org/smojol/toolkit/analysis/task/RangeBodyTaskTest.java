@@ -11,14 +11,12 @@ import org.smojol.common.id.IncrementingIdProvider;
 import org.smojol.common.transpiler.*;
 import org.smojol.common.vm.type.TypedRecord;
 import org.smojol.toolkit.analysis.task.transpiler.BuildTranspilerInstructionsFromIntermediateTreeTask;
-import org.smojol.toolkit.analysis.task.transpiler.BuildTranspilerInstructionsFromRawASTTask;
 import org.smojol.toolkit.analysis.task.transpiler.CallRangesTask;
 import org.smojol.toolkit.analysis.task.transpiler.RangeBodyTask;
 
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.smojol.common.transpiler.TreeMatcher.*;
@@ -41,7 +39,7 @@ public class RangeBodyTaskTest {
         ).verify(program);
 
         List<TranspilerInstruction> instructions = new BuildTranspilerInstructionsFromIntermediateTreeTask(program, new IncrementingIdProvider()).run();
-        Graph<TranspilerInstruction, DefaultEdge> instructionFlowgraph = new BuildInstructionFlowgraphTask(instructions, program, ImmutableList.of()).run();
+        Graph<TranspilerInstruction, DefaultEdge> instructionFlowgraph = new BuildImplicitInstructionControlFlowgraphTask(instructions, ImmutableList.of()).run();
 
         Pair<Pair<TranspilerNode, TranspilerNode>, Graph<TranspilerInstruction, DefaultEdge>> body = new RangeBodyTask(instructionFlowgraph).run("A1", "A1");
         assertEquals(9, body.getRight().vertexSet().size());
@@ -74,7 +72,7 @@ public class RangeBodyTaskTest {
         ).verify(program);
 
         List<TranspilerInstruction> instructions = new BuildTranspilerInstructionsFromIntermediateTreeTask(program, new IncrementingIdProvider()).run();
-        Graph<TranspilerInstruction, DefaultEdge> instructionFlowgraph = new BuildImplicitInstructionControlFlowgraphTask(instructions, program, ImmutableList.of()).run();
+        Graph<TranspilerInstruction, DefaultEdge> instructionFlowgraph = new BuildImplicitInstructionControlFlowgraphTask(instructions, ImmutableList.of()).run();
 
         Set<Pair<Pair<TranspilerNode, TranspilerNode>, Graph<TranspilerInstruction, DefaultEdge>>> rangeBodies = new CallRangesTask(program, instructions).run().stream().map(range -> new RangeBodyTask(instructionFlowgraph).run(range)).collect(Collectors.toUnmodifiableSet());
         Set<Integer> graphVertexCardinalities = rangeBodies.stream().map(rangeBody -> rangeBody.getRight().vertexSet().size()).collect(Collectors.toUnmodifiableSet());

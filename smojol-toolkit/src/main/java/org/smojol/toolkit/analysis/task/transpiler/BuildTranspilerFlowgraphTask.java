@@ -52,7 +52,7 @@ public class BuildTranspilerFlowgraphTask {
     public TranspilerFlowgraph run() {
         TranspilerNode transpilerTree = new BuildTranspilerASTTask(rawAST, dataStructures, symbolTable).run();
         List<TranspilerInstruction> instructions = new BuildTranspilerInstructionsFromRawASTTask(rawAST, dataStructures, symbolTable).run();
-        Graph<TranspilerInstruction, DefaultEdge> instructionFlowgraph = new BuildInstructionFlowgraphTask(instructions, transpilerTree, flowHints).run();
+        Graph<TranspilerInstruction, DefaultEdge> instructionFlowgraph = new BuildInstructionFlowgraphTask(instructions, flowHints).run();
         Pair<Graph<BasicBlock<TranspilerInstruction>, DefaultEdge>, List<BasicBlock<TranspilerInstruction>>> basicBlockModel = new BuildBasicBlocksTask(instructions, instructionFlowgraph, new BasicBlockFactory<>(new IncrementingIdProvider()), neo4JDriverBuilder).run();
         Graph<BasicBlock<TranspilerInstruction>, DefaultEdge> basicBlockGraph = basicBlockModel.getLeft();
         MermaidGraph<TranspilerInstruction, DefaultEdge> mermaid = new MermaidGraph<>();

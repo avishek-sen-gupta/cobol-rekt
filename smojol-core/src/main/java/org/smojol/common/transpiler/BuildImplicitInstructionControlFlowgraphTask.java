@@ -19,14 +19,12 @@ import java.util.logging.Logger;
 public class BuildImplicitInstructionControlFlowgraphTask {
     private static final Logger LOGGER = Logger.getLogger(BuildImplicitInstructionControlFlowgraphTask.class.getName());
     private final List<TranspilerInstruction> instructions;
-    private final TranspilerNode transpilerTree;
     private final Map<TranspilerNode, Triple<Integer, Integer, Integer>> transpilerNodeMap;
     private final List<String> flowHints;
     private final List<TranspilerInstructionEdge> edges;
 
-    public BuildImplicitInstructionControlFlowgraphTask(List<TranspilerInstruction> instructions, TranspilerNode transpilerTree, List<String> flowHints) {
+    public BuildImplicitInstructionControlFlowgraphTask(List<TranspilerInstruction> instructions, List<String> flowHints) {
         this.instructions = instructions;
-        this.transpilerTree = transpilerTree;
         transpilerNodeMap = buildTranspilerNodeMap(instructions);
         this.flowHints = flowHints;
         edges = new ArrayList<>();
