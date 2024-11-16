@@ -11,11 +11,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ProcedureBodyTask {
-    private final TranspilerCodeBlockNode program;
+    private final TranspilerNode program;
     private final List<TranspilerInstruction> instructions;
     private final Graph<TranspilerInstruction, DefaultEdge> instructionFlowgraph;
 
-    public ProcedureBodyTask(TranspilerCodeBlockNode program, List<TranspilerInstruction> instructions, Graph<TranspilerInstruction, DefaultEdge> instructionFlowgraph) {
+    public ProcedureBodyTask(TranspilerNode program, List<TranspilerInstruction> instructions, Graph<TranspilerInstruction, DefaultEdge> instructionFlowgraph) {
         this.program = program;
         this.instructions = instructions;
         this.instructionFlowgraph = instructionFlowgraph;

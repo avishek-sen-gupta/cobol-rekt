@@ -12,10 +12,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class CallRangesTask {
-    private final TranspilerCodeBlockNode tree;
+    private final TranspilerNode tree;
     private final List<TranspilerInstruction> instructions;
 
-    public CallRangesTask(TranspilerCodeBlockNode tree, List<TranspilerInstruction> instructions) {
+    public CallRangesTask(TranspilerNode tree, List<TranspilerInstruction> instructions) {
         this.tree = tree;
         this.instructions = instructions;
     }

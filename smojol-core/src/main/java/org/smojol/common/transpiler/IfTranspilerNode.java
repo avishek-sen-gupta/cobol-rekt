@@ -37,6 +37,11 @@ public class IfTranspilerNode extends TranspilerNode {
     }
 
     @Override
+    public List<TranspilerNode> astChildren() {
+        return super.astChildren();
+    }
+
+    @Override
     public Collection<TranspilerNode> internalElements() {
         return ImmutableList.of(condition, ifThenBlock, ifElseBlock);
     }

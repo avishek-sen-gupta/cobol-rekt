@@ -11,7 +11,7 @@ public class IfTranspilerNodeBuilder {
         CobolExpression condition = n.getConditionExpression();
         TranspilerExpressionBuilder nodeBuilder = new TranspilerExpressionBuilder(dataStructures);
         TranspilerNode transpilerCondition = nodeBuilder.build(condition);
-        TranspilerCodeBlockNode ifThenBlock = new DetachedTranspilerCodeBlockNode(n.getIfThenBlock().astChildren().stream().filter(c -> c instanceof ConditionalStatementFlowNode).map(stmt -> TranspilerTreeBuilder.flowToTranspiler(stmt, dataStructures)).toList());
+        TranspilerCodeBlockNode ifThenBlock = new DetachedTranspilerCodeBlockNode(n.getIfThenBlock().astChildren().stream().map(stmt -> TranspilerTreeBuilder.flowToTranspiler(stmt, dataStructures)).toList());
         TranspilerCodeBlockNode ifElseBlock = n.getIfElseBlock() != null ? new DetachedTranspilerCodeBlockNode(n.getIfElseBlock().astChildren().stream().filter(c -> c instanceof ConditionalStatementFlowNode).map(stmt -> TranspilerTreeBuilder.flowToTranspiler(stmt, dataStructures)).toList()) : new TranspilerCodeBlockNode();
         return new IfTranspilerNode(transpilerCondition, ifThenBlock, ifElseBlock);
     }
