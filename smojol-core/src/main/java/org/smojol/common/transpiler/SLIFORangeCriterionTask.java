@@ -5,10 +5,10 @@ import com.google.common.collect.Sets;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class SLIFO_RangeCriterionTask {
+public class SLIFORangeCriterionTask {
     private final Set<ProcedureRange> rangeBodies;
 
-    public SLIFO_RangeCriterionTask(Set<ProcedureRange> rangeBodies) {
+    public SLIFORangeCriterionTask(Set<ProcedureRange> rangeBodies) {
         this.rangeBodies = rangeBodies;
     }
 

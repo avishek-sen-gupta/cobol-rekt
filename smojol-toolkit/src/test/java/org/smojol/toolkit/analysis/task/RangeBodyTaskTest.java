@@ -78,7 +78,7 @@ public class RangeBodyTaskTest {
         assertEquals(ImmutableSet.of(21, 33), graphVertexCardinalities);
         ProcedureRange range33 = procedureRanges.stream().filter(bbr -> bbr.body().vertexSet().size() == 33).findFirst().get();
         ProcedureRange range21 = procedureRanges.stream().filter(bbr -> bbr.body().vertexSet().size() == 21).findFirst().get();
-        SLIFO_RangeCriterionTask slifoRangeCriterionTask = new SLIFO_RangeCriterionTask(procedureRanges);
+        SLIFORangeCriterionTask slifoRangeCriterionTask = new SLIFORangeCriterionTask(procedureRanges);
         Set<ProcedureRange> rangesTerminatingInCurrentRange = slifoRangeCriterionTask.rangesTerminatingIn(range33);
 //        Set<Pair<Pair<TranspilerInstruction, TranspilerInstruction>, Graph<TranspilerInstruction, DefaultEdge>>> invokedRanges = slifoRangeCriterionTask.invokedRanges(range33);
         assertEquals(ImmutableSet.of(range21), rangesTerminatingInCurrentRange);
