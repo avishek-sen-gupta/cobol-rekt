@@ -20,7 +20,7 @@ public class RangeBodyTask {
         this.flowgraph = flowgraph;
     }
 
-    public Pair<Pair<TranspilerNode, TranspilerNode>, Graph<TranspilerInstruction, DefaultEdge>> run(String start, String end) {
+    public Pair<Pair<TranspilerInstruction, TranspilerInstruction>, Graph<TranspilerInstruction, DefaultEdge>> run(String start, String end) {
         TranspilerInstruction rangeEntryVertex = flowgraph.vertexSet().stream().filter(v -> v.ref() instanceof LabelledTranspilerCodeBlockNode l
                 && l.getName().equals(start)
                 && v.sentinel() == CodeSentinelType.ENTER).findFirst().get();
@@ -30,8 +30,8 @@ public class RangeBodyTask {
         return run(ImmutablePair.of(rangeEntryVertex, rangeExitVertex));
     }
 
-    public Pair<Pair<TranspilerNode, TranspilerNode>, Graph<TranspilerInstruction, DefaultEdge>> run(Pair<TranspilerInstruction, TranspilerInstruction> range) {
-        return ImmutablePair.of(ImmutablePair.of(range.getLeft().ref(), range.getRight().ref()),
+    public Pair<Pair<TranspilerInstruction, TranspilerInstruction>, Graph<TranspilerInstruction, DefaultEdge>> run(Pair<TranspilerInstruction, TranspilerInstruction> range) {
+        return ImmutablePair.of(ImmutablePair.of(range.getLeft(), range.getRight()),
                 new AsSubgraph<>(flowgraph, trace(range.getLeft(), range.getRight(), ImmutableSet.of())));
     }
 
