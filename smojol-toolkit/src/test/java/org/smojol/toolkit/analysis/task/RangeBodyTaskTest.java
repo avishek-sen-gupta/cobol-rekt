@@ -3,7 +3,6 @@ package org.smojol.toolkit.analysis.task;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
 import org.junit.jupiter.api.Test;
@@ -17,7 +16,6 @@ import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.smojol.common.transpiler.TreeMatcher.*;
 
 public class RangeBodyTaskTest {
@@ -73,19 +71,19 @@ public class RangeBodyTaskTest {
         List<TranspilerInstruction> instructions = new BuildTranspilerInstructionsFromIntermediateTreeTask(program, new IncrementingIdProvider()).run();
         Graph<TranspilerInstruction, DefaultEdge> implicitCFG = new BuildImplicitInstructionControlFlowgraphTask(instructions, ImmutableList.of()).run();
 
-        Set<Pair<ProcedureRange, Set<ProcedureRange>>> rangesWithChildren = new ProcedureBodyTask(program, instructions, implicitCFG).run();
+        Set<InvokingProcedureRange> rangesWithChildren = new ProcedureBodyTask(program, instructions, implicitCFG).run();
         assertEquals(2, rangesWithChildren.size());
-        Pair<ProcedureRange, Set<ProcedureRange>> range33WithChildren = rangesWithChildren.stream().filter(rwc -> rwc.getLeft().body().vertexSet().size() == 33).findFirst().get();
-        Pair<ProcedureRange, Set<ProcedureRange>> range21WithChildren = rangesWithChildren.stream().filter(rwc -> rwc.getLeft().body().vertexSet().size() == 21).findFirst().get();
-        assertEquals(33, range33WithChildren.getLeft().body().vertexSet().size());
-        assertEquals(21, range21WithChildren.getLeft().body().vertexSet().size());
-        ProcedureRange range33 = range33WithChildren.getLeft();
-        ProcedureRange range21 = range21WithChildren.getLeft();
+        InvokingProcedureRange range33WithChildren = rangesWithChildren.stream().filter(rwc -> rwc.range().body().vertexSet().size() == 33).findFirst().get();
+        InvokingProcedureRange range21WithChildren = rangesWithChildren.stream().filter(rwc -> rwc.range().body().vertexSet().size() == 21).findFirst().get();
+        assertEquals(33, range33WithChildren.range().body().vertexSet().size());
+        assertEquals(21, range21WithChildren.range().body().vertexSet().size());
+        ProcedureRange range33 = range33WithChildren.range();
+        ProcedureRange range21 = range21WithChildren.range();
         SLIFORangeCriterionTask slifoRangeCriterionTask = new SLIFORangeCriterionTask(rangesWithChildren);
         Set<ProcedureRange> rangesTerminatingInRange33 = slifoRangeCriterionTask.rangesTerminatingIn(range33);
         assertEquals(ImmutableSet.of(range21), rangesTerminatingInRange33);
-        assertEquals(ImmutableSet.of(range33), range21WithChildren.getRight());
-        assertEquals(ImmutableSet.of(range21, range33), range33WithChildren.getRight());
+        assertEquals(ImmutableSet.of(range33), range21WithChildren.invokedRanges());
+        assertEquals(ImmutableSet.of(range21, range33), range33WithChildren.invokedRanges());
     }
 
     private static PrintTranspilerNode p() {
