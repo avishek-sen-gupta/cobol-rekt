@@ -14,15 +14,21 @@ public class ProcedureBodyTask {
     private final TranspilerNode program;
     private final List<TranspilerInstruction> instructions;
     private final Graph<TranspilerInstruction, DefaultEdge> instructionFlowgraph;
+    private final TranspilerNode mainNode;
 
-    public ProcedureBodyTask(TranspilerNode program, List<TranspilerInstruction> instructions, Graph<TranspilerInstruction, DefaultEdge> instructionFlowgraph) {
+    public ProcedureBodyTask(TranspilerNode program, List<TranspilerInstruction> instructions, Graph<TranspilerInstruction, DefaultEdge> instructionFlowgraph, TranspilerNode mainNode) {
         this.program = program;
         this.instructions = instructions;
         this.instructionFlowgraph = instructionFlowgraph;
+        this.mainNode = mainNode;
+    }
+
+    public ProcedureBodyTask(TranspilerNode program, List<TranspilerInstruction> instructions, Graph<TranspilerInstruction, DefaultEdge> implicitCFG) {
+        this(program, instructions, implicitCFG, new NullTranspilerNode());
     }
 
     public Set<Pair<ProcedureRange, Set<ProcedureRange>>> run() {
-        Set<ProcedureRange> bodiesWithoutChildren = new CallRangesTask(program, instructions).run().stream().map(range -> new RangeBodyTask(instructionFlowgraph).run(range)).collect(Collectors.toUnmodifiableSet());
+        Set<ProcedureRange> bodiesWithoutChildren = new CallRangesTask(program, instructions, mainNode).run().stream().map(range -> new RangeBodyTask(instructionFlowgraph).run(range)).collect(Collectors.toUnmodifiableSet());
         return rangesWithChildren(bodiesWithoutChildren);
     }
 

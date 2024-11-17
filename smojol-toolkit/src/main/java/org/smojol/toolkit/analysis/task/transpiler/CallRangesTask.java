@@ -14,20 +14,27 @@ import java.util.stream.Stream;
 public class CallRangesTask {
     private final TranspilerNode tree;
     private final List<TranspilerInstruction> instructions;
+    private final TranspilerNode mainNode;
 
-    public CallRangesTask(TranspilerNode tree, List<TranspilerInstruction> instructions) {
+    public CallRangesTask(TranspilerNode tree, List<TranspilerInstruction> instructions, TranspilerNode mainNode) {
         this.tree = tree;
         this.instructions = instructions;
+        this.mainNode = mainNode;
+    }
+
+    public CallRangesTask(TranspilerCodeBlockNode program, List<TranspilerInstruction> instructions) {
+        this(program, instructions, new NullTranspilerNode());
     }
 
     public Set<Pair<TranspilerInstruction, TranspilerInstruction>> run() {
         Set<TranspilerNode> allCalls = findAllRecursive(tree, n -> n instanceof JumpTranspilerNode l && l.getEnd() != LocationNode.NULL).stream().collect(Collectors.toUnmodifiableSet());
-        List<TranspilerNode> allBlocks = findAllRecursiveOrdered(tree, n -> n instanceof LabelledTranspilerCodeBlockNode).stream().toList();
-        Pair<TranspilerInstruction, TranspilerInstruction> programLevelRange = ImmutablePair.of(
-                entryOrExitVertex(allBlocks.getFirst(), CodeSentinelType.ENTER),
-                entryOrExitVertex(allBlocks.getLast(), CodeSentinelType.EXIT));
+        Stream<Pair<TranspilerInstruction, TranspilerInstruction>> programLevelRange = mainNode instanceof NullTranspilerNode
+                ? Stream.empty()
+                : Stream.of(ImmutablePair.of(
+                entryOrExitVertex(mainNode, CodeSentinelType.ENTER),
+                entryOrExitVertex(mainNode, CodeSentinelType.EXIT)));
 
-        return Stream.concat(Stream.of(programLevelRange),
+        return Stream.concat(programLevelRange,
                 allCalls.stream().map(call -> {
                     TranspilerNode entryBlock = labelledBlock(((JumpTranspilerNode) call).getStart());
                     TranspilerNode exitBlock = labelledBlock(((JumpTranspilerNode) call).getEnd());

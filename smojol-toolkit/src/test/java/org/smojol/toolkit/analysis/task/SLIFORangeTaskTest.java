@@ -11,7 +11,6 @@ import org.smojol.common.id.IncrementingIdProvider;
 import org.smojol.common.transpiler.*;
 import org.smojol.toolkit.analysis.task.transpiler.BuildTranspilerInstructionsFromIntermediateTreeTask;
 import org.smojol.toolkit.analysis.task.transpiler.ProcedureBodyTask;
-import org.smojol.toolkit.analysis.task.transpiler.RangeBodyTask;
 
 import java.util.List;
 import java.util.Set;
@@ -89,9 +88,9 @@ public class SLIFORangeTaskTest {
         Graph<TranspilerInstruction, DefaultEdge> implicitCFG = new BuildImplicitInstructionControlFlowgraphTask(instructions, ImmutableList.of()).run();
         Set<Pair<ProcedureRange, Set<ProcedureRange>>> rangesWithChildren = new ProcedureBodyTask(program, instructions, implicitCFG).run();
         SLIFORangeCriterionTask task = new SLIFORangeCriterionTask(rangesWithChildren);
-        assertEquals(3, rangesWithChildren.size());
+        assertEquals(2, rangesWithChildren.size());
         Set<Pair<ProcedureRange, Set<ProcedureRange>>> allSLIFORanges = task.allSLIFORanges(rangesWithChildren);
-        assertEquals(3, allSLIFORanges.size());
+        assertEquals(2, allSLIFORanges.size());
     }
 
     private static PrintTranspilerNode p() {

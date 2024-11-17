@@ -19,6 +19,7 @@ public class SLIFORangeCriterionTask {
         Set<TranspilerInstruction> bodyVertices = range.body().vertexSet();
         Set<TranspilerInstruction> selfExit = bodyVertices.stream().filter(v -> v == range.exit()).collect(Collectors.toUnmodifiableSet());
         Set<TranspilerInstruction> body = Sets.difference(bodyVertices, selfExit);
+//        Set<TranspilerInstruction> body = bodyVertices;
         Set<ProcedureRange> rangesTerminatingInCurrentRangeIncludingSelf = procedureRanges.stream()
                 .filter(bbr -> body.contains(bbr.exit()))
                 .collect(Collectors.toUnmodifiableSet());

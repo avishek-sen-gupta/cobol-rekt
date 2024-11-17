@@ -8,7 +8,6 @@ import org.smojol.common.dialect.LanguageDialect;
 import org.smojol.common.flowchart.FlowchartOutputFormat;
 import org.smojol.common.id.IncrementingIdProvider;
 import org.smojol.common.id.UUIDProvider;
-import org.smojol.common.pseudocode.BasicBlock;
 import org.smojol.common.resource.LocalFilesystemOperations;
 import org.smojol.common.transpiler.*;
 import org.smojol.toolkit.analysis.pipeline.ProgramSearch;
@@ -27,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static org.smojol.toolkit.task.CommandLineAnalysisTask.*;
+import static org.smojol.toolkit.task.CommandLineAnalysisTask.BUILD_BASE_ANALYSIS;
 
 public class SLIFORangeMain {
     public static void main(String[] args) throws IOException, InterruptedException {
