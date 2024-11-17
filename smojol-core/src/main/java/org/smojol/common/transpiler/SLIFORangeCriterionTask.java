@@ -2,20 +2,19 @@ package org.smojol.common.transpiler;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public class SLIFORangeCriterionTask {
-    private final Set<Pair<ProcedureRange, Set<ProcedureRange>>> rangesWithChildren;
+    private final Set<InvokingProcedureRange> rangesWithChildren;
 
-    public SLIFORangeCriterionTask(Set<Pair<ProcedureRange, Set<ProcedureRange>>> rangesWithChildren) {
+    public SLIFORangeCriterionTask(Set<InvokingProcedureRange> rangesWithChildren) {
         this.rangesWithChildren = rangesWithChildren;
     }
 
     public Set<ProcedureRange> rangesTerminatingIn(ProcedureRange range) {
-        Set<ProcedureRange> procedureRanges = rangesWithChildren.stream().map(Pair::getLeft).collect(Collectors.toUnmodifiableSet());
+        Set<ProcedureRange> procedureRanges = rangesWithChildren.stream().map(InvokingProcedureRange::range).collect(Collectors.toUnmodifiableSet());
         Set<TranspilerInstruction> bodyVertices = range.body().vertexSet();
         Set<TranspilerInstruction> selfExit = bodyVertices.stream().filter(v -> v == range.exit()).collect(Collectors.toUnmodifiableSet());
         Set<TranspilerInstruction> body = Sets.difference(bodyVertices, selfExit);
@@ -26,17 +25,17 @@ public class SLIFORangeCriterionTask {
         return Sets.difference(rangesTerminatingInCurrentRangeIncludingSelf, Set.of(range));
     }
 
-    public boolean isSLIFO(Pair<ProcedureRange, Set<ProcedureRange>> rangeWithChildren, Set<ProcedureRange> existingSLIFORanges) {
-        Set<ProcedureRange> rangesTerminatingInRange = rangesTerminatingIn(rangeWithChildren.getLeft());
-        Set<ProcedureRange> invokedRanges = rangeWithChildren.getRight();
+    public boolean isSLIFO(InvokingProcedureRange rangeWithChildren, Set<ProcedureRange> existingSLIFORanges) {
+        Set<ProcedureRange> rangesTerminatingInRange = rangesTerminatingIn(rangeWithChildren.range());
+        Set<ProcedureRange> invokedRanges = rangeWithChildren.invokedRanges();
         return Sets.difference(rangesTerminatingInRange, existingSLIFORanges).isEmpty()
                 && Sets.difference(invokedRanges, existingSLIFORanges).isEmpty();
     }
 
-    public Set<Pair<ProcedureRange, Set<ProcedureRange>>> allSLIFORanges(Set<Pair<ProcedureRange, Set<ProcedureRange>>> rangesWithChildren, Set<Pair<ProcedureRange, Set<ProcedureRange>>> existingSLIFORanges) {
-        Set<Pair<ProcedureRange, Set<ProcedureRange>>> newlyDiscoveredSLIFOProcedures = rangesWithChildren.stream()
+    public Set<InvokingProcedureRange> allSLIFORanges(Set<InvokingProcedureRange> rangesWithChildren, Set<InvokingProcedureRange> existingSLIFORanges) {
+        Set<InvokingProcedureRange> newlyDiscoveredSLIFOProcedures = rangesWithChildren.stream()
                 .filter(rwc -> isSLIFO(rwc, existingSLIFORanges.stream()
-                        .map(Pair::getLeft)
+                        .map(InvokingProcedureRange::range)
                         .collect(Collectors.toUnmodifiableSet())))
                 .collect(Collectors.toUnmodifiableSet());
         if (newlyDiscoveredSLIFOProcedures.isEmpty()) return ImmutableSet.of();
@@ -45,7 +44,7 @@ public class SLIFORangeCriterionTask {
                 Sets.union(existingSLIFORanges, newlyDiscoveredSLIFOProcedures)));
     }
 
-    public Set<Pair<ProcedureRange, Set<ProcedureRange>>> allSLIFORanges(Set<Pair<ProcedureRange, Set<ProcedureRange>>> rangesWithChildren) {
+    public Set<InvokingProcedureRange> allSLIFORanges(Set<InvokingProcedureRange> rangesWithChildren) {
         return allSLIFORanges(rangesWithChildren, ImmutableSet.of());
     }
 }

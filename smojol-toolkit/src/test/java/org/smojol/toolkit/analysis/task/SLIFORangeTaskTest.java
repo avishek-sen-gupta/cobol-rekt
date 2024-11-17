@@ -3,7 +3,6 @@ package org.smojol.toolkit.analysis.task;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
 import org.junit.jupiter.api.Test;
@@ -47,14 +46,14 @@ public class SLIFORangeTaskTest {
         List<TranspilerInstruction> instructions = new BuildTranspilerInstructionsFromIntermediateTreeTask(program, new IncrementingIdProvider()).run();
         Graph<TranspilerInstruction, DefaultEdge> implicitCFG = new BuildImplicitInstructionControlFlowgraphTask(instructions, ImmutableList.of()).run();
 
-        Set<Pair<ProcedureRange, Set<ProcedureRange>>> rangesWithChildren = new ProcedureBodyTask(program, instructions, implicitCFG).run();
+        Set<InvokingProcedureRange> rangesWithChildren = new ProcedureBodyTask(program, instructions, implicitCFG).run();
         SLIFORangeCriterionTask slifoRangeCriterionTask = new SLIFORangeCriterionTask(rangesWithChildren);
         assertEquals(1, rangesWithChildren.size());
-        Pair<ProcedureRange, Set<ProcedureRange>> rangeWithChildren = rangesWithChildren.stream().findFirst().get();
-        ProcedureRange range = rangeWithChildren.getLeft();
+        InvokingProcedureRange rangeWithChildren = rangesWithChildren.stream().findFirst().get();
+        ProcedureRange range = rangeWithChildren.range();
         Set<ProcedureRange> rangesTerminatingInRange = slifoRangeCriterionTask.rangesTerminatingIn(range);
         assertEquals(ImmutableSet.of(), rangesTerminatingInRange);
-        assertEquals(ImmutableSet.of(), rangeWithChildren.getRight());
+        assertEquals(ImmutableSet.of(), rangeWithChildren.invokedRanges());
         assertTrue(slifoRangeCriterionTask.isSLIFO(rangeWithChildren, ImmutableSet.of()));
     }
 
@@ -86,10 +85,10 @@ public class SLIFORangeTaskTest {
 
         List<TranspilerInstruction> instructions = new BuildTranspilerInstructionsFromIntermediateTreeTask(program, new IncrementingIdProvider()).run();
         Graph<TranspilerInstruction, DefaultEdge> implicitCFG = new BuildImplicitInstructionControlFlowgraphTask(instructions, ImmutableList.of()).run();
-        Set<Pair<ProcedureRange, Set<ProcedureRange>>> rangesWithChildren = new ProcedureBodyTask(program, instructions, implicitCFG).run();
+        Set<InvokingProcedureRange> rangesWithChildren = new ProcedureBodyTask(program, instructions, implicitCFG).run();
         SLIFORangeCriterionTask task = new SLIFORangeCriterionTask(rangesWithChildren);
         assertEquals(2, rangesWithChildren.size());
-        Set<Pair<ProcedureRange, Set<ProcedureRange>>> allSLIFORanges = task.allSLIFORanges(rangesWithChildren);
+        Set<InvokingProcedureRange> allSLIFORanges = task.allSLIFORanges(rangesWithChildren);
         assertEquals(2, allSLIFORanges.size());
     }
 

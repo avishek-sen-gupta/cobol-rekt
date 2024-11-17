@@ -29,7 +29,6 @@ public class CallRangesTaskTest {
                         print_(),
                         print_(),
                         jump_()
-
                 ),
                 labelledBlock_(
                         print_(),

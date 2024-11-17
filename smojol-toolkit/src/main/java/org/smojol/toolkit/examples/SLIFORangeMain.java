@@ -1,7 +1,6 @@
 package org.smojol.toolkit.examples;
 
 import com.google.common.collect.ImmutableList;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
 import org.smojol.common.dialect.LanguageDialect;
@@ -43,10 +42,10 @@ public class SLIFORangeMain {
         TranspilerNode tree = transpilerFlowgraph.transpilerTree();
         List<TranspilerInstruction> instructions = new BuildTranspilerInstructionsFromIntermediateTreeTask(tree, new IncrementingIdProvider()).run();
         Graph<TranspilerInstruction, DefaultEdge> implicitCFG = new BuildImplicitInstructionControlFlowgraphTask(instructions, ImmutableList.of()).run();
-        Set<Pair<ProcedureRange, Set<ProcedureRange>>> rangesWithChildren = new ProcedureBodyTask(tree, instructions, implicitCFG).run();
+        Set<InvokingProcedureRange> rangesWithChildren = new ProcedureBodyTask(tree, instructions, implicitCFG).run();
         SLIFORangeCriterionTask task = new SLIFORangeCriterionTask(rangesWithChildren);
-        Set<Pair<ProcedureRange, Set<ProcedureRange>>> allSLIFORanges = task.allSLIFORanges(rangesWithChildren);
-        allSLIFORanges.forEach(range -> System.out.println(range.getLeft()));
+        Set<InvokingProcedureRange> allSLIFORanges = task.allSLIFORanges(rangesWithChildren);
+        allSLIFORanges.forEach(range -> System.out.println(range.range()));
 
         System.out.println("DONE");
     }
