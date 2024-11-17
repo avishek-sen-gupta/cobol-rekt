@@ -89,9 +89,9 @@ public class SLIFORangeTaskTest {
         Graph<TranspilerInstruction, DefaultEdge> implicitCFG = new BuildImplicitInstructionControlFlowgraphTask(instructions, ImmutableList.of()).run();
         Set<Pair<ProcedureRange, Set<ProcedureRange>>> rangesWithChildren = new ProcedureBodyTask(program, instructions, implicitCFG).run();
         SLIFORangeCriterionTask task = new SLIFORangeCriterionTask(rangesWithChildren);
-        assertEquals(2, rangesWithChildren.size());
+        assertEquals(3, rangesWithChildren.size());
         Set<Pair<ProcedureRange, Set<ProcedureRange>>> allSLIFORanges = task.allSLIFORanges(rangesWithChildren);
-        assertEquals(2, allSLIFORanges.size());
+        assertEquals(3, allSLIFORanges.size());
     }
 
     private static PrintTranspilerNode p() {

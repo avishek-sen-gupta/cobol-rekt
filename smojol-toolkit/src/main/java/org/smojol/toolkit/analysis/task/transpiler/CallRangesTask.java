@@ -22,13 +22,19 @@ public class CallRangesTask {
 
     public Set<Pair<TranspilerInstruction, TranspilerInstruction>> run() {
         Set<TranspilerNode> allCalls = findAllRecursive(tree, n -> n instanceof JumpTranspilerNode l && l.getEnd() != LocationNode.NULL).stream().collect(Collectors.toUnmodifiableSet());
-        return allCalls.stream().map(call -> {
-            TranspilerNode entryBlock = labelledBlock(((JumpTranspilerNode) call).getStart());
-            TranspilerNode exitBlock = labelledBlock(((JumpTranspilerNode) call).getEnd());
-            return ImmutablePair.of(
-                    entryOrExitVertex(entryBlock, CodeSentinelType.ENTER),
-                    entryOrExitVertex(exitBlock, CodeSentinelType.EXIT));
-        }).collect(Collectors.toUnmodifiableSet());
+        List<TranspilerNode> allBlocks = findAllRecursiveOrdered(tree, n -> n instanceof LabelledTranspilerCodeBlockNode).stream().toList();
+        Pair<TranspilerInstruction, TranspilerInstruction> programLevelRange = ImmutablePair.of(
+                entryOrExitVertex(allBlocks.getFirst(), CodeSentinelType.ENTER),
+                entryOrExitVertex(allBlocks.getLast(), CodeSentinelType.EXIT));
+
+        return Stream.concat(Stream.of(programLevelRange),
+                allCalls.stream().map(call -> {
+                    TranspilerNode entryBlock = labelledBlock(((JumpTranspilerNode) call).getStart());
+                    TranspilerNode exitBlock = labelledBlock(((JumpTranspilerNode) call).getEnd());
+                    return ImmutablePair.of(
+                            entryOrExitVertex(entryBlock, CodeSentinelType.ENTER),
+                            entryOrExitVertex(exitBlock, CodeSentinelType.EXIT));
+                })).collect(Collectors.toUnmodifiableSet());
     }
 
     private TranspilerNode labelledBlock(LocationNode locationNode) {
@@ -43,6 +49,12 @@ public class CallRangesTask {
         if (match.apply(current))
             return Stream.concat(Stream.of(current), childResults(current, match)).collect(Collectors.toUnmodifiableSet());
         return childResults(current, match).collect(Collectors.toUnmodifiableSet());
+    }
+
+    private List<TranspilerNode> findAllRecursiveOrdered(TranspilerNode current, Function<TranspilerNode, Boolean> match) {
+        if (match.apply(current))
+            return Stream.concat(Stream.of(current), childResults(current, match)).toList();
+        return childResults(current, match).toList();
     }
 
     private Stream<TranspilerNode> childResults(TranspilerNode current, Function<TranspilerNode, Boolean> match) {
