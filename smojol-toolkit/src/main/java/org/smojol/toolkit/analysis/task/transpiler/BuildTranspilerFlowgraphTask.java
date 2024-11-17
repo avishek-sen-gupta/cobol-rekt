@@ -1,5 +1,6 @@
 package org.smojol.toolkit.analysis.task.transpiler;
 
+import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mojo.woof.GraphSDK;
@@ -25,6 +26,7 @@ import org.smojol.toolkit.analysis.pipeline.config.OutputArtifactConfig;
 import org.smojol.toolkit.transpiler.TranspilerLoopUpdate;
 
 import java.util.List;
+import java.util.Set;
 
 public class BuildTranspilerFlowgraphTask {
     private final ParseTree rawAST;
@@ -51,13 +53,20 @@ public class BuildTranspilerFlowgraphTask {
 
     public TranspilerFlowgraph run() {
         TranspilerNode transpilerTree = new BuildTranspilerASTTask(rawAST, dataStructures, symbolTable).run();
-        List<TranspilerInstruction> instructions = new BuildTranspilerInstructionsFromRawASTTask(rawAST, dataStructures, symbolTable).run();
+
+//        TranspilerNode mainNode = transpilerTree.findAllRecursive(t -> t instanceof LabelledTranspilerCodeBlockNode l && l.getName().equals("S-STEUERUNGS")).stream().findFirst().get();
+        List<TranspilerInstruction> instructions = new BuildTranspilerInstructionsFromIntermediateTreeTask(transpilerTree, new IncrementingIdProvider()).run();
+        Graph<TranspilerInstruction, DefaultEdge> implicitCFG = new BuildImplicitInstructionControlFlowgraphTask(instructions, ImmutableList.of()).run();
+        Set<InvokingProcedureRange> rangesWithChildren = new ProcedureBodyTask(transpilerTree, instructions, implicitCFG).run();
+        SLIFORangeCriterionTask task = new SLIFORangeCriterionTask(rangesWithChildren);
+        Pair<Set<InvokingProcedureRange>, Set<InvokingProcedureRange>> categorisedRanges = task.run();
+
         Graph<TranspilerInstruction, DefaultEdge> instructionFlowgraph = new BuildInstructionFlowgraphTask(instructions, flowHints).run();
         Pair<Graph<BasicBlock<TranspilerInstruction>, DefaultEdge>, List<BasicBlock<TranspilerInstruction>>> basicBlockModel = new BuildBasicBlocksTask(instructions, instructionFlowgraph, new BasicBlockFactory<>(new IncrementingIdProvider()), neo4JDriverBuilder).run();
         Graph<BasicBlock<TranspilerInstruction>, DefaultEdge> basicBlockGraph = basicBlockModel.getLeft();
         MermaidGraph<TranspilerInstruction, DefaultEdge> mermaid = new MermaidGraph<>();
         String draw = mermaid.draw(instructionFlowgraph);
-        return new TranspilerFlowgraph(basicBlockGraph, instructionFlowgraph, transpilerTree, instructions, basicBlockModel.getRight());
+        return new TranspilerFlowgraph(basicBlockGraph, instructionFlowgraph, transpilerTree, instructions, basicBlockModel.getRight(), categorisedRanges);
 
 //        try {
 //            resourceOperations.createDirectories(transpilerModelOutputConfig.outputDir());
