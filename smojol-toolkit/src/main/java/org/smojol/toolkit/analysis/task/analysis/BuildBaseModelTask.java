@@ -19,11 +19,11 @@ import org.smojol.toolkit.task.AnalysisTaskResult;
 
 import java.io.IOException;
 
-public class BuildSeedModelTask implements AnalysisTask {
+public class BuildBaseModelTask implements AnalysisTask {
     private final ParsePipeline pipeline;
     private final IdProvider idProvider;
 
-    public BuildSeedModelTask(ParsePipeline pipeline, IdProvider idProvider) {
+    public BuildBaseModelTask(ParsePipeline pipeline, IdProvider idProvider) {
         this.pipeline = pipeline;
         this.idProvider = idProvider;
     }

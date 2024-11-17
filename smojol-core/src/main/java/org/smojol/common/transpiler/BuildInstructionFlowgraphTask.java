@@ -131,8 +131,6 @@ public class BuildInstructionFlowgraphTask {
                     entry(nextLocation(instructions, currentAddress), transpilerNodeMap, instructions);
             case ExitIterationScopeLocationNode s ->
                     exit(iterationExit(currentAddress, instructions), transpilerNodeMap, instructions);
-            case IdLocationNode i ->
-                    instructions.stream().filter(instr -> instr.ref().id().equals(i.getDestination().id()) && instr.sentinel() == i.getSentinel()).findFirst().get();
             default -> TranspilerInstruction.NULL;
         };
     }

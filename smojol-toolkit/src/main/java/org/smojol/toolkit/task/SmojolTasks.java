@@ -175,7 +175,7 @@ public class SmojolTasks {
     public AnalysisTask BUILD_BASE_ANALYSIS = new AnalysisTask() {
         @Override
         public AnalysisTaskResult run() {
-            AnalysisTaskResult result = new BuildSeedModelTask(pipeline, idProvider).run();
+            AnalysisTaskResult result = new BuildBaseModelTask(pipeline, idProvider).run();
             return switch (result) {
                 case AnalysisTaskResultOK o -> {
                     baseModel = o.getDetail();

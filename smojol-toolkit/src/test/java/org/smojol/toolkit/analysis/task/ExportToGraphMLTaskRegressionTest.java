@@ -18,7 +18,7 @@ import org.smojol.toolkit.analysis.pipeline.BaseAnalysisModel;
 import org.smojol.toolkit.analysis.pipeline.ParsePipeline;
 import org.smojol.toolkit.analysis.pipeline.config.GraphMLExportConfig;
 import org.smojol.toolkit.analysis.pipeline.config.SourceConfig;
-import org.smojol.toolkit.analysis.task.analysis.BuildSeedModelTask;
+import org.smojol.toolkit.analysis.task.analysis.BuildBaseModelTask;
 import org.smojol.toolkit.analysis.task.analysis.ExportToGraphMLTask;
 import org.smojol.toolkit.interpreter.structure.OccursIgnoringFormat1DataStructureBuilder;
 import org.smojol.toolkit.task.AnalysisTaskResult;
@@ -43,7 +43,7 @@ public class ExportToGraphMLTaskRegressionTest {
                 new EntityNavigatorBuilder(), new UnresolvedReferenceThrowStrategy(),
                 new OccursIgnoringFormat1DataStructureBuilder(), new UUIDProvider(), resourceOperations);
         ParsePipeline pipeline = new ParsePipeline(sourceConfig, ops, LanguageDialect.COBOL);
-        AnalysisTaskResult buildSeedModelResult = new BuildSeedModelTask(pipeline, new UUIDProvider()).run();
+        AnalysisTaskResult buildSeedModelResult = new BuildBaseModelTask(pipeline, new UUIDProvider()).run();
         switch (buildSeedModelResult) {
             case AnalysisTaskResultOK o -> {
                 BaseAnalysisModel r = o.getDetail();

@@ -31,11 +31,9 @@ public class TranspilerCloneOperation {
             case NestedConditionNode n -> new NestedConditionNode(n.getExpression());
             case NextLocationNode n -> new NextLocationNode();
             case NamedLocationNode n -> new NamedLocationNode(n.getName());
-            case InstructionLocationNode n -> new InstructionLocationNode(n.getNode());
             case ExitTranspilerNode n -> new ExitTranspilerNode();
             case ExitIterationScopeLocationNode n -> new ExitIterationScopeLocationNode();
             case ProgramTerminalLocationNode n -> new ProgramTerminalLocationNode();
-            case IdLocationNode n -> new IdLocationNode(n.getDestination(), n.getSentinel());
             case PrintTranspilerNode n -> new PrintTranspilerNode(n.getOperands());
             case SetTranspilerNode n -> new SetTranspilerNode(n.getSource(), n.getDestination());
             case LabelledTranspilerCodeBlockNode n ->
