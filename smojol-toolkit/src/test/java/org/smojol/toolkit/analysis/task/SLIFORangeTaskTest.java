@@ -3,6 +3,7 @@ package org.smojol.toolkit.analysis.task;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
 import org.junit.jupiter.api.Test;
@@ -88,7 +89,8 @@ public class SLIFORangeTaskTest {
         Set<InvokingProcedureRange> rangesWithChildren = new ProcedureBodyTask(program, instructions, implicitCFG).run();
         SLIFORangeCriterionTask task = new SLIFORangeCriterionTask(rangesWithChildren);
         assertEquals(2, rangesWithChildren.size());
-        Set<InvokingProcedureRange> allSLIFORanges = task.allSLIFORanges(rangesWithChildren);
+        Pair<Set<InvokingProcedureRange>, Set<InvokingProcedureRange>> categorisedRanges = task.run();
+        Set<InvokingProcedureRange> allSLIFORanges = categorisedRanges.getLeft();
         assertEquals(2, allSLIFORanges.size());
     }
 
