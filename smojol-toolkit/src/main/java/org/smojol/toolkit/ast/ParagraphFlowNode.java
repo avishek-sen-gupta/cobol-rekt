@@ -1,6 +1,7 @@
 package org.smojol.toolkit.ast;
 
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.FlowNodeService;
 import org.smojol.common.ast.FlowNodeType;
@@ -40,5 +41,10 @@ public class ParagraphFlowNode extends CompositeCobolFlowNode {
     protected CobolVmSignal continueOrAbort(CobolVmSignal defaultSignal, CobolInterpreter interpreter, FlowNodeService nodeService) {
         if (defaultSignal == CobolVmSignal.TERMINATE || defaultSignal == CobolVmSignal.EXIT_PERFORM) return defaultSignal;
         return next(defaultSignal, interpreter, nodeService);
+    }
+
+    @Override
+    public String label() {
+        return ((CobolParser.ParagraphContext) executionContext).paragraphDefinitionName().getText();
     }
 }

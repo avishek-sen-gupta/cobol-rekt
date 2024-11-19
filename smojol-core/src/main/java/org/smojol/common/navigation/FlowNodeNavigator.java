@@ -22,6 +22,10 @@ public class FlowNodeNavigator {
         return (T) findByCondition(fn -> fn.getClass() == type);
     }
 
+    public <T extends FlowNode> List<T> findAllByType(Class<T> type) {
+        return findAllByCondition(fn -> fn.getClass() == type).stream().map(n -> (T) n).toList();
+    }
+
     private FlowNode searchRecursively(FlowNode current, FlowNodeCondition c) {
         if (c.apply(current)) return current;
         for (FlowNode child : current.astChildren()) {

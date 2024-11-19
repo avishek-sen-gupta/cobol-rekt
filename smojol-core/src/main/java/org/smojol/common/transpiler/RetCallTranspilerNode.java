@@ -6,7 +6,7 @@ import org.smojol.common.ast.SemanticCategory;
 public class RetCallTranspilerNode extends TranspilerNode {
     private final String fallthroughTarget;
 
-    public RetCallTranspilerNode(String fallthroughTarget, TranspilerCodeBlockNode body) {
+    public RetCallTranspilerNode(String fallthroughTarget) {
         super(ImmutableList.of(), ImmutableList.of(SemanticCategory.BLOCK_BOUNDARY));
         this.fallthroughTarget = fallthroughTarget;
     }
