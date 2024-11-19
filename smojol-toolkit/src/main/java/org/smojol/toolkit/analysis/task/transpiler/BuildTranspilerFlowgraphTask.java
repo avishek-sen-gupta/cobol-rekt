@@ -123,7 +123,7 @@ public class BuildTranspilerFlowgraphTask {
                 .registerSubtype(LessThanNode.class, "less_than")
                 .registerSubtype(GreaterThanOrEqualToNode.class, "greater_than_or_equal_to")
                 .registerSubtype(LessThanOrEqualToNode.class, "less_than_or_equal_to")
-                .registerSubtype(FunctionCallNode.class, "function_call")
+                .registerSubtype(CallFunctionTranspilerNode.class, "function_call")
                 .registerSubtype(IndexReferenceNode.class, "index_reference")
                 .registerSubtype(JumpTranspilerNode.class, "jump")
                 .registerSubtype(ValueOfNode.class, "valueOf")

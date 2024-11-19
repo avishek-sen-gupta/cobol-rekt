@@ -8,11 +8,11 @@ import java.util.Collection;
 import java.util.List;
 
 @Getter
-public class FunctionCallNode extends TranspilerNode {
+public class CallFunctionTranspilerNode extends TranspilerNode {
     private final String functionName;
     private final List<TranspilerNode> arguments;
 
-    public FunctionCallNode(String functionName, List<TranspilerNode> arguments) {
+    public CallFunctionTranspilerNode(String functionName, List<TranspilerNode> arguments) {
         super(ImmutableList.of(SemanticCategory.FUNCTION));
         this.functionName = functionName;
         this.arguments = arguments;

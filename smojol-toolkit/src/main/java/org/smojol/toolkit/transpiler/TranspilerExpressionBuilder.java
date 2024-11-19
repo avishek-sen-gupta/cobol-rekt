@@ -30,7 +30,7 @@ public class TranspilerExpressionBuilder {
         else if (expression instanceof NegativeExpression e) return new NegativeNode(build(e.getExpression()));
         else if (expression instanceof PrimitiveCobolExpression e) return new PrimitiveValueTranspilerNode(e.data());
         else if (expression instanceof FunctionCallExpression e)
-            return new FunctionCallNode(e.getFunctionName(), e.getArguments().stream().map(this::build).toList());
+            return new CallFunctionTranspilerNode(e.getFunctionName(), e.getArguments().stream().map(this::build).toList());
         else if (expression instanceof NotExpression e) return new NotTranspilerNode(build(e.getExpression()));
         else if (expression instanceof AndExpression e) return new AndTranspilerNode(build(e.getLhs()), build(e.getRhs()));
         else if (expression instanceof OrExpression e) return new OrTranspilerNode(build(e.getLhs()), build(e.getRhs()));
@@ -39,19 +39,19 @@ public class TranspilerExpressionBuilder {
             if (e.getComparison() == null) return explicitCondition(e.getLhs(), dataStructures);
             return TranspilerComparisonOperator.operator(e.getComparison().getRelationalOperation(), build(e.getLhs()), build(e.getComparison().getRhs()));
         } else if (expression instanceof SpecialRegisterExpression e)
-            return new FunctionCallNode(e.getFunctionCall().getFunctionName(), e.getFunctionCall().getArguments().stream().map(this::build).toList());
+            return new CallFunctionTranspilerNode(e.getFunctionCall().getFunctionName(), e.getFunctionCall().getArguments().stream().map(this::build).toList());
         else if (expression instanceof NullCobolExpression e) return new NullTranspilerNode();
-        else if (expression instanceof IsNumericCondition e) return new FunctionCallNode("isNumeric", ImmutableList.of(build(e.getExpression())));
-        else if (expression instanceof IsAlphabeticCondition e) return new FunctionCallNode("isAlphanumeric", ImmutableList.of(build(e.getExpression())));
+        else if (expression instanceof IsNumericCondition e) return new CallFunctionTranspilerNode("isNumeric", ImmutableList.of(build(e.getExpression())));
+        else if (expression instanceof IsAlphabeticCondition e) return new CallFunctionTranspilerNode("isAlphanumeric", ImmutableList.of(build(e.getExpression())));
         // TODO: IDMS expressions not supported yet
         throw new UnsupportedOperationException("Unknown expression type: " + expression);
     }
 
     private TranspilerNode explicitCondition(CobolExpression conditionalConstant, CobolDataStructure root) {
         LOGGER.finest("Resolving conditional constant: " + conditionalConstant.description());
-        if (conditionalConstant instanceof IdmsExpression) return new FunctionCallNode("idms_placeholder_function", ImmutableList.of(new SymbolReferenceNode(conditionalConstant.description())));
+        if (conditionalConstant instanceof IdmsExpression) return new CallFunctionTranspilerNode("idms_placeholder_function", ImmutableList.of(new SymbolReferenceNode(conditionalConstant.description())));
         CobolDataStructure range = root.reference(((VariableExpression) conditionalConstant).getName());
         CobolDataStructure actualVariable = range.parent();
-        return new FunctionCallNode("isInRange", ImmutableList.of(new SymbolReferenceNode(actualVariable.name()), new SymbolReferenceNode(range.name())));
+        return new CallFunctionTranspilerNode("isInRange", ImmutableList.of(new SymbolReferenceNode(actualVariable.name()), new SymbolReferenceNode(range.name())));
     }
 }

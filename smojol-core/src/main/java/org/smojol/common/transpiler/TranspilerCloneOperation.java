@@ -21,7 +21,7 @@ public class TranspilerCloneOperation {
             case LessThanOrEqualToNode n -> new LessThanOrEqualToNode(n.getLhs(), n.getRhs());
             case PrimitiveValueTranspilerNode n -> new PrimitiveValueTranspilerNode(n.getValue());
             case SymbolReferenceNode n -> new SymbolReferenceNode(n.getName());
-            case FunctionCallNode n -> new FunctionCallNode(n.getFunctionName(), n.getArguments());
+            case CallFunctionTranspilerNode n -> new CallFunctionTranspilerNode(n.getFunctionName(), n.getArguments());
             case IndexReferenceNode n -> new IndexReferenceNode(n.getRoot(), n.getIndexes());
             case NotTranspilerNode n -> new NotTranspilerNode(n);
             case AndTranspilerNode n -> new AndTranspilerNode(n.getLhs(), n.getRhs());
