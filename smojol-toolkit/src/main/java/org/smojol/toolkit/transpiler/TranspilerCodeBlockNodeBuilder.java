@@ -6,30 +6,33 @@ import org.smojol.common.ast.FlowNodeType;
 import org.smojol.common.transpiler.TranspilerCodeBlockNode;
 import org.smojol.common.transpiler.TranspilerNode;
 import org.smojol.common.vm.structure.CobolDataStructure;
-import org.smojol.toolkit.ast.*;
+import org.smojol.toolkit.analysis.task.transpiler.SectionParagraphMap;
+import org.smojol.toolkit.ast.ParagraphsFlowNode;
+import org.smojol.toolkit.ast.SectionFlowNode;
+import org.smojol.toolkit.ast.SentenceFlowNode;
 
 import java.util.List;
 import java.util.Map;
 
 public class TranspilerCodeBlockNodeBuilder {
-    public static TranspilerNode build(SectionFlowNode n, CobolDataStructure dataStructures) {
-        return block(n, dataStructures);
+    public static TranspilerNode build(SectionFlowNode n, CobolDataStructure dataStructures, SectionParagraphMap sectionParagraphMap) {
+        return block(n, dataStructures, sectionParagraphMap);
     }
 
-    private static TranspilerCodeBlockNode block(FlowNode n, CobolDataStructure dataStructures, Map<String, Object> additionalAttributes) {
-        List<TranspilerNode> childTranspilerNodes = n.astChildren().stream().map(child -> TranspilerTreeBuilder.flowToTranspiler(child, dataStructures)).toList();
+    private static TranspilerCodeBlockNode block(FlowNode n, CobolDataStructure dataStructures, Map<String, Object> additionalAttributes, SectionParagraphMap sectionParagraphMap) {
+        List<TranspilerNode> childTranspilerNodes = n.astChildren().stream().map(child -> TranspilerTreeBuilder.flowToTranspiler(child, dataStructures, sectionParagraphMap)).toList();
         return new TranspilerCodeBlockNode(childTranspilerNodes, additionalAttributes);
     }
 
-    private static TranspilerCodeBlockNode block(FlowNode n, CobolDataStructure dataStructures) {
-        return block(n, dataStructures, ImmutableMap.of());
+    private static TranspilerCodeBlockNode block(FlowNode n, CobolDataStructure dataStructures, SectionParagraphMap sectionParagraphMap) {
+        return block(n, dataStructures, ImmutableMap.of(), sectionParagraphMap);
     }
 
-    public static TranspilerNode build(ParagraphsFlowNode n, CobolDataStructure dataStructures) {
-        return block(n, dataStructures);
+    public static TranspilerNode build(ParagraphsFlowNode n, CobolDataStructure dataStructures, SectionParagraphMap sectionParagraphMap) {
+        return block(n, dataStructures, sectionParagraphMap);
     }
 
-    public static TranspilerNode build(SentenceFlowNode n, CobolDataStructure dataStructures) {
-        return block(n, dataStructures, ImmutableMap.of("type", FlowNodeType.SENTENCE));
+    public static TranspilerNode build(SentenceFlowNode n, CobolDataStructure dataStructures, SectionParagraphMap sectionParagraphMap) {
+        return block(n, dataStructures, ImmutableMap.of("type", FlowNodeType.SENTENCE), sectionParagraphMap);
     }
 }

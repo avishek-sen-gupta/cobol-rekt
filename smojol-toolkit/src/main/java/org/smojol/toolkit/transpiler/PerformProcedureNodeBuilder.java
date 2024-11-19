@@ -4,6 +4,7 @@ import org.smojol.common.ast.FlowNode;
 import org.smojol.common.transpiler.*;
 import org.smojol.common.vm.expression.FlowIteration;
 import org.smojol.common.vm.structure.CobolDataStructure;
+import org.smojol.toolkit.analysis.task.transpiler.SectionParagraphMap;
 import org.smojol.toolkit.ast.ConditionalStatementFlowNode;
 import org.smojol.toolkit.ast.PerformInlineFlowNode;
 import org.smojol.toolkit.ast.PerformProcedureFlowNode;
@@ -34,15 +35,15 @@ public class PerformProcedureNodeBuilder {
         );
     }
 
-    public static TranspilerNode build(PerformInlineFlowNode n, CobolDataStructure dataStructures) {
+    public static TranspilerNode build(PerformInlineFlowNode n, CobolDataStructure dataStructures, SectionParagraphMap sectionParagraphMap) {
         List<FlowIteration> nestedLoops = n.getNestedLoops();
-        if (nestedLoops.isEmpty()) return body(n, dataStructures);
-        return recurse(nestedLoops, body(n, dataStructures), dataStructures);
+        if (nestedLoops.isEmpty()) return body(n, dataStructures, sectionParagraphMap);
+        return recurse(nestedLoops, body(n, dataStructures, sectionParagraphMap), dataStructures);
     }
 
-    private static TranspilerNode body(FlowNode node, CobolDataStructure dataStructures) {
+    private static TranspilerNode body(FlowNode node, CobolDataStructure dataStructures, SectionParagraphMap sectionParagraphMap) {
         List<FlowNode> inlineStatements = node.astChildren().stream().filter(n -> n instanceof ConditionalStatementFlowNode).toList();
-        List<TranspilerNode> inlineTranspilerNodes = inlineStatements.stream().map(istmt -> TranspilerTreeBuilder.flowToTranspiler(istmt, dataStructures)).toList();
+        List<TranspilerNode> inlineTranspilerNodes = inlineStatements.stream().map(istmt -> TranspilerTreeBuilder.flowToTranspiler(istmt, dataStructures, sectionParagraphMap)).toList();
         return new TranspilerCodeBlockNode(inlineTranspilerNodes);
     }
 }

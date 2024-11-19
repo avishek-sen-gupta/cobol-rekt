@@ -21,6 +21,6 @@ public class BuildTranspilerASTTask {
 
     public TranspilerNode run() {
         FlowNode flowRoot = new IntermediateASTNodeBuilder(rawAST, dataStructures, symbolTable).build();
-        return TranspilerTreeBuilder.flowToTranspiler(flowRoot, dataStructures);
+        return TranspilerTreeBuilder.flowToTranspiler(flowRoot, dataStructures, new SectionParagraphMap(flowRoot));
     }
 }
