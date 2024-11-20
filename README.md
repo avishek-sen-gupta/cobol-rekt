@@ -807,6 +807,21 @@ Now run your commands as usual.
 - The toolkit uses JDK 21 features; so you'll need the appropriate JDK set up.
 - The Che4z COBOL support repository requires Java 8 for building as well.
 
+Alternatively, you can update all occurrences of the following:
+```
+<maven.compiler.source>8</maven.compiler.source>
+<maven.compiler.target>8</maven.compiler.target>
+```
+
+to
+
+```
+<maven.compiler.source>21</maven.compiler.source>
+<maven.compiler.target>21</maven.compiler.target>
+```
+
+I have intentionally not updated the JDK version in Che4z to minimise changes in that submodule.
+
 After cloning the repository, initialise submodules using:
 
 ```
