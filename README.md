@@ -803,11 +803,19 @@ Now run your commands as usual.
 
 ### How to Build
 
-The toolkit uses JDK 21 features; so you'll need the appropriate JDK set up.
+**JDK Note:**
+- The toolkit uses JDK 21 features; so you'll need the appropriate JDK set up.
+- The Che4z COBOL support repository requires Java 8 for building as well.
+
+After cloning the repository, initialise submodules using:
+
+```
+git submodule update --init --recursive
+```
 
 Run: ```mvn clean install```.
 
-The Checkstyle step is only applicable for the Eclipse Cobol parser project. You can skip the Checkstyle targets with:
+The Checkstyle step is mostly applicable for the Eclipse Cobol parser project. You can skip the Checkstyle targets with:
 
 ```mvn clean verify -Dcheckstyle.skip=true```
 
