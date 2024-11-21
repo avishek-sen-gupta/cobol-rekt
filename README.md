@@ -803,6 +803,8 @@ Now run your commands as usual.
 
 ### How to Build
 
+The local build process has been tested on MacOS (and of course on the pipeline using the ```ubuntu-latest``` image).
+
 **JDK Note:**
 - The toolkit uses JDK 21 features; so you'll need the appropriate JDK set up.
 - The Che4z COBOL support repository requires Java 8 for building as well.
