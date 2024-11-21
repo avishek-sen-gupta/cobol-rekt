@@ -807,20 +807,8 @@ The build process has been tested on MacOS, Windows, and on the pipeline using t
 
 **JDK Note:**
 - The toolkit uses JDK 21 features; so you'll need the appropriate JDK set up.
-- The Che4z COBOL support repository requires Java 8 for building as well.
-
-Alternatively, you can update all occurrences of the following:
-```
-<maven.compiler.source>8</maven.compiler.source>
-<maven.compiler.target>8</maven.compiler.target>
-```
-
-to
-
-```
-<maven.compiler.source>21</maven.compiler.source>
-<maven.compiler.target>21</maven.compiler.target>
-```
+- The Che4z COBOL support repository build files specify Java 8 for building, but using JDK 21 works.
+- Using JDK 23 results in failures compiling the Che4z submodule, so avoid JDK 23: JDK 22 is ok.
 
 I have intentionally not updated the JDK version in Che4z to minimise changes in that submodule.
 
