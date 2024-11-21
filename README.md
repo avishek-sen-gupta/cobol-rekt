@@ -803,7 +803,7 @@ Now run your commands as usual.
 
 ### How to Build
 
-The local build process has been tested on MacOS (and of course on the pipeline using the ```ubuntu-latest``` image).
+The build process has been tested on MacOS, Windows, and on the pipeline using the ```ubuntu-latest``` image.
 
 **JDK Note:**
 - The toolkit uses JDK 21 features; so you'll need the appropriate JDK set up.
@@ -830,7 +830,7 @@ After cloning the repository, initialise submodules using:
 git submodule update --init --recursive
 ```
 
-Run: ```mvn clean install```.
+Run: ```mvn clean verify```.
 
 The Checkstyle step is mostly applicable for the Eclipse Cobol parser project. You can skip the Checkstyle targets with:
 

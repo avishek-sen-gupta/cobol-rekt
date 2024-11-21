@@ -4,7 +4,7 @@
 name: Maven Package Windows
 
 on:
-  push
+  workflow_dispatch
 
 jobs:
   build:
