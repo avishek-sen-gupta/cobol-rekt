@@ -12,9 +12,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 public class CobolEntityNavigator {
+    private static final java.util.logging.Logger LOGGER = Logger.getLogger(CobolEntityNavigator.class.getName());
     @Getter private final ParseTree root;
     private List<ParseTree> dialectNodes;
     private Map<String, String> symbolText;
@@ -73,6 +75,10 @@ public class CobolEntityNavigator {
 
         symbolText = new HashMap<>();
         dialectNodes.forEach(n -> {
+            LOGGER.info("Adding to repository dialect node " + n.getText());
+            if (n.getChildCount() == 0) {
+                LOGGER.info("WARNING: The following dialect node has no children: " + n.getText());
+            }
             String markerID = "_DIALECT_ " + n.getChild(1).getText();
             ParseTree idmsContainer = findByCondition(n, c -> c.getClass() == IdmsContainerNode.class, 1);
             String text = NodeText.originalText(idmsContainer.getChild(0), NodeText::PASSTHROUGH);
