@@ -4,7 +4,7 @@ import lombok.Getter;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.ast.NodeText;
-import org.smojol.common.idms.IdmsContainerNode;
+import org.smojol.common.idms.DialectContainerNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -80,7 +80,7 @@ public class CobolEntityNavigator {
                 LOGGER.info("WARNING: The following dialect node has no children: " + n.getText());
             }
             String markerID = "_DIALECT_ " + n.getChild(1).getText();
-            ParseTree idmsContainer = findByCondition(n, c -> c.getClass() == IdmsContainerNode.class, 1);
+            ParseTree idmsContainer = findByCondition(n, c -> c.getClass() == DialectContainerNode.class, 1);
             String text = NodeText.originalText(idmsContainer.getChild(0), NodeText::PASSTHROUGH);
             symbolText.put(markerID, text);
         });

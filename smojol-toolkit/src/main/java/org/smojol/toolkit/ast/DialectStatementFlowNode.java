@@ -6,7 +6,7 @@ import org.eclipse.lsp.cobol.common.poc.LocalisedDialect;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.eclipse.lsp.cobol.dialects.idms.IdmsParser;
 import org.smojol.common.ast.*;
-import org.smojol.common.idms.IdmsContainerNode;
+import org.smojol.common.idms.DialectContainerNode;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.vm.stack.StackFrames;
 
@@ -39,17 +39,22 @@ public class DialectStatementFlowNode extends CobolFlowNode {
     @Override
     public void buildInternalFlow() {
         CobolEntityNavigator navigator = nodeService.getNavigator();
-        IdmsContainerNode containerNode = (IdmsContainerNode) navigator.findByCondition(n -> n.getClass() == IdmsContainerNode.class);
+        DialectContainerNode containerNode = (DialectContainerNode) navigator.findByCondition(n -> n.getClass() == DialectContainerNode.class);
         LocalisedDialect dialect = containerNode.getDialect();
         switch (dialect) {
             case IDMS: buildIdmsFlow(navigator);
                        break;
             case CICS: buildCicsFLow(containerNode);
                        break;
+            case DB2_SQL: buildDb2SqlFlow(containerNode);
         }
     }
 
-    private void buildCicsFLow(IdmsContainerNode containerNode) {
+    private void buildDb2SqlFlow(DialectContainerNode containerNode) {
+        dialectChildNode = new CicsBlockFlowNode(containerNode, this, nodeService, staticFrameContext);
+
+    }
+    private void buildCicsFLow(DialectContainerNode containerNode) {
         dialectChildNode = new CicsBlockFlowNode(containerNode, this, nodeService, staticFrameContext);
     }
 

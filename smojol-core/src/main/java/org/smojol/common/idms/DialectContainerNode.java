@@ -14,11 +14,11 @@ import org.eclipse.lsp.cobol.common.poc.LocalisedDialect;
  * This serves as a container for all IDMS-related code fragments which are then re-inserted
  * back into the parse tree on writing as JSON
  */
-public class IdmsContainerNode extends ParserRuleContext {
+public class DialectContainerNode extends ParserRuleContext {
     private final ParseTree dialectNode;
     @Getter private final LocalisedDialect dialect;
 
-    public IdmsContainerNode(ParseTree dialectNode, CobolParser.DialectNodeFillerContext parent, LocalisedDialect dialect) {
+    public DialectContainerNode(ParseTree dialectNode, CobolParser.DialectNodeFillerContext parent, LocalisedDialect dialect) {
         super(parent, 1);
         this.dialectNode = dialectNode;
         this.dialect = dialect;

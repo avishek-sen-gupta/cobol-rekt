@@ -6,7 +6,7 @@ import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.FlowNodeService;
 import org.smojol.common.ast.NullFlowNode;
 import org.smojol.common.ast.SyntaxIdentity;
-import org.smojol.common.idms.IdmsContainerNode;
+import org.smojol.common.idms.DialectContainerNode;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.eclipse.lsp.cobol.dialects.idms.IdmsParser;
 import org.smojol.common.vm.stack.StackFrames;
@@ -187,7 +187,7 @@ public class CobolFlowNodeFactory {
         return
                 executionContext.getClass() == CobolParser.DialectSectionContext.class ||
                 executionContext.getClass() == IdmsParser.IdmsIfStatementContext.class ||
-                executionContext.getClass() == IdmsContainerNode.class ||
+                executionContext.getClass() == DialectContainerNode.class ||
                 executionContext.getClass() == IdmsParser.InquireMapIfStatementContext.class
                 ;
     }
