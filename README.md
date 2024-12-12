@@ -1124,6 +1124,12 @@ This is a list of algorithms written from scratch, for reference or reuse. All o
 - COBOL References
     - [Examples: numeric data and internal representation](https://www.ibm.com/docs/sk/cobol-zos/6.3?topic=data-examples-numeric-internal-representation)
     - [Enterprise Cobol for Z/OS 6.4 - Language Reference](https://publibfp.dhe.ibm.com/epubs/pdf/igy6lr40.pdf)
+    - [COBOL Programming Guide](https://www.ibm.com/docs/en/SS6SG3_6.4.0/pdf/pgmvs.pdf)
+    - [NIST-85 Test Suite](https://sourceforge.net/projects/gnucobol/files/nist/)
+    - [IBM COBOL z/OS Documentation] (https://www.ibm.com/support/pages/enterprise-cobol-zos-documentation-library#Table642)
+    - [Good list of examples](http://www.simotime.com/sim4dzip.htm)
+
+
 - Graph Theory
     - [Reducible Flowgraphs 0](https://rgrig.blogspot.com/2009/10/dtfloatleftclearleft-summary-of-some.html)
 - UI
