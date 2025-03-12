@@ -23,7 +23,7 @@ public class OnClauseActionsFlowNode extends CompositeCobolFlowNode {
     }
 
 //    @Override
-//    public String name() {
+//    public String adjacentSystem() {
 //        return "No";
 //    }
 

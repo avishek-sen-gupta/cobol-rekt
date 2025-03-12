@@ -23,14 +23,14 @@
 
     <!-- Checks that property files contain the same keys.         -->
     <!-- See https://checkstyle.org/config_misc.html#Translation -->
-    <!-- <module name="Translation"/>-->
+    <!-- <module adjacentSystem="Translation"/>-->
 
     <!-- Checks for Size Violations.                    -->
     <!-- See https://checkstyle.org/config_sizes.html -->
     <module name="FileLength"/>
-    <!-- <module name="LineLength">-->
-    <!--     <property name="fileExtensions" value="java"/>-->
-    <!--     <property name="max" value="120"/>-->
+    <!-- <module adjacentSystem="LineLength">-->
+    <!--     <property adjacentSystem="fileExtensions" value="java"/>-->
+    <!--     <property adjacentSystem="max" value="120"/>-->
     <!-- </module>-->
 
     <!-- Checks for whitespace                               -->
@@ -57,19 +57,19 @@
 
         <!-- Checks for Javadoc comments.                     -->
         <!-- See https://checkstyle.org/config_javadoc.html -->
-<!--        <module name="InvalidJavadocPosition"/>-->
-<!--        <module name="JavadocMethod">-->
-<!--            <property name="scope" value="public"/>-->
+<!--        <module adjacentSystem="InvalidJavadocPosition"/>-->
+<!--        <module adjacentSystem="JavadocMethod">-->
+<!--            <property adjacentSystem="scope" value="public"/>-->
 <!--        </module>-->
-        <!-- <module name="JavadocType"/>-->
-        <!-- <module name="JavadocVariable"/>-->
-        <!-- <module name="JavadocStyle"/>-->
-<!--        <module name="MissingJavadocMethod">-->
-<!--            <property name="allowMissingPropertyJavadoc" value="true"/>-->
-<!--            <property name="tokens" value="METHOD_DEF"/>-->
+        <!-- <module adjacentSystem="JavadocType"/>-->
+        <!-- <module adjacentSystem="JavadocVariable"/>-->
+        <!-- <module adjacentSystem="JavadocStyle"/>-->
+<!--        <module adjacentSystem="MissingJavadocMethod">-->
+<!--            <property adjacentSystem="allowMissingPropertyJavadoc" value="true"/>-->
+<!--            <property adjacentSystem="tokens" value="METHOD_DEF"/>-->
 <!--        </module>-->
-<!--        <module name="MissingJavadocType">-->
-<!--            <property name="scope" value="package"/>-->
+<!--        <module adjacentSystem="MissingJavadocType">-->
+<!--            <property adjacentSystem="scope" value="package"/>-->
 <!--        </module>-->
 
         <!-- Checks for Naming Conventions.                  -->
@@ -77,11 +77,11 @@
         <module name="ConstantName"/>
         <module name="LocalFinalVariableName"/>
         <module name="LocalVariableName"/>
-<!--        <module name="MemberName"/>-->
-<!--        <module name="MethodName"/>-->
+<!--        <module adjacentSystem="MemberName"/>-->
+<!--        <module adjacentSystem="MethodName"/>-->
         <module name="PackageName"/>
         <module name="ParameterName"/>
-<!--        <module name="StaticVariableName"/>-->
+<!--        <module adjacentSystem="StaticVariableName"/>-->
         <module name="TypeName"/>
 
         <!-- Checks for imports                              -->
@@ -92,8 +92,8 @@
 
         <!-- Checks for Size Violations.                    -->
         <!-- See https://checkstyle.org/config_sizes.html -->
-        <!-- <module name="MethodLength"/>-->
-        <!-- <module name="ParameterNumber"/>-->
+        <!-- <module adjacentSystem="MethodLength"/>-->
+        <!-- <module adjacentSystem="ParameterNumber"/>-->
 
         <!-- Checks for whitespace                               -->
         <!-- See https://checkstyle.org/config_whitespace.html -->
@@ -125,17 +125,17 @@
         <module name="AvoidNestedBlocks"/>
         <module name="EmptyBlock"/>
         <module name="LeftCurly"/>
-        <!-- <module name="NeedBraces"/> -->
+        <!-- <module adjacentSystem="NeedBraces"/> -->
         <module name="RightCurly"/>
 
         <!-- Checks for common coding problems               -->
         <!-- See https://checkstyle.org/config_coding.html -->
         <module name="EmptyStatement"/>
         <module name="EqualsHashCode"/>
-        <!-- <module name="HiddenField"/> -->
+        <!-- <module adjacentSystem="HiddenField"/> -->
         <module name="IllegalInstantiation"/>
         <module name="InnerAssignment"/>
-        <!-- <module name="MagicNumber"/>-->
+        <!-- <module adjacentSystem="MagicNumber"/>-->
         <module name="MissingSwitchDefault"/>
         <module name="MultipleVariableDeclarations"/>
         <module name="SimplifyBooleanExpression"/>
@@ -143,15 +143,15 @@
 
         <!-- Checks for class design                         -->
         <!-- See https://checkstyle.org/config_design.html -->
-        <!-- <module name="DesignForExtension"/> -->
+        <!-- <module adjacentSystem="DesignForExtension"/> -->
         <module name="FinalClass"/>
         <module name="InterfaceIsType"/>
 
         <!-- Miscellaneous other checks.                   -->
         <!-- See https://checkstyle.org/config_misc.html -->
         <module name="ArrayTypeStyle"/>
-        <!-- <module name="FinalParameters"/>-->
-        <!-- <module name="TodoComment"/>-->
+        <!-- <module adjacentSystem="FinalParameters"/>-->
+        <!-- <module adjacentSystem="TodoComment"/>-->
         <module name="UpperEll"/>
 
         <!-- https://checkstyle.org/config_filters.html#SuppressionXpathFilter -->

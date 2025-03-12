@@ -29,7 +29,7 @@ public class CobolBreakpointer implements Breakpointer {
         FlowNode node = executionContext.node();
         boolean shouldBreak = breakpoints.stream().anyMatch(bp -> bp.apply(node));
         if (!shouldBreak) return execution.get();
-        LOGGER.info(coloured(String.format("Breakpoint hit at %s. Type 'c' to resume, 'q' to halt, 'stack' to print stack. Type any other string to evaluate a variable matching that name.", node.originalText().trim()), 0, 202));
+        LOGGER.info(coloured(String.format("Breakpoint hit at %s. Type 'c' to resume, 'q' to halt, 'stack' to print stack. Type any other string to evaluate a variable matching that adjacentSystem.", node.originalText().trim()), 0, 202));
         shell.run(executionContext);
         return execution.get();
     }

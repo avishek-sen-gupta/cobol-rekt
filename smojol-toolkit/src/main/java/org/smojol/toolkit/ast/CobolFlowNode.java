@@ -258,7 +258,7 @@ public class CobolFlowNode implements FlowNode {
     @Override
     public String id() {
         return uuid;
-//        return name() + "." + uuid;
+//        return adjacentSystem() + "." + uuid;
     }
 
     @Override
