@@ -46,6 +46,8 @@ public class ArchitectureMain {
                 ImmutablePair.of("EW2000", "/Users/asgupta/Downloads/Temp MBRDI - EW2000.csv"),
                 ImmutablePair.of("GP2000", "/Users/asgupta/Downloads/Temp MBRDI - GP2000.csv"),
                 ImmutablePair.of("DDA", "/Users/asgupta/Downloads/Temp MBRDI - DDA.csv"),
+                ImmutablePair.of("FAV", "/Users/asgupta/Downloads/Temp MBRDI - FAV.csv"),
+                ImmutablePair.of("DiVerS", "/Users/asgupta/Downloads/Temp MBRDI - DiVerS.csv"),
                 ImmutablePair.of("VANIS", "/Users/asgupta/Downloads/Temp MBRDI - VANIS.csv")
         );
         List<RawSystemConnectionEntry> allRawConnectionEntries = systemEntries.stream().map(ArchitectureMain::systemEntries).reduce(Stream::concat).get().toList();
@@ -66,8 +68,8 @@ public class ArchitectureMain {
         List<SystemConnectionEntry> systemConnectionEntries = allRawConnectionEntries.stream().map(rce -> systemEntry(rce, uniqueSystems)).toList();
         GraphSDK sdk = new GraphSDK(new Neo4JDriverBuilder().fromEnv());
         uniqueSystems.values().forEach(system -> {
-            sdk.createNode(new WoofNode(ImmutableMap.of("name", system.systemName(), "technologies", techsAsStrings(system)),
-                    Stream.concat(Stream.of("SYSTEM"), techsAsStrings(system).stream()).toList()));
+            sdk.createNode(new WoofNode(ImmutableMap.of("name", system.systemName(), "technologies", techsAsStrings(system), "cluster", system.clusterName()),
+                    Stream.concat(Stream.of("SYSTEM", system.clusterName()), techsAsStrings(system).stream()).toList()));
         });
         systemConnectionEntries.forEach(sce ->
         {
@@ -145,8 +147,8 @@ public class ArchitectureMain {
         clusterInfo.put("MAS", "Custom");
         clusterInfo.put("TBE", "VANIS");
         clusterInfo.put("VANIS", "VANIS");
-        clusterInfo.put("PURAS", "Different BU");
-        clusterInfo.put("VAR", "Different BU");
+        clusterInfo.put("PURAS", "Different_BU");
+        clusterInfo.put("VAR", "Different_BU");
         clusterInfo.put("DUMMY", "UNKNOWN");
         return clusterInfo;
     }
