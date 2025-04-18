@@ -16,6 +16,7 @@
         <module>smojol-core</module>
         <module>woof</module>
         <module>che-che4z-lsp-for-cobol-integration/server</module>
+        <module>smojol-hlasm</module>
     </modules>
 
     <properties>
