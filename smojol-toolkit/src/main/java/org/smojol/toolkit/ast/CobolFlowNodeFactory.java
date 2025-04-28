@@ -57,7 +57,9 @@ public class CobolFlowNodeFactory {
         else if (SyntaxIdentity.isOfType(parseTree, CobolParser.DialectStatementContext.class))
             return DialectFlowNodeFactory.flowNode(parseTree, scope, nodeService, stackFrames);
         else if (SyntaxIdentity.isOfType(parseTree, CobolParser.ConditionalStatementCallContext.class)) {
-            CobolParser.StatementContext innerStatement = ((CobolParser.ConditionalStatementCallContext) parseTree).statement();
+            CobolParser.StatementContext innerVanillaStatement = ((CobolParser.ConditionalStatementCallContext) parseTree).statement();
+            CobolParser.DialectStatementContext innerDialectStatement = ((CobolParser.ConditionalStatementCallContext) parseTree).dialectStatement();
+            ParseTree innerStatement = innerVanillaStatement != null ? innerVanillaStatement : innerDialectStatement;
             return newNode(innerStatement, scope, nodeService, stackFrames);
 //            return new ConditionalStatementFlowNode(parseTree, scope, nodeService, stackFrames);
         }
@@ -184,6 +186,7 @@ public class CobolFlowNodeFactory {
     }
 
     private static boolean isCompositeNode(ParseTree executionContext) {
+        if (executionContext == null) return false;
         return
                 executionContext.getClass() == CobolParser.DialectSectionContext.class ||
                 executionContext.getClass() == IdmsParser.IdmsIfStatementContext.class ||

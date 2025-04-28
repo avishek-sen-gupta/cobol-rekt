@@ -128,6 +128,7 @@ clients/cobol-lsp-vscode-extension/test-report.xml
 **/ValidateProgramMainForProduction.java
 **/GeneratePseudocodeMainForProduction.java
 **/DependencyBuildMainProduction.java
+**/TestExplorerMain.java
 
 out/
 **/__pycache__
