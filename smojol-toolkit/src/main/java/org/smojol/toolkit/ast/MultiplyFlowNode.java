@@ -76,7 +76,8 @@ public class MultiplyFlowNode extends CobolFlowNode {
         CobolExpressionBuilder builder = new CobolExpressionBuilder();
         lhsExpression = builder.literalOrIdentifier(lhs.literal(), lhs.generalIdentifier());
         rhsExpressions = rhses.stream().map(rhs -> builder.identifier(rhs.generalIdentifier())).toList();
-        givingRhsExpression = builder.literalOrIdentifier(givingRhs.literal(), givingRhs.generalIdentifier());
+        if (givingRhs != null)
+            givingRhsExpression = builder.literalOrIdentifier(givingRhs.literal(), givingRhs.generalIdentifier());
         givingDestinationExpressions = givingDestinations.stream().map(rhs -> builder.identifier(rhs.generalIdentifier())).toList();
 
         if (givingDestinationExpressions.isEmpty()) {
@@ -84,7 +85,7 @@ public class MultiplyFlowNode extends CobolFlowNode {
             destinationExpressions.addAll(rhsExpressions);
         } else {
             sourceExpressions.add(lhsExpression);
-            sourceExpressions.add(givingRhsExpression);
+            if (givingRhs != null) sourceExpressions.add(givingRhsExpression);
             destinationExpressions.addAll(givingDestinationExpressions);
         }
 
