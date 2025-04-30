@@ -218,6 +218,9 @@ public class Format1DataStructure extends CobolDataStructure {
                 && (dataDescription.dataUsageClause(0).usageFormat().COMP_1() != null
                 || dataDescription.dataUsageClause(0).usageFormat().COMPUTATIONAL_1() != null))
             return ImmutablePair.of(new Comp1DataTypeSpec(), 4);
+        if (!dataDescription.dataUsageClause().isEmpty()
+                && dataDescription.dataUsageClause(0).usageFormat().COMP_2() != null)
+            return ImmutablePair.of(new Comp2DataTypeSpec(), 8);
         return new DataLayoutBuilder().size(dataDescription.dataPictureClause().getFirst().pictureString().getFirst().getText());
     }
 
