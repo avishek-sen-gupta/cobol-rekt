@@ -39,7 +39,7 @@ public class DataDependencyPairComputer {
         }
         if (node.type() == FlowNodeType.MOVE) {
             MoveFlowNode move = (MoveFlowNode) node;
-            List<CobolDataStructure> froms = staticExpressionsFromSingle(move.getFromExpression(), dataRoot);
+            List<CobolDataStructure> froms = staticExpressionsFromSingle(move.getFromExpressions().getFirst(), dataRoot);
             List<CobolDataStructure> tos = staticExpressionsFromMany(move.getToExpressions(), dataRoot);
             return ImmutablePair.of(froms, tos);
         } else if (node.type() == FlowNodeType.COMPUTE) {

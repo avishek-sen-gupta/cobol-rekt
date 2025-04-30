@@ -16,23 +16,29 @@ import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.common.vm.type.AbstractCobolType;
 
 import java.util.List;
+import java.util.Optional;
 
 @Getter
 public class MoveFlowNode extends CobolFlowNode {
-    private CobolParser.MoveToSendingAreaContext from;
+    private CobolParser.MoveToSendingAreaContext fromSingle;
     private List<CobolParser.GeneralIdentifierContext> tos;
-    private CobolExpression fromExpression;
+    private List<CobolExpression> fromExpressions;
     private List<CobolExpression> toExpressions;
 
     public MoveFlowNode(ParseTree parseTree, FlowNode scope, FlowNodeService nodeService, StackFrames stackFrames) {
         super(parseTree, scope, nodeService, stackFrames);
     }
 
+    // TODO: Support CORRESPONDING, fromSingle only looks at MoveTo
     @Override
     public void buildInternalFlow() {
         CobolParser.MoveStatementContext moveStatement = new SyntaxIdentity<CobolParser.MoveStatementContext>(executionContext).get();
-        from = moveStatement.moveToStatement().moveToSendingArea();
-        tos = moveStatement.moveToStatement().generalIdentifier();
+        fromSingle = Optional.of(moveStatement)
+                .map(CobolParser.MoveStatementContext::moveToStatement)
+                .map(CobolParser.MoveToStatementContext::moveToSendingArea).orElse(null);
+        tos = moveStatement.moveToStatement() != null
+                ? moveStatement.moveToStatement().generalIdentifier()
+                : moveStatement.moveCorrespondingToStatement().generalIdentifier();
         super.buildInternalFlow();
     }
 
@@ -61,10 +67,22 @@ public class MoveFlowNode extends CobolFlowNode {
     public void resolve(SmojolSymbolTable symbolTable, CobolDataStructure dataStructures) {
         CobolParser.MoveStatementContext moveStatement = new SyntaxIdentity<CobolParser.MoveStatementContext>(executionContext).get();
         CobolExpressionBuilder builder = new CobolExpressionBuilder();
-        toExpressions = moveStatement.moveToStatement().generalIdentifier().stream().map(builder::identifier).toList();
-        CobolParser.MoveToSendingAreaContext sendingArea = moveStatement.moveToStatement().moveToSendingArea();
-        AbstractCobolType expectedType = toExpressions.getFirst().expressionType(dataStructures);
-        // TODO: Maybe distribute this across multiple expressions, one corresponding to each destination, but with a separate type
-        fromExpression = sendingArea.literal() != null ? builder.literal(sendingArea.literal(), expectedType) : builder.identifier(sendingArea.generalIdentifier());
+        toExpressions = toExpressions(moveStatement, builder);
+        if (moveStatement.moveToStatement() != null) {
+            CobolParser.MoveToSendingAreaContext sendingArea = moveStatement.moveToStatement().moveToSendingArea();
+            AbstractCobolType expectedType = toExpressions.getFirst().expressionType(dataStructures);
+            // TODO: Maybe distribute this across multiple expressions, one corresponding to each destination, but with a separate type
+            fromExpressions = ImmutableList.of(sendingArea.literal() != null ? builder.literal(sendingArea.literal(), expectedType) : builder.identifier(sendingArea.generalIdentifier()));
+        } else {
+            CobolParser.MoveCorrespondingToSendingAreaContext sendingArea = moveStatement.moveCorrespondingToStatement().moveCorrespondingToSendingArea();
+            fromExpressions = ImmutableList.of(builder.identifier(sendingArea.generalIdentifier()));
+        }
+    }
+
+    private static List<CobolExpression> toExpressions(CobolParser.MoveStatementContext moveStatement, CobolExpressionBuilder builder) {
+        if (moveStatement.moveToStatement() != null)
+            return moveStatement.moveToStatement().generalIdentifier().stream().map(builder::identifier).toList();
+        else
+            return moveStatement.moveCorrespondingToStatement().generalIdentifier().stream().map(builder::identifier).toList();
     }
 }

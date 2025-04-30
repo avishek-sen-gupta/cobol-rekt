@@ -164,7 +164,7 @@ public class SmojolInterpreter implements CobolInterpreter {
             listeners.visit(node, nodeService);
             listeners.notify("Moving " + node, node, nodeService);
             MoveFlowNode move = (MoveFlowNode) node;
-            move.getTos().forEach(to -> listeners.notify(coloured(String.format("%s was affected by %s", dataDescription(to, nodeService.getDataStructures()), move.getFromExpression()), 227), node, nodeService));
+            move.getTos().forEach(to -> listeners.notify(coloured(String.format("%s was affected by %s", dataDescription(to, nodeService.getDataStructures()), move.getFromExpressions()), 227), node, nodeService));
             operations.move().apply(node).run(runtimeStackFrames.currentData());
             return CobolVmSignal.CONTINUE;
         }, new ExecutionContext(node, runtimeStackFrames, nodeService));

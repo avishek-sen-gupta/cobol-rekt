@@ -18,10 +18,10 @@ public class MoveOperation implements CobolOperation {
     }
 
     public void run(CobolDataStructure cobolDataStructure) {
-        LOGGER.finer("From is " + move.getFromExpression().toString());
+        LOGGER.finer("From is " + move.getFromExpressions().toString());
         CobolReferenceBuilder referenceBuilder = new CobolReferenceBuilder();
         List<CobolReference> tos = move.getToExpressions().stream().map(to -> referenceBuilder.getReference(to, cobolDataStructure)).toList();
-        CobolReference from = referenceBuilder.getReference(move.getFromExpression(), cobolDataStructure);
+        CobolReference from = referenceBuilder.getReference(move.getFromExpressions().getFirst(), cobolDataStructure);
 //        CobolExpression from = referenceBuilder.getReference(move.getFromExpression(), cobolDataStructure);
         tos.forEach(to -> to.set(from));
 //        CobolReference fromReference = referenceBuilder.getReference(move.getFrom(), cobolDataStructure);
