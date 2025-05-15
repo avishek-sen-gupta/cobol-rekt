@@ -1,8 +1,8 @@
 package org.smojol.toolkit.analysis.task.analysis;
 
 import com.google.common.collect.ImmutableList;
-import com.mojo.algorithms.graph.TypedGraphEdge;
-import com.mojo.algorithms.graph.TypedGraphVertex;
+import com.mojo.algorithms.domain.TypedGraphEdge;
+import com.mojo.algorithms.domain.TypedGraphVertex;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;
@@ -15,7 +15,7 @@ import org.smojol.toolkit.intermediate.NodeSpecBuilder;
 import org.smojol.toolkit.analysis.graph.graphml.JGraphTGraphBuilder;
 import org.smojol.toolkit.ast.ParagraphFlowNode;
 import org.smojol.common.ast.FlowNode;
-import com.mojo.algorithms.transpiler.FlowNodeType;
+import com.mojo.algorithms.domain.FlowNodeType;
 import org.smojol.common.navigation.FlowNodeNavigator;
 import org.smojol.common.vm.structure.CobolDataStructure;
 

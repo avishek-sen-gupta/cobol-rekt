@@ -1,10 +1,10 @@
 package org.smojol.toolkit.analysis.task;
 
 import com.google.common.collect.ImmutableSet;
-import com.mojo.algorithms.graph.DepthFirstSearchOrderingTask;
-import com.mojo.algorithms.graph.DepthFirstSpanningTree;
-import com.mojo.algorithms.graph.TestNode;
-import com.mojo.algorithms.transpiler.BuildDominatorsTask;
+import com.mojo.algorithms.task.DepthFirstSearchOrderingTask;
+import com.mojo.algorithms.domain.DepthFirstSpanningTree;
+import com.mojo.algorithms.domain.TestNode;
+import com.mojo.algorithms.task.BuildDominatorsTask;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;

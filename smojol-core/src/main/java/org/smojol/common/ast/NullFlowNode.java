@@ -1,9 +1,9 @@
 package org.smojol.common.ast;
 
 import com.google.common.collect.ImmutableList;
-import com.mojo.algorithms.CodeSentinelType;
-import com.mojo.algorithms.transpiler.FlowNodeType;
-import com.mojo.algorithms.transpiler.SemanticCategory;
+import com.mojo.algorithms.domain.CodeSentinelType;
+import com.mojo.algorithms.domain.FlowNodeType;
+import com.mojo.algorithms.domain.SemanticCategory;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.smojol.common.pseudocode.SmojolSymbolTable;
 import org.smojol.common.vm.interpreter.CobolInterpreter;

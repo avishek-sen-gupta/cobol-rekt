@@ -8,7 +8,7 @@ import org.smojol.common.vm.reference.DetachedDataStructure;
 import org.smojol.common.vm.strategy.UnresolvedReferenceStrategy;
 import org.smojol.common.vm.structure.*;
 import com.mojo.algorithms.types.CobolDataType;
-import com.mojo.algorithms.transpiler.TypedRecord;
+import com.mojo.algorithms.domain.TypedRecord;
 
 import java.util.List;
 import java.util.Optional;

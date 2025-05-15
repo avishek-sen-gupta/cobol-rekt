@@ -1,13 +1,13 @@
 package org.smojol.toolkit.analysis.task;
 
 import com.google.common.collect.ImmutableList;
-import com.mojo.algorithms.graph.GraphSlice;
-import com.mojo.algorithms.graph.GraphSliceTask;
-import com.mojo.algorithms.graph.ReachingConditionDefinitionTask;
+import com.mojo.algorithms.domain.GraphSlice;
+import com.mojo.algorithms.task.GraphSliceTask;
+import com.mojo.algorithms.task.ReachingConditionDefinitionTask;
 import com.mojo.algorithms.transpiler.PrintTranspilerNode;
-import com.mojo.algorithms.transpiler.TranspilerFlowgraph;
-import com.mojo.algorithms.transpiler.TranspilerInstruction;
-import com.mojo.algorithms.transpiler.TranspilerNode;
+import com.mojo.algorithms.domain.TranspilerFlowgraph;
+import com.mojo.algorithms.domain.TranspilerInstruction;
+import com.mojo.algorithms.domain.TranspilerNode;
 import org.jgrapht.graph.DefaultEdge;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;

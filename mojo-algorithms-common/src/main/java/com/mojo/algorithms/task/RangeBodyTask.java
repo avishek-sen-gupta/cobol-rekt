@@ -1,10 +1,10 @@
 package com.mojo.algorithms.task;
 
 import com.google.common.collect.ImmutableSet;
-import com.mojo.algorithms.CodeSentinelType;
+import com.mojo.algorithms.domain.CodeSentinelType;
 import com.mojo.algorithms.transpiler.LabelledTranspilerCodeBlockNode;
-import com.mojo.algorithms.transpiler.ProcedureRange;
-import com.mojo.algorithms.transpiler.TranspilerInstruction;
+import com.mojo.algorithms.domain.ProcedureRange;
+import com.mojo.algorithms.domain.TranspilerInstruction;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;

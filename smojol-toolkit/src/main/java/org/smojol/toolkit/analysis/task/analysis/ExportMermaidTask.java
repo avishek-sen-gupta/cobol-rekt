@@ -1,7 +1,7 @@
 package org.smojol.toolkit.analysis.task.analysis;
 
 import org.smojol.common.ast.FlowNode;
-import com.mojo.algorithms.transpiler.FlowNodeType;
+import com.mojo.algorithms.domain.FlowNodeType;
 import org.smojol.common.navigation.FlowNodeNavigator;
 import org.smojol.toolkit.analysis.pipeline.config.OutputArtifactConfig;
 import org.smojol.toolkit.flowchart.MermainChartBuilder;

@@ -1,8 +1,8 @@
 package org.smojol.toolkit.examples;
 
 import com.google.common.collect.ImmutableList;
-import com.mojo.algorithms.graph.RemoveGotoTask;
-import com.mojo.algorithms.transpiler.TranspilerFlowgraph;
+import com.mojo.algorithms.task.RemoveGotoTask;
+import com.mojo.algorithms.domain.TranspilerFlowgraph;
 import org.smojol.common.dialect.LanguageDialect;
 import org.smojol.common.flowchart.FlowchartOutputFormat;
 import com.mojo.algorithms.id.UUIDProvider;

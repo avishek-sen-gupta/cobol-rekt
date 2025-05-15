@@ -2,8 +2,8 @@ package org.smojol.toolkit.examples.qa;
 
 import com.google.common.collect.ImmutableList;
 import com.mojo.algorithms.id.UUIDProvider;
-import com.mojo.algorithms.transpiler.InvokingProcedureRange;
-import com.mojo.algorithms.transpiler.TranspilerFlowgraph;
+import com.mojo.algorithms.domain.InvokingProcedureRange;
+import com.mojo.algorithms.domain.TranspilerFlowgraph;
 import org.apache.commons.lang3.tuple.Pair;
 import org.smojol.common.dialect.LanguageDialect;
 import org.smojol.common.flowchart.FlowchartOutputFormat;

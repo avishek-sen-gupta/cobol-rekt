@@ -1,12 +1,12 @@
 package org.smojol.toolkit.examples;
 
 import com.google.common.collect.ImmutableList;
-import com.mojo.algorithms.graph.MermaidGraph;
+import com.mojo.algorithms.domain.MermaidGraph;
 import com.mojo.algorithms.id.UUIDProvider;
-import com.mojo.algorithms.transpiler.FlowgraphReductionResult;
-import com.mojo.algorithms.transpiler.PruneUnreachableTask;
-import com.mojo.algorithms.transpiler.TranspilerFlowgraph;
-import com.mojo.algorithms.transpiler.TranspilerInstruction;
+import com.mojo.algorithms.domain.FlowgraphReductionResult;
+import com.mojo.algorithms.task.PruneUnreachableTask;
+import com.mojo.algorithms.domain.TranspilerFlowgraph;
+import com.mojo.algorithms.domain.TranspilerInstruction;
 import org.jgrapht.graph.DefaultEdge;
 import org.smojol.common.dialect.LanguageDialect;
 import org.smojol.common.flowchart.FlowchartOutputFormat;

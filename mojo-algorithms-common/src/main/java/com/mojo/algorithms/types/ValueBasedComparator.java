@@ -1,9 +1,9 @@
 package com.mojo.algorithms.types;
 
 
-import com.mojo.algorithms.transpiler.TypedRecord;
+import com.mojo.algorithms.domain.TypedRecord;
 
-import static com.mojo.algorithms.transpiler.TypedRecord.typedBoolean;
+import static com.mojo.algorithms.domain.TypedRecord.typedBoolean;
 
 public class ValueBasedComparator {
     public TypedRecord greaterThan(Object lhs, Object rhs, CobolDataType dataType) {

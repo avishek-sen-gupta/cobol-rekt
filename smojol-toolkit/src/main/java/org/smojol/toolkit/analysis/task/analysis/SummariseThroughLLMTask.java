@@ -3,7 +3,7 @@ package org.smojol.toolkit.analysis.task.analysis;
 import com.mojo.algorithms.navigation.TreeMapperTraversal;
 import com.mojo.woof.*;
 import org.neo4j.driver.Record;
-import com.mojo.algorithms.transpiler.FlowNodeType;
+import com.mojo.algorithms.domain.FlowNodeType;
 import org.smojol.toolkit.intermediate.NodeSpecBuilder;
 import com.mojo.algorithms.task.AnalysisTask;
 import com.mojo.algorithms.task.AnalysisTaskResult;

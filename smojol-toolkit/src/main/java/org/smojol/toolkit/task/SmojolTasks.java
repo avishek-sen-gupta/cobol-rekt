@@ -2,11 +2,11 @@ package org.smojol.toolkit.task;
 
 import com.google.common.collect.ImmutableList;
 import com.mojo.algorithms.task.*;
-import com.mojo.algorithms.transpiler.TranspilerFlowgraph;
+import com.mojo.algorithms.domain.TranspilerFlowgraph;
 import com.mojo.woof.Neo4JDriverBuilder;
 import com.mojo.algorithms.id.IdProvider;
 import org.smojol.common.resource.ResourceOperations;
-import com.mojo.algorithms.graph.NamespaceQualifier;
+import com.mojo.algorithms.domain.NamespaceQualifier;
 import org.smojol.toolkit.intermediate.NodeSpecBuilder;
 import org.smojol.toolkit.analysis.pipeline.BaseAnalysisModel;
 import org.smojol.toolkit.analysis.pipeline.ParsePipeline;

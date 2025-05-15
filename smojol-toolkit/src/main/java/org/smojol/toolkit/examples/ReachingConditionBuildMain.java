@@ -1,11 +1,13 @@
 package org.smojol.toolkit.examples;
 
 import com.google.common.collect.ImmutableList;
-import com.mojo.algorithms.CodeSentinelType;
-import com.mojo.algorithms.graph.GraphSlice;
-import com.mojo.algorithms.graph.GraphSliceTask;
-import com.mojo.algorithms.graph.MermaidGraph;
-import com.mojo.algorithms.graph.ReachingConditionDefinitionTask;
+import com.mojo.algorithms.domain.CodeSentinelType;
+import com.mojo.algorithms.domain.GraphSlice;
+import com.mojo.algorithms.domain.TranspilerFlowgraph;
+import com.mojo.algorithms.domain.TranspilerInstruction;
+import com.mojo.algorithms.domain.TranspilerNode;
+import com.mojo.algorithms.task.*;
+import com.mojo.algorithms.domain.MermaidGraph;
 import com.mojo.algorithms.id.UUIDProvider;
 import com.mojo.algorithms.transpiler.*;
 import org.jgrapht.graph.DefaultEdge;
@@ -18,8 +20,6 @@ import org.smojol.toolkit.analysis.pipeline.ProgramSearch;
 import org.smojol.toolkit.analysis.task.analysis.CodeTaskRunner;
 import org.smojol.toolkit.interpreter.FullProgram;
 import org.smojol.toolkit.interpreter.structure.OccursIgnoringFormat1DataStructureBuilder;
-import com.mojo.algorithms.task.AnalysisTaskResult;
-import com.mojo.algorithms.task.AnalysisTaskResultOK;
 
 import java.io.File;
 import java.io.IOException;

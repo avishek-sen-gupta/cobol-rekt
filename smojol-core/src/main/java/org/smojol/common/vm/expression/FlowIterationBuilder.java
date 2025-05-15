@@ -1,15 +1,15 @@
 package org.smojol.common.vm.expression;
 
 import com.google.common.collect.ImmutableList;
-import com.mojo.algorithms.transpiler.ConditionTestTime;
+import com.mojo.algorithms.domain.ConditionTestTime;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.vm.structure.CobolDataStructure;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.mojo.algorithms.transpiler.ConditionTestTime.AFTER;
-import static com.mojo.algorithms.transpiler.ConditionTestTime.BEFORE;
+import static com.mojo.algorithms.domain.ConditionTestTime.AFTER;
+import static com.mojo.algorithms.domain.ConditionTestTime.BEFORE;
 
 
 public class FlowIterationBuilder {

@@ -6,7 +6,7 @@ import org.smojol.common.vm.expression.PrimitiveCobolExpression;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.common.vm.structure.ConversionStrategy;
 import com.mojo.algorithms.types.AbstractCobolType;
-import com.mojo.algorithms.transpiler.TypedRecord;
+import com.mojo.algorithms.domain.TypedRecord;
 
 public class IntermediateExpressionReference implements CobolReference {
     private final CobolExpression expression;

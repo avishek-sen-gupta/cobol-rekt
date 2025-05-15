@@ -1,6 +1,6 @@
 package com.mojo.algorithms.types;
 
-import com.mojo.algorithms.transpiler.TypedRecord;
+import com.mojo.algorithms.domain.TypedRecord;
 
 public record CobolDataType(UsageType usageType, TypedRecord defaultValue, AbstractCobolType abstractType) {
     public static final CobolDataType STRING = new CobolDataType(UsageType.DEFAULT, TypedRecord.typedString(""), AbstractCobolType.STRING);

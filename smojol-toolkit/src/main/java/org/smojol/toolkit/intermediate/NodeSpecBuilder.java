@@ -1,14 +1,14 @@
 package org.smojol.toolkit.intermediate;
 
 import com.google.common.collect.ImmutableList;
-import com.mojo.algorithms.CodeSentinelType;
-import com.mojo.algorithms.graph.NamespaceQualifier;
-import com.mojo.algorithms.graph.TypedCodeVertex;
-import com.mojo.algorithms.graph.TypedGraphEdge;
-import com.mojo.algorithms.graph.TypedGraphVertex;
+import com.mojo.algorithms.domain.CodeSentinelType;
+import com.mojo.algorithms.domain.NamespaceQualifier;
+import com.mojo.algorithms.domain.TypedCodeVertex;
+import com.mojo.algorithms.domain.TypedGraphEdge;
+import com.mojo.algorithms.domain.TypedGraphVertex;
 import com.mojo.algorithms.id.UUIDProvider;
 import com.mojo.algorithms.transpiler.FlowNodeLike;
-import com.mojo.algorithms.transpiler.TranspilerNode;
+import com.mojo.algorithms.domain.TranspilerNode;
 import com.mojo.woof.NodeSpec;
 import org.smojol.common.program.CobolProgram;
 import org.smojol.common.ast.CommentBlock;
@@ -22,8 +22,8 @@ import java.util.Map;
 import static com.mojo.woof.NodeLabels.*;
 import static com.mojo.woof.NodeProperties.*;
 import static com.mojo.woof.NodeProperties.LEVEL;
-import static com.mojo.algorithms.transpiler.SemanticCategory.METADATA;
-import static com.mojo.algorithms.transpiler.SemanticCategory.PROGRAM;
+import static com.mojo.algorithms.domain.SemanticCategory.METADATA;
+import static com.mojo.algorithms.domain.SemanticCategory.PROGRAM;
 
 // TODO: Move to common
 public class NodeSpecBuilder {

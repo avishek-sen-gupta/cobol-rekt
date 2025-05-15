@@ -2,9 +2,9 @@ package org.smojol.common.ast;
 
 import com.mojo.algorithms.id.IdProvider;
 import com.mojo.algorithms.navigation.AggregatingTranspilerNodeVisitor;
-import com.mojo.algorithms.transpiler.TranspilerInstruction;
-import com.mojo.algorithms.transpiler.TranspilerInstructionGenerator;
-import com.mojo.algorithms.transpiler.TranspilerNode;
+import com.mojo.algorithms.domain.TranspilerInstruction;
+import com.mojo.algorithms.domain.TranspilerInstructionGenerator;
+import com.mojo.algorithms.domain.TranspilerNode;
 
 import java.util.ArrayList;
 import java.util.Collection;

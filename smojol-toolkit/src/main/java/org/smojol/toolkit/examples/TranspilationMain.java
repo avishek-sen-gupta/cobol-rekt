@@ -2,13 +2,13 @@ package org.smojol.toolkit.examples;
 
 import com.google.common.collect.ImmutableList;
 import com.mojo.algorithms.id.UUIDProvider;
-import com.mojo.algorithms.transpiler.TranspilerFlowgraph;
-import com.mojo.algorithms.transpiler.TranspilerInstruction;
+import com.mojo.algorithms.domain.TranspilerFlowgraph;
+import com.mojo.algorithms.domain.TranspilerInstruction;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
 import org.smojol.common.dialect.LanguageDialect;
 import org.smojol.common.flowchart.FlowchartOutputFormat;
-import com.mojo.algorithms.BasicBlock;
+import com.mojo.algorithms.domain.BasicBlock;
 import org.smojol.common.resource.LocalFilesystemOperations;
 import org.smojol.toolkit.analysis.pipeline.ProgramSearch;
 import org.smojol.toolkit.analysis.task.analysis.CodeTaskRunner;

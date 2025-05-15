@@ -3,7 +3,7 @@ package com.mojo.algorithms.navigation;
 
 import com.mojo.algorithms.transpiler.LabelledTranspilerCodeBlockNode;
 import com.mojo.algorithms.transpiler.TranspilerCodeBlockNode;
-import com.mojo.algorithms.transpiler.TranspilerNode;
+import com.mojo.algorithms.domain.TranspilerNode;
 import com.mojo.algorithms.transpiler.TreeNodeLocation;
 
 import java.util.Map;

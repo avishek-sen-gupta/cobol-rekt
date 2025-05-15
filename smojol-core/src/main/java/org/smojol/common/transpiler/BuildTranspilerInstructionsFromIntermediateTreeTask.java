@@ -1,8 +1,8 @@
 package org.smojol.common.transpiler;
 
 import com.mojo.algorithms.id.IncrementingIdProvider;
-import com.mojo.algorithms.transpiler.TranspilerInstruction;
-import com.mojo.algorithms.transpiler.TranspilerNode;
+import com.mojo.algorithms.domain.TranspilerInstruction;
+import com.mojo.algorithms.domain.TranspilerNode;
 import org.smojol.common.ast.TranspilerInstructionGeneratorVisitor;
 import com.mojo.algorithms.navigation.AggregatingTranspilerNodeTraversal;
 

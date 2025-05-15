@@ -1,9 +1,9 @@
 package org.smojol.toolkit.transpiler;
 
 import com.google.common.collect.ImmutableMap;
-import com.mojo.algorithms.transpiler.FlowNodeType;
+import com.mojo.algorithms.domain.FlowNodeType;
 import com.mojo.algorithms.transpiler.TranspilerCodeBlockNode;
-import com.mojo.algorithms.transpiler.TranspilerNode;
+import com.mojo.algorithms.domain.TranspilerNode;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.toolkit.ast.ParagraphsFlowNode;

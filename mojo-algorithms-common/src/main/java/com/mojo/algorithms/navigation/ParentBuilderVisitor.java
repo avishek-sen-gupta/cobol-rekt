@@ -1,7 +1,6 @@
 package com.mojo.algorithms.navigation;
 
-import com.mojo.algorithms.transpiler.NodeVisitor;
-import com.mojo.algorithms.transpiler.TranspilerNode;
+import com.mojo.algorithms.domain.TranspilerNode;
 import lombok.Getter;
 
 import java.util.HashMap;

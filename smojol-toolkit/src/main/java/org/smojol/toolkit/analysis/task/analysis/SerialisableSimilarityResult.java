@@ -1,6 +1,6 @@
 package org.smojol.toolkit.analysis.task.analysis;
 
-import com.mojo.algorithms.graph.TypedGraphVertex;
+import com.mojo.algorithms.domain.TypedGraphVertex;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.alg.similarity.ZhangShashaTreeEditDistance;
 import org.smojol.common.ast.FlowNode;

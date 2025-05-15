@@ -2,7 +2,9 @@ package org.smojol.toolkit.analysis.task;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.mojo.algorithms.domain.TranspilerInstruction;
 import com.mojo.algorithms.id.IncrementingIdProvider;
+import com.mojo.algorithms.task.CallRangesTask;
 import com.mojo.algorithms.transpiler.*;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Test;

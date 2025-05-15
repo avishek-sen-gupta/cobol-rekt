@@ -1,8 +1,8 @@
 package org.smojol.toolkit.analysis.task;
 
 import com.google.common.collect.ImmutableList;
-import com.mojo.algorithms.graph.TypedGraphEdge;
-import com.mojo.algorithms.graph.TypedGraphVertex;
+import com.mojo.algorithms.domain.TypedGraphEdge;
+import com.mojo.algorithms.domain.TypedGraphVertex;
 import org.jgrapht.Graph;
 import org.junit.jupiter.api.Test;
 import org.smojol.common.ast.CobolTreeVisualiser;
@@ -12,7 +12,7 @@ import com.mojo.algorithms.id.UUIDProvider;
 import org.smojol.common.navigation.EntityNavigatorBuilder;
 import org.smojol.common.resource.LocalFilesystemOperations;
 import org.smojol.common.vm.strategy.UnresolvedReferenceThrowStrategy;
-import com.mojo.algorithms.graph.NamespaceQualifier;
+import com.mojo.algorithms.domain.NamespaceQualifier;
 import org.smojol.toolkit.intermediate.NodeSpecBuilder;
 import org.smojol.toolkit.analysis.pipeline.BaseAnalysisModel;
 import org.smojol.toolkit.analysis.pipeline.ParsePipeline;

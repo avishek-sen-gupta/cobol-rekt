@@ -1,5 +1,7 @@
 package com.mojo.algorithms.transpiler;
 
+import com.mojo.algorithms.domain.TranspilerNode;
+
 public class LessThanNode extends TranspilerComparisonOperator {
     public LessThanNode(TranspilerNode lhs, TranspilerNode rhs) {
         super(lhs, rhs);

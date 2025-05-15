@@ -3,7 +3,7 @@ package org.smojol.toolkit.flowchart;
 import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.Shape;
 import org.smojol.common.ast.FlowNode;
-import com.mojo.algorithms.transpiler.FlowNodeType;
+import com.mojo.algorithms.domain.FlowNodeType;
 
 import java.util.HashMap;
 

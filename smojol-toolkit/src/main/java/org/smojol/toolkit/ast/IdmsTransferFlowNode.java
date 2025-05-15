@@ -1,8 +1,8 @@
 package org.smojol.toolkit.ast;
 
 import com.google.common.collect.ImmutableList;
-import com.mojo.algorithms.transpiler.FlowNodeType;
-import com.mojo.algorithms.transpiler.SemanticCategory;
+import com.mojo.algorithms.domain.FlowNodeType;
+import com.mojo.algorithms.domain.SemanticCategory;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.dialects.idms.IdmsParser;
 import org.smojol.common.ast.*;

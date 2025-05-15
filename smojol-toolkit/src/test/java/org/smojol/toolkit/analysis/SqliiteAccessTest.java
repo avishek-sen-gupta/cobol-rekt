@@ -2,6 +2,7 @@ package org.smojol.toolkit.analysis;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.mojo.algorithms.domain.TypedRecord;
 import com.mojo.algorithms.transpiler.*;
 import org.jooq.Record;
 import org.jooq.*;
@@ -48,7 +49,7 @@ public class SqliiteAccessTest {
                             .eq(field("PROJECT.ID", Integer.class)))
                     .fetch();
 
-//            List<Map<String, Object>> collectedIntermediateASTs = new Intermed intermediateASTListingsByProject(allIntermediateASTs);
+//            List<Map<String, Object>> collectedIntermediateASTs = new intermediateASTListingsByProject(allIntermediateASTs);
 //            String astsByProjectString = new Gson().toJson(collectedIntermediateASTs);
 //            System.out.println(astsByProjectString);
 //            using.insertInto(table("RAW_AST"))

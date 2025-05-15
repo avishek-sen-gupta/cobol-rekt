@@ -5,7 +5,7 @@ import com.mojo.woof.GraphSDK;
 import com.mojo.woof.Neo4JDriverBuilder;
 import org.smojol.common.dialect.LanguageDialect;
 import org.smojol.common.resource.LocalFilesystemOperations;
-import com.mojo.algorithms.graph.NamespaceQualifier;
+import com.mojo.algorithms.domain.NamespaceQualifier;
 import org.smojol.toolkit.intermediate.NodeSpecBuilder;
 import org.smojol.toolkit.analysis.task.analysis.AnalyseProgramDependenciesTask;
 import org.smojol.toolkit.analysis.task.analysis.InjectProgramDependenciesIntoNeo4JTask;

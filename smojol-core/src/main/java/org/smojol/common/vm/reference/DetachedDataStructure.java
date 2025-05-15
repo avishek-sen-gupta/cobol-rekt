@@ -1,6 +1,6 @@
 package org.smojol.common.vm.reference;
 
-import com.mojo.algorithms.transpiler.TypedRecord;
+import com.mojo.algorithms.domain.TypedRecord;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.structure.SourceSection;
 import org.smojol.common.vm.memory.MemoryLayout;

@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableList;
 import org.smojol.common.flowchart.ConsoleColors;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import com.mojo.algorithms.types.AbstractCobolType;
-import com.mojo.algorithms.transpiler.TypedRecord;
+import com.mojo.algorithms.domain.TypedRecord;
 
 import java.util.logging.Logger;
 

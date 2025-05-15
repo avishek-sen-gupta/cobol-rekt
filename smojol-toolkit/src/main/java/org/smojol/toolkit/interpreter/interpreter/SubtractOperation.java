@@ -5,7 +5,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.smojol.common.vm.expression.CobolExpression;
 import org.smojol.common.vm.expression.PrimitiveCobolExpression;
 import org.smojol.common.vm.reference.CobolReference;
-import com.mojo.algorithms.transpiler.TypedRecord;
+import com.mojo.algorithms.domain.TypedRecord;
 import org.smojol.toolkit.ast.SubtractFlowNode;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.common.vm.reference.CobolReferenceBuilder;

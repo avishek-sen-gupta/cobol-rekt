@@ -1,6 +1,6 @@
 package org.smojol.toolkit.analysis.graph;
 
-import com.mojo.algorithms.transpiler.FlowNodeType;
+import com.mojo.algorithms.domain.FlowNodeType;
 import com.mojo.woof.GraphSDK;
 import lombok.Getter;
 import org.smojol.common.ast.*;

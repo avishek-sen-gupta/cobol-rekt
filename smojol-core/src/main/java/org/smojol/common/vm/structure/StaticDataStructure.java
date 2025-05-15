@@ -5,7 +5,7 @@ import org.smojol.common.structure.SourceSection;
 import org.smojol.common.vm.memory.*;
 import org.smojol.common.vm.reference.CobolReference;
 import com.mojo.algorithms.types.CobolDataType;
-import com.mojo.algorithms.transpiler.TypedRecord;
+import com.mojo.algorithms.domain.TypedRecord;
 
 import java.util.List;
 import java.util.function.Function;

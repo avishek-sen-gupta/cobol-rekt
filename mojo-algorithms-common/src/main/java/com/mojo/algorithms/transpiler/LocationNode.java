@@ -1,7 +1,8 @@
 package com.mojo.algorithms.transpiler;
 
 import com.google.common.collect.ImmutableList;
-import com.mojo.algorithms.transpiler.SemanticCategory;
+import com.mojo.algorithms.domain.SemanticCategory;
+import com.mojo.algorithms.domain.TranspilerNode;
 
 public abstract class LocationNode extends TranspilerNode {
     public static LocationNode NULL = new LocationNode() {

@@ -1,6 +1,10 @@
 package org.smojol.toolkit.examples;
 
 import com.google.common.collect.ImmutableList;
+import com.mojo.algorithms.domain.NaturalLoopBody;
+import com.mojo.algorithms.domain.TranspilerFlowgraph;
+import com.mojo.algorithms.domain.TranspilerInstruction;
+import com.mojo.algorithms.task.*;
 import com.mojo.algorithms.transpiler.*;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.graph.DefaultEdge;
@@ -12,9 +16,6 @@ import org.smojol.toolkit.analysis.pipeline.ProgramSearch;
 import org.smojol.toolkit.analysis.task.analysis.CodeTaskRunner;
 import org.smojol.toolkit.interpreter.FullProgram;
 import org.smojol.toolkit.interpreter.structure.OccursIgnoringFormat1DataStructureBuilder;
-import com.mojo.algorithms.task.AnalysisTaskResult;
-import com.mojo.algorithms.task.AnalysisTaskResultOK;
-import com.mojo.algorithms.task.CommandLineAnalysisTask;
 
 import java.io.File;
 import java.io.IOException;

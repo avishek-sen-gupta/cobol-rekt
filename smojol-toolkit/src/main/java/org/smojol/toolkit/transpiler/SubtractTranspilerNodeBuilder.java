@@ -1,5 +1,6 @@
 package org.smojol.toolkit.transpiler;
 
+import com.mojo.algorithms.domain.TranspilerNode;
 import com.mojo.algorithms.transpiler.*;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.toolkit.ast.SubtractFlowNode;

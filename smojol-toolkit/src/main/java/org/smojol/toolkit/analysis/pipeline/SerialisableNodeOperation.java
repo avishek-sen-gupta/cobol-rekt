@@ -1,7 +1,7 @@
 package org.smojol.toolkit.analysis.pipeline;
 
 import com.google.common.collect.ImmutableMap;
-import com.mojo.algorithms.graph.TypedGraphVertex;
+import com.mojo.algorithms.domain.TypedGraphVertex;
 import org.jgrapht.alg.similarity.ZhangShashaTreeEditDistance;
 
 import java.util.Map;

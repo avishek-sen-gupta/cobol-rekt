@@ -1,6 +1,9 @@
 package com.mojo.algorithms.transpiler;
 
 import com.google.common.collect.ImmutableList;
+import com.mojo.algorithms.domain.TranspilerLoop;
+import com.mojo.algorithms.domain.TranspilerNode;
+import com.mojo.algorithms.domain.TreeMatchResult;
 
 import java.util.Arrays;
 import java.util.List;

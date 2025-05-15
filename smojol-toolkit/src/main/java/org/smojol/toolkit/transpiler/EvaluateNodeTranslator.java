@@ -3,7 +3,7 @@ package org.smojol.toolkit.transpiler;
 import com.mojo.algorithms.transpiler.DetachedTranspilerCodeBlockNode;
 import com.mojo.algorithms.transpiler.IfTranspilerNode;
 import com.mojo.algorithms.transpiler.TranspilerCodeBlockNode;
-import com.mojo.algorithms.transpiler.TranspilerNode;
+import com.mojo.algorithms.domain.TranspilerNode;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.vm.expression.CobolExpression;
 import org.smojol.common.vm.expression.ExpandedEvaluation;

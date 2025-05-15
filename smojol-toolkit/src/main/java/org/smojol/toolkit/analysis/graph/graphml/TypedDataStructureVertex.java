@@ -1,6 +1,6 @@
 package org.smojol.toolkit.analysis.graph.graphml;
 
-import com.mojo.algorithms.graph.TypedGraphVertex;
+import com.mojo.algorithms.domain.TypedGraphVertex;
 import lombok.Getter;
 import org.smojol.common.vm.structure.CobolDataStructure;
 

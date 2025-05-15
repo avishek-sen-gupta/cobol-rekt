@@ -1,8 +1,8 @@
 package org.smojol.common.ast;
 
 import com.mojo.algorithms.transpiler.FlowNodeLike;
-import com.mojo.algorithms.transpiler.FlowNodeType;
-import com.mojo.algorithms.transpiler.SemanticCategory;
+import com.mojo.algorithms.domain.FlowNodeType;
+import com.mojo.algorithms.domain.SemanticCategory;
 import lombok.Getter;
 
 import java.util.List;

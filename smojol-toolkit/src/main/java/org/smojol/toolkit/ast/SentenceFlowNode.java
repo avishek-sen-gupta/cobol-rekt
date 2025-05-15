@@ -5,7 +5,7 @@ import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.FlowNodeCondition;
 import org.smojol.common.ast.FlowNodeService;
-import com.mojo.algorithms.transpiler.FlowNodeType;
+import com.mojo.algorithms.domain.FlowNodeType;
 import org.smojol.common.vm.interpreter.CobolInterpreter;
 import org.smojol.common.vm.interpreter.CobolVmSignal;
 import org.smojol.common.vm.stack.StackFrames;

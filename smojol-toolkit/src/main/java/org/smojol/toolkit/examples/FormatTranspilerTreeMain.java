@@ -1,8 +1,8 @@
 package org.smojol.toolkit.examples;
 
 import com.google.common.collect.ImmutableList;
-import com.mojo.algorithms.transpiler.TranspilerFlowgraph;
-import com.mojo.algorithms.transpiler.TranspilerNode;
+import com.mojo.algorithms.domain.TranspilerFlowgraph;
+import com.mojo.algorithms.domain.TranspilerNode;
 import com.mojo.algorithms.transpiler.TranspilerTreeFormatter;
 import org.smojol.common.dialect.LanguageDialect;
 import org.smojol.common.flowchart.FlowchartOutputFormat;

@@ -1,7 +1,7 @@
 package org.smojol.common.vm.structure;
 
 import com.google.common.collect.ImmutableList;
-import com.mojo.algorithms.transpiler.TypedRecord;
+import com.mojo.algorithms.domain.TypedRecord;
 import com.mojo.algorithms.types.CobolDataType;
 import hu.webarticum.treeprinter.SimpleTreeNode;
 import hu.webarticum.treeprinter.TreeNode;

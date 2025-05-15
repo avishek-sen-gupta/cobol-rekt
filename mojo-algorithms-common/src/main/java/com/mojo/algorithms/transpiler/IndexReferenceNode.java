@@ -1,8 +1,9 @@
 package com.mojo.algorithms.transpiler;
 
 import com.google.common.collect.ImmutableList;
+import com.mojo.algorithms.domain.TranspilerNode;
 import lombok.Getter;
-import com.mojo.algorithms.transpiler.SemanticCategory;
+import com.mojo.algorithms.domain.SemanticCategory;
 
 import java.util.ArrayList;
 import java.util.Collection;

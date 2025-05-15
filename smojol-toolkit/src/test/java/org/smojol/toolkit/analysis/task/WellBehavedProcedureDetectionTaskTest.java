@@ -3,6 +3,10 @@ package org.smojol.toolkit.analysis.task;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.mojo.algorithms.domain.FlowNodeType;
+import com.mojo.algorithms.domain.TranspilerNode;
+import com.mojo.algorithms.domain.TypedRecord;
+import com.mojo.algorithms.task.WellBehavedProcedureDetectionTask;
 import com.mojo.algorithms.transpiler.*;
 import org.junit.jupiter.api.Test;
 

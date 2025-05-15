@@ -1,7 +1,7 @@
 package org.smojol.toolkit.analysis.task;
 
-import com.mojo.algorithms.graph.TestNode;
-import com.mojo.algorithms.transpiler.ReducibleFlowgraphTestTask;
+import com.mojo.algorithms.domain.TestNode;
+import com.mojo.algorithms.task.ReducibleFlowgraphTestTask;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;

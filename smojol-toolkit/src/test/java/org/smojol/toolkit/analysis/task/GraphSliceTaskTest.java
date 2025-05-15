@@ -1,8 +1,8 @@
 package org.smojol.toolkit.analysis.task;
 
 import com.google.common.collect.ImmutableList;
-import com.mojo.algorithms.graph.GraphSliceTask;
-import com.mojo.algorithms.graph.TestNode;
+import com.mojo.algorithms.task.GraphSliceTask;
+import com.mojo.algorithms.domain.TestNode;
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.graph.DefaultDirectedGraph;

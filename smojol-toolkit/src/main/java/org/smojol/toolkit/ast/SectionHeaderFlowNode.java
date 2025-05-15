@@ -3,7 +3,7 @@ package org.smojol.toolkit.ast;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.FlowNodeService;
-import com.mojo.algorithms.transpiler.FlowNodeType;
+import com.mojo.algorithms.domain.FlowNodeType;
 import org.smojol.common.vm.stack.StackFrames;
 
 public class SectionHeaderFlowNode extends CobolFlowNode {

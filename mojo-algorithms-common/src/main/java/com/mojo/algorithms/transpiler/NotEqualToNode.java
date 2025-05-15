@@ -1,5 +1,7 @@
 package com.mojo.algorithms.transpiler;
 
+import com.mojo.algorithms.domain.TranspilerNode;
+
 public class NotEqualToNode extends TranspilerComparisonOperator {
     public NotEqualToNode(TranspilerNode lhs, TranspilerNode rhs) {
         super(lhs, rhs);

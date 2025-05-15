@@ -1,6 +1,7 @@
 package org.smojol.toolkit.transpiler;
 
 import com.google.common.collect.ImmutableList;
+import com.mojo.algorithms.domain.TranspilerNode;
 import com.mojo.algorithms.transpiler.*;
 import org.smojol.common.vm.expression.*;
 import org.smojol.common.vm.structure.CobolDataStructure;

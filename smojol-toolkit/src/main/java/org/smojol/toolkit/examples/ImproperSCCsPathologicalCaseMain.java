@@ -1,10 +1,10 @@
 package org.smojol.toolkit.examples;
 
 import com.google.common.collect.ImmutableList;
-import com.mojo.algorithms.transpiler.IrreducibleStronglyConnectedComponentsTask;
-import com.mojo.algorithms.transpiler.PruneUnreachableTask;
-import com.mojo.algorithms.transpiler.TranspilerFlowgraph;
-import com.mojo.algorithms.transpiler.TranspilerInstruction;
+import com.mojo.algorithms.task.IrreducibleStronglyConnectedComponentsTask;
+import com.mojo.algorithms.task.PruneUnreachableTask;
+import com.mojo.algorithms.domain.TranspilerFlowgraph;
+import com.mojo.algorithms.domain.TranspilerInstruction;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;

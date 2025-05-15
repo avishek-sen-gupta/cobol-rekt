@@ -1,5 +1,7 @@
 package org.smojol.toolkit.transpiler;
 
+import com.mojo.algorithms.domain.TranspilerNode;
+import com.mojo.algorithms.domain.TypedRecord;
 import com.mojo.algorithms.transpiler.*;
 import org.smojol.common.ast.CallTarget;
 import org.smojol.common.program.StaticCallTarget;

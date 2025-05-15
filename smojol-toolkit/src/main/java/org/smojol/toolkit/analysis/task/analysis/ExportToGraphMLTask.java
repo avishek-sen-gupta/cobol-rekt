@@ -1,7 +1,7 @@
 package org.smojol.toolkit.analysis.task.analysis;
 
-import com.mojo.algorithms.graph.TypedGraphEdge;
-import com.mojo.algorithms.graph.TypedGraphVertex;
+import com.mojo.algorithms.domain.TypedGraphEdge;
+import com.mojo.algorithms.domain.TypedGraphVertex;
 import org.jgrapht.Graph;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.resource.ResourceOperations;

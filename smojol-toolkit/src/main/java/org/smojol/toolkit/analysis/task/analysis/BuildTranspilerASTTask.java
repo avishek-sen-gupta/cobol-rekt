@@ -1,6 +1,6 @@
 package org.smojol.toolkit.analysis.task.analysis;
 
-import com.mojo.algorithms.transpiler.TranspilerNode;
+import com.mojo.algorithms.domain.TranspilerNode;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.pseudocode.SmojolSymbolTable;

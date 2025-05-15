@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableList;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import com.mojo.algorithms.types.AbstractCobolType;
-import com.mojo.algorithms.transpiler.TypedRecord;
+import com.mojo.algorithms.domain.TypedRecord;
 
 public class IdmsExpression extends CobolExpression {
     private final ParseTree expression;

@@ -1,6 +1,8 @@
 package com.mojo.algorithms.transpiler;
 
-import com.mojo.algorithms.CodeSentinelType;
+import com.mojo.algorithms.domain.CodeSentinelType;
+import com.mojo.algorithms.domain.FlowNodeType;
+import com.mojo.algorithms.domain.SemanticCategory;
 import com.mojo.algorithms.id.Identifiable;
 
 import java.util.List;

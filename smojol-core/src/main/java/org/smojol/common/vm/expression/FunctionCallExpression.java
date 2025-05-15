@@ -6,7 +6,7 @@ import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.vm.reference.DetachedDataStructure;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import com.mojo.algorithms.types.AbstractCobolType;
-import com.mojo.algorithms.transpiler.TypedRecord;
+import com.mojo.algorithms.domain.TypedRecord;
 
 import java.util.List;
 

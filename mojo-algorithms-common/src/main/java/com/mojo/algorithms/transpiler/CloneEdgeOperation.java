@@ -1,6 +1,10 @@
 package com.mojo.algorithms.transpiler;
 
-import com.mojo.algorithms.graph.TypedGraphEdge;
+import com.mojo.algorithms.domain.AnnotatedEdge;
+import com.mojo.algorithms.domain.BackJoinEdge;
+import com.mojo.algorithms.domain.CrossJoinEdge;
+import com.mojo.algorithms.domain.DominatorEdge;
+import com.mojo.algorithms.domain.TypedGraphEdge;
 import org.jgrapht.graph.DefaultEdge;
 
 public class CloneEdgeOperation {

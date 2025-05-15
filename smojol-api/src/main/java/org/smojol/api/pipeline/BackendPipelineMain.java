@@ -3,12 +3,11 @@ package org.smojol.api.pipeline;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
-import com.mojo.algorithms.BasicBlock;
-import com.mojo.algorithms.graph.NamespaceQualifier;
+import com.mojo.algorithms.domain.BasicBlock;
+import com.mojo.algorithms.domain.*;
+import com.mojo.algorithms.domain.NamespaceQualifier;
 import com.mojo.algorithms.id.UUIDProvider;
-import com.mojo.algorithms.task.AnalysisTaskResult;
-import com.mojo.algorithms.task.AnalysisTaskResultOK;
-import com.mojo.algorithms.task.CommandLineAnalysisTask;
+import com.mojo.algorithms.task.*;
 import com.mojo.algorithms.transpiler.*;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;
@@ -42,7 +41,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import static com.mojo.algorithms.graph.GraphOperations.duplicateGraph;
+import static com.mojo.algorithms.domain.GraphOperations.duplicateGraph;
 import static com.mojo.algorithms.task.CommandLineAnalysisTask.BUILD_BASE_ANALYSIS;
 
 public class BackendPipelineMain {

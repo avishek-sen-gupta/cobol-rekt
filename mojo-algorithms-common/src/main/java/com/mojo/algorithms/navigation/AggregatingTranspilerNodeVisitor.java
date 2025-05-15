@@ -1,7 +1,7 @@
 package com.mojo.algorithms.navigation;
 
 
-import com.mojo.algorithms.transpiler.TranspilerNode;
+import com.mojo.algorithms.domain.TranspilerNode;
 
 import java.util.List;
 

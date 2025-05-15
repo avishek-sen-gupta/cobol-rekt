@@ -1,6 +1,6 @@
 package org.smojol.common.vm.type;
 
-import com.mojo.algorithms.transpiler.TypedRecord;
+import com.mojo.algorithms.domain.TypedRecord;
 import com.mojo.algorithms.types.AbstractCobolType;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.vm.expression.CobolExpression;

@@ -1,6 +1,10 @@
 package com.mojo.algorithms.transpiler;
 
 
+import com.mojo.algorithms.domain.JumpType;
+import com.mojo.algorithms.domain.TranspilerNode;
+import com.mojo.algorithms.navigation.NodeVisitor;
+
 import java.util.HashMap;
 import java.util.Map;
 

@@ -1,7 +1,7 @@
 package org.smojol.toolkit.analysis.graph;
 
 import com.mojo.algorithms.transpiler.FlowNodeLike;
-import com.mojo.algorithms.transpiler.TranspilerNode;
+import com.mojo.algorithms.domain.TranspilerNode;
 import com.mojo.woof.GraphSDK;
 import com.mojo.woof.NodeSpec;
 import com.mojo.woof.WoofNode;

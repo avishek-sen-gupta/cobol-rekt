@@ -1,6 +1,8 @@
 package com.mojo.algorithms.transpiler;
 
 import com.google.common.collect.ImmutableList;
+import com.mojo.algorithms.domain.TranspilerLoop;
+import com.mojo.algorithms.domain.TranspilerNode;
 
 import java.util.List;
 import java.util.stream.IntStream;

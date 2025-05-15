@@ -1,6 +1,6 @@
 package org.smojol.toolkit.analysis.task;
 
-import com.mojo.algorithms.transpiler.TranspilerFlowgraph;
+import com.mojo.algorithms.domain.TranspilerFlowgraph;
 import org.junit.jupiter.api.Test;
 import com.mojo.algorithms.task.AnalysisTaskResult;
 import com.mojo.algorithms.task.AnalysisTaskResultOK;

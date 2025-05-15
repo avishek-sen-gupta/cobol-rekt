@@ -1,7 +1,10 @@
 package org.smojol.toolkit.analysis.task;
 
-import com.mojo.algorithms.graph.*;
-import com.mojo.algorithms.transpiler.*;
+import com.mojo.algorithms.domain.*;
+import com.mojo.algorithms.task.BuildDJTreeTask;
+import com.mojo.algorithms.task.BuildDominatorTreeTask;
+import com.mojo.algorithms.task.BuildDominatorsTask;
+import com.mojo.algorithms.task.DepthFirstSearchOrderingTask;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultDirectedGraph;

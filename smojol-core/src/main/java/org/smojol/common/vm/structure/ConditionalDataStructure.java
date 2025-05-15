@@ -11,7 +11,7 @@ import org.smojol.common.vm.memory.MemoryRegion;
 import org.smojol.common.vm.reference.CobolReference;
 import com.mojo.algorithms.types.AbstractCobolType;
 import org.smojol.common.vm.type.LiteralResolver;
-import com.mojo.algorithms.transpiler.TypedRecord;
+import com.mojo.algorithms.domain.TypedRecord;
 
 import java.util.List;
 import java.util.function.Function;

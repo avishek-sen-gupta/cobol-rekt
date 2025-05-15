@@ -1,9 +1,9 @@
 package org.smojol.toolkit.examples;
 
 import com.google.common.collect.ImmutableList;
-import com.mojo.algorithms.transpiler.PruneUnreachableTask;
-import com.mojo.algorithms.transpiler.ReducibleFlowgraphTestTask;
-import com.mojo.algorithms.transpiler.TranspilerFlowgraph;
+import com.mojo.algorithms.task.PruneUnreachableTask;
+import com.mojo.algorithms.task.ReducibleFlowgraphTestTask;
+import com.mojo.algorithms.domain.TranspilerFlowgraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.smojol.common.dialect.LanguageDialect;
 import org.smojol.common.flowchart.FlowchartOutputFormat;

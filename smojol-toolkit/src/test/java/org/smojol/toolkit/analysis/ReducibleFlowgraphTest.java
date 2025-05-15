@@ -1,10 +1,10 @@
 package org.smojol.toolkit.analysis;
 
-import com.mojo.algorithms.graph.TestNode;
-import com.mojo.algorithms.transpiler.FlowgraphReductionResult;
-import com.mojo.algorithms.transpiler.FlowgraphTransformer;
-import com.mojo.algorithms.transpiler.IrreducibleStronglyConnectedComponentsTask;
-import com.mojo.algorithms.transpiler.TranspilerInstruction;
+import com.mojo.algorithms.domain.TestNode;
+import com.mojo.algorithms.domain.FlowgraphReductionResult;
+import com.mojo.algorithms.domain.FlowgraphTransformer;
+import com.mojo.algorithms.task.IrreducibleStronglyConnectedComponentsTask;
+import com.mojo.algorithms.domain.TranspilerInstruction;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultDirectedGraph;

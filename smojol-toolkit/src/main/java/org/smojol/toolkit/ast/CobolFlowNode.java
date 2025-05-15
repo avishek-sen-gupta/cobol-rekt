@@ -1,9 +1,9 @@
 package org.smojol.toolkit.ast;
 
 import com.google.common.collect.ImmutableList;
-import com.mojo.algorithms.CodeSentinelType;
-import com.mojo.algorithms.transpiler.FlowNodeType;
-import com.mojo.algorithms.transpiler.SemanticCategory;
+import com.mojo.algorithms.domain.CodeSentinelType;
+import com.mojo.algorithms.domain.FlowNodeType;
+import com.mojo.algorithms.domain.SemanticCategory;
 import lombok.Getter;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;

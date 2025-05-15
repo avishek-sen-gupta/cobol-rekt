@@ -11,7 +11,7 @@ import org.smojol.toolkit.analysis.task.analysis.InjectProgramDependenciesIntoNe
 import com.mojo.algorithms.task.AnalysisTaskResult;
 import com.mojo.algorithms.task.AnalysisTaskResultError;
 import com.mojo.algorithms.task.AnalysisTaskResultOK;
-import com.mojo.algorithms.graph.NamespaceQualifier;
+import com.mojo.algorithms.domain.NamespaceQualifier;
 import org.smojol.toolkit.intermediate.NodeSpecBuilder;
 import org.smojol.common.program.CobolProgram;
 import org.smojol.toolkit.analysis.pipeline.*;

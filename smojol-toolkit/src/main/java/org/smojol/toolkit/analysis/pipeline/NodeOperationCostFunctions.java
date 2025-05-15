@@ -1,7 +1,7 @@
 package org.smojol.toolkit.analysis.pipeline;
 
 
-import com.mojo.algorithms.graph.TypedGraphVertex;
+import com.mojo.algorithms.domain.TypedGraphVertex;
 
 public record NodeOperationCostFunctions(
         java.util.function.ToDoubleFunction<TypedGraphVertex> add,

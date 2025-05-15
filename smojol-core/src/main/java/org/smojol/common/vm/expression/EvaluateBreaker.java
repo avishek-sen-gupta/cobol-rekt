@@ -1,7 +1,7 @@
 package org.smojol.common.vm.expression;
 
 import com.google.common.collect.ImmutableList;
-import com.mojo.algorithms.transpiler.TypedRecord;
+import com.mojo.algorithms.domain.TypedRecord;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.ast.FlowNode;

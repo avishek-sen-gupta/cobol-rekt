@@ -1,6 +1,8 @@
 package org.smojol.common;
 
 import com.google.common.collect.ImmutableList;
+import com.mojo.algorithms.domain.TranspilerNode;
+import com.mojo.algorithms.domain.TypedRecord;
 import com.mojo.algorithms.navigation.ParentBuilderVisitor;
 import com.mojo.algorithms.navigation.TreeTraversal;
 import com.mojo.algorithms.transpiler.*;
