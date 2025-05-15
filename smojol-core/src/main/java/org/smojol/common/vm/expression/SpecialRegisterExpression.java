@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.vm.structure.CobolDataStructure;
-import org.smojol.common.vm.type.AbstractCobolType;
+import com.mojo.algorithms.types.AbstractCobolType;
 
 public class SpecialRegisterExpression extends CobolExpression {
     @Getter private final FunctionCallExpression functionCall;

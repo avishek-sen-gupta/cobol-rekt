@@ -1,13 +1,12 @@
 package org.smojol.toolkit.analysis.task;
 
+import com.mojo.algorithms.graph.*;
+import com.mojo.algorithms.transpiler.*;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.junit.jupiter.api.Test;
-import org.smojol.common.flowchart.MermaidGraph;
-import org.smojol.common.graph.*;
-import org.smojol.toolkit.analysis.task.transpiler.*;
 
 import java.util.List;
 import java.util.Map;

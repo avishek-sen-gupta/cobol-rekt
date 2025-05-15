@@ -4,8 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonWriter;
 import org.smojol.common.program.CobolProgram;
-import org.smojol.toolkit.task.CommandLineAnalysisTask;
-import org.smojol.toolkit.task.AnalysisTaskResult;
+import com.mojo.algorithms.task.CommandLineAnalysisTask;
+import com.mojo.algorithms.task.AnalysisTaskResult;
 
 import java.io.FileWriter;
 import java.io.IOException;

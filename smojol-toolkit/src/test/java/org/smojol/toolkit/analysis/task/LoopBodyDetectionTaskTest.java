@@ -1,15 +1,15 @@
 package org.smojol.toolkit.analysis.task;
 
 import com.google.common.collect.ImmutableSet;
+import com.mojo.algorithms.graph.TestNode;
+import com.mojo.algorithms.transpiler.CloneEdgeOperation;
+import com.mojo.algorithms.transpiler.LoopBodyDetectionTask;
+import com.mojo.algorithms.transpiler.NaturalLoopBody;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.junit.jupiter.api.Test;
-import org.smojol.common.analysis.NaturalLoopBody;
-import org.smojol.common.graph.TestNode;
-import org.smojol.toolkit.analysis.task.transpiler.CloneEdgeOperation;
-import org.smojol.toolkit.analysis.task.transpiler.LoopBodyDetectionTask;
 
 import java.util.Collection;
 import java.util.Set;

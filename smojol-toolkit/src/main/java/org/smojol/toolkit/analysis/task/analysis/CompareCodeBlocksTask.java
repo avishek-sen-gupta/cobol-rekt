@@ -1,21 +1,21 @@
 package org.smojol.toolkit.analysis.task.analysis;
 
 import com.google.common.collect.ImmutableList;
+import com.mojo.algorithms.graph.TypedGraphEdge;
+import com.mojo.algorithms.graph.TypedGraphVertex;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;
 import org.jgrapht.alg.similarity.ZhangShashaTreeEditDistance;
 import org.jgrapht.graph.DefaultUndirectedGraph;
-import org.smojol.toolkit.task.CommandLineAnalysisTask;
+import com.mojo.algorithms.task.CommandLineAnalysisTask;
 import org.smojol.toolkit.analysis.pipeline.NodeOperationCostFunctions;
-import org.smojol.toolkit.task.AnalysisTaskResult;
-import org.smojol.toolkit.analysis.graph.NodeSpecBuilder;
+import com.mojo.algorithms.task.AnalysisTaskResult;
+import org.smojol.toolkit.intermediate.NodeSpecBuilder;
 import org.smojol.toolkit.analysis.graph.graphml.JGraphTGraphBuilder;
-import org.smojol.toolkit.analysis.graph.graphml.TypedGraphEdge;
-import org.smojol.toolkit.analysis.graph.graphml.TypedGraphVertex;
 import org.smojol.toolkit.ast.ParagraphFlowNode;
 import org.smojol.common.ast.FlowNode;
-import org.smojol.common.ast.FlowNodeType;
+import com.mojo.algorithms.transpiler.FlowNodeType;
 import org.smojol.common.navigation.FlowNodeNavigator;
 import org.smojol.common.vm.structure.CobolDataStructure;
 

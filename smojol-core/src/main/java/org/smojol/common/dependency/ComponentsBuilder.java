@@ -1,7 +1,7 @@
 package org.smojol.common.dependency;
 
 import lombok.Getter;
-import org.smojol.common.id.IdProvider;
+import com.mojo.algorithms.id.IdProvider;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.navigation.EntityNavigatorBuilder;
 import org.smojol.common.resource.ResourceOperations;

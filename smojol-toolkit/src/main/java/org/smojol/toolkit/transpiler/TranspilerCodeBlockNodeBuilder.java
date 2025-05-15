@@ -1,15 +1,15 @@
 package org.smojol.toolkit.transpiler;
 
 import com.google.common.collect.ImmutableMap;
+import com.mojo.algorithms.transpiler.FlowNodeType;
+import com.mojo.algorithms.transpiler.TranspilerCodeBlockNode;
+import com.mojo.algorithms.transpiler.TranspilerNode;
 import org.smojol.common.ast.FlowNode;
-import org.smojol.common.ast.FlowNodeType;
-import org.smojol.common.transpiler.TranspilerCodeBlockNode;
-import org.smojol.common.transpiler.TranspilerNode;
 import org.smojol.common.vm.structure.CobolDataStructure;
-import org.smojol.toolkit.analysis.task.transpiler.SectionParagraphMap;
 import org.smojol.toolkit.ast.ParagraphsFlowNode;
 import org.smojol.toolkit.ast.SectionFlowNode;
 import org.smojol.toolkit.ast.SentenceFlowNode;
+import org.smojol.toolkit.intermediate.SectionParagraphMap;
 
 import java.util.List;
 import java.util.Map;

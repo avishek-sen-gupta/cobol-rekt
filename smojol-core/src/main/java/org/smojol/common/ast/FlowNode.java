@@ -1,5 +1,6 @@
 package org.smojol.common.ast;
 
+import com.mojo.algorithms.transpiler.FlowNodeLike;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.smojol.common.pseudocode.SmojolSymbolTable;
 import org.smojol.common.vm.interpreter.CobolInterpreter;

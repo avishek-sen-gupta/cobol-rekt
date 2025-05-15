@@ -1,8 +1,10 @@
 package org.smojol.toolkit.analysis.graph.graphml;
 
+import com.mojo.algorithms.graph.TypedGraphEdge;
+import com.mojo.algorithms.graph.TypedGraphVertex;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.jgrapht.Graph;
-import org.smojol.toolkit.analysis.graph.NodeSpecBuilder;
+import org.smojol.toolkit.intermediate.NodeSpecBuilder;
 import org.smojol.toolkit.analysis.graph.jgrapht.JGraphTDataOperations;
 import org.smojol.common.flowchart.DataStructureVisitor;
 import org.smojol.common.vm.structure.CobolDataStructure;

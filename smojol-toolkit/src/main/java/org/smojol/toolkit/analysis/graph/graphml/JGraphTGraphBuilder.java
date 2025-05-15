@@ -1,5 +1,8 @@
 package org.smojol.toolkit.analysis.graph.graphml;
 
+import com.mojo.algorithms.graph.TypedCodeVertex;
+import com.mojo.algorithms.graph.TypedGraphEdge;
+import com.mojo.algorithms.graph.TypedGraphVertex;
 import lombok.Getter;
 import org.jgrapht.Graph;
 import org.jgrapht.alg.clique.BronKerboschCliqueFinder;
@@ -11,7 +14,7 @@ import org.jgrapht.nio.Attribute;
 import org.jgrapht.nio.AttributeType;
 import org.jgrapht.nio.DefaultAttribute;
 import org.jgrapht.nio.graphml.GraphMLExporter;
-import org.smojol.toolkit.analysis.graph.NodeSpecBuilder;
+import org.smojol.toolkit.intermediate.NodeSpecBuilder;
 import org.smojol.toolkit.analysis.graph.jgrapht.JGraphTDataOperations;
 import org.smojol.toolkit.analysis.graph.jgrapht.JGraphTCodeOperations;
 import org.smojol.toolkit.analysis.pipeline.SerialisableCobolDataStructure;

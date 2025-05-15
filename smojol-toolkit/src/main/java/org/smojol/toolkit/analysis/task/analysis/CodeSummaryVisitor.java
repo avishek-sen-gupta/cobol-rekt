@@ -3,7 +3,7 @@ package org.smojol.toolkit.analysis.task.analysis;
 import com.google.common.collect.ImmutableMap;
 import com.mojo.woof.Advisor;
 import org.smojol.common.ast.FlowNode;
-import org.smojol.common.ast.TreeMapperVisitor;
+import com.mojo.algorithms.navigation.TreeMapperVisitor;
 
 import java.util.List;
 import java.util.Map;

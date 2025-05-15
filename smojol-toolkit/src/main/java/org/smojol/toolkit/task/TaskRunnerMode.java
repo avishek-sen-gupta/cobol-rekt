@@ -1,6 +1,8 @@
 package org.smojol.toolkit.task;
 
 import com.google.common.collect.ImmutableList;
+import com.mojo.algorithms.task.AnalysisTaskResult;
+import com.mojo.algorithms.task.CommandLineAnalysisTask;
 import org.eclipse.lsp.cobol.common.error.SyntaxError;
 import org.smojol.toolkit.analysis.error.DiagnosticRuntimeError;
 

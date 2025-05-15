@@ -1,9 +1,8 @@
 package org.smojol.toolkit.transpiler;
 
+import com.mojo.algorithms.transpiler.*;
 import org.smojol.common.ast.CallTarget;
 import org.smojol.common.program.StaticCallTarget;
-import org.smojol.common.transpiler.*;
-import org.smojol.common.vm.type.TypedRecord;
 import org.smojol.toolkit.ast.DynamicCallTarget;
 
 public class CallTranspilerNodeBuilder {

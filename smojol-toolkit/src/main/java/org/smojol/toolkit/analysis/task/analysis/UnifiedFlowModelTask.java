@@ -2,7 +2,7 @@ package org.smojol.toolkit.analysis.task.analysis;
 
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.vm.structure.CobolDataStructure;
-import org.smojol.toolkit.analysis.graph.NodeSpecBuilder;
+import org.smojol.toolkit.intermediate.NodeSpecBuilder;
 import org.smojol.toolkit.analysis.graph.graphml.JGraphTGraphBuilder;
 import org.smojol.toolkit.analysis.graph.graphml.SerialisableUnifiedModel;
 

@@ -3,7 +3,7 @@ package org.smojol.common.vm.expression;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.navigation.CobolEntityNavigator;
-import org.smojol.common.vm.type.AbstractCobolType;
+import com.mojo.algorithms.types.AbstractCobolType;
 
 public class BasisVisitor extends AntlrCobolExpressionVisitor {
     @Override

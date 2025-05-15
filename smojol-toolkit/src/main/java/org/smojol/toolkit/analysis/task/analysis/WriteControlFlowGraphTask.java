@@ -4,12 +4,12 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonWriter;
 import org.smojol.common.ast.FlowNode;
-import org.smojol.common.id.IdProvider;
+import com.mojo.algorithms.id.IdProvider;
 import org.smojol.common.resource.ResourceOperations;
-import org.smojol.toolkit.task.CommandLineAnalysisTask;
+import com.mojo.algorithms.task.CommandLineAnalysisTask;
 import org.smojol.toolkit.analysis.pipeline.SerialisableCFGGraphCollector;
-import org.smojol.toolkit.task.AnalysisTask;
-import org.smojol.toolkit.task.AnalysisTaskResult;
+import com.mojo.algorithms.task.AnalysisTask;
+import com.mojo.algorithms.task.AnalysisTaskResult;
 import org.smojol.toolkit.analysis.pipeline.config.CFGOutputConfig;
 
 import java.io.IOException;

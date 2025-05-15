@@ -2,8 +2,8 @@ package org.smojol.toolkit.analysis.task.analysis;
 
 import com.mojo.woof.GraphSDK;
 import org.smojol.toolkit.analysis.pipeline.CobolProgramDependencyNeo4JVisitor;
-import org.smojol.toolkit.task.AnalysisTaskResult;
-import org.smojol.toolkit.analysis.graph.NodeSpecBuilder;
+import com.mojo.algorithms.task.AnalysisTaskResult;
+import org.smojol.toolkit.intermediate.NodeSpecBuilder;
 import org.smojol.common.program.CobolProgram;
 
 public class InjectProgramDependenciesIntoNeo4JTask {

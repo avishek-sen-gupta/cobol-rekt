@@ -1,8 +1,10 @@
 package org.smojol.common.vm.expression;
 
-import org.smojol.common.vm.type.TypedRecord;
+import com.mojo.algorithms.transpiler.ConditionTestTime;
+import com.mojo.algorithms.transpiler.TypedRecord;
 
-import static org.smojol.common.vm.expression.ConditionTestTime.BEFORE;
+import static com.mojo.algorithms.transpiler.ConditionTestTime.BEFORE;
+
 
 public record FlowIteration(CobolExpression loopVariable,
                             CobolExpression initialValue,

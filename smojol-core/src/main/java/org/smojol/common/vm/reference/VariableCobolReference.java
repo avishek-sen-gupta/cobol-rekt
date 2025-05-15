@@ -4,8 +4,8 @@ import org.smojol.common.vm.expression.CobolExpression;
 import org.smojol.common.vm.expression.VariableExpression;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.common.vm.structure.ConversionStrategy;
-import org.smojol.common.vm.type.AbstractCobolType;
-import org.smojol.common.vm.type.TypedRecord;
+import com.mojo.algorithms.types.AbstractCobolType;
+import com.mojo.algorithms.transpiler.TypedRecord;
 
 public class VariableCobolReference implements CobolReference {
     private final CobolDataStructure dataStructure;

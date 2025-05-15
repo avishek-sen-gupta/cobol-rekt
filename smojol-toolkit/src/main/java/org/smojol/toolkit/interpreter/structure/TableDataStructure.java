@@ -9,7 +9,7 @@ import org.smojol.common.vm.memory.MemoryRegion;
 import org.smojol.common.vm.memory.RangeMemoryAccess;
 import org.smojol.common.vm.strategy.UnresolvedReferenceStrategy;
 import org.smojol.common.vm.structure.*;
-import org.smojol.common.vm.type.CobolDataType;
+import com.mojo.algorithms.types.CobolDataType;
 import org.smojol.common.vm.type.GroupDataTypeSpec;
 
 import java.util.List;

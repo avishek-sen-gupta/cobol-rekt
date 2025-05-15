@@ -2,7 +2,7 @@ package org.smojol.common.vm.memory;
 
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang3.ArrayUtils;
-import org.smojol.common.vm.type.CobolDataType;
+import com.mojo.algorithms.types.CobolDataType;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;

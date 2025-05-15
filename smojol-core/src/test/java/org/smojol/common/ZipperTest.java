@@ -1,14 +1,13 @@
 package org.smojol.common;
 
 import com.google.common.collect.ImmutableList;
+import com.mojo.algorithms.transpiler.*;
 import io.vavr.collection.List;
 import org.junit.jupiter.api.Test;
-import org.smojol.common.transpiler.*;
-import org.smojol.common.vm.type.TypedRecord;
 
+import static com.mojo.algorithms.transpiler.TreeMatcher.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
-import static org.smojol.common.transpiler.TreeMatcher.*;
 
 public class ZipperTest {
     @Test

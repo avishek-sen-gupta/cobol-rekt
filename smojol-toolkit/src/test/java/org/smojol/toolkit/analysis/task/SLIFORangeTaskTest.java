@@ -3,26 +3,23 @@ package org.smojol.toolkit.analysis.task;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.mojo.algorithms.id.IncrementingIdProvider;
+import com.mojo.algorithms.transpiler.*;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
 import org.junit.jupiter.api.Test;
-import org.smojol.common.ast.FlowNodeType;
-import org.smojol.common.id.IncrementingIdProvider;
-import org.smojol.common.transpiler.*;
-import org.smojol.common.vm.type.TypedRecord;
-import org.smojol.toolkit.analysis.task.transpiler.BuildTranspilerInstructionsFromIntermediateTreeTask;
-import org.smojol.toolkit.analysis.task.transpiler.ProcedureBodyTask;
+import org.smojol.common.transpiler.BuildTranspilerInstructionsFromIntermediateTreeTask;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.mojo.algorithms.transpiler.TreeMatcher.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.smojol.common.transpiler.TreeMatcher.*;
 
 /**
  * From the paper 'Identifying Procedural Structure in Cobol Programs' by John Field and G.Ramalingam

@@ -1,19 +1,19 @@
 package org.smojol.toolkit.analysis.task;
 
 import com.google.common.collect.ImmutableList;
+import com.mojo.algorithms.graph.TypedGraphEdge;
+import com.mojo.algorithms.graph.TypedGraphVertex;
 import org.jgrapht.Graph;
 import org.junit.jupiter.api.Test;
 import org.smojol.common.ast.CobolTreeVisualiser;
 import org.smojol.common.dependency.ComponentsBuilder;
 import org.smojol.common.dialect.LanguageDialect;
-import org.smojol.common.id.UUIDProvider;
+import com.mojo.algorithms.id.UUIDProvider;
 import org.smojol.common.navigation.EntityNavigatorBuilder;
 import org.smojol.common.resource.LocalFilesystemOperations;
 import org.smojol.common.vm.strategy.UnresolvedReferenceThrowStrategy;
-import org.smojol.toolkit.analysis.graph.NamespaceQualifier;
-import org.smojol.toolkit.analysis.graph.NodeSpecBuilder;
-import org.smojol.toolkit.analysis.graph.graphml.TypedGraphEdge;
-import org.smojol.toolkit.analysis.graph.graphml.TypedGraphVertex;
+import com.mojo.algorithms.graph.NamespaceQualifier;
+import org.smojol.toolkit.intermediate.NodeSpecBuilder;
 import org.smojol.toolkit.analysis.pipeline.BaseAnalysisModel;
 import org.smojol.toolkit.analysis.pipeline.ParsePipeline;
 import org.smojol.toolkit.analysis.pipeline.config.GraphMLExportConfig;
@@ -21,9 +21,9 @@ import org.smojol.toolkit.analysis.pipeline.config.SourceConfig;
 import org.smojol.toolkit.analysis.task.analysis.BuildBaseModelTask;
 import org.smojol.toolkit.analysis.task.analysis.ExportToGraphMLTask;
 import org.smojol.toolkit.interpreter.structure.OccursIgnoringFormat1DataStructureBuilder;
-import org.smojol.toolkit.task.AnalysisTaskResult;
-import org.smojol.toolkit.task.AnalysisTaskResultError;
-import org.smojol.toolkit.task.AnalysisTaskResultOK;
+import com.mojo.algorithms.task.AnalysisTaskResult;
+import com.mojo.algorithms.task.AnalysisTaskResultError;
+import com.mojo.algorithms.task.AnalysisTaskResultOK;
 
 import java.io.File;
 import java.nio.file.Path;

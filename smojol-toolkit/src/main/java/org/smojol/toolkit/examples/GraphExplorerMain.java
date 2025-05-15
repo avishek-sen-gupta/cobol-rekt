@@ -3,18 +3,18 @@ package org.smojol.toolkit.examples;
 import com.google.common.collect.ImmutableList;
 import org.smojol.common.dialect.LanguageDialect;
 import org.smojol.common.resource.LocalFilesystemOperations;
-import org.smojol.common.id.UUIDProvider;
+import com.mojo.algorithms.id.UUIDProvider;
 import org.smojol.toolkit.analysis.pipeline.ProgramSearch;
 import org.smojol.toolkit.analysis.task.analysis.CodeTaskRunner;
 import org.smojol.toolkit.interpreter.FullProgram;
 import org.smojol.toolkit.interpreter.structure.OccursIgnoringFormat1DataStructureBuilder;
-import org.smojol.toolkit.task.CommandLineAnalysisTask;
+import com.mojo.algorithms.task.CommandLineAnalysisTask;
 
 import java.io.File;
 import java.io.IOException;
 
 import static org.smojol.common.flowchart.FlowchartOutputFormat.PNG;
-import static org.smojol.toolkit.task.CommandLineAnalysisTask.BUILD_BASE_ANALYSIS;
+import static com.mojo.algorithms.task.CommandLineAnalysisTask.BUILD_BASE_ANALYSIS;
 
 public class GraphExplorerMain {
     public static void main(String[] args) throws IOException {

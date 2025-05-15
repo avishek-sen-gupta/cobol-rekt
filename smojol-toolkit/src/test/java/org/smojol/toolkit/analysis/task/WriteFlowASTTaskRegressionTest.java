@@ -2,9 +2,9 @@ package org.smojol.toolkit.analysis.task;
 
 import org.junit.jupiter.api.Test;
 import org.smojol.common.ast.SerialisableASTFlowNode;
-import org.smojol.toolkit.task.AnalysisTaskResult;
-import org.smojol.toolkit.task.AnalysisTaskResultOK;
-import org.smojol.toolkit.task.CommandLineAnalysisTask;
+import com.mojo.algorithms.task.AnalysisTaskResult;
+import com.mojo.algorithms.task.AnalysisTaskResultOK;
+import com.mojo.algorithms.task.CommandLineAnalysisTask;
 
 import java.io.IOException;
 

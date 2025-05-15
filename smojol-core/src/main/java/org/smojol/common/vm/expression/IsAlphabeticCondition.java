@@ -1,7 +1,7 @@
 package org.smojol.common.vm.expression;
 
 import org.smojol.common.vm.structure.CobolDataStructure;
-import org.smojol.common.vm.type.TypedRecord;
+import com.mojo.algorithms.transpiler.TypedRecord;
 
 import java.util.function.Function;
 

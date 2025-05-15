@@ -1,18 +1,18 @@
 package org.smojol.toolkit.analysis;
 
+import com.mojo.algorithms.graph.TestNode;
+import com.mojo.algorithms.transpiler.FlowgraphReductionResult;
+import com.mojo.algorithms.transpiler.FlowgraphTransformer;
+import com.mojo.algorithms.transpiler.IrreducibleStronglyConnectedComponentsTask;
+import com.mojo.algorithms.transpiler.TranspilerInstruction;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.junit.jupiter.api.Test;
-import org.smojol.common.graph.TestNode;
-import org.smojol.common.transpiler.FlowgraphReductionResult;
-import org.smojol.common.transpiler.FlowgraphTransformer;
-import org.smojol.common.transpiler.TranspilerInstruction;
-import org.smojol.toolkit.analysis.task.transpiler.T1_T2_IntervalAnalysisTask;
-import org.smojol.toolkit.analysis.task.transpiler.IrreducibleStronglyConnectedComponentsTask;
-import org.smojol.toolkit.task.AnalysisTaskResult;
-import org.smojol.toolkit.task.AnalysisTaskResultOK;
+import com.mojo.algorithms.task.AnalysisTaskResult;
+import com.mojo.algorithms.task.AnalysisTaskResultOK;
+import org.smojol.toolkit.task.T1_T2_IntervalAnalysisTask;
 
 import java.util.List;
 import java.util.Set;

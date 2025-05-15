@@ -1,11 +1,10 @@
 package org.smojol.common;
 
 import com.google.common.collect.ImmutableList;
+import com.mojo.algorithms.navigation.ParentBuilderVisitor;
+import com.mojo.algorithms.navigation.TreeTraversal;
+import com.mojo.algorithms.transpiler.*;
 import org.junit.jupiter.api.Test;
-import org.smojol.common.navigation.ParentBuilderVisitor;
-import org.smojol.common.navigation.TreeTraversal;
-import org.smojol.common.transpiler.*;
-import org.smojol.common.vm.type.TypedRecord;
 
 import java.util.Map;
 

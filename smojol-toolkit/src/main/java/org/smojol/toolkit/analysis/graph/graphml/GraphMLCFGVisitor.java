@@ -1,7 +1,9 @@
 package org.smojol.toolkit.analysis.graph.graphml;
 
+import com.mojo.algorithms.graph.TypedGraphEdge;
+import com.mojo.algorithms.graph.TypedGraphVertex;
 import org.jgrapht.Graph;
-import org.smojol.toolkit.analysis.graph.NodeSpecBuilder;
+import org.smojol.toolkit.intermediate.NodeSpecBuilder;
 import org.smojol.toolkit.analysis.graph.jgrapht.JGraphTCodeOperations;
 import org.smojol.common.ast.*;
 

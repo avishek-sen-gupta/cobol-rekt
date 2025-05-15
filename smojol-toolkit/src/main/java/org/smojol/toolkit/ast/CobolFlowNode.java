@@ -1,6 +1,9 @@
 package org.smojol.toolkit.ast;
 
 import com.google.common.collect.ImmutableList;
+import com.mojo.algorithms.CodeSentinelType;
+import com.mojo.algorithms.transpiler.FlowNodeType;
+import com.mojo.algorithms.transpiler.SemanticCategory;
 import lombok.Getter;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -8,7 +11,6 @@ import org.antlr.v4.runtime.tree.TerminalNodeImpl;
 import org.eclipse.lsp.cobol.dialects.idms.IdmsParser;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.ast.*;
-import org.smojol.common.pseudocode.CodeSentinelType;
 import org.smojol.common.pseudocode.SmojolSymbolTable;
 import org.smojol.common.vm.interpreter.CobolInterpreter;
 import org.smojol.common.vm.interpreter.CobolVmSignal;

@@ -1,6 +1,7 @@
 package org.smojol.toolkit.analysis.task.analysis;
 
 import com.google.common.collect.ImmutableList;
+import com.mojo.algorithms.id.UUIDProvider;
 import hu.webarticum.treeprinter.printer.listing.ListingTreePrinter;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -9,14 +10,13 @@ import org.smojol.common.program.CobolProgram;
 import org.smojol.common.program.StaticCallTarget;
 import org.smojol.common.flowchart.ConsoleColors;
 import org.smojol.common.flowchart.FlowchartOutputFormat;
-import org.smojol.common.id.UUIDProvider;
 import org.smojol.common.dialect.LanguageDialect;
 import org.smojol.common.resource.ResourceOperations;
-import org.smojol.toolkit.task.CommandLineAnalysisTask;
+import com.mojo.algorithms.task.CommandLineAnalysisTask;
 import org.smojol.toolkit.analysis.pipeline.ProgramSearch;
-import org.smojol.toolkit.task.AnalysisTaskResult;
-import org.smojol.toolkit.task.AnalysisTaskResultError;
-import org.smojol.toolkit.task.AnalysisTaskResultOK;
+import com.mojo.algorithms.task.AnalysisTaskResult;
+import com.mojo.algorithms.task.AnalysisTaskResultError;
+import com.mojo.algorithms.task.AnalysisTaskResultOK;
 import org.smojol.toolkit.interpreter.FullProgram;
 import org.smojol.toolkit.interpreter.structure.OccursIgnoringFormat1DataStructureBuilder;
 
@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import static org.smojol.toolkit.task.CommandLineAnalysisTask.BUILD_BASE_ANALYSIS;
+import static com.mojo.algorithms.task.CommandLineAnalysisTask.BUILD_BASE_ANALYSIS;
 
 public class AnalyseProgramDependenciesTask {
     java.util.logging.Logger LOGGER = Logger.getLogger(AnalyseProgramDependenciesTask.class.getName());

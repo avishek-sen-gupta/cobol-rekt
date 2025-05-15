@@ -4,7 +4,7 @@ import com.mojo.woof.GraphSDK;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
 import org.neo4j.driver.Record;
-import org.smojol.toolkit.analysis.graph.NodeSpecBuilder;
+import org.smojol.toolkit.intermediate.NodeSpecBuilder;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.toolkit.analysis.graph.graphml.Neo4JASTBuilderVisitor;

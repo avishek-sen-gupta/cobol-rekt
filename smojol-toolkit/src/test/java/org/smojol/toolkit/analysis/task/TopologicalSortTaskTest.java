@@ -1,14 +1,14 @@
 package org.smojol.toolkit.analysis.task;
 
 import com.google.common.collect.ImmutableList;
+import com.mojo.algorithms.graph.DepthFirstSearchOrderingTask;
+import com.mojo.algorithms.graph.DepthFirstSpanningTree;
+import com.mojo.algorithms.graph.TestNode;
+import com.mojo.algorithms.graph.exception.CyclicGraphException;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.junit.jupiter.api.Test;
-import org.smojol.common.graph.DepthFirstSearchOrderingTask;
-import org.smojol.common.graph.DepthFirstSpanningTree;
-import org.smojol.common.graph.TestNode;
-import org.smojol.common.graph.exception.CyclicGraphException;
 
 import java.util.List;
 

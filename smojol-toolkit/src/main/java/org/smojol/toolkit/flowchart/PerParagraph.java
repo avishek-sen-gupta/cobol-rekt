@@ -5,7 +5,7 @@ import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.FlowNodeService;
 import org.smojol.common.flowchart.FlowchartOutputFormat;
-import org.smojol.common.id.IdProvider;
+import com.mojo.algorithms.id.IdProvider;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.vm.strategy.UnresolvedReferenceDoNothingStrategy;
 import org.smojol.common.vm.structure.Format1DataStructure;

@@ -5,7 +5,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.ast.FlowNode;
-import org.smojol.common.ast.FlowNodeType;
+import com.mojo.algorithms.transpiler.FlowNodeType;
 import org.smojol.common.vm.expression.CobolExpression;
 import org.smojol.common.vm.expression.ConditionVisitor;
 import org.smojol.common.vm.structure.CobolDataStructure;

@@ -4,9 +4,9 @@ import com.google.common.collect.ImmutableList;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.ast.FlowNode;
-import org.smojol.common.ast.SemanticCategory;
+import com.mojo.algorithms.transpiler.SemanticCategory;
 import org.smojol.common.ast.FlowNodeService;
-import org.smojol.common.ast.FlowNodeType;
+import com.mojo.algorithms.transpiler.FlowNodeType;
 import org.smojol.common.vm.stack.StackFrames;
 
 import java.util.ArrayList;

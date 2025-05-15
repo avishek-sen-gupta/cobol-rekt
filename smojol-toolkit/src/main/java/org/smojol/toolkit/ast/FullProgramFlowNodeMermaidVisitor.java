@@ -1,5 +1,6 @@
 package org.smojol.toolkit.ast;
 
+import com.mojo.algorithms.transpiler.FlowNodeType;
 import lombok.Getter;
 import org.apache.commons.text.StringEscapeUtils;
 import org.smojol.common.ast.*;

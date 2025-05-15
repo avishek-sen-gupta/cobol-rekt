@@ -1,15 +1,16 @@
 package org.smojol.toolkit.analysis.task;
 
+import com.mojo.algorithms.graph.TestNode;
+import com.mojo.algorithms.transpiler.ReducibleFlowgraphTestTask;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.junit.jupiter.api.Test;
-import org.smojol.common.graph.TestNode;
-import org.smojol.toolkit.analysis.task.transpiler.*;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ReducibleFlowgraphTestTaskTest {
     @Test

@@ -6,9 +6,9 @@ import com.google.gson.stream.JsonWriter;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.SerialisableASTFlowNode;
 import org.smojol.common.resource.ResourceOperations;
-import org.smojol.toolkit.task.CommandLineAnalysisTask;
-import org.smojol.toolkit.task.AnalysisTask;
-import org.smojol.toolkit.task.AnalysisTaskResult;
+import com.mojo.algorithms.task.CommandLineAnalysisTask;
+import com.mojo.algorithms.task.AnalysisTask;
+import com.mojo.algorithms.task.AnalysisTaskResult;
 import org.smojol.toolkit.analysis.pipeline.config.FlowASTOutputConfig;
 
 import java.io.IOException;

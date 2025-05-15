@@ -9,9 +9,9 @@ import org.smojol.common.vm.expression.PrimitiveCobolExpression;
 import org.smojol.common.vm.memory.MemoryLayout;
 import org.smojol.common.vm.memory.MemoryRegion;
 import org.smojol.common.vm.reference.CobolReference;
-import org.smojol.common.vm.type.AbstractCobolType;
+import com.mojo.algorithms.types.AbstractCobolType;
 import org.smojol.common.vm.type.LiteralResolver;
-import org.smojol.common.vm.type.TypedRecord;
+import com.mojo.algorithms.transpiler.TypedRecord;
 
 import java.util.List;
 import java.util.function.Function;

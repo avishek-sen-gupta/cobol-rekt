@@ -2,13 +2,11 @@ package org.smojol.common;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.mojo.algorithms.transpiler.*;
 import org.junit.jupiter.api.Test;
-import org.smojol.common.ast.FlowNodeType;
-import org.smojol.common.transpiler.*;
-import org.smojol.common.vm.type.TypedRecord;
 
+import static com.mojo.algorithms.transpiler.TreeMatcher.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.smojol.common.transpiler.TreeMatcher.*;
 
 public class TreeFormatterTest {
     @Test

@@ -2,7 +2,7 @@ package org.smojol.toolkit.analysis.graph.neo4j;
 
 import com.mojo.woof.GraphSDK;
 import org.neo4j.driver.Record;
-import org.smojol.toolkit.analysis.graph.NodeSpecBuilder;
+import org.smojol.toolkit.intermediate.NodeSpecBuilder;
 import org.smojol.common.ast.FlowNode;
 
 import static com.mojo.woof.NodeLabels.AST_NODE;

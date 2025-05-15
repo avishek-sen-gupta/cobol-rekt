@@ -5,8 +5,8 @@ import org.smojol.common.vm.expression.CobolExpression;
 import org.smojol.common.vm.expression.PrimitiveCobolExpression;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.common.vm.structure.ConversionStrategy;
-import org.smojol.common.vm.type.AbstractCobolType;
-import org.smojol.common.vm.type.TypedRecord;
+import com.mojo.algorithms.types.AbstractCobolType;
+import com.mojo.algorithms.transpiler.TypedRecord;
 
 public class IntermediateExpressionReference implements CobolReference {
     private final CobolExpression expression;

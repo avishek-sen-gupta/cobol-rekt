@@ -2,7 +2,7 @@ package org.smojol.common.vm.expression;
 
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.vm.structure.CobolDataStructure;
-import org.smojol.common.vm.type.AbstractCobolType;
+import com.mojo.algorithms.types.AbstractCobolType;
 import org.smojol.common.vm.type.LiteralResolver;
 
 import java.util.logging.Logger;

@@ -1,9 +1,9 @@
 package org.smojol.toolkit.flowchart;
 
+import com.mojo.algorithms.id.UUIDProvider;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.flowchart.FlowchartOutputFormat;
-import org.smojol.common.id.UUIDProvider;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.toolkit.interpreter.FullProgram;
 

@@ -3,7 +3,7 @@ package org.smojol.common.vm.expression;
 import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 import org.smojol.common.vm.structure.CobolDataStructure;
-import org.smojol.common.vm.type.AbstractCobolType;
+import com.mojo.algorithms.types.AbstractCobolType;
 
 public abstract class ClassConditionExpression extends CobolExpression {
     @Getter protected final CobolExpression expression;

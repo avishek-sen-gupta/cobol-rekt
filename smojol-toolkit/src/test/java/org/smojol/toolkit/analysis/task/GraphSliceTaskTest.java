@@ -1,13 +1,13 @@
 package org.smojol.toolkit.analysis.task;
 
 import com.google.common.collect.ImmutableList;
+import com.mojo.algorithms.graph.GraphSliceTask;
+import com.mojo.algorithms.graph.TestNode;
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.junit.jupiter.api.Test;
-import org.smojol.common.graph.GraphSliceTask;
-import org.smojol.common.graph.TestNode;
 
 import java.util.List;
 

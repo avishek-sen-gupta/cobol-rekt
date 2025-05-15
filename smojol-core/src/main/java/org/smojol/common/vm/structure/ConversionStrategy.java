@@ -1,8 +1,8 @@
 package org.smojol.common.vm.structure;
 
 import org.smojol.common.vm.reference.CobolReference;
-import org.smojol.common.vm.type.AbstractCobolType;
-import org.smojol.common.vm.type.TypedRecord;
+import com.mojo.algorithms.types.AbstractCobolType;
+import com.mojo.algorithms.transpiler.TypedRecord;
 
 public class ConversionStrategy {
     public static void set(CobolDataStructure lhs, CobolReference rhs) {

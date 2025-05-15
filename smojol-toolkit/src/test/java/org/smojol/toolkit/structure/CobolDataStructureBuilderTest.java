@@ -2,14 +2,14 @@ package org.smojol.toolkit.structure;
 
 import org.junit.jupiter.api.Test;
 import org.smojol.common.vm.structure.CobolDataStructure;
-import org.smojol.common.vm.type.CobolDataType;
+import com.mojo.algorithms.types.CobolDataType;
 import org.smojol.toolkit.analysis.pipeline.BaseAnalysisModel;
 import org.smojol.toolkit.analysis.task.TestTaskRunner;
 import org.smojol.toolkit.interpreter.structure.DefaultFormat1DataStructureBuilder;
-import org.smojol.toolkit.task.AnalysisTaskResult;
-import org.smojol.toolkit.task.AnalysisTaskResultError;
-import org.smojol.toolkit.task.AnalysisTaskResultOK;
-import org.smojol.toolkit.task.CommandLineAnalysisTask;
+import com.mojo.algorithms.task.AnalysisTaskResult;
+import com.mojo.algorithms.task.AnalysisTaskResultError;
+import com.mojo.algorithms.task.AnalysisTaskResultOK;
+import com.mojo.algorithms.task.CommandLineAnalysisTask;
 
 import java.io.IOException;
 

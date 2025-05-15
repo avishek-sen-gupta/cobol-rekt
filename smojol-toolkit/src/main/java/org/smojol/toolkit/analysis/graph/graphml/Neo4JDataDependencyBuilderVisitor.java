@@ -8,7 +8,7 @@ import org.smojol.common.ast.FlowNodeASTVisitor;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.toolkit.analysis.task.analysis.AttachCommentsTask;
 import org.smojol.toolkit.analysis.graph.DataDependencyPairComputer;
-import org.smojol.toolkit.analysis.graph.NodeSpecBuilder;
+import org.smojol.toolkit.intermediate.NodeSpecBuilder;
 import org.smojol.toolkit.analysis.graph.NodeToWoof;
 import org.smojol.toolkit.analysis.graph.neo4j.NodeReferenceStrategy;
 

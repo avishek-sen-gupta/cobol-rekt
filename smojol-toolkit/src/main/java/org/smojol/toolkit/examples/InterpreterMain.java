@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smojol.toolkit.analysis.task.interpret.InterpretTask;
 import org.smojol.toolkit.interpreter.interpreter.CobolConditionResolver;
-import org.smojol.toolkit.task.AnalysisTaskResult;
+import com.mojo.algorithms.task.AnalysisTaskResult;
 
 import java.io.File;
 import java.io.IOException;

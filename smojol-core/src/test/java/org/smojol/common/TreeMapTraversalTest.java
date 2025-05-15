@@ -1,9 +1,9 @@
 package org.smojol.common;
 
+import com.mojo.algorithms.navigation.TreeMapperTraversal;
 import org.junit.jupiter.api.Test;
-import org.smojol.common.ast.TreeMapperVisitor;
-import org.smojol.common.id.Identifiable;
-import org.smojol.common.navigation.TreeMapperTraversal;
+import com.mojo.algorithms.navigation.TreeMapperVisitor;
+import com.mojo.algorithms.id.Identifiable;
 
 import java.util.Arrays;
 import java.util.List;

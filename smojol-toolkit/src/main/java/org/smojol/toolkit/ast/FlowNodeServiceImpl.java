@@ -1,7 +1,7 @@
 package org.smojol.toolkit.ast;
 
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.smojol.common.id.IdProvider;
+import com.mojo.algorithms.id.IdProvider;
 import org.smojol.toolkit.interpreter.stack.CobolStackFrames;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.FlowNodeService;

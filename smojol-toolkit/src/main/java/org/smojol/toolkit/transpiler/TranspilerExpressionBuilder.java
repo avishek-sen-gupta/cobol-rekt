@@ -1,7 +1,7 @@
 package org.smojol.toolkit.transpiler;
 
 import com.google.common.collect.ImmutableList;
-import org.smojol.common.transpiler.*;
+import com.mojo.algorithms.transpiler.*;
 import org.smojol.common.vm.expression.*;
 import org.smojol.common.vm.structure.CobolDataStructure;
 
@@ -37,7 +37,7 @@ public class TranspilerExpressionBuilder {
         else if (expression instanceof NestedConditionExpression e) return new NestedConditionNode(build(e.getExpression()));
         else if (expression instanceof SimpleConditionExpression e) {
             if (e.getComparison() == null) return explicitCondition(e.getLhs(), dataStructures);
-            return TranspilerComparisonOperator.operator(e.getComparison().getRelationalOperation(), build(e.getLhs()), build(e.getComparison().getRhs()));
+            return operator(e.getComparison().getRelationalOperation(), build(e.getLhs()), build(e.getComparison().getRhs()));
         } else if (expression instanceof SpecialRegisterExpression e)
             return new CallFunctionTranspilerNode(e.getFunctionCall().getFunctionName(), e.getFunctionCall().getArguments().stream().map(this::build).toList());
         else if (expression instanceof NullCobolExpression e) return new NullTranspilerNode();
@@ -54,4 +54,16 @@ public class TranspilerExpressionBuilder {
         CobolDataStructure actualVariable = range.parent();
         return new CallFunctionTranspilerNode("isInRange", ImmutableList.of(new SymbolReferenceNode(actualVariable.name()), new SymbolReferenceNode(range.name())));
     }
+
+    public static TranspilerComparisonOperator operator(ComparisonOperator comparison, TranspilerNode lhs, TranspilerNode rhs) {
+        if (comparison == RelationalOperation.EQUAL) return new EqualToNode(lhs, rhs);
+        else if (comparison == RelationalOperation.NOT_EQUAL) return new NotEqualToNode(lhs, rhs);
+        else if (comparison == RelationalOperation.GREATER_THAN) return new GreaterThanNode(lhs, rhs);
+        else if (comparison == RelationalOperation.GREATER_THAN_OR_EQUAL) return new GreaterThanOrEqualToNode(lhs, rhs);
+        else if (comparison == RelationalOperation.LESS_THAN) return new LessThanNode(lhs, rhs);
+        else if (comparison == RelationalOperation.LESS_THAN_OR_EQUAL) return new LessThanOrEqualToNode(lhs, rhs);
+
+        throw new UnsupportedOperationException("This is not a valid comparison operator: " + comparison);
+    }
+
 }

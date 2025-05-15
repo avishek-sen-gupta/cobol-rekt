@@ -4,8 +4,8 @@ import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.structure.SourceSection;
 import org.smojol.common.vm.memory.*;
 import org.smojol.common.vm.reference.CobolReference;
-import org.smojol.common.vm.type.CobolDataType;
-import org.smojol.common.vm.type.TypedRecord;
+import com.mojo.algorithms.types.CobolDataType;
+import com.mojo.algorithms.transpiler.TypedRecord;
 
 import java.util.List;
 import java.util.function.Function;

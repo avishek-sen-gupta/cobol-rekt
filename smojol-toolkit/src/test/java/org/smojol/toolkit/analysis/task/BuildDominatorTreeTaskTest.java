@@ -1,16 +1,16 @@
 package org.smojol.toolkit.analysis.task;
 
+import com.mojo.algorithms.graph.DepthFirstSearchOrderingTask;
+import com.mojo.algorithms.graph.DepthFirstSpanningTree;
+import com.mojo.algorithms.graph.DominatorTree;
+import com.mojo.algorithms.graph.TestNode;
+import com.mojo.algorithms.transpiler.BuildDominatorTreeTask;
+import com.mojo.algorithms.transpiler.BuildDominatorsTask;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.junit.jupiter.api.Test;
-import org.smojol.common.graph.DepthFirstSpanningTree;
-import org.smojol.common.graph.DepthFirstSearchOrderingTask;
-import org.smojol.common.graph.DominatorTree;
-import org.smojol.common.graph.TestNode;
-import org.smojol.toolkit.analysis.task.transpiler.BuildDominatorTreeTask;
-import org.smojol.toolkit.analysis.task.transpiler.BuildDominatorsTask;
 
 import java.util.List;
 

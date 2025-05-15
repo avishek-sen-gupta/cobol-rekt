@@ -1,15 +1,16 @@
 package org.smojol.toolkit.transpiler;
 
-import org.smojol.common.transpiler.*;
+import com.mojo.algorithms.transpiler.*;
 import org.smojol.common.vm.structure.CobolDataStructure;
-import org.smojol.toolkit.analysis.task.transpiler.SectionParagraphMap;
 import org.smojol.toolkit.ast.SearchFlowNode;
 import org.smojol.toolkit.ast.SearchWhenFlowNode;
+import org.smojol.toolkit.intermediate.SectionParagraphMap;
 
 import java.util.List;
 
-import static org.smojol.common.list.CarCdr.head;
-import static org.smojol.common.list.CarCdr.tail;
+import static com.mojo.algorithms.list.CarCdr.head;
+import static com.mojo.algorithms.list.CarCdr.tail;
+
 
 public class SearchWhenNodeTranslator {
     public static TranspilerNode build(SearchFlowNode n, CobolDataStructure dataStructures, SectionParagraphMap sectionParagraphMap) {

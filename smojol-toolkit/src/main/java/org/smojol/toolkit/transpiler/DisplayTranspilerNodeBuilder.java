@@ -1,8 +1,8 @@
 package org.smojol.toolkit.transpiler;
 
-import org.smojol.common.transpiler.PrintTranspilerNode;
-import org.smojol.common.transpiler.TranspilerNode;
-import org.smojol.common.transpiler.ValueOfNode;
+import com.mojo.algorithms.transpiler.PrintTranspilerNode;
+import com.mojo.algorithms.transpiler.TranspilerNode;
+import com.mojo.algorithms.transpiler.ValueOfNode;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.toolkit.ast.DisplayFlowNode;
 

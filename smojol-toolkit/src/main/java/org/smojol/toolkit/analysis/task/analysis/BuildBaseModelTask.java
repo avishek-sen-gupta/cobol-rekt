@@ -5,7 +5,7 @@ import org.smojol.common.ast.BuildSerialisableASTTask;
 import org.smojol.common.ast.CobolContextAugmentedTreeNode;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.FlowNodeService;
-import org.smojol.common.id.IdProvider;
+import com.mojo.algorithms.id.IdProvider;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.pseudocode.SmojolSymbolTable;
 import org.smojol.common.pseudocode.SymbolReferenceBuilder;
@@ -14,8 +14,8 @@ import org.smojol.toolkit.analysis.pipeline.BaseAnalysisModel;
 import org.smojol.toolkit.analysis.pipeline.ParsePipeline;
 import org.smojol.toolkit.ast.BuildFlowNodesTask;
 import org.smojol.toolkit.ast.FlowNodeServiceImpl;
-import org.smojol.toolkit.task.AnalysisTask;
-import org.smojol.toolkit.task.AnalysisTaskResult;
+import com.mojo.algorithms.task.AnalysisTask;
+import com.mojo.algorithms.task.AnalysisTaskResult;
 
 import java.io.IOException;
 

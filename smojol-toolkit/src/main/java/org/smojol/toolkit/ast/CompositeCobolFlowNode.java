@@ -1,6 +1,8 @@
 package org.smojol.toolkit.ast;
 
 import com.google.common.collect.ImmutableList;
+import com.mojo.algorithms.transpiler.FlowNodeType;
+import com.mojo.algorithms.transpiler.SemanticCategory;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolParser;

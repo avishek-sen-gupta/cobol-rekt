@@ -1,10 +1,10 @@
 package org.smojol.toolkit.intermediate;
 
+import com.mojo.algorithms.id.IncrementingIdProvider;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.NullFlowNode;
 import org.smojol.common.navigation.CobolEntityNavigator;
-import org.smojol.common.id.IncrementingIdProvider;
 import org.smojol.common.pseudocode.SmojolSymbolTable;
 import org.smojol.common.vm.stack.StackFrames;
 import org.smojol.common.vm.structure.CobolDataStructure;

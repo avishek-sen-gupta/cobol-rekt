@@ -1,35 +1,35 @@
 package org.smojol.toolkit.analysis.task;
 
 import com.google.common.collect.ImmutableList;
+import com.mojo.algorithms.graph.GraphSlice;
+import com.mojo.algorithms.graph.GraphSliceTask;
+import com.mojo.algorithms.graph.ReachingConditionDefinitionTask;
+import com.mojo.algorithms.transpiler.PrintTranspilerNode;
+import com.mojo.algorithms.transpiler.TranspilerFlowgraph;
+import com.mojo.algorithms.transpiler.TranspilerInstruction;
+import com.mojo.algorithms.transpiler.TranspilerNode;
 import org.jgrapht.graph.DefaultEdge;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.smojol.common.dialect.LanguageDialect;
 import org.smojol.common.flowchart.FlowchartOutputFormat;
-import org.smojol.common.graph.GraphSlice;
-import org.smojol.common.graph.GraphSliceTask;
-import org.smojol.common.graph.ReachingConditionDefinitionTask;
-import org.smojol.common.id.UUIDProvider;
+import com.mojo.algorithms.id.UUIDProvider;
 import org.smojol.common.resource.LocalFilesystemOperations;
-import org.smojol.common.transpiler.PrintTranspilerNode;
-import org.smojol.common.transpiler.TranspilerFlowgraph;
-import org.smojol.common.transpiler.TranspilerInstruction;
-import org.smojol.common.transpiler.TranspilerNode;
 import org.smojol.toolkit.analysis.pipeline.BaseAnalysisModel;
 import org.smojol.toolkit.analysis.pipeline.ProgramSearch;
+import org.smojol.toolkit.analysis.task.analysis.BuildTranspilerFlowgraphTask;
 import org.smojol.toolkit.analysis.task.analysis.CodeTaskRunner;
-import org.smojol.toolkit.analysis.task.transpiler.BuildTranspilerFlowgraphTask;
 import org.smojol.toolkit.interpreter.FullProgram;
 import org.smojol.toolkit.interpreter.structure.OccursIgnoringFormat1DataStructureBuilder;
-import org.smojol.toolkit.task.AnalysisTaskResult;
-import org.smojol.toolkit.task.AnalysisTaskResultOK;
+import com.mojo.algorithms.task.AnalysisTaskResult;
+import com.mojo.algorithms.task.AnalysisTaskResultOK;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import static org.smojol.toolkit.task.CommandLineAnalysisTask.BUILD_BASE_ANALYSIS;
+import static com.mojo.algorithms.task.CommandLineAnalysisTask.BUILD_BASE_ANALYSIS;
 
 public class ReachingConditionTaskRegressionTest {
     @Test

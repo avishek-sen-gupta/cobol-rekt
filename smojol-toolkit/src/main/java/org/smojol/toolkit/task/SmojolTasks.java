@@ -1,24 +1,24 @@
 package org.smojol.toolkit.task;
 
 import com.google.common.collect.ImmutableList;
+import com.mojo.algorithms.task.*;
+import com.mojo.algorithms.transpiler.TranspilerFlowgraph;
 import com.mojo.woof.Neo4JDriverBuilder;
-import org.smojol.common.id.IdProvider;
+import com.mojo.algorithms.id.IdProvider;
 import org.smojol.common.resource.ResourceOperations;
-import org.smojol.common.transpiler.TranspilerFlowgraph;
-import org.smojol.toolkit.analysis.graph.NamespaceQualifier;
-import org.smojol.toolkit.analysis.graph.NodeSpecBuilder;
+import com.mojo.algorithms.graph.NamespaceQualifier;
+import org.smojol.toolkit.intermediate.NodeSpecBuilder;
 import org.smojol.toolkit.analysis.pipeline.BaseAnalysisModel;
 import org.smojol.toolkit.analysis.pipeline.ParsePipeline;
 import org.smojol.toolkit.analysis.pipeline.config.*;
 import org.smojol.toolkit.analysis.task.analysis.*;
-import org.smojol.toolkit.analysis.task.transpiler.BuildTranspilerFlowgraphTask;
 import org.smojol.toolkit.flowchart.FlowchartOutputWriter;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static org.smojol.toolkit.task.CommandLineAnalysisTask.DO_NOTHING;
+import static com.mojo.algorithms.task.CommandLineAnalysisTask.DO_NOTHING;
 
 public class SmojolTasks {
     private final SourceConfig sourceConfig;

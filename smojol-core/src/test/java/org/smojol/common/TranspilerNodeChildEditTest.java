@@ -2,11 +2,9 @@ package org.smojol.common;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.mojo.algorithms.transpiler.*;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.junit.jupiter.api.Test;
-import org.smojol.common.ast.FlowNodeType;
-import org.smojol.common.transpiler.*;
-import org.smojol.common.vm.type.TypedRecord;
 
 import java.util.Optional;
 

@@ -1,10 +1,10 @@
 package org.smojol.toolkit.transpiler;
 
+import com.mojo.algorithms.transpiler.*;
 import org.smojol.common.ast.FlowNode;
-import org.smojol.common.transpiler.*;
 import org.smojol.common.vm.structure.CobolDataStructure;
-import org.smojol.toolkit.analysis.task.transpiler.SectionParagraphMap;
 import org.smojol.toolkit.ast.*;
+import org.smojol.toolkit.intermediate.SectionParagraphMap;
 
 public class TranspilerTreeBuilder {
     public static TranspilerNode flowToTranspiler(FlowNode node, CobolDataStructure dataStructures, SectionParagraphMap sectionParagraphMap) {

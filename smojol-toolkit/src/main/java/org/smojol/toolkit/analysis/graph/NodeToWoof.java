@@ -1,14 +1,15 @@
 package org.smojol.toolkit.analysis.graph;
 
+import com.mojo.algorithms.transpiler.FlowNodeLike;
+import com.mojo.algorithms.transpiler.TranspilerNode;
 import com.mojo.woof.GraphSDK;
 import com.mojo.woof.NodeSpec;
 import com.mojo.woof.WoofNode;
 import org.neo4j.driver.Record;
-import org.smojol.common.ast.FlowNodeLike;
-import org.smojol.common.program.CobolProgram;
 import org.smojol.common.ast.CommentBlock;
-import org.smojol.common.transpiler.TranspilerNode;
+import org.smojol.common.program.CobolProgram;
 import org.smojol.common.vm.structure.CobolDataStructure;
+import org.smojol.toolkit.intermediate.NodeSpecBuilder;
 
 public class NodeToWoof {
     public static Record newOrExistingCFGNode(FlowNodeLike node, GraphSDK sdk, NodeSpecBuilder qualifier) {

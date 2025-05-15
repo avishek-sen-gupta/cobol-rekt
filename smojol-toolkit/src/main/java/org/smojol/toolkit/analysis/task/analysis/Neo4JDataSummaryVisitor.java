@@ -3,7 +3,7 @@ package org.smojol.toolkit.analysis.task.analysis;
 import com.google.common.collect.ImmutableList;
 import com.mojo.woof.*;
 import org.neo4j.driver.Record;
-import org.smojol.common.ast.TreeMapperVisitor;
+import com.mojo.algorithms.navigation.TreeMapperVisitor;
 
 import java.util.List;
 import java.util.logging.Logger;

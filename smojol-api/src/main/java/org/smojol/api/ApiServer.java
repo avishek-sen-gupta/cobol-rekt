@@ -4,6 +4,9 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.mojo.algorithms.transpiler.PruneUnreachableTask;
+import com.mojo.algorithms.transpiler.TranspilerFlowgraph;
+import com.mojo.algorithms.transpiler.TranspilerInstruction;
 import io.javalin.Javalin;
 import io.javalin.json.JsonMapper;
 import org.jgrapht.Graph;
@@ -14,19 +17,16 @@ import org.smojol.api.contract.ProjectListing;
 import org.smojol.api.database.DbContext;
 import org.smojol.common.dialect.LanguageDialect;
 import org.smojol.common.flowchart.FlowchartOutputFormat;
-import org.smojol.common.id.UUIDProvider;
-import org.smojol.common.pseudocode.BasicBlock;
+import com.mojo.algorithms.id.UUIDProvider;
+import com.mojo.algorithms.BasicBlock;
 import org.smojol.common.resource.LocalFilesystemOperations;
-import org.smojol.common.transpiler.PruneUnreachableTask;
-import org.smojol.common.transpiler.TranspilerFlowgraph;
-import org.smojol.common.transpiler.TranspilerInstruction;
 import org.smojol.toolkit.analysis.pipeline.ProgramSearch;
 import org.smojol.toolkit.analysis.task.analysis.CodeTaskRunner;
 import org.smojol.toolkit.interpreter.FullProgram;
 import org.smojol.toolkit.interpreter.structure.OccursIgnoringFormat1DataStructureBuilder;
-import org.smojol.toolkit.task.AnalysisTaskResult;
-import org.smojol.toolkit.task.AnalysisTaskResultOK;
-import org.smojol.toolkit.task.CommandLineAnalysisTask;
+import com.mojo.algorithms.task.AnalysisTaskResult;
+import com.mojo.algorithms.task.AnalysisTaskResultOK;
+import com.mojo.algorithms.task.CommandLineAnalysisTask;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,7 +36,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-import static org.smojol.toolkit.task.CommandLineAnalysisTask.BUILD_BASE_ANALYSIS;
+import static com.mojo.algorithms.task.CommandLineAnalysisTask.BUILD_BASE_ANALYSIS;
 
 public class ApiServer {
     private static final java.util.logging.Logger LOGGER = Logger.getLogger(ApiServer.class.getName());

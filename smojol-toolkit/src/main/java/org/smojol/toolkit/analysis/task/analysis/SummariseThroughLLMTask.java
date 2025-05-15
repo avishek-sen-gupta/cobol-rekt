@@ -1,13 +1,13 @@
 package org.smojol.toolkit.analysis.task.analysis;
 
+import com.mojo.algorithms.navigation.TreeMapperTraversal;
 import com.mojo.woof.*;
 import org.neo4j.driver.Record;
-import org.smojol.common.ast.FlowNodeType;
-import org.smojol.common.navigation.TreeMapperTraversal;
-import org.smojol.toolkit.analysis.graph.NodeSpecBuilder;
-import org.smojol.toolkit.task.AnalysisTask;
-import org.smojol.toolkit.task.AnalysisTaskResult;
-import org.smojol.toolkit.task.CommandLineAnalysisTask;
+import com.mojo.algorithms.transpiler.FlowNodeType;
+import org.smojol.toolkit.intermediate.NodeSpecBuilder;
+import com.mojo.algorithms.task.AnalysisTask;
+import com.mojo.algorithms.task.AnalysisTaskResult;
+import com.mojo.algorithms.task.CommandLineAnalysisTask;
 
 import java.util.List;
 import java.util.Map;

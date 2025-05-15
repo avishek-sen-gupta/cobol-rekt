@@ -1,12 +1,12 @@
 package org.smojol.toolkit.analysis.task.interpret;
 
 import com.google.common.collect.ImmutableList;
+import com.mojo.algorithms.id.UUIDProvider;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.smojol.common.ast.CobolTreeVisualiser;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.dependency.ComponentsBuilder;
 import org.smojol.common.dialect.LanguageDialect;
-import org.smojol.common.id.UUIDProvider;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.navigation.EntityNavigatorBuilder;
 import org.smojol.common.pseudocode.SmojolSymbolTable;
@@ -27,10 +27,10 @@ import org.smojol.toolkit.interpreter.interpreter.CobolBreakpointer;
 import org.smojol.toolkit.interpreter.interpreter.CobolInterpreterFactory;
 import org.smojol.toolkit.interpreter.interpreter.RunLogger;
 import org.smojol.toolkit.interpreter.structure.DefaultFormat1DataStructureBuilder;
-import org.smojol.toolkit.task.AnalysisTask;
-import org.smojol.toolkit.task.AnalysisTaskResult;
-import org.smojol.toolkit.task.AnalysisTaskResultError;
-import org.smojol.toolkit.task.AnalysisTaskResultOK;
+import com.mojo.algorithms.task.AnalysisTask;
+import com.mojo.algorithms.task.AnalysisTaskResult;
+import com.mojo.algorithms.task.AnalysisTaskResultError;
+import com.mojo.algorithms.task.AnalysisTaskResultOK;
 
 import java.io.IOException;
 import java.util.logging.Logger;

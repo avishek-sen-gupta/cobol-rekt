@@ -3,7 +3,7 @@ package org.smojol.toolkit.analysis.pipeline;
 
 import com.mojo.woof.NodeRelations;
 import org.smojol.common.ast.*;
-import org.smojol.common.id.IdProvider;
+import com.mojo.algorithms.id.IdProvider;
 
 import java.util.ArrayList;
 import java.util.List;

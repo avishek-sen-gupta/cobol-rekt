@@ -1,6 +1,8 @@
 package org.smojol.toolkit.ast;
 
 import com.google.common.collect.ImmutableList;
+import com.mojo.algorithms.transpiler.FlowNodeType;
+import com.mojo.algorithms.transpiler.SemanticCategory;
 import org.smojol.common.ast.*;
 import org.smojol.common.idms.DialectContainerNode;
 import org.smojol.common.vm.stack.StackFrames;

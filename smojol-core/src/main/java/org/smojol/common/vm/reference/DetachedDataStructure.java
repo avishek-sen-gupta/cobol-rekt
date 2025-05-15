@@ -1,5 +1,6 @@
 package org.smojol.common.vm.reference;
 
+import com.mojo.algorithms.transpiler.TypedRecord;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.structure.SourceSection;
 import org.smojol.common.vm.memory.MemoryLayout;
@@ -9,7 +10,6 @@ import org.smojol.common.vm.structure.AccessChain;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.common.vm.structure.ConditionalDataStructure;
 import org.smojol.common.vm.structure.NamingScheme;
-import org.smojol.common.vm.type.TypedRecord;
 
 import java.util.List;
 import java.util.function.Function;

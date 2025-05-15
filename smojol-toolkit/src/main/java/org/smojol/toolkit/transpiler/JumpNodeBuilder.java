@@ -1,9 +1,8 @@
 package org.smojol.toolkit.transpiler;
 
 import com.google.common.collect.ImmutableList;
-import org.smojol.common.transpiler.*;
+import com.mojo.algorithms.transpiler.*;
 import org.smojol.common.vm.structure.CobolDataStructure;
-import org.smojol.common.vm.type.TypedRecord;
 import org.smojol.toolkit.ast.GoToFlowNode;
 
 public class JumpNodeBuilder {

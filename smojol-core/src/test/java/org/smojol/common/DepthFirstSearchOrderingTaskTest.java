@@ -1,12 +1,11 @@
 package org.smojol.common;
 
 import com.google.common.collect.ImmutableList;
+import com.mojo.algorithms.graph.*;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.junit.jupiter.api.Test;
-import org.smojol.common.flowchart.MermaidGraph;
-import org.smojol.common.graph.*;
 
 import java.util.List;
 import java.util.Set;

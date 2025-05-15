@@ -1,14 +1,16 @@
 package org.smojol.common.vm.expression;
 
 import com.google.common.collect.ImmutableList;
+import com.mojo.algorithms.transpiler.ConditionTestTime;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.vm.structure.CobolDataStructure;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.smojol.common.vm.expression.ConditionTestTime.AFTER;
-import static org.smojol.common.vm.expression.ConditionTestTime.BEFORE;
+import static com.mojo.algorithms.transpiler.ConditionTestTime.AFTER;
+import static com.mojo.algorithms.transpiler.ConditionTestTime.BEFORE;
+
 
 public class FlowIterationBuilder {
     public static List<FlowIteration> build(CobolParser.PerformTypeContext performTypeContext, CobolDataStructure dataStructures) {

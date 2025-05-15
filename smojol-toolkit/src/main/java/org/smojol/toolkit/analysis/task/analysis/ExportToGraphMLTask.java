@@ -1,15 +1,15 @@
 package org.smojol.toolkit.analysis.task.analysis;
 
+import com.mojo.algorithms.graph.TypedGraphEdge;
+import com.mojo.algorithms.graph.TypedGraphVertex;
 import org.jgrapht.Graph;
 import org.smojol.common.ast.FlowNode;
-import org.smojol.toolkit.analysis.graph.graphml.TypedGraphEdge;
-import org.smojol.toolkit.analysis.graph.graphml.TypedGraphVertex;
 import org.smojol.common.resource.ResourceOperations;
-import org.smojol.toolkit.task.CommandLineAnalysisTask;
-import org.smojol.toolkit.task.AnalysisTask;
-import org.smojol.toolkit.task.AnalysisTaskResult;
+import com.mojo.algorithms.task.CommandLineAnalysisTask;
+import com.mojo.algorithms.task.AnalysisTask;
+import com.mojo.algorithms.task.AnalysisTaskResult;
 import org.smojol.common.vm.structure.CobolDataStructure;
-import org.smojol.toolkit.analysis.graph.NodeSpecBuilder;
+import org.smojol.toolkit.intermediate.NodeSpecBuilder;
 import org.smojol.toolkit.analysis.graph.graphml.JGraphTGraphBuilder;
 import org.smojol.toolkit.analysis.pipeline.config.GraphMLExportConfig;
 

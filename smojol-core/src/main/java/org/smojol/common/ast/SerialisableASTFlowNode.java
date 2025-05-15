@@ -1,6 +1,8 @@
 package org.smojol.common.ast;
 
 import com.google.common.collect.ImmutableList;
+import com.mojo.algorithms.transpiler.FlowNodeType;
+import com.mojo.algorithms.transpiler.SemanticCategory;
 import lombok.Getter;
 
 import java.util.ArrayList;

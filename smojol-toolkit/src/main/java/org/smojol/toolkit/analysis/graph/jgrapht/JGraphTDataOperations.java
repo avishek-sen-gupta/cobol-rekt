@@ -1,9 +1,9 @@
 package org.smojol.toolkit.analysis.graph.jgrapht;
 
+import com.mojo.algorithms.graph.TypedGraphEdge;
+import com.mojo.algorithms.graph.TypedGraphVertex;
 import org.jgrapht.Graph;
-import org.smojol.toolkit.analysis.graph.NodeSpecBuilder;
-import org.smojol.toolkit.analysis.graph.graphml.TypedGraphEdge;
-import org.smojol.toolkit.analysis.graph.graphml.TypedGraphVertex;
+import org.smojol.toolkit.intermediate.NodeSpecBuilder;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.vm.structure.CobolDataStructure;
 

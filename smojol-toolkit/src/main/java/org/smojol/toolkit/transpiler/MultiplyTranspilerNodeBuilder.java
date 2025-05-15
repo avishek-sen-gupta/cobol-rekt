@@ -1,9 +1,9 @@
 package org.smojol.toolkit.transpiler;
 
-import org.smojol.common.transpiler.MultiplyNode;
-import org.smojol.common.transpiler.SetTranspilerNode;
-import org.smojol.common.transpiler.TranspilerCodeBlockNode;
-import org.smojol.common.transpiler.TranspilerNode;
+import com.mojo.algorithms.transpiler.MultiplyNode;
+import com.mojo.algorithms.transpiler.SetTranspilerNode;
+import com.mojo.algorithms.transpiler.TranspilerCodeBlockNode;
+import com.mojo.algorithms.transpiler.TranspilerNode;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.toolkit.ast.MultiplyFlowNode;
 

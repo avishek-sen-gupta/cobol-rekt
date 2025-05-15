@@ -2,7 +2,7 @@ package org.smojol.toolkit.interpreter.interpreter;
 
 import org.smojol.common.vm.expression.CobolExpression;
 import org.smojol.common.vm.expression.PrimitiveCobolExpression;
-import org.smojol.common.vm.type.TypedRecord;
+import com.mojo.algorithms.transpiler.TypedRecord;
 import org.smojol.toolkit.ast.MultiplyFlowNode;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.common.vm.reference.CobolReferenceBuilder;

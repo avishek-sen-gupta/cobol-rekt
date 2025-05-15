@@ -3,7 +3,7 @@ package org.smojol.toolkit.analysis.pipeline;
 import com.mojo.woof.GraphSDK;
 import org.neo4j.driver.Record;
 import org.smojol.common.program.ProgramVisitor;
-import org.smojol.toolkit.analysis.graph.NodeSpecBuilder;
+import org.smojol.toolkit.intermediate.NodeSpecBuilder;
 import org.smojol.toolkit.analysis.graph.NodeToWoof;
 import org.smojol.common.program.CobolProgram;
 

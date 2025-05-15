@@ -3,8 +3,8 @@ package org.smojol.common.vm.expression;
 import com.google.common.collect.ImmutableList;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.smojol.common.vm.structure.CobolDataStructure;
-import org.smojol.common.vm.type.AbstractCobolType;
-import org.smojol.common.vm.type.TypedRecord;
+import com.mojo.algorithms.types.AbstractCobolType;
+import com.mojo.algorithms.transpiler.TypedRecord;
 
 public class IdmsExpression extends CobolExpression {
     private final ParseTree expression;

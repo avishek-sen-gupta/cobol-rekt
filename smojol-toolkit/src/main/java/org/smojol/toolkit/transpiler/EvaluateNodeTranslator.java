@@ -1,22 +1,23 @@
 package org.smojol.toolkit.transpiler;
 
+import com.mojo.algorithms.transpiler.DetachedTranspilerCodeBlockNode;
+import com.mojo.algorithms.transpiler.IfTranspilerNode;
+import com.mojo.algorithms.transpiler.TranspilerCodeBlockNode;
+import com.mojo.algorithms.transpiler.TranspilerNode;
 import org.smojol.common.ast.FlowNode;
-import org.smojol.common.transpiler.DetachedTranspilerCodeBlockNode;
-import org.smojol.common.transpiler.IfTranspilerNode;
-import org.smojol.common.transpiler.TranspilerCodeBlockNode;
-import org.smojol.common.transpiler.TranspilerNode;
 import org.smojol.common.vm.expression.CobolExpression;
 import org.smojol.common.vm.expression.ExpandedEvaluation;
 import org.smojol.common.vm.expression.TestActionPair;
 import org.smojol.common.vm.structure.CobolDataStructure;
-import org.smojol.toolkit.analysis.task.transpiler.SectionParagraphMap;
 import org.smojol.toolkit.ast.EvaluateFlowNode;
+import org.smojol.toolkit.intermediate.SectionParagraphMap;
 
 import java.util.List;
 import java.util.Optional;
 
-import static org.smojol.common.list.CarCdr.head;
-import static org.smojol.common.list.CarCdr.tail;
+import static com.mojo.algorithms.list.CarCdr.head;
+import static com.mojo.algorithms.list.CarCdr.tail;
+
 
 public class EvaluateNodeTranslator {
     public static TranspilerNode build(EvaluateFlowNode n, CobolDataStructure dataStructures, SectionParagraphMap sectionParagraphMap) {

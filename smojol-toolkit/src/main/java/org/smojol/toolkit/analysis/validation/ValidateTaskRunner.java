@@ -2,6 +2,7 @@ package org.smojol.toolkit.analysis.validation;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.mojo.algorithms.id.UUIDProvider;
 import org.apache.commons.lang3.tuple.Pair;
 import org.smojol.common.dialect.LanguageDialect;
 import org.smojol.common.flowchart.ConsoleColors;
@@ -15,7 +16,6 @@ import org.smojol.toolkit.analysis.error.ParseDiagnosticRuntimeError;
 import org.smojol.toolkit.analysis.pipeline.config.SourceConfig;
 import org.smojol.common.dependency.ComponentsBuilder;
 import org.smojol.common.ast.CobolTreeVisualiser;
-import org.smojol.common.id.UUIDProvider;
 import org.smojol.common.navigation.EntityNavigatorBuilder;
 import org.smojol.common.vm.strategy.UnresolvedReferenceDoNothingStrategy;
 import org.smojol.toolkit.interpreter.structure.OccursIgnoringFormat1DataStructureBuilder;

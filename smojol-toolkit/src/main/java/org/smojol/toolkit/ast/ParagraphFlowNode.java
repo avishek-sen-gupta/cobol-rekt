@@ -1,10 +1,10 @@
 package org.smojol.toolkit.ast;
 
+import com.mojo.algorithms.transpiler.FlowNodeType;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.FlowNodeService;
-import org.smojol.common.ast.FlowNodeType;
 import org.smojol.common.vm.interpreter.CobolInterpreter;
 import org.smojol.common.vm.interpreter.CobolVmSignal;
 import org.smojol.common.vm.interpreter.FlowControl;

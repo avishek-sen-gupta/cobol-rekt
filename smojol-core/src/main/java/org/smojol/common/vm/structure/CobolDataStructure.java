@@ -1,6 +1,8 @@
 package org.smojol.common.vm.structure;
 
 import com.google.common.collect.ImmutableList;
+import com.mojo.algorithms.transpiler.TypedRecord;
+import com.mojo.algorithms.types.CobolDataType;
 import hu.webarticum.treeprinter.SimpleTreeNode;
 import hu.webarticum.treeprinter.TreeNode;
 import hu.webarticum.treeprinter.printer.listing.ListingTreePrinter;
@@ -14,8 +16,6 @@ import org.smojol.common.structure.SourceSection;
 import org.smojol.common.vm.memory.MemoryLayout;
 import org.smojol.common.vm.memory.MemoryRegion;
 import org.smojol.common.vm.reference.CobolReference;
-import org.smojol.common.vm.type.CobolDataType;
-import org.smojol.common.vm.type.TypedRecord;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,8 +23,8 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static com.mojo.algorithms.types.CobolDataType.*;
 import static org.smojol.common.vm.memory.DataLayoutBuilder.parseSpec;
-import static org.smojol.common.vm.type.CobolDataType.*;
 
 public abstract class CobolDataStructure extends SimpleTreeNode {
     @Getter protected final CobolDataType dataType;

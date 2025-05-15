@@ -6,9 +6,9 @@ import org.smojol.common.ast.FlowNode;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.navigation.DataStructureNavigator;
 import org.smojol.common.navigation.FlowNodeNavigator;
-import org.smojol.toolkit.task.CommandLineAnalysisTask;
-import org.smojol.toolkit.task.AnalysisTask;
-import org.smojol.toolkit.task.AnalysisTaskResult;
+import com.mojo.algorithms.task.CommandLineAnalysisTask;
+import com.mojo.algorithms.task.AnalysisTask;
+import com.mojo.algorithms.task.AnalysisTaskResult;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.toolkit.analysis.pipeline.config.SourceConfig;
 

@@ -1,21 +1,21 @@
 package org.smojol.common.vm.expression;
 
 import com.google.common.collect.ImmutableList;
+import com.mojo.algorithms.transpiler.TypedRecord;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.FlowNodeService;
 import org.smojol.common.vm.stack.StackFrames;
 import org.smojol.common.vm.structure.CobolDataStructure;
-import org.smojol.common.vm.type.TypedRecord;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static com.google.common.collect.Streams.zip;
-import static org.smojol.common.list.CarCdr.head;
-import static org.smojol.common.list.CarCdr.tail;
+import static com.mojo.algorithms.list.CarCdr.head;
+import static com.mojo.algorithms.list.CarCdr.tail;
 
 public class EvaluateBreaker {
     private final CobolDataStructure dataStructures;

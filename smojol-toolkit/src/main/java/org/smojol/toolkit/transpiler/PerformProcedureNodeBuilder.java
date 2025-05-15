@@ -1,13 +1,13 @@
 package org.smojol.toolkit.transpiler;
 
+import com.mojo.algorithms.transpiler.*;
 import org.smojol.common.ast.FlowNode;
-import org.smojol.common.transpiler.*;
 import org.smojol.common.vm.expression.FlowIteration;
 import org.smojol.common.vm.structure.CobolDataStructure;
-import org.smojol.toolkit.analysis.task.transpiler.SectionParagraphMap;
 import org.smojol.toolkit.ast.ConditionalStatementFlowNode;
 import org.smojol.toolkit.ast.PerformInlineFlowNode;
 import org.smojol.toolkit.ast.PerformProcedureFlowNode;
+import org.smojol.toolkit.intermediate.SectionParagraphMap;
 
 import java.util.List;
 

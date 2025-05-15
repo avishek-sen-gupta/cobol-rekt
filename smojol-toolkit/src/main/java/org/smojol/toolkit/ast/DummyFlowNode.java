@@ -1,9 +1,9 @@
 package org.smojol.toolkit.ast;
 
 import com.google.common.collect.ImmutableList;
-import org.smojol.common.ast.SemanticCategory;
+import com.mojo.algorithms.transpiler.SemanticCategory;
 import org.smojol.common.ast.FlowNodeService;
-import org.smojol.common.ast.FlowNodeType;
+import com.mojo.algorithms.transpiler.FlowNodeType;
 import org.smojol.common.ast.FlowNodeVisitor;
 import org.smojol.common.vm.stack.StackFrames;
 

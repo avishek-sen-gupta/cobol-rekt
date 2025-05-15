@@ -1,6 +1,6 @@
 package org.smojol.common.pseudocode;
 
-import org.smojol.common.id.IdProvider;
+import com.mojo.algorithms.id.IdProvider;
 import org.smojol.common.vm.structure.CobolDataStructure;
 
 public class SymbolReferenceBuilder {

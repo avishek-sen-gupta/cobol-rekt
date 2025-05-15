@@ -6,12 +6,12 @@ import com.google.gson.stream.JsonWriter;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.resource.ResourceOperations;
 import org.smojol.common.vm.structure.CobolDataStructure;
-import org.smojol.toolkit.analysis.graph.NodeSpecBuilder;
+import org.smojol.toolkit.intermediate.NodeSpecBuilder;
 import org.smojol.toolkit.analysis.graph.graphml.SerialisableUnifiedModel;
 import org.smojol.toolkit.analysis.pipeline.config.OutputArtifactConfig;
-import org.smojol.toolkit.task.AnalysisTask;
-import org.smojol.toolkit.task.AnalysisTaskResult;
-import org.smojol.toolkit.task.CommandLineAnalysisTask;
+import com.mojo.algorithms.task.AnalysisTask;
+import com.mojo.algorithms.task.AnalysisTaskResult;
+import com.mojo.algorithms.task.CommandLineAnalysisTask;
 
 import java.io.FileWriter;
 import java.io.IOException;

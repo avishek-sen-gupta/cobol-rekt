@@ -2,7 +2,7 @@ package org.smojol.toolkit.analysis.task.analysis;
 
 import com.google.common.collect.ImmutableMap;
 import com.mojo.woof.Advisor;
-import org.smojol.common.ast.TreeMapperVisitor;
+import com.mojo.algorithms.navigation.TreeMapperVisitor;
 import org.smojol.common.vm.structure.CobolDataStructure;
 
 import java.util.List;

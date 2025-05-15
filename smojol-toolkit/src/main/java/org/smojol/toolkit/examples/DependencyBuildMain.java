@@ -5,13 +5,13 @@ import com.mojo.woof.GraphSDK;
 import com.mojo.woof.Neo4JDriverBuilder;
 import org.smojol.common.dialect.LanguageDialect;
 import org.smojol.common.resource.LocalFilesystemOperations;
-import org.smojol.toolkit.analysis.graph.NamespaceQualifier;
-import org.smojol.toolkit.analysis.graph.NodeSpecBuilder;
+import com.mojo.algorithms.graph.NamespaceQualifier;
+import org.smojol.toolkit.intermediate.NodeSpecBuilder;
 import org.smojol.toolkit.analysis.task.analysis.AnalyseProgramDependenciesTask;
 import org.smojol.toolkit.analysis.task.analysis.InjectProgramDependenciesIntoNeo4JTask;
-import org.smojol.toolkit.task.AnalysisTaskResult;
-import org.smojol.toolkit.task.AnalysisTaskResultError;
-import org.smojol.toolkit.task.AnalysisTaskResultOK;
+import com.mojo.algorithms.task.AnalysisTaskResult;
+import com.mojo.algorithms.task.AnalysisTaskResultError;
+import com.mojo.algorithms.task.AnalysisTaskResultOK;
 import org.smojol.common.program.CobolProgram;
 import org.smojol.toolkit.analysis.pipeline.*;
 

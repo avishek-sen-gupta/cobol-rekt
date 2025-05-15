@@ -6,9 +6,9 @@ import org.smojol.common.ast.CallTarget;
 import org.smojol.common.ast.ExternalControlFlowNode;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.navigation.FlowNodeNavigator;
-import org.smojol.toolkit.task.AnalysisTask;
-import org.smojol.toolkit.task.AnalysisTaskResult;
-import org.smojol.toolkit.task.CommandLineAnalysisTask;
+import com.mojo.algorithms.task.AnalysisTask;
+import com.mojo.algorithms.task.AnalysisTaskResult;
+import com.mojo.algorithms.task.CommandLineAnalysisTask;
 
 import java.util.ArrayList;
 import java.util.List;

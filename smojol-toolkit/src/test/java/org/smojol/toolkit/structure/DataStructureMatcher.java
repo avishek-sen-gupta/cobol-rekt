@@ -7,8 +7,8 @@ import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.common.vm.structure.ConditionalDataStructure;
 import org.smojol.common.vm.structure.Format1DataStructure;
 import org.smojol.common.vm.structure.StaticDataStructure;
-import org.smojol.common.vm.type.AbstractCobolType;
-import org.smojol.common.vm.type.CobolDataType;
+import com.mojo.algorithms.types.AbstractCobolType;
+import com.mojo.algorithms.types.CobolDataType;
 import org.smojol.toolkit.interpreter.structure.TableDataStructure;
 
 import java.util.Arrays;

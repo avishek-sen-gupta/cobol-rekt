@@ -1,9 +1,9 @@
 package org.smojol.common;
 
+import com.mojo.algorithms.list.CarCdr;
+import com.mojo.algorithms.navigation.GenericTreeNode;
 import io.vavr.collection.List;
 import lombok.Getter;
-import org.smojol.common.list.CarCdr;
-import org.smojol.common.navigation.GenericTreeNode;
 
 import java.util.Optional;
 import java.util.function.BiFunction;

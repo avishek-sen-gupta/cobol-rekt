@@ -2,13 +2,13 @@ package org.smojol.common.structure;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolParser;
-import org.smojol.common.id.IdProvider;
+import com.mojo.algorithms.id.IdProvider;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.vm.reference.DetachedDataStructure;
 import org.smojol.common.vm.strategy.UnresolvedReferenceStrategy;
 import org.smojol.common.vm.structure.*;
-import org.smojol.common.vm.type.CobolDataType;
-import org.smojol.common.vm.type.TypedRecord;
+import com.mojo.algorithms.types.CobolDataType;
+import com.mojo.algorithms.transpiler.TypedRecord;
 
 import java.util.List;
 import java.util.Optional;
