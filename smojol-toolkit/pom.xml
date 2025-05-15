@@ -121,7 +121,7 @@
         </dependency>
         <dependency>
             <groupId>com.mojo.algorithms</groupId>
-            <artifactId>mojo-algorithms-common</artifactId>
+            <artifactId>mojo-common</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>

@@ -12,7 +12,7 @@
     <module>woof</module>
     <module>che-che4z-lsp-for-cobol-integration/server</module>
     <module>smojol-hlasm</module>
-    <module>mojo-algorithms-common</module>
+    <module>mojo-common</module>
   </modules>
   <properties>
     <maven.compiler.source>21</maven.compiler.source>
