@@ -1,14 +1,10 @@
 package org.smojol.toolkit.task;
 
-import com.mojo.algorithms.domain.CodeSentinelType;
+import com.mojo.algorithms.domain.*;
+import com.mojo.algorithms.id.Identifiable;
 import com.mojo.algorithms.task.AnalysisTaskResult;
-import com.mojo.algorithms.domain.FlowgraphReductionResult;
-import com.mojo.algorithms.domain.FlowgraphTransformer;
-import com.mojo.algorithms.domain.TranspilerInstruction;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
-import com.mojo.algorithms.domain.FlowNodeType;
-import com.mojo.algorithms.id.Identifiable;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
