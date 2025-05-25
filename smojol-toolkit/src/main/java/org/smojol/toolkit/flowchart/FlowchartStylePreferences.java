@@ -1,5 +1,6 @@
 package org.smojol.toolkit.flowchart;
 
+import com.mojo.algorithms.visualisation.GraphvizStyleScheme;
 import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.Shape;
 import org.smojol.common.ast.FlowNode;
