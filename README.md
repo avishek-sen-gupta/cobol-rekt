@@ -20,6 +20,8 @@ An important aspirational aim of this library is to serve as a testbed for some 
 
 In addition, the library also includes several reusable algorithms which are commonly used in analysis in compiler middleware toolchains.
 
+**NOTE:** Many of the reusable analyses have moved to a common library [mojo-common](https://github.com/asengupta/mojo-common).
+
 ## Backlog
 
 You can see the current backlog [here](https://github.com/users/avishek-sen-gupta/projects/1).
@@ -138,6 +140,7 @@ In addition, the support for Neo4J allows you to build custom graph analyses as 
 - The toolkit uses the grammar available in the [Eclipse Che4z Cobol Support project](https://github.com/eclipse-che4z/che-che4z-lsp-for-cobol) to create the parse tree.
 - The toolkit uses the API from [Woof](https://github.com/asengupta/woof) to interact with Neo4J.
 - [Graphviz](https://graphviz.org/) for flowchart generation; see its documentation for OS-specific installation instructions.
+- [mojo-common](https://github.com/asengupta/mojo-common) contains most of the Intermediate Language support, as well as program analysis algorithms. Thus, parsing any stack / language which outputs CFGs using the IR classes in **mojo-common**, can take advantage of the available analyses.
 - [JGraphT](https://jgrapht.org/) for representing graph structures in all control flow / reducibility analyses and some export functionality.
 - [NetworkX](https://networkx.org/) for Python-based graph analyses
 - An implementation of the gSpan algorithm for Frequent Subgraph Mining is adapted from [https://github.com/betterenvi/gSpan].
