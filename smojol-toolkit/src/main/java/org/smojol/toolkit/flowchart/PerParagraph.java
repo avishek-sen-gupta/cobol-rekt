@@ -4,7 +4,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.FlowNodeService;
-import org.smojol.common.flowchart.FlowchartOutputFormat;
+import com.mojo.algorithms.visualisation.FlowchartOutputFormat;
 import com.mojo.algorithms.id.IdProvider;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.vm.strategy.UnresolvedReferenceDoNothingStrategy;

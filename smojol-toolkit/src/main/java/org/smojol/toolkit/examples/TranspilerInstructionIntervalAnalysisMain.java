@@ -9,7 +9,7 @@ import com.mojo.algorithms.domain.TranspilerFlowgraph;
 import com.mojo.algorithms.domain.TranspilerInstruction;
 import org.jgrapht.graph.DefaultEdge;
 import org.smojol.common.dialect.LanguageDialect;
-import org.smojol.common.flowchart.FlowchartOutputFormat;
+import com.mojo.algorithms.visualisation.FlowchartOutputFormat;
 import org.smojol.common.logging.LoggingConfig;
 import org.smojol.common.resource.LocalFilesystemOperations;
 import org.smojol.toolkit.analysis.pipeline.BaseAnalysisModel;

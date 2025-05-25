@@ -12,7 +12,7 @@ import org.jgrapht.graph.DefaultEdge;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.smojol.common.dialect.LanguageDialect;
-import org.smojol.common.flowchart.FlowchartOutputFormat;
+import com.mojo.algorithms.visualisation.FlowchartOutputFormat;
 import com.mojo.algorithms.id.UUIDProvider;
 import org.smojol.common.resource.LocalFilesystemOperations;
 import org.smojol.toolkit.analysis.pipeline.BaseAnalysisModel;

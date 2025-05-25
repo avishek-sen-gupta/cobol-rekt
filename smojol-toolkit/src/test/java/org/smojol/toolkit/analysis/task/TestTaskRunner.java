@@ -2,7 +2,7 @@ package org.smojol.toolkit.analysis.task;
 
 import com.google.common.collect.ImmutableList;
 import org.smojol.common.dialect.LanguageDialect;
-import org.smojol.common.flowchart.FlowchartOutputFormat;
+import com.mojo.algorithms.visualisation.FlowchartOutputFormat;
 import com.mojo.algorithms.id.UUIDProvider;
 import org.smojol.common.logging.LoggingConfig;
 import org.smojol.common.resource.LocalFilesystemOperations;

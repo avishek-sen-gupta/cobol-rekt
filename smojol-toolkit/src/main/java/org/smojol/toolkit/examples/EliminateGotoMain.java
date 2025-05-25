@@ -6,7 +6,7 @@ import com.mojo.algorithms.domain.TranspilerFlowgraph;
 import com.mojo.algorithms.domain.TranspilerNode;
 import com.mojo.algorithms.domain.TreeSmith;
 import org.smojol.common.dialect.LanguageDialect;
-import org.smojol.common.flowchart.FlowchartOutputFormat;
+import com.mojo.algorithms.visualisation.FlowchartOutputFormat;
 import com.mojo.algorithms.id.UUIDProvider;
 import org.smojol.common.resource.LocalFilesystemOperations;
 import org.smojol.toolkit.analysis.pipeline.ProgramSearch;

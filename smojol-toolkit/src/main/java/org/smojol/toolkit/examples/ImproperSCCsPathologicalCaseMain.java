@@ -9,7 +9,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
 import org.smojol.common.dialect.LanguageDialect;
-import org.smojol.common.flowchart.FlowchartOutputFormat;
+import com.mojo.algorithms.visualisation.FlowchartOutputFormat;
 import com.mojo.algorithms.id.UUIDProvider;
 import org.smojol.common.logging.LoggingConfig;
 import org.smojol.common.resource.LocalFilesystemOperations;

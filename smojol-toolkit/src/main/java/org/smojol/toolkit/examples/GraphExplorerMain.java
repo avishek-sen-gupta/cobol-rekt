@@ -13,7 +13,7 @@ import com.mojo.algorithms.task.CommandLineAnalysisTask;
 import java.io.File;
 import java.io.IOException;
 
-import static org.smojol.common.flowchart.FlowchartOutputFormat.PNG;
+import static com.mojo.algorithms.visualisation.FlowchartOutputFormat.PNG;
 import static com.mojo.algorithms.task.CommandLineAnalysisTask.BUILD_BASE_ANALYSIS;
 
 public class GraphExplorerMain {

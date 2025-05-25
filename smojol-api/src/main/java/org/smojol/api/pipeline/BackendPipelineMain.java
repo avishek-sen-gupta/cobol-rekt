@@ -19,7 +19,7 @@ import org.smojol.api.SourceService;
 import org.smojol.api.database.DbContext;
 import org.smojol.common.ast.CobolContextAugmentedTreeNode;
 import org.smojol.common.dialect.LanguageDialect;
-import org.smojol.common.flowchart.FlowchartOutputFormat;
+import com.mojo.algorithms.visualisation.FlowchartOutputFormat;
 import org.smojol.common.resource.LocalFilesystemOperations;
 import org.smojol.toolkit.analysis.graph.graphml.SerialisableUnifiedModel;
 import org.smojol.toolkit.analysis.pipeline.BaseAnalysisModel;

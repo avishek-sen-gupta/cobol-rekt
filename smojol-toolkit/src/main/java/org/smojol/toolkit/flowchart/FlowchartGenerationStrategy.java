@@ -3,7 +3,7 @@ package org.smojol.toolkit.flowchart;
 import com.mojo.algorithms.id.UUIDProvider;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolParser;
-import org.smojol.common.flowchart.FlowchartOutputFormat;
+import com.mojo.algorithms.visualisation.FlowchartOutputFormat;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.toolkit.interpreter.FullProgram;
 
@@ -11,8 +11,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.logging.Logger;
 
-import static org.smojol.common.flowchart.FlowchartOutputFormat.PNG;
-import static org.smojol.common.flowchart.FlowchartOutputFormat.SVG;
+import static com.mojo.algorithms.visualisation.FlowchartOutputFormat.PNG;
+import static com.mojo.algorithms.visualisation.FlowchartOutputFormat.SVG;
 
 public abstract class FlowchartGenerationStrategy {
     java.util.logging.Logger LOGGER = Logger.getLogger(FlowchartGenerationStrategy.class.getName());

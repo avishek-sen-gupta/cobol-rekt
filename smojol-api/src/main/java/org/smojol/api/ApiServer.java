@@ -16,7 +16,7 @@ import org.jooq.Result;
 import org.smojol.api.contract.ProjectListing;
 import org.smojol.api.database.DbContext;
 import org.smojol.common.dialect.LanguageDialect;
-import org.smojol.common.flowchart.FlowchartOutputFormat;
+import com.mojo.algorithms.visualisation.FlowchartOutputFormat;
 import com.mojo.algorithms.id.UUIDProvider;
 import com.mojo.algorithms.domain.BasicBlock;
 import org.smojol.common.resource.LocalFilesystemOperations;

@@ -10,8 +10,8 @@ import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.FlowNodeVisitor;
 import org.smojol.common.ast.VisitContext;
 import org.smojol.common.flowchart.ChartOverlay;
-import org.smojol.common.flowchart.FlowchartOutputFormat;
-import org.smojol.common.flowchart.GraphGenerator;
+import com.mojo.algorithms.visualisation.FlowchartOutputFormat;
+import com.mojo.algorithms.visualisation.GraphGenerator;
 import org.smojol.toolkit.analysis.task.analysis.BuildFlowchartMarkupTask;
 
 import java.io.File;

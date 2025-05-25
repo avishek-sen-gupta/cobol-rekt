@@ -12,7 +12,7 @@ import com.mojo.algorithms.id.UUIDProvider;
 import com.mojo.algorithms.transpiler.*;
 import org.jgrapht.graph.DefaultEdge;
 import org.smojol.common.dialect.LanguageDialect;
-import org.smojol.common.flowchart.FlowchartOutputFormat;
+import com.mojo.algorithms.visualisation.FlowchartOutputFormat;
 import org.smojol.common.resource.LocalFilesystemOperations;
 import org.smojol.toolkit.analysis.task.analysis.BuildTranspilerFlowgraphTask;
 import org.smojol.toolkit.analysis.pipeline.BaseAnalysisModel;

@@ -6,7 +6,7 @@ import com.mojo.algorithms.domain.InvokingProcedureRange;
 import com.mojo.algorithms.domain.TranspilerFlowgraph;
 import org.apache.commons.lang3.tuple.Pair;
 import org.smojol.common.dialect.LanguageDialect;
-import org.smojol.common.flowchart.FlowchartOutputFormat;
+import com.mojo.algorithms.visualisation.FlowchartOutputFormat;
 import org.smojol.common.resource.LocalFilesystemOperations;
 import org.smojol.toolkit.analysis.pipeline.ProgramSearch;
 import org.smojol.toolkit.analysis.task.analysis.CodeTaskRunner;

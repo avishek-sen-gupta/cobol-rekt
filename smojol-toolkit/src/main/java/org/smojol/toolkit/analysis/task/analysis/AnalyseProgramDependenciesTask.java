@@ -9,7 +9,7 @@ import org.smojol.common.ast.CallTarget;
 import org.smojol.common.program.CobolProgram;
 import org.smojol.common.program.StaticCallTarget;
 import org.smojol.common.flowchart.ConsoleColors;
-import org.smojol.common.flowchart.FlowchartOutputFormat;
+import com.mojo.algorithms.visualisation.FlowchartOutputFormat;
 import org.smojol.common.dialect.LanguageDialect;
 import org.smojol.common.resource.ResourceOperations;
 import com.mojo.algorithms.task.CommandLineAnalysisTask;

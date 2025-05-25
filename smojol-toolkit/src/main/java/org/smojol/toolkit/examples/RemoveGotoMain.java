@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.mojo.algorithms.task.RemoveGotoTask;
 import com.mojo.algorithms.domain.TranspilerFlowgraph;
 import org.smojol.common.dialect.LanguageDialect;
-import org.smojol.common.flowchart.FlowchartOutputFormat;
+import com.mojo.algorithms.visualisation.FlowchartOutputFormat;
 import com.mojo.algorithms.id.UUIDProvider;
 import org.smojol.common.resource.LocalFilesystemOperations;
 import org.smojol.toolkit.analysis.pipeline.ProgramSearch;
