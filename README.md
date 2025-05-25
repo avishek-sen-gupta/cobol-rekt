@@ -815,7 +815,13 @@ The build process has been tested on MacOS, Windows, and on the pipeline using t
 
 I have intentionally not updated the JDK version in Che4z to minimise changes in that submodule.
 
-After cloning the repository, initialise submodules using:
+Clone the repository with its submodules using:
+
+```bash
+   git clone --recurse-submodules -j8 https://github.com/avishek-sen-gupta/cobol-rekt.git
+```
+
+If you have already cloned the repository only, initialise submodules using:
 
 ```
 git submodule update --init --recursive
