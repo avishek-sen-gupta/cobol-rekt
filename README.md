@@ -3,6 +3,9 @@
 # Cobol-REKT (Cobol Reverse Engineering KiT)
 
 [![Maven Package](https://github.com/avishek-sen-gupta/cobol-rekt/actions/workflows/maven-publish.yml/badge.svg)](https://github.com/avishek-sen-gupta/cobol-rekt/actions/workflows/maven-publish.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Java Version](https://img.shields.io/badge/Java-21%2B-blue.svg)](https://adoptium.net/en-GB/temurin/releases/)
+[![Maven](https://img.shields.io/badge/Maven-3.6%2B-orange.svg)](https://maven.apache.org/)
 
 ## Elevator Pitch
 
