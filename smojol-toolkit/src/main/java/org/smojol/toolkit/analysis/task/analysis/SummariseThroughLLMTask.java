@@ -40,7 +40,7 @@ public class SummariseThroughLLMTask implements AnalysisTask {
     private static void summariseThroughLLM(NodeSpecBuilder qualifier, GraphSDK sdk) {
         Record neo4jProgramRoot = sdk.findNodes(qualifier.cfgNodeCriteria(Map.of(TYPE, FlowNodeType.PROCEDURE_DIVISION_BODY.toString()))).getFirst();
         Record neo4jDataStructuresRoot = sdk.findNodes(qualifier.dataNodeSearchCriteria(Map.of(SECTION_SOURCE, "ROOT"))).getFirst();
-        Advisor advisor = new Advisor(OpenAICredentials.fromEnv());
+        Advisor advisor = new AzureOpenAIAdvisor(OpenAICredentials.fromEnv());
         // Summarises AST bottom-up
         Function<Record, List<Record>> codeChildrenFn = n -> sdk.directChildren(n, CONTAINS_CODE);
         Function<Record, List<Record>> dataChildrenFn = n -> sdk.directChildren(n, CONTAINS_DATA);

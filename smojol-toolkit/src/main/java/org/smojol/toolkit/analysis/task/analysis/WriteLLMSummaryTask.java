@@ -6,6 +6,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonWriter;
 import com.mojo.algorithms.navigation.TreeMapperTraversal;
 import com.mojo.woof.Advisor;
+import com.mojo.woof.AzureOpenAIAdvisor;
 import com.mojo.woof.OpenAICredentials;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.resource.ResourceOperations;
@@ -53,7 +54,7 @@ public class WriteLLMSummaryTask implements AnalysisTask {
 
 
     private static Map<String, SummaryTree> summariseThroughLLM(FlowNode flowRoot, CobolDataStructure dataRoot) {
-        Advisor advisor = new Advisor(OpenAICredentials.fromEnv());
+        Advisor advisor = new AzureOpenAIAdvisor(OpenAICredentials.fromEnv());
         Function<FlowNode, List<FlowNode>> codeChildrenFn = FlowNode::astChildren;
         Function<CobolDataStructure, List<CobolDataStructure>> dataChildrenFn = CobolDataStructure::subStructures;
         SummaryTree codeSummary = new TreeMapperTraversal<FlowNode, SummaryTree>().accept(flowRoot, new CodeSummaryVisitor(advisor), codeChildrenFn);
