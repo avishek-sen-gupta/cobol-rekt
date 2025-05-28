@@ -1,9 +1,13 @@
 package org.smojol.toolkit.analysis.task.analysis;
 
 import com.google.common.collect.ImmutableList;
-import com.mojo.woof.*;
-import org.neo4j.driver.Record;
 import com.mojo.algorithms.navigation.TreeMapperVisitor;
+import com.mojo.woof.ActionResult;
+import com.mojo.woof.DataStructureSummaryActionResult;
+import com.mojo.woof.GraphSDK;
+import com.mojo.woof.NodeAccess;
+import com.mojo.woof.llm.Advisor;
+import org.neo4j.driver.Record;
 
 import java.util.List;
 import java.util.logging.Logger;

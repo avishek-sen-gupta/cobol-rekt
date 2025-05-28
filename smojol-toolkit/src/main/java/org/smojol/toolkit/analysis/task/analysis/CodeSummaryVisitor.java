@@ -1,7 +1,7 @@
 package org.smojol.toolkit.analysis.task.analysis;
 
 import com.google.common.collect.ImmutableMap;
-import com.mojo.woof.Advisor;
+import com.mojo.woof.llm.Advisor;
 import org.smojol.common.ast.FlowNode;
 import com.mojo.algorithms.navigation.TreeMapperVisitor;
 

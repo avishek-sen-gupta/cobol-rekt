@@ -1,6 +1,7 @@
 package org.smojol.toolkit.analysis.graph;
 
 import com.mojo.woof.*;
+import com.mojo.woof.llm.Advisor;
 import org.neo4j.driver.Record;
 
 import java.util.List;
