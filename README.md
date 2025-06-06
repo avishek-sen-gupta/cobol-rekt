@@ -25,6 +25,8 @@ In addition, the library also includes several reusable algorithms which are com
 
 **NOTE:** Many of the reusable analyses have moved to a common library [mojo-common](https://github.com/asengupta/mojo-common).
 
+Also check out the sibling project [Tape/Z](https://github.com/avishek-sen-gupta/tape-z) which works on mainframe HLASM.
+
 ## Backlog
 
 You can see the current backlog [here](https://github.com/users/avishek-sen-gupta/projects/1).
