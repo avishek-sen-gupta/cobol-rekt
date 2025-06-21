@@ -24,32 +24,7 @@ import java.util.stream.StreamSupport;
 public class ArchitectureMain {
     public static void main(String[] args) throws IOException, InterruptedException {
         Map<String, String> clusterData = clusterInfo();
-        List<Pair<String, String>> systemEntries = ImmutableList.of(
-                ImmutablePair.of("VDOK", "/Users/asgupta/Downloads/VDOK-F-VAN Questionnaire_Answers.xlsx - Q2.csv"),
-                ImmutablePair.of("VAR", "/Users/asgupta/Downloads/Temp MBRDI - VAR-VAN.csv"),
-                ImmutablePair.of("WKAL", "/Users/asgupta/Downloads/WKAL Questionnaire_Answers.xlsx - Q2.csv"),
-                ImmutablePair.of("TM", "/Users/asgupta/Downloads/Temp MBRDI - TM.csv"),
-                ImmutablePair.of("TBE-VAN", "/Users/asgupta/Downloads/Temp MBRDI - TBE-VAN.csv"),
-                ImmutablePair.of("TADS-VAN", "/Users/asgupta/Downloads/Temp MBRDI - TADS-VAN.csv"),
-                ImmutablePair.of("SKB", "/Users/asgupta/Downloads/Temp MBRDI - SKB.csv"),
-                ImmutablePair.of("PW2000", "/Users/asgupta/Downloads/Temp MBRDI - PW2000.csv"),
-                ImmutablePair.of("PURAS", "/Users/asgupta/Downloads/Temp MBRDI - PURAS-VAN.csv"),
-                ImmutablePair.of("PRO", "/Users/asgupta/Downloads/Temp MBRDI - PRO.csv"),
-                ImmutablePair.of("PLAUSI-VAN", "/Users/asgupta/Downloads/Temp MBRDI - PLAUSI-VAN.csv"),
-                ImmutablePair.of("NA2000-VAN", "/Users/asgupta/Downloads/Temp MBRDI - NA2000-VAN.csv"),
-                ImmutablePair.of("MDA", "/Users/asgupta/Downloads/Temp MBRDI - MDA.csv"),
-                ImmutablePair.of("MAS", "/Users/asgupta/Downloads/Temp MBRDI - MAS.csv"),
-                ImmutablePair.of("LTS", "/Users/asgupta/Downloads/Temp MBRDI - LTS.csv"),
-                ImmutablePair.of("FRP", "/Users/asgupta/Downloads/Temp MBRDI - FRP.csv"),
-                ImmutablePair.of("FRE", "/Users/asgupta/Downloads/Temp MBRDI - FRE.csv"),
-                ImmutablePair.of("SL2000", "/Users/asgupta/Downloads/Temp MBRDI - SL2000.csv"),
-                ImmutablePair.of("EW2000", "/Users/asgupta/Downloads/Temp MBRDI - EW2000.csv"),
-                ImmutablePair.of("GP2000", "/Users/asgupta/Downloads/Temp MBRDI - GP2000.csv"),
-                ImmutablePair.of("DDA", "/Users/asgupta/Downloads/Temp MBRDI - DDA.csv"),
-                ImmutablePair.of("FAV", "/Users/asgupta/Downloads/Temp MBRDI - FAV.csv"),
-                ImmutablePair.of("DiVerS", "/Users/asgupta/Downloads/Temp MBRDI - DiVerS.csv"),
-                ImmutablePair.of("VANIS", "/Users/asgupta/Downloads/Temp MBRDI - VANIS.csv")
-        );
+        List<Pair<String, String>> systemEntries = ImmutableList.of();
         List<RawSystemConnectionEntry> allRawConnectionEntries = systemEntries.stream().map(ArchitectureMain::systemEntries).reduce(Stream::concat).get().toList();
 
         List<String> uniqueCurrentSystemNames = Stream.concat(allRawConnectionEntries.stream()
