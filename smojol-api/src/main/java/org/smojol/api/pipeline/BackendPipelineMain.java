@@ -31,7 +31,7 @@ import org.smojol.toolkit.analysis.task.analysis.UnifiedFlowModelTask;
 import org.smojol.toolkit.intermediate.NodeSpecBuilder;
 import org.smojol.toolkit.interpreter.FullProgram;
 import org.smojol.toolkit.interpreter.structure.OccursIgnoringFormat1DataStructureBuilder;
-import org.smojol.toolkit.task.T1_T2_IntervalAnalysisTask;
+import com.mojo.algorithms.task.T1_T2_IntervalAnalysisTask;
 
 import java.io.File;
 import java.io.IOException;

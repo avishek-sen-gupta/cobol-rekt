@@ -20,7 +20,7 @@ import org.smojol.toolkit.interpreter.FullProgram;
 import org.smojol.toolkit.interpreter.structure.OccursIgnoringFormat1DataStructureBuilder;
 import com.mojo.algorithms.task.AnalysisTaskResult;
 import com.mojo.algorithms.task.AnalysisTaskResultOK;
-import org.smojol.toolkit.task.T1_T2_IntervalAnalysisTask;
+import com.mojo.algorithms.task.T1_T2_IntervalAnalysisTask;
 
 import java.io.File;
 import java.io.IOException;

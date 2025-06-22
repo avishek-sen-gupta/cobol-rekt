@@ -21,7 +21,7 @@ import com.mojo.algorithms.domain.BasicBlockFactory;
 import org.smojol.toolkit.analysis.graph.NodeToWoof;
 import org.smojol.common.pseudocode.SmojolSymbolTable;
 import org.smojol.common.resource.ResourceOperations;
-import org.smojol.common.transpiler.BuildTranspilerInstructionsFromIntermediateTreeTask;
+import com.mojo.algorithms.task.BuildTranspilerInstructionsFromIntermediateTreeTask;
 import org.smojol.common.typeadapter.RuntimeTypeAdapterFactory;
 import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.toolkit.analysis.pipeline.config.OutputArtifactConfig;
