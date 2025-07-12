@@ -20,13 +20,13 @@ public class FlowIterationBuilder {
         else if (performTypeContext.performUntil() != null) {
             if (performTypeContext.performUntil().performTestClause() != null) {
                 if (performTypeContext.performUntil().performTestClause().AFTER() != null)
-                    return ImmutableList.of(FlowIteration.whileLoop(builder.condition(performTypeContext.performUntil().condition(), dataStructures),
+                    return ImmutableList.of(FlowIteration.whileLoop(builder.condition(performTypeContext.performUntil().performUntilCondition().condition(), dataStructures),
                             AFTER));
                 else
-                    return ImmutableList.of(FlowIteration.whileLoop(builder.condition(performTypeContext.performUntil().condition(), dataStructures),
+                    return ImmutableList.of(FlowIteration.whileLoop(builder.condition(performTypeContext.performUntil().performUntilCondition().condition(), dataStructures),
                             BEFORE));
             } else
-                return ImmutableList.of(FlowIteration.whileLoop(builder.condition(performTypeContext.performUntil().condition(), dataStructures),
+                return ImmutableList.of(FlowIteration.whileLoop(builder.condition(performTypeContext.performUntil().performUntilCondition().condition(), dataStructures),
                         AFTER));
 
         }
@@ -43,7 +43,7 @@ public class FlowIterationBuilder {
         CobolExpressionBuilder builder = new CobolExpressionBuilder();
         return FlowIteration.withCondition(builder.literalOrIdentifier(outerLoop.literal(), outerLoop.generalIdentifier()),
                 builder.literalOrIdentifier(outerLoop.performFrom().literal(), outerLoop.performFrom().generalIdentifier()),
-                builder.condition(outerLoop.performUntil().condition(), dataStructures),
+                builder.condition(outerLoop.performUntil().performUntilCondition().condition(), dataStructures),
                 new LoopUpdate(builder.literalOrIdentifier(outerLoop.performBy().literal(), outerLoop.performBy().generalIdentifier())),
                 testTime(outerLoop.performUntil()));
     }

@@ -28,7 +28,8 @@ public class CobolReferenceBuilder {
 
         // TODO: Might precompute this
         AccessChain chain = data.chain(qualifiedDataNameContext.variableUsageName().getText());
-        List<CobolParser.ArithmeticExpressionContext> indices = qualifiedDataNameContext.tableCall().arithmeticExpression();
+        List<CobolParser.ArithmeticExpressionContext> indices = qualifiedDataNameContext.tableCall().argument().stream()
+                .map(CobolParser.ArgumentContext::arithmeticExpression).toList();
         List<Integer> resolvedIndices = indices.stream().map(index -> resolve(data, index)).toList();
         List<Integer> fixedIndices = resolvedIndices.stream().map(i -> i == 0 ? 1 : i).toList();
 

@@ -1,12 +1,12 @@
 package org.smojol.common.vm.reference;
 
+import com.mojo.algorithms.domain.TypedRecord;
+import com.mojo.algorithms.types.AbstractCobolType;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.vm.expression.CobolExpression;
 import org.smojol.common.vm.expression.CobolExpressionBuilder;
 import org.smojol.common.vm.expression.FunctionCallExpression;
 import org.smojol.common.vm.structure.CobolDataStructure;
-import com.mojo.algorithms.types.AbstractCobolType;
-import com.mojo.algorithms.domain.TypedRecord;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ public class FunctionCallCobolReference implements CobolReference {
     private final List<CobolExpression> arguments;
 
     public FunctionCallCobolReference(CobolParser.FunctionCallContext functionCallContext) {
-        functionName = functionCallContext.functionName().getText();
+        functionName = functionCallContext.functionReference().functionName().getText();
         arguments = functionCallContext.argument().stream().map(arg -> new CobolExpressionBuilder().arithmetic(arg.arithmeticExpression())).toList();
         proxyReturnValue = new DetachedDataStructure(TypedRecord.typedNumber(1));
     }

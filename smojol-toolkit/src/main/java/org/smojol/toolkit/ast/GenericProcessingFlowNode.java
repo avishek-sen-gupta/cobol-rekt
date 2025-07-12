@@ -6,7 +6,7 @@ import com.mojo.algorithms.domain.FlowNodeType;
 import com.mojo.algorithms.domain.SemanticCategory;
 import lombok.Getter;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.eclipse.lsp.cobol.core.CobolDataDivisionParser;
+import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.ast.*;
 import org.smojol.common.pseudocode.SmojolSymbolTable;
 import org.smojol.common.vm.interpreter.CobolInterpreter;
@@ -123,7 +123,7 @@ public class GenericProcessingFlowNode implements FlowNode {
 
     @Override
     public ParseTree getExecutionContext() {
-        return new CobolDataDivisionParser.LabelRecordsClauseContext(null, 1);
+        return new CobolParser.LabelRecordsClauseContext(null, 1);
     }
 
     @Override

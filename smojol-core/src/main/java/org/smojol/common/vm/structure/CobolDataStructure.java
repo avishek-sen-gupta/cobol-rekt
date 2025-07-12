@@ -194,7 +194,7 @@ public abstract class CobolDataStructure extends SimpleTreeNode {
         else if (dataDescription.dataPictureClause().isEmpty()) return GROUP;
 
         // TODO: Handle multiple usage clauses?
-        String input = dataDescription.dataPictureClause().getFirst().pictureString().getFirst().getText();
+        String input = dataDescription.dataPictureClause().getFirst().pictureString().charString().getText();
         CobolDataTypes.StartRuleContext root = parseSpec(input);
         if (root.dataTypeSpec().fraction() != null) {
             if (dataDescription.dataUsageClause().isEmpty()) return NUMERIC_EXTERNAL_DECIMAL;

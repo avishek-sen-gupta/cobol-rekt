@@ -46,8 +46,8 @@ public abstract class FlowchartGenerationStrategy {
         return outputDir.resolve(String.format("%s.%s", label, extension)).toString();
     }
 
-    static String outputPath(CobolParser.ProcedureSectionContext section, Path outputDir, String extension) {
-        String sectionName = section.procedureSectionHeader().sectionName().getText();
+    static String outputPath(CobolParser.SectionOrParagraphContext section, Path outputDir, String extension) {
+        String sectionName = section.cobolWord().getText();
         return outputPath(sectionName, outputDir, extension);
     }
 

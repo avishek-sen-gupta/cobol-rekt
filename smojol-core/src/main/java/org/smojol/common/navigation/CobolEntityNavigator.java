@@ -117,8 +117,8 @@ public class CobolEntityNavigator {
         if (currentNode.getClass() == CobolParser.ParagraphContext.class) {
             String name = ((CobolParser.ParagraphContext) currentNode).paragraphDefinitionName().getText();
             if (name.equals(procedureName)) return currentNode;
-        } else if (currentNode.getClass() == CobolParser.ProcedureSectionContext.class) {
-            String name = ((CobolParser.ProcedureSectionContext) currentNode).procedureSectionHeader().sectionName().getText();
+        } else if (currentNode.getClass() == CobolParser.SectionOrParagraphContext.class) {
+            String name = ((CobolParser.SectionOrParagraphContext) currentNode).cobolWord().getText();
             if (name.equals(procedureName)) return currentNode;
         }
         for (int i = 0; i <= currentNode.getChildCount() - 1; i++) {

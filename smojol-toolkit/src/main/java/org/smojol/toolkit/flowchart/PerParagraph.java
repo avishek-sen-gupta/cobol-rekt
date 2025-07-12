@@ -29,7 +29,7 @@ public class PerParagraph extends FlowchartGenerationStrategy {
 
     @Override
     public void draw(CobolEntityNavigator navigator, ParseTree root, Path dotFileOutputDir, Path imageOutputDir, String programName) throws IOException, InterruptedException {
-        List<CobolParser.ParagraphContext> allParagraphs = navigator.findAllByCondition(n -> n.getClass() == CobolParser.ParagraphContext.class, root).stream().map(p -> (CobolParser.ParagraphContext) p).toList();
+        List<CobolParser.ParagraphContext> allParagraphs = navigator.findAllByCondition(n -> n.getClass() == CobolParser.SectionOrParagraphContext.class, root).stream().map(p -> (CobolParser.ParagraphContext) p).toList();
         for (CobolParser.ParagraphContext paragraph : allParagraphs) {
             FlowNodeService nodeService = new FlowNodeServiceImpl(new CobolEntityNavigator(paragraph),
                     new Format1DataStructure(0, new UnresolvedReferenceDoNothingStrategy()),
