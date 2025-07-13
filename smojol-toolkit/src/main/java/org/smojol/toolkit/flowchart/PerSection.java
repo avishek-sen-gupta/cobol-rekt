@@ -6,6 +6,7 @@ import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.FlowNodeService;
 import com.mojo.algorithms.visualisation.FlowchartOutputFormat;
 import com.mojo.algorithms.id.IdProvider;
+import org.smojol.common.ast.SyntaxIdentity;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.vm.strategy.UnresolvedReferenceDoNothingStrategy;
 import org.smojol.common.vm.structure.Format1DataStructure;
@@ -29,13 +30,13 @@ public class PerSection extends FlowchartGenerationStrategy {
 
     @Override
     public void draw(CobolEntityNavigator navigator, ParseTree root, Path dotFileOutputDir, Path imageOutputDir, String programName) throws IOException, InterruptedException {
-        List<CobolParser.ProcedureSectionContext> allSections = navigator.findAllByCondition(n -> n.getClass() == CobolParser.ProcedureSectionContext.class, root).stream().map(s -> (CobolParser.ProcedureSectionContext) s).toList();
-        for (CobolParser.ProcedureSectionContext section : allSections) {
+        List<CobolParser.SectionOrParagraphContext> allSections = navigator.findAllByCondition(SyntaxIdentity::isSection, root).stream().map(s -> (CobolParser.SectionOrParagraphContext) s).toList();
+        for (CobolParser.SectionOrParagraphContext section : allSections) {
             FlowNodeService nodeService = new FlowNodeServiceImpl(new CobolEntityNavigator(section),
                     new Format1DataStructure(0, new UnresolvedReferenceDoNothingStrategy()),
                     idProvider);
             FlowNode flowSection = new BuildFlowNodesTask(nodeService).run(section);
-            LOGGER.info("Generating flowchart for section: " + section.procedureSectionHeader().sectionName());
+            LOGGER.info("Generating flowchart for section: " + SyntaxIdentity.sectionName(section));
             new FlowchartBuilder(flowSection).build(
                     FlowchartGenerationStrategy.outputPath(section, dotFileOutputDir, "dot"),
                     FlowchartGenerationStrategy.outputPath(section, imageOutputDir, this.outputFormat.extension()), this.outputFormat);

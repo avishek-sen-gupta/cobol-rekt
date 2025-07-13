@@ -50,9 +50,4 @@ public abstract class FlowchartGenerationStrategy {
         String sectionName = section.cobolWord().getText();
         return outputPath(sectionName, outputDir, extension);
     }
-
-    static String outputPath(CobolParser.ParagraphContext paragraph, Path outputDir, String extension) {
-        String paragraphName = paragraph.paragraphDefinitionName().getText();
-        return outputPath(paragraphName, outputDir, extension);
-    }
 }

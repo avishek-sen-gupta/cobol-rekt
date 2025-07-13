@@ -8,8 +8,8 @@ import lombok.Getter;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNodeImpl;
-import org.eclipse.lsp.cobol.dialects.idms.IdmsParser;
 import org.eclipse.lsp.cobol.core.CobolParser;
+import org.eclipse.lsp.cobol.dialects.idms.IdmsParser;
 import org.smojol.common.ast.*;
 import org.smojol.common.pseudocode.SmojolSymbolTable;
 import org.smojol.common.vm.interpreter.CobolInterpreter;
@@ -18,19 +18,25 @@ import org.smojol.common.vm.interpreter.FlowControl;
 import org.smojol.common.vm.stack.StackFrames;
 import org.smojol.common.vm.structure.CobolDataStructure;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
+
+import static org.smojol.common.ast.SyntaxIdentity.*;
 
 public class CobolFlowNode implements FlowNode {
     private static final Logger LOGGER = Logger.getLogger(CobolFlowNode.class.getName());
     protected final String uuid;
     protected List<FlowNode> outgoingNodes = new ArrayList<>();
     protected List<FlowNode> incomingNodes = new ArrayList<>();
-    @Getter protected final ParseTree executionContext;
+    @Getter
+    protected final ParseTree executionContext;
     protected FlowNodeService nodeService;
     private boolean databaseAccess;
     protected FlowNode scope;
-    @Getter protected final StackFrames staticFrameContext;
+    @Getter
+    protected final StackFrames staticFrameContext;
     private List<CommentBlock> commentBlocks = new ArrayList<>();
 
     public CobolFlowNode(ParseTree executionContext, FlowNode scope, FlowNodeService nodeService, StackFrames stackFrames) {
@@ -91,10 +97,10 @@ public class CobolFlowNode implements FlowNode {
 
     @Override
     public String name() {
-        if (executionContext.getClass() == CobolParser.ProcedureSectionContext.class)
-            return ((CobolParser.ProcedureSectionContext) executionContext).procedureSectionHeader().sectionName().getText();
-        if (executionContext.getClass() == CobolParser.ParagraphContext.class)
-            return ((CobolParser.ParagraphContext) executionContext).paragraphDefinitionName().getText();
+        if (isSection(executionContext))
+            return sectionName((CobolParser.SectionOrParagraphContext) executionContext);
+        if (isParagraph(executionContext))
+            return sectionName((CobolParser.SectionOrParagraphContext) executionContext);
         if (executionContext.getClass() == CobolParser.StatementContext.class)
             return truncated(executionContext, 15);
         if (executionContext.getClass() == CobolParser.SentenceContext.class)
@@ -243,9 +249,9 @@ public class CobolFlowNode implements FlowNode {
     // TODO: This should move to some sort of a state machine implementation
     protected CobolVmSignal continueOrAbort(CobolVmSignal defaultSignal, CobolInterpreter interpreter, FlowNodeService nodeService) {
         if (defaultSignal == CobolVmSignal.TERMINATE ||
-                defaultSignal == CobolVmSignal.EXIT_PERFORM ||
-                defaultSignal == CobolVmSignal.EXIT_SCOPE ||
-                defaultSignal == CobolVmSignal.NEXT_SENTENCE) return defaultSignal;
+            defaultSignal == CobolVmSignal.EXIT_PERFORM ||
+            defaultSignal == CobolVmSignal.EXIT_SCOPE ||
+            defaultSignal == CobolVmSignal.NEXT_SENTENCE) return defaultSignal;
         return next(defaultSignal, interpreter, nodeService);
     }
 

@@ -2,6 +2,7 @@ package org.smojol.toolkit.ast;
 
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.eclipse.lsp.cobol.core.CobolParserBaseListener;
+import org.smojol.common.ast.SyntaxIdentity;
 
 import java.util.logging.Logger;
 
@@ -23,7 +24,8 @@ public class FlowchartNodeListener extends CobolParserBaseListener {
         LOGGER.info("ENTERED AN IF STATEMENT");
     }
 
-    @Override public void enterParagraph(CobolParser.ParagraphContext ctx) {
-        LOGGER.info(ctx.paragraphDefinitionName().getText());
+    @Override
+    public void enterSectionOrParagraph(CobolParser.SectionOrParagraphContext ctx) {
+        LOGGER.info(SyntaxIdentity.sectionName(ctx));
     }
 }

@@ -41,6 +41,18 @@ public class SyntaxIdentity<T> {
         return parseTree.getClass() == clazz;
     }
 
+    public static boolean isSection(ParseTree ec) {
+        return ec instanceof CobolParser.SectionOrParagraphContext sp && sp.SECTION() != null;
+    }
+
+    public static String sectionName(CobolParser.SectionOrParagraphContext ec) {
+        return ec.cobolWord().getText();
+    }
+
+    public static boolean isParagraph(ParseTree ec) {
+        return ec instanceof CobolParser.SectionOrParagraphContext sp && sp.SECTION() == null;
+    }
+
     public static boolean isOneOfTypes(ParseTree parseTree, List<Class> clazzes) {
         return clazzes.contains(parseTree.getClass());
     }

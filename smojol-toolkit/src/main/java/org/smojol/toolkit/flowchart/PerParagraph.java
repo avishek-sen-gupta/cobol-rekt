@@ -6,6 +6,7 @@ import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.FlowNodeService;
 import com.mojo.algorithms.visualisation.FlowchartOutputFormat;
 import com.mojo.algorithms.id.IdProvider;
+import org.smojol.common.ast.SyntaxIdentity;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.vm.strategy.UnresolvedReferenceDoNothingStrategy;
 import org.smojol.common.vm.structure.Format1DataStructure;
@@ -29,13 +30,13 @@ public class PerParagraph extends FlowchartGenerationStrategy {
 
     @Override
     public void draw(CobolEntityNavigator navigator, ParseTree root, Path dotFileOutputDir, Path imageOutputDir, String programName) throws IOException, InterruptedException {
-        List<CobolParser.ParagraphContext> allParagraphs = navigator.findAllByCondition(n -> n.getClass() == CobolParser.SectionOrParagraphContext.class, root).stream().map(p -> (CobolParser.ParagraphContext) p).toList();
-        for (CobolParser.ParagraphContext paragraph : allParagraphs) {
+        List<CobolParser.SectionOrParagraphContext> allParagraphs = navigator.findAllByCondition(SyntaxIdentity::isParagraph, root).stream().map(p -> (CobolParser.SectionOrParagraphContext) p).toList();
+        for (CobolParser.SectionOrParagraphContext paragraph : allParagraphs) {
             FlowNodeService nodeService = new FlowNodeServiceImpl(new CobolEntityNavigator(paragraph),
                     new Format1DataStructure(0, new UnresolvedReferenceDoNothingStrategy()),
                     idProvider);
             FlowNode flowParagraph = new BuildFlowNodesTask(nodeService).run(paragraph);
-            LOGGER.info("Generating flowchart for paragraph: " + paragraph.paragraphDefinitionName().getText());
+            LOGGER.info("Generating flowchart for paragraph: " + SyntaxIdentity.sectionName(paragraph));
             new FlowchartBuilder(flowParagraph).build(
                     FlowchartGenerationStrategy.outputPath(paragraph, dotFileOutputDir, "dot"),
                     FlowchartGenerationStrategy.outputPath(paragraph, imageOutputDir, this.outputFormat.extension()), this.outputFormat);

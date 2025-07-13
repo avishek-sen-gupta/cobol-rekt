@@ -4,6 +4,7 @@ import lombok.Getter;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.ast.NodeText;
+import org.smojol.common.ast.SyntaxIdentity;
 import org.smojol.common.idms.DialectContainerNode;
 
 import java.util.ArrayList;
@@ -114,11 +115,8 @@ public class CobolEntityNavigator {
     }
 
     public ParseTree findTargetRecursive(String procedureName, ParseTree currentNode) {
-        if (currentNode.getClass() == CobolParser.ParagraphContext.class) {
-            String name = ((CobolParser.ParagraphContext) currentNode).paragraphDefinitionName().getText();
-            if (name.equals(procedureName)) return currentNode;
-        } else if (currentNode.getClass() == CobolParser.SectionOrParagraphContext.class) {
-            String name = ((CobolParser.SectionOrParagraphContext) currentNode).cobolWord().getText();
+        if (SyntaxIdentity.isParagraph(currentNode) || SyntaxIdentity.isSection(currentNode)) {
+            String name = SyntaxIdentity.sectionName((CobolParser.SectionOrParagraphContext) currentNode);
             if (name.equals(procedureName)) return currentNode;
         }
         for (int i = 0; i <= currentNode.getChildCount() - 1; i++) {
