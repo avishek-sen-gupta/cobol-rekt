@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/opt/homebrew/bin/bash
 
 ################################################################################
 # scan_and_analyze_project.sh
@@ -37,7 +37,7 @@ BLUE='\033[0;34m'
 NC='\033[0m'
 
 # Paths
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 
 # Arguments
@@ -188,16 +188,33 @@ mkdir -p "$OUTPUT_DIR"
 
 JCL_ANALYSIS_SCRIPT="$SCRIPT_DIR/analyze_jcl_to_cobol.py"
 
-# Try to find Python
+# Check for virtual environment with jcl-parser installed
+VENV_PYTHON=""
+if [[ -f "$PROJECT_ROOT/.venv/bin/python" ]]; then
+    VENV_PYTHON="$PROJECT_ROOT/.venv/bin/python"
+elif [[ -f "$PROJECT_ROOT/.venv/Scripts/python.exe" ]]; then
+    # Windows
+    VENV_PYTHON="$PROJECT_ROOT/.venv/Scripts/python.exe"
+fi
+
+# Try to find Python (prefer venv with jcl-parser)
 PYTHON_CMD=""
-for cmd in python python3 python2; do
-    if command -v "$cmd" &>/dev/null 2>&1; then
-        if "$cmd" --version &>/dev/null 2>&1; then
-            PYTHON_CMD="$cmd"
-            break
+if [[ -n "$VENV_PYTHON" ]]; then
+    PYTHON_CMD="$VENV_PYTHON"
+    echo "  Using venv Python with AST-based JCL parser"
+else
+    for cmd in python python3 python2; do
+        if command -v "$cmd" &>/dev/null 2>&1; then
+            if "$cmd" --version &>/dev/null 2>&1; then
+                PYTHON_CMD="$cmd"
+                break
+            fi
         fi
+    done
+    if [[ -n "$PYTHON_CMD" ]]; then
+        echo "  Using system Python (regex fallback for JCL parsing)"
     fi
-done
+fi
 
 if [[ -n "$PYTHON_CMD" ]] && [[ -f "$JCL_ANALYSIS_SCRIPT" ]]; then
     # Convert paths to Windows format for Python if on Windows/Git Bash
