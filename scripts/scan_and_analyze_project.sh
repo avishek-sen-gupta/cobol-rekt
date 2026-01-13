@@ -170,9 +170,98 @@ fi
 
 CBL_COUNT=${#CBL_FILES_MAP[@]}
 
-# Count JCL and CPY files
+# Count JCL files
 JCL_COUNT=$(find "$JCL_DIR" -name "*.jcl" -type f 2>/dev/null | wc -l)
-CPY_COUNT=$(find "$CPY_DIR" -name "*.cpy" -type f 2>/dev/null | wc -l)
+
+# ============================================================================
+# DISCOVER ALL COPYBOOK DIRECTORIES
+# ============================================================================
+# Look for additional copybook directories like cpy-bms, cpy-sql, etc.
+# These contain BMS maps, SQL includes, and other generated copybooks
+
+declare -a ALL_CPY_DIRS
+AGGREGATED_CPY_DIR=""
+
+# Determine the parent directory to search for copybook directories
+if [[ "$MODE" == "FLAT" ]]; then
+    # For flat mode, look in the parent of the cpy directory
+    CPY_PARENT_DIR=$(dirname "$CPY_DIR")
+else
+    # For modular mode, CPY_DIR is the root, look there
+    CPY_PARENT_DIR="$CPY_DIR"
+fi
+
+# Find all directories that might contain copybooks
+# Pattern: cpy, cpy-*, copy, copybook*, include*
+echo "  Scanning for copybook directories..."
+
+# First, add the main CPY_DIR if it contains copybooks (case-insensitive)
+main_cpy_count=$(find "$CPY_DIR" -maxdepth 1 \( -iname "*.cpy" -o -iname "*.copy" \) -type f 2>/dev/null | head -1)
+if [[ -n "$main_cpy_count" ]]; then
+    ALL_CPY_DIRS+=("$CPY_DIR")
+fi
+
+# Search for all copybook directories recursively (cpy, cpy-bms, cpy-sql, etc.)
+# Use deeper search to find copybooks in module subdirectories
+while IFS= read -r -d '' dir; do
+    # Skip if it's the main CPY_DIR (already added)
+    [[ "$dir" == "$CPY_DIR" ]] && continue
+    
+    # Check if directory contains .cpy or .CPY files (case-insensitive)
+    cpy_in_dir=$(find "$dir" -maxdepth 1 \( -iname "*.cpy" -o -iname "*.copy" \) -type f 2>/dev/null | head -1)
+    if [[ -n "$cpy_in_dir" ]]; then
+        ALL_CPY_DIRS+=("$dir")
+    fi
+done < <(find "$CPY_PARENT_DIR" -type d \( -iname "cpy" -o -iname "cpy-*" -o -iname "copy" -o -iname "copybook*" -o -iname "include*" \) -print0 2>/dev/null)
+
+# Also check for copybooks without extension (common in mainframe projects)
+while IFS= read -r -d '' dir; do
+    [[ "$dir" == "$CPY_DIR" ]] && continue
+    # Already in list?
+    for existing in "${ALL_CPY_DIRS[@]}"; do
+        [[ "$existing" == "$dir" ]] && continue 2
+    done
+    
+    # Check for files that look like copybooks (no extension, uppercase names)
+    potential_cpy=$(find "$dir" -maxdepth 1 -type f ! -name "*.*" -name "[A-Z]*" 2>/dev/null | head -1)
+    if [[ -n "$potential_cpy" ]]; then
+        ALL_CPY_DIRS+=("$dir")
+    fi
+done < <(find "$CPY_PARENT_DIR" -type d \( -iname "cpy" -o -iname "cpy-*" -o -iname "copy" -o -iname "copybook*" \) -print0 2>/dev/null)
+
+# Count total copybooks across all directories
+CPY_COUNT=0
+for cpy_dir in "${ALL_CPY_DIRS[@]}"; do
+    dir_count=$(find "$cpy_dir" -maxdepth 1 \( -iname "*.cpy" -o -iname "*.copy" -o \( -type f ! -name "*.*" -name "[A-Z]*" \) \) 2>/dev/null | wc -l)
+    ((CPY_COUNT += dir_count))
+done
+
+# If multiple copybook directories found, aggregate them
+if [[ ${#ALL_CPY_DIRS[@]} -gt 1 ]]; then
+    AGGREGATED_CPY_DIR=$(mktemp -d)
+    echo "  Found ${#ALL_CPY_DIRS[@]} copybook directories:"
+    for cpy_dir in "${ALL_CPY_DIRS[@]}"; do
+        dir_name=$(basename "$cpy_dir")
+        dir_count=$(find "$cpy_dir" -maxdepth 1 \( -iname "*.cpy" -o -iname "*.copy" -o \( -type f ! -name "*.*" -name "[A-Z]*" \) \) 2>/dev/null | wc -l)
+        echo "    • $dir_name/ ($dir_count files)"
+        # Copy all copybooks to aggregated directory (case-insensitive)
+        find "$cpy_dir" -maxdepth 1 \( -iname "*.cpy" -o -iname "*.copy" -o \( -type f ! -name "*.*" -name "[A-Z]*" \) \) -exec cp {} "$AGGREGATED_CPY_DIR/" \; 2>/dev/null
+    done
+    # Update CPY_DIR to point to aggregated directory
+    ORIGINAL_CPY_DIR="$CPY_DIR"
+    CPY_DIR="$AGGREGATED_CPY_DIR"
+elif [[ ${#ALL_CPY_DIRS[@]} -eq 1 ]]; then
+    echo "  Found 1 copybook directory: $(basename "${ALL_CPY_DIRS[0]}")/"
+elif [[ ${#ALL_CPY_DIRS[@]} -eq 0 ]]; then
+    # Fallback: search recursively for any .cpy files
+    CPY_COUNT=$(find "$CPY_PARENT_DIR" -iname "*.cpy" -o -iname "*.copy" -type f 2>/dev/null | wc -l)
+    if [[ $CPY_COUNT -gt 0 ]]; then
+        AGGREGATED_CPY_DIR=$(mktemp -d)
+        find "$CPY_PARENT_DIR" \( -iname "*.cpy" -o -iname "*.copy" \) -type f -exec cp {} "$AGGREGATED_CPY_DIR/" \; 2>/dev/null
+        CPY_DIR="$AGGREGATED_CPY_DIR"
+        echo "  Found $CPY_COUNT copybooks (scattered across directories)"
+    fi
+fi
 
 echo "  Found: $CBL_COUNT CBL files, $JCL_COUNT JCL files, $CPY_COUNT copybooks"
 echo ""
@@ -315,29 +404,9 @@ for prog_data in data.get('cbl_files', []):
 fi
 
 if [[ -f "$JAR_PATH" ]] && command -v java &>/dev/null; then
-    # Determine the correct copybook directory
+    # CPY_DIR is already set to the aggregated copybook directory (if multiple dirs found)
+    # or the original directory (if single dir)
     CPY_SEARCH_DIR="$CPY_DIR"
-    TEMP_CPY_DIR=""
-    
-    # Count copybooks at top level
-    cpy_count=$(find "$CPY_DIR" -maxdepth 1 -name "*.cpy" -type f 2>/dev/null | wc -l)
-    
-    # If no copybooks at top level, check for cpy subdirectory
-    if [[ $cpy_count -eq 0 ]] && [[ -d "$CPY_DIR/cpy" ]]; then
-        CPY_SEARCH_DIR="$CPY_DIR/cpy"
-        cpy_count=$(find "$CPY_SEARCH_DIR" -maxdepth 1 -name "*.cpy" -type f 2>/dev/null | wc -l)
-    fi
-    
-    # For modular structure: aggregate all copybooks to temp directory
-    if [[ $cpy_count -eq 0 ]]; then
-        total_cpy=$(find "$CPY_DIR" -name "*.cpy" -type f 2>/dev/null | wc -l)
-        if [[ $total_cpy -gt 0 ]]; then
-            TEMP_CPY_DIR=$(mktemp -d)
-            find "$CPY_DIR" -name "*.cpy" -type f -exec cp {} "$TEMP_CPY_DIR/" \;
-            CPY_SEARCH_DIR="$TEMP_CPY_DIR"
-            cpy_count=$total_cpy
-        fi
-    fi
     
     # Use smojol-cli to generate proper ASTs with WRITE_AGGREGATED_JCL_AST
     for cbl_file in "${!CBL_FILES_MAP[@]}"; do
@@ -357,45 +426,9 @@ if [[ -f "$JAR_PATH" ]] && command -v java &>/dev/null; then
         # Start timing for this file
         FILE_START=$(date +%s%N)
         
-        # Step 1: Find copybooks for this file
-        # Priority: module's cpy/ > global cpy/
-        CPY_SEARCH_DIR="$CPY_DIR"
+        # Copybooks: use the pre-aggregated CPY_SEARCH_DIR
+        # (already contains all copybooks from cpy/, cpy-bms/, etc.)
         TEMP_CPY_DIR=""
-        
-        if [[ "$MODE" == "MODULAR" ]]; then
-            # Check for cpy directory in the same module
-            MODULE_CPY_DIR="$module_path/cpy"
-            if [[ -d "$MODULE_CPY_DIR" ]]; then
-                module_cpy_count=$(find "$MODULE_CPY_DIR" -name "*.cpy" -type f 2>/dev/null | wc -l)
-                
-                if [[ $module_cpy_count -gt 0 ]]; then
-                    # Use module's copybooks + global copybooks
-                    TEMP_CPY_DIR=$(mktemp -d)
-                    
-                    # Copy module's copybooks
-                    find "$MODULE_CPY_DIR" -name "*.cpy" -type f -exec cp {} "$TEMP_CPY_DIR/" \; 2>/dev/null
-                    
-                    # Copy global copybooks (to have access to shared copybooks)
-                    find "$CPY_DIR" -name "*.cpy" -type f -exec cp {} "$TEMP_CPY_DIR/" \; 2>/dev/null
-                    
-                    CPY_SEARCH_DIR="$TEMP_CPY_DIR"
-                fi
-            fi
-        fi
-        
-        # If still no copybooks found, aggregate all available
-        if [[ -z "$TEMP_CPY_DIR" ]]; then
-            cpy_count=$(find "$CPY_SEARCH_DIR" -maxdepth 1 -name "*.cpy" -type f 2>/dev/null | wc -l)
-            
-            if [[ $cpy_count -eq 0 ]]; then
-                total_cpy=$(find "$CPY_DIR" -name "*.cpy" -type f 2>/dev/null | wc -l)
-                if [[ $total_cpy -gt 0 ]]; then
-                    TEMP_CPY_DIR=$(mktemp -d)
-                    find "$CPY_DIR" -name "*.cpy" -type f -exec cp {} "$TEMP_CPY_DIR/" \; 2>/dev/null
-                    CPY_SEARCH_DIR="$TEMP_CPY_DIR"
-                fi
-            fi
-        fi
         
         # Step 2: Find JCL for this file (optional)
         # Priority: module's jcl/ > mappings > global jcl/
@@ -476,8 +509,10 @@ if [[ -f "$JAR_PATH" ]] && command -v java &>/dev/null; then
         
         # Clean up temporary directories
         [[ -n "$TEMP_PROGRAM_JCL_DIR" && -d "$TEMP_PROGRAM_JCL_DIR" ]] && rm -rf "$TEMP_PROGRAM_JCL_DIR"
-        [[ -n "$TEMP_CPY_DIR" && -d "$TEMP_CPY_DIR" ]] && rm -rf "$TEMP_CPY_DIR"
     done
+    
+    # Clean up aggregated copybook directory if we created one
+    [[ -n "$AGGREGATED_CPY_DIR" && -d "$AGGREGATED_CPY_DIR" ]] && rm -rf "$AGGREGATED_CPY_DIR"
 else
     # Count lines of code even for fallback
     for cbl_file in "${!CBL_FILES_MAP[@]}"; do
@@ -689,6 +724,50 @@ fi
 echo ""
 
 # ============================================================================
+# STEP 5: GENERATE UI JSON FILES (jcl-analysis.json, copybook-analysis-complete.json)
+# ============================================================================
+
+echo -e "${BLUE}[Step 5/5] Generating UI JSON files${NC}"
+
+# UI JSON script is now in the jcl parser folder
+UI_JSON_SCRIPT="$PROJECT_ROOT/smojol-jcl/python/generate_ui_json.py"
+
+# Check for virtual environment with jcl-parser installed
+UI_PYTHON=""
+if [[ -f "$PROJECT_ROOT/.venv/bin/python" ]]; then
+    UI_PYTHON="$PROJECT_ROOT/.venv/bin/python"
+elif [[ -f "$PROJECT_ROOT/.venv/Scripts/python.exe" ]]; then
+    UI_PYTHON="$PROJECT_ROOT/.venv/Scripts/python.exe"
+fi
+
+if [[ -z "$UI_PYTHON" ]]; then
+    # Try system Python
+    for cmd in python python3; do
+        if command -v "$cmd" &>/dev/null 2>&1 && "$cmd" --version &>/dev/null 2>&1; then
+            UI_PYTHON="$cmd"
+            break
+        fi
+    done
+fi
+
+if [[ -n "$UI_PYTHON" ]] && [[ -f "$UI_JSON_SCRIPT" ]]; then
+    "$UI_PYTHON" "$UI_JSON_SCRIPT" \
+        -j "$JCL_DIR" \
+        -r "$REPORT_DIR" \
+        -o "$OUTPUT_DIR" 2>&1 | while read line; do echo "  $line"; done
+    
+    if [[ -f "$OUTPUT_DIR/jcl-analysis.json" ]] && [[ -f "$OUTPUT_DIR/copybook-analysis-complete.json" ]]; then
+        echo -e "  ${GREEN}✓ UI JSON files generated${NC}"
+    else
+        echo -e "  ${YELLOW}⚠ Some UI JSON files may be missing${NC}"
+    fi
+else
+    echo -e "  ${YELLOW}Warning: Cannot generate UI JSON files (Python or script not found)${NC}"
+fi
+
+echo ""
+
+# ============================================================================
 # SUMMARY
 # ============================================================================
 
@@ -737,6 +816,10 @@ fi
 if [[ "$GENERATE_GRAPHS" == "true" ]]; then
     echo "  🔗 Graphs:        $PROGRAM_GRAPHS_DIR"
 fi
+if [[ -f "$OUTPUT_DIR/jcl-analysis.json" ]]; then
+    echo "  🖥️  UI JSON:       $OUTPUT_DIR/jcl-analysis.json"
+    echo "                    $OUTPUT_DIR/copybook-analysis-complete.json"
+fi
 echo ""
 echo ""
 
@@ -746,5 +829,9 @@ echo "  2. Check ASTs:      ls -la $REPORT_DIR"
 if [[ "$GENERATE_METRICS" == "true" ]]; then
     echo "  3. View metrics:    cat $METRICS_FILE"
     echo "  4. View metrics JSON: cat $METRICS_JSON | jq ."
+fi
+if [[ -f "$OUTPUT_DIR/jcl-analysis.json" ]]; then
+    echo "  3. Serve UI:        cd $PROJECT_ROOT && python -m http.server 8080"
+    echo "                      Then open: http://localhost:8080/smojol-ui/?dataPath=$OUTPUT_DIR"
 fi
 echo ""

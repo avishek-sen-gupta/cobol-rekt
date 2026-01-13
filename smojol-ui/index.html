@@ -761,12 +761,17 @@
 
             // Process datasets (unique)
             if (jclData.summary && jclData.summary.datasets) {
-                allData.datasets = jclData.summary.datasets.map(ds => ({
-                    name: ds,
-                    usedByJcls: allData.jcls.filter(jcl => 
-                        jcl.datasets.includes(ds)
-                    ).map(jcl => jcl.name)
-                }));
+                allData.datasets = jclData.summary.datasets.map(ds => {
+                    // Handle both object format {name, jcl_files} and string format
+                    const dsName = typeof ds === 'object' ? ds.name : ds;
+                    const jclFiles = typeof ds === 'object' && ds.jcl_files ? ds.jcl_files : [];
+                    return {
+                        name: dsName,
+                        usedByJcls: jclFiles.length > 0 ? jclFiles : allData.jcls.filter(jcl => 
+                            jcl.datasets.some(d => (typeof d === 'object' ? d.name : d) === dsName)
+                        ).map(jcl => jcl.name)
+                    };
+                });
             }
         }
 
@@ -924,25 +929,31 @@
                 grid.innerHTML = '<div class="no-results"><h3>No datasets found</h3><p>Try adjusting your search</p></div>';
                 return;
             }
-            grid.innerHTML = datasets.map(ds => `
-                <div class="card" onclick="showDatasetDetail('${ds.name}')">
+            grid.innerHTML = datasets.map(ds => {
+                const dsName = typeof ds.name === 'object' ? ds.name.name : ds.name;
+                const displayName = dsName.length > 30 ? dsName.substring(0, 30) + '...' : dsName;
+                return `
+                <div class="card" onclick="showDatasetDetail('${dsName}')">
                     <div class="card-header">
                         <div class="card-title">
                             <div class="card-icon dataset">💾</div>
-                            <span title="${ds.name}">${ds.name.length > 30 ? ds.name.substring(0, 30) + '...' : ds.name}</span>
+                            <span title="${dsName}">${displayName}</span>
                         </div>
                     </div>
                     <div class="card-body">
                         <div class="card-section">
                             <div class="card-section-label">Referenced by ${ds.usedByJcls.length} JCL(s)</div>
                             <div class="tag-list">
-                                ${ds.usedByJcls.slice(0, 4).map(jcl => `<span class="tag jcl">${jcl}</span>`).join('')}
-                                ${ds.usedByJcls.length > 4 ? `<span class="tag jcl">+${ds.usedByJcls.length - 4} more</span>` : ''}
+                                ${ds.usedByJcls.length > 0 
+                                    ? ds.usedByJcls.slice(0, 4).map(jcl => `<span class="tag jcl">${jcl}</span>`).join('') 
+                                    + (ds.usedByJcls.length > 4 ? `<span class="tag jcl">+${ds.usedByJcls.length - 4} more</span>` : '')
+                                    : '<span class="empty-state">No JCL references</span>'}
                             </div>
                         </div>
                     </div>
                 </div>
-            `).join('');
+            `;
+            }).join('');
         }
 
         // Show detail panels
@@ -1010,10 +1021,15 @@
                 <div class="detail-section">
                     <div class="detail-section-title">Steps (${jcl.steps.length})</div>
                     ${jcl.steps.length > 0 ? `<ul class="detail-list">
-                        ${jcl.steps.map((step, i) => `<li>
+                        ${jcl.steps.map((step, i) => {
+                            const stepName = typeof step === 'object' ? step.name : step;
+                            const stepPgm = typeof step === 'object' && step.program ? step.program : null;
+                            return `<li>
                             <span class="badge" style="background:var(--bg-primary);min-width:24px;justify-content:center;">${i + 1}</span>
-                            ${step}
-                        </li>`).join('')}
+                            <span>${stepName}</span>
+                            ${stepPgm ? `<span style="margin-left:auto;color:var(--text-secondary);font-size:12px;">PGM=${stepPgm}</span>` : ''}
+                        </li>`;
+                        }).join('')}
                     </ul>` : '<p class="empty-state">No steps defined</p>'}
                 </div>
                 <div class="detail-section">
@@ -1077,13 +1093,14 @@
             const ds = allData.datasets.find(d => d.name === name);
             if (!ds) return;
 
-            document.getElementById('detailTitle').textContent = name;
+            const dsName = typeof ds.name === 'object' ? ds.name.name : ds.name;
+            document.getElementById('detailTitle').textContent = dsName;
             document.getElementById('detailBody').innerHTML = `
                 <div class="detail-section">
                     <div class="detail-section-title">Dataset Info</div>
                     <div class="info-row">
                         <span class="info-label">Full Name</span>
-                        <span class="info-value" style="word-break:break-all;font-size:12px;">${ds.name}</span>
+                        <span class="info-value" style="word-break:break-all;font-size:12px;">${dsName}</span>
                     </div>
                     <div class="info-row">
                         <span class="info-label">References</span>
@@ -1147,7 +1164,7 @@
                 j.name.toLowerCase().includes(query) ||
                 j.jobName?.toLowerCase().includes(query) ||
                 j.programs.some(p => p.toLowerCase().includes(query)) ||
-                j.datasets.some(d => d.toLowerCase().includes(query))
+                j.datasets.some(d => (typeof d === 'object' ? d.name : d).toLowerCase().includes(query))
             );
 
             const filteredCopybooks = allData.copybooks.filter(c =>
@@ -1155,10 +1172,11 @@
                 c.usedBy.some(u => u.program.toLowerCase().includes(query))
             );
 
-            const filteredDatasets = allData.datasets.filter(d =>
-                d.name.toLowerCase().includes(query) ||
-                d.usedByJcls.some(j => j.toLowerCase().includes(query))
-            );
+            const filteredDatasets = allData.datasets.filter(d => {
+                const dsName = typeof d.name === 'object' ? d.name.name : d.name;
+                return dsName.toLowerCase().includes(query) ||
+                    d.usedByJcls.some(j => j.toLowerCase().includes(query));
+            });
 
             renderCobolGrid(filteredPrograms);
             renderJclGrid(filteredJcls);
