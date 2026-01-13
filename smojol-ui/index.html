@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COBOL Project Explorer</title>
+    <style>
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --border-color: #30363d;
+            --text-primary: #e6edf3;
+            --text-secondary: #8b949e;
+            --accent-blue: #58a6ff;
+            --accent-green: #3fb950;
+            --accent-purple: #a371f7;
+            --accent-orange: #d29922;
+            --accent-red: #f85149;
+            --accent-cyan: #39c5cf;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .logo-text span {
+            color: var(--accent-blue);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .data-path-indicator {
+            font-size: 12px;
+            color: var(--text-secondary);
+            background: var(--bg-tertiary);
+            padding: 6px 12px;
+            border-radius: 4px;
+            max-width: 300px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .search-container {
+            flex: 1;
+            max-width: 500px;
+            margin: 0 32px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 16px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.15);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .stat-card.cobol .stat-value { color: var(--accent-blue); }
+        .stat-card.jcl .stat-value { color: var(--accent-green); }
+        .stat-card.copybook .stat-value { color: var(--accent-purple); }
+        .stat-card.dataset .stat-value { color: var(--accent-orange); }
+
+        .tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 24px;
+            background: var(--bg-secondary);
+            padding: 4px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .tab {
+            padding: 10px 20px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab:hover {
+            color: var(--text-primary);
+            background: var(--bg-tertiary);
+        }
+
+        .tab.active {
+            background: var(--accent-blue);
+            color: white;
+        }
+
+        .tab-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+        }
+
+        .tab:not(.active) .tab-badge {
+            background: var(--bg-tertiary);
+        }
+
+        .content-panel {
+            display: none;
+        }
+
+        .content-panel.active {
+            display: block;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 16px;
+        }
+
+        .card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-header {
+            padding: 16px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .card-icon.cobol { background: rgba(88, 166, 255, 0.15); color: var(--accent-blue); }
+        .card-icon.jcl { background: rgba(63, 185, 80, 0.15); color: var(--accent-green); }
+        .card-icon.copybook { background: rgba(163, 113, 247, 0.15); color: var(--accent-purple); }
+        .card-icon.dataset { background: rgba(210, 153, 34, 0.15); color: var(--accent-orange); }
+
+        .card-body {
+            padding: 16px;
+        }
+
+        .card-section {
+            margin-bottom: 12px;
+        }
+
+        .card-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .card-section-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .tag {
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .tag:hover {
+            opacity: 0.8;
+        }
+
+        .tag.jcl { background: rgba(63, 185, 80, 0.15); color: var(--accent-green); }
+        .tag.copybook { background: rgba(163, 113, 247, 0.15); color: var(--accent-purple); }
+        .tag.dataset { background: rgba(210, 153, 34, 0.15); color: var(--accent-orange); }
+        .tag.program { background: rgba(88, 166, 255, 0.15); color: var(--accent-blue); }
+        .tag.step { background: rgba(57, 197, 207, 0.15); color: var(--accent-cyan); }
+
+        .empty-state {
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-style: italic;
+        }
+
+        .detail-panel {
+            position: fixed;
+            right: -500px;
+            top: 0;
+            width: 500px;
+            height: 100vh;
+            background: var(--bg-secondary);
+            border-left: 1px solid var(--border-color);
+            z-index: 200;
+            transition: right 0.3s ease;
+            overflow-y: auto;
+        }
+
+        .detail-panel.open {
+            right: 0;
+        }
+
+        .detail-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            background: var(--bg-secondary);
+        }
+
+        .detail-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .close-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .close-btn:hover {
+            background: var(--border-color);
+        }
+
+        .detail-body {
+            padding: 20px;
+        }
+
+        .detail-section {
+            margin-bottom: 24px;
+        }
+
+        .detail-section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .detail-list {
+            list-style: none;
+        }
+
+        .detail-list li {
+            padding: 10px 12px;
+            background: var(--bg-tertiary);
+            border-radius: 6px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .detail-list li:hover {
+            background: var(--border-color);
+        }
+
+        .detail-list li:last-child {
+            margin-bottom: 0;
+        }
+
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 150;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: var(--text-secondary);
+        }
+
+        .info-value {
+            font-weight: 500;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .badge.success { background: rgba(63, 185, 80, 0.15); color: var(--accent-green); }
+        .badge.warning { background: rgba(210, 153, 34, 0.15); color: var(--accent-orange); }
+        .badge.error { background: rgba(248, 81, 73, 0.15); color: var(--accent-red); }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            animation: fadeIn 0.3s ease forwards;
+        }
+
+        .card:nth-child(1) { animation-delay: 0.05s; }
+        .card:nth-child(2) { animation-delay: 0.1s; }
+        .card:nth-child(3) { animation-delay: 0.15s; }
+        .card:nth-child(4) { animation-delay: 0.2s; }
+        .card:nth-child(5) { animation-delay: 0.25s; }
+        .card:nth-child(6) { animation-delay: 0.3s; }
+
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px;
+            color: var(--text-secondary);
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--accent-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 16px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px;
+            color: var(--text-secondary);
+        }
+
+        .no-results h3 {
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">CB</div>
+                <div class="logo-text">COBOL <span>Explorer</span></div>
+            </div>
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Search programs, JCLs, copybooks, datasets..." id="searchInput">
+            </div>
+            <div class="header-right">
+                <div class="data-path-indicator" id="dataPathIndicator" title="Data source path">Loading...</div>
+                <div id="loadStatus" class="badge warning">⏳ Loading</div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <div class="stats-grid" id="statsGrid">
+            <!-- Stats will be populated here -->
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" data-tab="cobol">
+                <span>📄</span> COBOL Programs
+                <span class="tab-badge" id="cobolCount">0</span>
+            </button>
+            <button class="tab" data-tab="jcl">
+                <span>⚙️</span> JCL Files
+                <span class="tab-badge" id="jclCount">0</span>
+            </button>
+            <button class="tab" data-tab="copybooks">
+                <span>📋</span> Copybooks
+                <span class="tab-badge" id="copybookCount">0</span>
+            </button>
+            <button class="tab" data-tab="datasets">
+                <span>💾</span> Datasets
+                <span class="tab-badge" id="datasetCount">0</span>
+            </button>
+        </div>
+
+        <div id="cobol" class="content-panel active">
+            <div class="card-grid" id="cobolGrid">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    Loading COBOL programs...
+                </div>
+            </div>
+        </div>
+
+        <div id="jcl" class="content-panel">
+            <div class="card-grid" id="jclGrid">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    Loading JCL files...
+                </div>
+            </div>
+        </div>
+
+        <div id="copybooks" class="content-panel">
+            <div class="card-grid" id="copybookGrid">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    Loading copybooks...
+                </div>
+            </div>
+        </div>
+
+        <div id="datasets" class="content-panel">
+            <div class="card-grid" id="datasetGrid">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    Loading datasets...
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="overlay" id="overlay"></div>
+    
+    <aside class="detail-panel" id="detailPanel">
+        <div class="detail-header">
+            <h2 class="detail-title" id="detailTitle">Details</h2>
+            <button class="close-btn" id="closePanel">×</button>
+        </div>
+        <div class="detail-body" id="detailBody">
+            <!-- Detail content will be populated here -->
+        </div>
+    </aside>
+
+    <!-- Load configuration first -->
+    <script src="config.js"></script>
+    
+    <script>
+        // Data storage
+        let projectData = {};
+        let jclData = {};
+        let copybookData = {};
+        let allData = {
+            programs: [],
+            jcls: [],
+            copybooks: [],
+            datasets: []
+        };
+
+        // Get data path from config (which may have been overridden by URL param)
+        function getDataPath() {
+            return CONFIG.dataPath;
+        }
+
+        // Update the path indicator in the header
+        function updatePathIndicator() {
+            const indicator = document.getElementById('dataPathIndicator');
+            indicator.textContent = `📁 ${getDataPath()}`;
+            indicator.title = `Data source: ${getDataPath()}`;
+        }
+
+        // Load all JSON files
+        async function loadData() {
+            const dataPath = getDataPath();
+            updatePathIndicator();
+            
+            try {
+                const [projectRes, jclRes, copybookRes] = await Promise.all([
+                    fetch(`${dataPath}/${CONFIG.files.projectAnalysis}`),
+                    fetch(`${dataPath}/${CONFIG.files.jclAnalysis}`),
+                    fetch(`${dataPath}/${CONFIG.files.copybookAnalysis}`)
+                ]);
+
+                if (!projectRes.ok || !jclRes.ok || !copybookRes.ok) {
+                    throw new Error('One or more files failed to load');
+                }
+
+                projectData = await projectRes.json();
+                jclData = await jclRes.json();
+                copybookData = await copybookRes.json();
+
+                processData();
+                renderStats();
+                renderAllTabs();
+                updateCounts();
+                
+                document.getElementById('loadStatus').innerHTML = '✓ Data Loaded';
+                document.getElementById('loadStatus').className = 'badge success';
+            } catch (error) {
+                console.error('Error loading data:', error);
+                document.getElementById('loadStatus').innerHTML = '⚠ Error Loading';
+                document.getElementById('loadStatus').className = 'badge error';
+                
+                // Show error in all grids
+                const errorHtml = `
+                    <div class="no-results">
+                        <h3>Failed to load data</h3>
+                        <p>Could not load files from: ${dataPath}</p>
+                        <p style="margin-top: 8px; font-size: 12px;">
+                            Check that the path is correct and contains:<br>
+                            • ${CONFIG.files.projectAnalysis}<br>
+                            • ${CONFIG.files.jclAnalysis}<br>
+                            • ${CONFIG.files.copybookAnalysis}
+                        </p>
+                        <p style="margin-top: 16px; font-size: 12px; color: var(--accent-blue);">
+                            Tip: Use ?dataPath=/your/path in the URL to specify a different location
+                        </p>
+                    </div>
+                `;
+                document.getElementById('cobolGrid').innerHTML = errorHtml;
+                document.getElementById('jclGrid').innerHTML = errorHtml;
+                document.getElementById('copybookGrid').innerHTML = errorHtml;
+                document.getElementById('datasetGrid').innerHTML = errorHtml;
+            }
+        }
+
+        // Process and merge data from all sources
+        function processData() {
+            // Process COBOL programs
+            const programMap = new Map();
+            
+            // From project-analysis
+            if (projectData.cbl_files) {
+                projectData.cbl_files.forEach(cbl => {
+                    programMap.set(cbl.program, {
+                        name: cbl.program,
+                        jcls: cbl.jcl_files || [],
+                        copybooks: [],
+                        datasets: []
+                    });
+                });
+            }
+
+            // Add copybook info from copybook-analysis
+            if (copybookData.programs) {
+                copybookData.programs.forEach(prog => {
+                    const name = prog.program.replace('.cbl', '').replace('.CBL', '');
+                    if (programMap.has(name)) {
+                        programMap.get(name).copybooks = prog.copybooks || [];
+                        programMap.get(name).path = prog.path;
+                    } else {
+                        programMap.set(name, {
+                            name: name,
+                            jcls: [],
+                            copybooks: prog.copybooks || [],
+                            datasets: [],
+                            path: prog.path
+                        });
+                    }
+                });
+            }
+
+            allData.programs = Array.from(programMap.values());
+
+            // Process JCL files
+            if (jclData.jcl_files) {
+                allData.jcls = jclData.jcl_files.map(jcl => ({
+                    name: jcl.stem || jcl.name.replace('.jcl', ''),
+                    fullName: jcl.name,
+                    path: jcl.path,
+                    jobName: jcl.job_name,
+                    programs: jcl.programs || [],
+                    datasets: jcl.datasets || [],
+                    steps: jcl.steps || [],
+                    lines: jcl.lines,
+                    size: jcl.size
+                }));
+            }
+
+            // Process copybooks (unique)
+            const copybookSet = new Map();
+            if (copybookData.programs) {
+                copybookData.programs.forEach(prog => {
+                    if (prog.copybooks) {
+                        prog.copybooks.forEach(cpy => {
+                            if (!copybookSet.has(cpy.name)) {
+                                copybookSet.set(cpy.name, {
+                                    name: cpy.name,
+                                    usedBy: [],
+                                    exists: cpy.exists
+                                });
+                            }
+                            const progName = prog.program.replace('.cbl', '').replace('.CBL', '');
+                            copybookSet.get(cpy.name).usedBy.push({
+                                program: progName,
+                                line: cpy.line
+                            });
+                        });
+                    }
+                });
+            }
+            allData.copybooks = Array.from(copybookSet.values());
+
+            // Process datasets (unique)
+            if (jclData.summary && jclData.summary.datasets) {
+                allData.datasets = jclData.summary.datasets.map(ds => ({
+                    name: ds,
+                    usedByJcls: allData.jcls.filter(jcl => 
+                        jcl.datasets.includes(ds)
+                    ).map(jcl => jcl.name)
+                }));
+            }
+        }
+
+        // Render statistics
+        function renderStats() {
+            const statsGrid = document.getElementById('statsGrid');
+            statsGrid.innerHTML = `
+                <div class="stat-card cobol">
+                    <div class="stat-value">${allData.programs.length}</div>
+                    <div class="stat-label">COBOL Programs</div>
+                </div>
+                <div class="stat-card jcl">
+                    <div class="stat-value">${allData.jcls.length}</div>
+                    <div class="stat-label">JCL Files</div>
+                </div>
+                <div class="stat-card copybook">
+                    <div class="stat-value">${allData.copybooks.length}</div>
+                    <div class="stat-label">Copybooks</div>
+                </div>
+                <div class="stat-card dataset">
+                    <div class="stat-value">${allData.datasets.length}</div>
+                    <div class="stat-label">Datasets</div>
+                </div>
+            `;
+        }
+
+        // Update tab counts
+        function updateCounts() {
+            document.getElementById('cobolCount').textContent = allData.programs.length;
+            document.getElementById('jclCount').textContent = allData.jcls.length;
+            document.getElementById('copybookCount').textContent = allData.copybooks.length;
+            document.getElementById('datasetCount').textContent = allData.datasets.length;
+        }
+
+        // Render all tabs
+        function renderAllTabs() {
+            renderCobolGrid(allData.programs);
+            renderJclGrid(allData.jcls);
+            renderCopybookGrid(allData.copybooks);
+            renderDatasetGrid(allData.datasets);
+        }
+
+        // Render COBOL programs grid
+        function renderCobolGrid(programs) {
+            const grid = document.getElementById('cobolGrid');
+            if (programs.length === 0) {
+                grid.innerHTML = '<div class="no-results"><h3>No programs found</h3><p>Try adjusting your search</p></div>';
+                return;
+            }
+            grid.innerHTML = programs.map(prog => `
+                <div class="card" onclick="showProgramDetail('${prog.name}')">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <div class="card-icon cobol">📄</div>
+                            ${prog.name}
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-section">
+                            <div class="card-section-label">Called by JCL</div>
+                            <div class="tag-list">
+                                ${prog.jcls.length > 0 
+                                    ? prog.jcls.slice(0, 3).map(jcl => `<span class="tag jcl">${jcl}</span>`).join('') 
+                                    + (prog.jcls.length > 3 ? `<span class="tag jcl">+${prog.jcls.length - 3} more</span>` : '')
+                                    : '<span class="empty-state">No JCL references</span>'}
+                            </div>
+                        </div>
+                        <div class="card-section">
+                            <div class="card-section-label">Copybooks</div>
+                            <div class="tag-list">
+                                ${prog.copybooks.length > 0 
+                                    ? prog.copybooks.slice(0, 4).map(cpy => `<span class="tag copybook">${cpy.name}</span>`).join('')
+                                    + (prog.copybooks.length > 4 ? `<span class="tag copybook">+${prog.copybooks.length - 4} more</span>` : '')
+                                    : '<span class="empty-state">No copybooks</span>'}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Render JCL files grid
+        function renderJclGrid(jcls) {
+            const grid = document.getElementById('jclGrid');
+            if (jcls.length === 0) {
+                grid.innerHTML = '<div class="no-results"><h3>No JCL files found</h3><p>Try adjusting your search</p></div>';
+                return;
+            }
+            grid.innerHTML = jcls.map(jcl => `
+                <div class="card" onclick="showJclDetail('${jcl.name}')">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <div class="card-icon jcl">⚙️</div>
+                            ${jcl.name}
+                        </div>
+                        <span class="badge success">${jcl.steps.length} steps</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-section">
+                            <div class="card-section-label">Programs Executed</div>
+                            <div class="tag-list">
+                                ${jcl.programs.length > 0 
+                                    ? jcl.programs.slice(0, 4).map(p => `<span class="tag program">${p}</span>`).join('')
+                                    + (jcl.programs.length > 4 ? `<span class="tag program">+${jcl.programs.length - 4} more</span>` : '')
+                                    : '<span class="empty-state">No programs</span>'}
+                            </div>
+                        </div>
+                        <div class="card-section">
+                            <div class="card-section-label">Datasets Used</div>
+                            <div class="tag-list">
+                                ${jcl.datasets.length > 0 
+                                    ? jcl.datasets.slice(0, 2).map(ds => `<span class="tag dataset" title="${ds}">${ds.length > 25 ? ds.substring(0, 25) + '...' : ds}</span>`).join('')
+                                    + (jcl.datasets.length > 2 ? `<span class="tag dataset">+${jcl.datasets.length - 2} more</span>` : '')
+                                    : '<span class="empty-state">No datasets</span>'}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Render copybooks grid
+        function renderCopybookGrid(copybooks) {
+            const grid = document.getElementById('copybookGrid');
+            if (copybooks.length === 0) {
+                grid.innerHTML = '<div class="no-results"><h3>No copybooks found</h3><p>Try adjusting your search</p></div>';
+                return;
+            }
+            grid.innerHTML = copybooks.map(cpy => `
+                <div class="card" onclick="showCopybookDetail('${cpy.name}')">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <div class="card-icon copybook">📋</div>
+                            ${cpy.name}
+                        </div>
+                        <span class="badge ${cpy.exists !== false ? 'success' : 'warning'}">${cpy.exists !== false ? 'Found' : 'Not found'}</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-section">
+                            <div class="card-section-label">Used by ${cpy.usedBy.length} program(s)</div>
+                            <div class="tag-list">
+                                ${cpy.usedBy.slice(0, 4).map(u => `<span class="tag program">${u.program}</span>`).join('')}
+                                ${cpy.usedBy.length > 4 ? `<span class="tag program">+${cpy.usedBy.length - 4} more</span>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Render datasets grid
+        function renderDatasetGrid(datasets) {
+            const grid = document.getElementById('datasetGrid');
+            if (datasets.length === 0) {
+                grid.innerHTML = '<div class="no-results"><h3>No datasets found</h3><p>Try adjusting your search</p></div>';
+                return;
+            }
+            grid.innerHTML = datasets.map(ds => `
+                <div class="card" onclick="showDatasetDetail('${ds.name}')">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <div class="card-icon dataset">💾</div>
+                            <span title="${ds.name}">${ds.name.length > 30 ? ds.name.substring(0, 30) + '...' : ds.name}</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-section">
+                            <div class="card-section-label">Referenced by ${ds.usedByJcls.length} JCL(s)</div>
+                            <div class="tag-list">
+                                ${ds.usedByJcls.slice(0, 4).map(jcl => `<span class="tag jcl">${jcl}</span>`).join('')}
+                                ${ds.usedByJcls.length > 4 ? `<span class="tag jcl">+${ds.usedByJcls.length - 4} more</span>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Show detail panels
+        function showProgramDetail(name) {
+            const prog = allData.programs.find(p => p.name === name);
+            if (!prog) return;
+
+            document.getElementById('detailTitle').textContent = prog.name;
+            document.getElementById('detailBody').innerHTML = `
+                <div class="detail-section">
+                    <div class="detail-section-title">Program Info</div>
+                    <div class="info-row">
+                        <span class="info-label">Type</span>
+                        <span class="info-value">COBOL Program</span>
+                    </div>
+                    ${prog.path ? `<div class="info-row">
+                        <span class="info-label">Path</span>
+                        <span class="info-value" style="font-size: 11px; word-break: break-all;">${prog.path}</span>
+                    </div>` : ''}
+                </div>
+                <div class="detail-section">
+                    <div class="detail-section-title">Called by JCL Files (${prog.jcls.length})</div>
+                    ${prog.jcls.length > 0 ? `<ul class="detail-list">
+                        ${prog.jcls.map(jcl => `<li onclick="showJclDetail('${jcl.replace('.jcl', '')}')">
+                            <span class="card-icon jcl" style="width:24px;height:24px;font-size:12px;">⚙️</span>
+                            ${jcl}
+                        </li>`).join('')}
+                    </ul>` : '<p class="empty-state">No JCL files reference this program</p>'}
+                </div>
+                <div class="detail-section">
+                    <div class="detail-section-title">Copybooks Used (${prog.copybooks.length})</div>
+                    ${prog.copybooks.length > 0 ? `<ul class="detail-list">
+                        ${prog.copybooks.map(cpy => `<li onclick="showCopybookDetail('${cpy.name}')">
+                            <span class="card-icon copybook" style="width:24px;height:24px;font-size:12px;">📋</span>
+                            ${cpy.name}
+                            <span style="margin-left:auto;color:var(--text-secondary);font-size:12px;">Line ${cpy.line}</span>
+                        </li>`).join('')}
+                    </ul>` : '<p class="empty-state">No copybooks used</p>'}
+                </div>
+            `;
+            openPanel();
+        }
+
+        function showJclDetail(name) {
+            const jcl = allData.jcls.find(j => j.name === name);
+            if (!jcl) return;
+
+            document.getElementById('detailTitle').textContent = jcl.name;
+            document.getElementById('detailBody').innerHTML = `
+                <div class="detail-section">
+                    <div class="detail-section-title">JCL Info</div>
+                    <div class="info-row">
+                        <span class="info-label">Job Name</span>
+                        <span class="info-value">${jcl.jobName || 'N/A'}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Lines</span>
+                        <span class="info-value">${jcl.lines || 'N/A'}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Size</span>
+                        <span class="info-value">${jcl.size ? (jcl.size / 1024).toFixed(2) + ' KB' : 'N/A'}</span>
+                    </div>
+                </div>
+                <div class="detail-section">
+                    <div class="detail-section-title">Steps (${jcl.steps.length})</div>
+                    ${jcl.steps.length > 0 ? `<ul class="detail-list">
+                        ${jcl.steps.map((step, i) => `<li>
+                            <span class="badge" style="background:var(--bg-primary);min-width:24px;justify-content:center;">${i + 1}</span>
+                            ${step}
+                        </li>`).join('')}
+                    </ul>` : '<p class="empty-state">No steps defined</p>'}
+                </div>
+                <div class="detail-section">
+                    <div class="detail-section-title">Programs Executed (${jcl.programs.length})</div>
+                    ${jcl.programs.length > 0 ? `<ul class="detail-list">
+                        ${jcl.programs.map(prog => `<li onclick="showProgramDetail('${prog}')">
+                            <span class="card-icon cobol" style="width:24px;height:24px;font-size:12px;">📄</span>
+                            ${prog}
+                        </li>`).join('')}
+                    </ul>` : '<p class="empty-state">No programs executed</p>'}
+                </div>
+                <div class="detail-section">
+                    <div class="detail-section-title">Datasets (${jcl.datasets.length})</div>
+                    ${jcl.datasets.length > 0 ? `<ul class="detail-list">
+                        ${jcl.datasets.map(ds => `<li onclick="showDatasetDetail('${ds}')">
+                            <span class="card-icon dataset" style="width:24px;height:24px;font-size:12px;">💾</span>
+                            <span style="word-break:break-all;font-size:12px;">${ds}</span>
+                        </li>`).join('')}
+                    </ul>` : '<p class="empty-state">No datasets used</p>'}
+                </div>
+            `;
+            openPanel();
+        }
+
+        function showCopybookDetail(name) {
+            const cpy = allData.copybooks.find(c => c.name === name);
+            if (!cpy) return;
+
+            document.getElementById('detailTitle').textContent = cpy.name;
+            document.getElementById('detailBody').innerHTML = `
+                <div class="detail-section">
+                    <div class="detail-section-title">Copybook Info</div>
+                    <div class="info-row">
+                        <span class="info-label">Status</span>
+                        <span class="info-value">
+                            <span class="badge ${cpy.exists !== false ? 'success' : 'warning'}">
+                                ${cpy.exists !== false ? '✓ Found' : '⚠ Not found'}
+                            </span>
+                        </span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Usage Count</span>
+                        <span class="info-value">${cpy.usedBy.length} programs</span>
+                    </div>
+                </div>
+                <div class="detail-section">
+                    <div class="detail-section-title">Used By Programs (${cpy.usedBy.length})</div>
+                    ${cpy.usedBy.length > 0 ? `<ul class="detail-list">
+                        ${cpy.usedBy.map(u => `<li onclick="showProgramDetail('${u.program}')">
+                            <span class="card-icon cobol" style="width:24px;height:24px;font-size:12px;">📄</span>
+                            ${u.program}
+                            <span style="margin-left:auto;color:var(--text-secondary);font-size:12px;">Line ${u.line}</span>
+                        </li>`).join('')}
+                    </ul>` : '<p class="empty-state">Not used by any programs</p>'}
+                </div>
+            `;
+            openPanel();
+        }
+
+        function showDatasetDetail(name) {
+            const ds = allData.datasets.find(d => d.name === name);
+            if (!ds) return;
+
+            document.getElementById('detailTitle').textContent = name;
+            document.getElementById('detailBody').innerHTML = `
+                <div class="detail-section">
+                    <div class="detail-section-title">Dataset Info</div>
+                    <div class="info-row">
+                        <span class="info-label">Full Name</span>
+                        <span class="info-value" style="word-break:break-all;font-size:12px;">${ds.name}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">References</span>
+                        <span class="info-value">${ds.usedByJcls.length} JCL files</span>
+                    </div>
+                </div>
+                <div class="detail-section">
+                    <div class="detail-section-title">Referenced by JCL Files (${ds.usedByJcls.length})</div>
+                    ${ds.usedByJcls.length > 0 ? `<ul class="detail-list">
+                        ${ds.usedByJcls.map(jcl => `<li onclick="showJclDetail('${jcl}')">
+                            <span class="card-icon jcl" style="width:24px;height:24px;font-size:12px;">⚙️</span>
+                            ${jcl}
+                        </li>`).join('')}
+                    </ul>` : '<p class="empty-state">Not referenced by any JCL</p>'}
+                </div>
+            `;
+            openPanel();
+        }
+
+        function openPanel() {
+            document.getElementById('detailPanel').classList.add('open');
+            document.getElementById('overlay').classList.add('open');
+        }
+
+        function closePanel() {
+            document.getElementById('detailPanel').classList.remove('open');
+            document.getElementById('overlay').classList.remove('open');
+        }
+
+        // Tab switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
+                
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.tab).classList.add('active');
+            });
+        });
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase().trim();
+            
+            if (!query) {
+                renderCobolGrid(allData.programs);
+                renderJclGrid(allData.jcls);
+                renderCopybookGrid(allData.copybooks);
+                renderDatasetGrid(allData.datasets);
+                return;
+            }
+
+            // Filter all data types
+            const filteredPrograms = allData.programs.filter(p => 
+                p.name.toLowerCase().includes(query) ||
+                p.jcls.some(j => j.toLowerCase().includes(query)) ||
+                p.copybooks.some(c => c.name.toLowerCase().includes(query))
+            );
+
+            const filteredJcls = allData.jcls.filter(j =>
+                j.name.toLowerCase().includes(query) ||
+                j.jobName?.toLowerCase().includes(query) ||
+                j.programs.some(p => p.toLowerCase().includes(query)) ||
+                j.datasets.some(d => d.toLowerCase().includes(query))
+            );
+
+            const filteredCopybooks = allData.copybooks.filter(c =>
+                c.name.toLowerCase().includes(query) ||
+                c.usedBy.some(u => u.program.toLowerCase().includes(query))
+            );
+
+            const filteredDatasets = allData.datasets.filter(d =>
+                d.name.toLowerCase().includes(query) ||
+                d.usedByJcls.some(j => j.toLowerCase().includes(query))
+            );
+
+            renderCobolGrid(filteredPrograms);
+            renderJclGrid(filteredJcls);
+            renderCopybookGrid(filteredCopybooks);
+            renderDatasetGrid(filteredDatasets);
+        });
+
+        // Close panel handlers
+        document.getElementById('closePanel').addEventListener('click', closePanel);
+        document.getElementById('overlay').addEventListener('click', closePanel);
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closePanel();
+        });
+
+        // Initialize
+        loadData();
+    </script>
+</body>
+</html>

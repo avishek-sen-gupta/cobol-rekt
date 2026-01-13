@@ -3,10 +3,11 @@
 """
 Analyse JCL → COBOL: Partir des JCL pour tracer les fichiers COBOL
 GÉNÉRIQUE: Scanne récursivement tous les répertoires pour JCL et COBOL
+
+Uses the legacylens-jcl-parser library for proper AST-based parsing.
 """
 
 import os
-import re
 import sys
 import argparse
 from pathlib import Path
@@ -19,16 +20,81 @@ if sys.platform == 'win32':
 
 try:
     import graphviz
+    GRAPHVIZ_AVAILABLE = True
 except ImportError:
-    print("[ERROR] graphviz not installed: pip install graphviz")
-    exit(1)
+    GRAPHVIZ_AVAILABLE = False
+
+# Try to import the proper JCL parser
+try:
+    from jcl_parser import JCLParser
+    JCL_PARSER_AVAILABLE = True
+except ImportError:
+    try:
+        # Alternative import path for legacylens package
+        from legacylens_jcl_parser import JCLParser
+        JCL_PARSER_AVAILABLE = True
+    except ImportError:
+        JCL_PARSER_AVAILABLE = False
 
 
-def extract_pgm_from_jcl(jcl_content):
-    """Extract all PGM= values from JCL content"""
+def extract_pgm_from_jcl_ast(jcl_file_path):
+    """
+    Extract all PGM= values from JCL using the proper AST parser.
+    
+    Args:
+        jcl_file_path: Path to the JCL file
+        
+    Returns:
+        List of program names referenced in EXEC PGM= statements
+    """
+    if not JCL_PARSER_AVAILABLE:
+        # Fallback to regex if parser not available
+        return extract_pgm_from_jcl_regex(jcl_file_path)
+    
+    try:
+        parser = JCLParser()
+        
+        with open(jcl_file_path, 'r', encoding='utf-8', errors='ignore') as f:
+            jcl_content = f.read()
+        
+        parsed_jcl = parser.parse_string(jcl_content)
+        
+        # Extract programs from the parsed JCL structure
+        programs = set()
+        
+        # The parser returns a dict with 'steps' containing EXEC statements
+        if isinstance(parsed_jcl, dict):
+            steps = parsed_jcl.get('steps', [])
+            for step in steps:
+                if isinstance(step, dict):
+                    params = step.get('parameters', {})
+                    if isinstance(params, dict):
+                        pgm = params.get('PGM') or params.get('pgm')
+                        if pgm:
+                            # Clean up: remove any trailing parameters (e.g., "CBSTM03A,COND=(0,NE)")
+                            pgm_clean = pgm.split(',')[0].strip().upper()
+                            programs.add(pgm_clean)
+        
+        return list(programs) if programs else extract_pgm_from_jcl_regex(jcl_file_path)
+        
+    except Exception as e:
+        # Log error and fallback to regex
+        print(f"[WARN] AST parsing failed for {jcl_file_path}: {e}", file=sys.stderr)
+        return extract_pgm_from_jcl_regex(jcl_file_path)
+
+
+def extract_pgm_from_jcl_regex(jcl_file_path):
+    """
+    Fallback: Extract PGM= values using regex (when AST parser unavailable).
+    """
+    import re
+    
+    with open(jcl_file_path, 'r', encoding='utf-8', errors='ignore') as f:
+        jcl_content = f.read()
+    
     pattern = r'PGM=([A-Z0-9]+)'
-    matches = re.findall(pattern, jcl_content)
-    return list(set(matches))
+    matches = re.findall(pattern, jcl_content, re.IGNORECASE)
+    return list(set(m.upper() for m in matches))
 
 
 def is_system_program(prog_name):
@@ -52,8 +118,8 @@ def find_jcl_files(root_dir):
 def find_cobol_files(root_dir):
     """Recursively find all COBOL files in directory tree and index by name"""
     cobol_index = {}  # { 'PROGNAME': Path }
-    for path in Path(root_dir).rglob('*.cbl'):
-        if path.is_file():
+    for path in Path(root_dir).rglob('*'):
+        if path.is_file() and path.suffix.upper() in ['.CBL', '.COBOL', '.COB']:
             prog_name = path.stem.upper()  # Get filename without extension
             cobol_index[prog_name] = path
     return cobol_index
@@ -103,6 +169,10 @@ def main():
         print(f"[SCAN] Analyzing JCL → COBOL mappings")
         print(f"       JCL root: {jcl_root}")
         print(f"       COBOL root: {cbl_root}")
+        if JCL_PARSER_AVAILABLE:
+            print(f"       Parser: legacylens-jcl-parser (AST-based)")
+        else:
+            print(f"       Parser: regex fallback (install jcl-parser for AST support)")
         print()
     
     # Find all JCL and COBOL files recursively
@@ -126,10 +196,8 @@ def main():
     
     # Scan JCL files
     for jcl_file in jcl_files:
-        with open(jcl_file, 'r', encoding='utf-8', errors='ignore') as f:
-            jcl_content = f.read()
-        
-        programs = extract_pgm_from_jcl(jcl_content)
+        # Use AST-based extraction (with regex fallback)
+        programs = extract_pgm_from_jcl_ast(jcl_file)
         
         if not programs:
             continue
@@ -202,6 +270,11 @@ def main():
         print("[GRAPH] Generating dependency graph...")
     
     if not args.json:
+        if not GRAPHVIZ_AVAILABLE:
+            print("[WARNING] graphviz not installed, skipping graph generation")
+            print("          Install with: pip install graphviz")
+            return
+        
         graph = graphviz.Digraph(
             name='JCL_to_COBOL',
             comment='JCL to COBOL Dependency Mapping',
