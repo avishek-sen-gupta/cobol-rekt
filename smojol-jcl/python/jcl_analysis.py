@@ -57,7 +57,7 @@ class ParsedJCL:
         
         # Extracted data (cached after first access)
         self._programs: Optional[List[str]] = None
-        self._datasets: Optional[List[Dict[str, Any]]] = None
+        self._dd_names: Optional[List[Dict[str, Any]]] = None
         self._steps: Optional[List[Dict[str, Any]]] = None
         self._job_name: Optional[str] = None
         self._lines: int = 0
@@ -97,10 +97,10 @@ class ParsedJCL:
         return self._programs
     
     @property
-    def datasets(self) -> List[Dict[str, Any]]:
-        """Extract dataset information from parsed JCL."""
-        if self._datasets is None:
-            self._datasets = []
+    def dd_names(self) -> List[Dict[str, Any]]:
+        """Extract DD (Data Definition) names from parsed JCL."""
+        if self._dd_names is None:
+            self._dd_names = []
             if self.raw_data:
                 seen = set()
                 steps = self.raw_data.get('steps', [])
@@ -110,12 +110,12 @@ class ParsedJCL:
                         dd_name = dd.get('name', '')
                         if dd_name and dd_name not in seen:
                             seen.add(dd_name)
-                            self._datasets.append({
+                            self._dd_names.append({
                                 'name': dd_name,
                                 'step': step.get('name', ''),
                                 'line': dd.get('line', 0)
                             })
-        return self._datasets
+        return self._dd_names
     
     @property
     def steps(self) -> List[Dict[str, Any]]:
@@ -147,7 +147,7 @@ class ParsedJCL:
             'path': str(self.path),
             'job_name': self.job_name,
             'programs': self.programs,
-            'datasets': [d['name'] for d in self.datasets],
+            'dd_names': [d['name'] for d in self.dd_names],
             'steps': self.steps,
             'lines': self._lines,
             'size': self._size,
@@ -175,7 +175,7 @@ class JCLAnalyzer:
         # Computed mappings (lazy)
         self._jcl_to_cobol: Optional[Dict[str, List[str]]] = None
         self._cobol_to_jcl: Optional[Dict[str, List[str]]] = None
-        self._all_datasets: Optional[Dict[str, Dict[str, Any]]] = None
+        self._all_dd_names: Optional[Dict[str, Dict[str, Any]]] = None
     
     @property
     def parser(self) -> Optional[JCLParser]:
@@ -263,7 +263,7 @@ class JCLAnalyzer:
         # Reset computed mappings
         self._jcl_to_cobol = None
         self._cobol_to_jcl = None
-        self._all_datasets = None
+        self._all_dd_names = None
         
         return len(self.jcl_files)
     
@@ -308,23 +308,23 @@ class JCLAnalyzer:
                     if jcl_name not in self._cobol_to_jcl[prog_upper]:
                         self._cobol_to_jcl[prog_upper].append(jcl_name)
     
-    def _compute_datasets(self):
-        """Compute aggregated dataset information (lazy computation)."""
-        if self._all_datasets is not None:
+    def _compute_dd_names(self):
+        """Compute aggregated DD name information (lazy computation)."""
+        if self._all_dd_names is not None:
             return
         
-        self._all_datasets = {}
+        self._all_dd_names = {}
         for jcl_key, parsed in self.jcl_files.items():
-            for ds in parsed.datasets:
-                ds_name = ds['name']
-                if ds_name not in self._all_datasets:
-                    self._all_datasets[ds_name] = {
-                        'name': ds_name,
+            for dd in parsed.dd_names:
+                dd_name = dd['name']
+                if dd_name not in self._all_dd_names:
+                    self._all_dd_names[dd_name] = {
+                        'name': dd_name,
                         'jcl_files': [],
                         'type': 'unknown'
                     }
-                if parsed.stem not in self._all_datasets[ds_name]['jcl_files']:
-                    self._all_datasets[ds_name]['jcl_files'].append(parsed.stem)
+                if parsed.stem not in self._all_dd_names[dd_name]['jcl_files']:
+                    self._all_dd_names[dd_name]['jcl_files'].append(parsed.stem)
     
     @property
     def jcl_to_cobol(self) -> Dict[str, List[str]]:
@@ -339,10 +339,10 @@ class JCLAnalyzer:
         return dict(self._cobol_to_jcl)
     
     @property
-    def all_datasets(self) -> Dict[str, Dict[str, Any]]:
-        """Get all datasets across all JCL files."""
-        self._compute_datasets()
-        return self._all_datasets
+    def all_dd_names(self) -> Dict[str, Dict[str, Any]]:
+        """Get all DD names across all JCL files."""
+        self._compute_dd_names()
+        return self._all_dd_names
     
     def get_mapping_stats(self) -> Dict[str, int]:
         """Get statistics about JCL-COBOL mappings."""
@@ -381,7 +381,7 @@ class JCLAnalyzer:
         Get JCL analysis in the format expected by smojol-ui.
         Used by generate_ui_json.py.
         """
-        self._compute_datasets()
+        self._compute_dd_names()
         
         jcl_list = []
         for parsed in sorted(self.jcl_files.values(), key=lambda p: p.name):
@@ -391,7 +391,7 @@ class JCLAnalyzer:
             'jcl_files': jcl_list,
             'summary': {
                 'total_jcl_files': len(jcl_list),
-                'datasets': list(self._all_datasets.values())
+                'dd_names': list(self._all_dd_names.values())
             }
         }
     

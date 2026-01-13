@@ -162,7 +162,7 @@
         .stat-card.cobol .stat-value { color: var(--accent-blue); }
         .stat-card.jcl .stat-value { color: var(--accent-green); }
         .stat-card.copybook .stat-value { color: var(--accent-purple); }
-        .stat-card.dataset .stat-value { color: var(--accent-orange); }
+        .stat-card.ddname .stat-value { color: var(--accent-orange); }
 
         .tabs {
             display: flex;
@@ -266,7 +266,7 @@
         .card-icon.cobol { background: rgba(88, 166, 255, 0.15); color: var(--accent-blue); }
         .card-icon.jcl { background: rgba(63, 185, 80, 0.15); color: var(--accent-green); }
         .card-icon.copybook { background: rgba(163, 113, 247, 0.15); color: var(--accent-purple); }
-        .card-icon.dataset { background: rgba(210, 153, 34, 0.15); color: var(--accent-orange); }
+        .card-icon.ddname { background: rgba(210, 153, 34, 0.15); color: var(--accent-orange); }
 
         .card-body {
             padding: 16px;
@@ -309,7 +309,7 @@
 
         .tag.jcl { background: rgba(63, 185, 80, 0.15); color: var(--accent-green); }
         .tag.copybook { background: rgba(163, 113, 247, 0.15); color: var(--accent-purple); }
-        .tag.dataset { background: rgba(210, 153, 34, 0.15); color: var(--accent-orange); }
+        .tag.ddname { background: rgba(210, 153, 34, 0.15); color: var(--accent-orange); }
         .tag.program { background: rgba(88, 166, 255, 0.15); color: var(--accent-blue); }
         .tag.step { background: rgba(57, 197, 207, 0.15); color: var(--accent-cyan); }
 
@@ -518,7 +518,7 @@
                 <div class="logo-text">COBOL <span>Explorer</span></div>
             </div>
             <div class="search-container">
-                <input type="text" class="search-input" placeholder="Search programs, JCLs, copybooks, datasets..." id="searchInput">
+                <input type="text" class="search-input" placeholder="Search programs, JCLs, copybooks, DD names..." id="searchInput">
             </div>
             <div class="header-right">
                 <div class="data-path-indicator" id="dataPathIndicator" title="Data source path">Loading...</div>
@@ -545,9 +545,9 @@
                 <span>📋</span> Copybooks
                 <span class="tab-badge" id="copybookCount">0</span>
             </button>
-            <button class="tab" data-tab="datasets">
-                <span>💾</span> Datasets
-                <span class="tab-badge" id="datasetCount">0</span>
+            <button class="tab" data-tab="ddnames">
+                <span>💾</span> DD Names
+                <span class="tab-badge" id="ddnameCount">0</span>
             </button>
         </div>
 
@@ -578,11 +578,11 @@
             </div>
         </div>
 
-        <div id="datasets" class="content-panel">
-            <div class="card-grid" id="datasetGrid">
+        <div id="ddnames" class="content-panel">
+            <div class="card-grid" id="ddnameGrid">
                 <div class="loading">
                     <div class="spinner"></div>
-                    Loading datasets...
+                    Loading DD names...
                 </div>
             </div>
         </div>
@@ -612,7 +612,7 @@
             programs: [],
             jcls: [],
             copybooks: [],
-            datasets: []
+            ddNames: []
         };
 
         // Get data path from config (which may have been overridden by URL param)
@@ -678,7 +678,7 @@
                 document.getElementById('cobolGrid').innerHTML = errorHtml;
                 document.getElementById('jclGrid').innerHTML = errorHtml;
                 document.getElementById('copybookGrid').innerHTML = errorHtml;
-                document.getElementById('datasetGrid').innerHTML = errorHtml;
+                document.getElementById('ddnameGrid').innerHTML = errorHtml;
             }
         }
 
@@ -694,7 +694,7 @@
                         name: cbl.program,
                         jcls: cbl.jcl_files || [],
                         copybooks: [],
-                        datasets: []
+                        ddNames: []
                     });
                 });
             }
@@ -711,7 +711,7 @@
                             name: name,
                             jcls: [],
                             copybooks: prog.copybooks || [],
-                            datasets: [],
+                            ddNames: [],
                             path: prog.path
                         });
                     }
@@ -728,7 +728,7 @@
                     path: jcl.path,
                     jobName: jcl.job_name,
                     programs: jcl.programs || [],
-                    datasets: jcl.datasets || [],
+                    ddNames: jcl.dd_names || jcl.datasets || [],
                     steps: jcl.steps || [],
                     lines: jcl.lines,
                     size: jcl.size
@@ -759,16 +759,17 @@
             }
             allData.copybooks = Array.from(copybookSet.values());
 
-            // Process datasets (unique)
-            if (jclData.summary && jclData.summary.datasets) {
-                allData.datasets = jclData.summary.datasets.map(ds => {
+            // Process DD names (unique)
+            const ddNamesSource = jclData.summary && (jclData.summary.dd_names || jclData.summary.datasets);
+            if (ddNamesSource) {
+                allData.ddNames = ddNamesSource.map(dd => {
                     // Handle both object format {name, jcl_files} and string format
-                    const dsName = typeof ds === 'object' ? ds.name : ds;
-                    const jclFiles = typeof ds === 'object' && ds.jcl_files ? ds.jcl_files : [];
+                    const ddName = typeof dd === 'object' ? dd.name : dd;
+                    const jclFiles = typeof dd === 'object' && dd.jcl_files ? dd.jcl_files : [];
                     return {
-                        name: dsName,
+                        name: ddName,
                         usedByJcls: jclFiles.length > 0 ? jclFiles : allData.jcls.filter(jcl => 
-                            jcl.datasets.some(d => (typeof d === 'object' ? d.name : d) === dsName)
+                            jcl.ddNames.some(d => (typeof d === 'object' ? d.name : d) === ddName)
                         ).map(jcl => jcl.name)
                     };
                 });
@@ -791,9 +792,9 @@
                     <div class="stat-value">${allData.copybooks.length}</div>
                     <div class="stat-label">Copybooks</div>
                 </div>
-                <div class="stat-card dataset">
-                    <div class="stat-value">${allData.datasets.length}</div>
-                    <div class="stat-label">Datasets</div>
+                <div class="stat-card ddname">
+                    <div class="stat-value">${allData.ddNames.length}</div>
+                    <div class="stat-label">DD Names</div>
                 </div>
             `;
         }
@@ -803,7 +804,7 @@
             document.getElementById('cobolCount').textContent = allData.programs.length;
             document.getElementById('jclCount').textContent = allData.jcls.length;
             document.getElementById('copybookCount').textContent = allData.copybooks.length;
-            document.getElementById('datasetCount').textContent = allData.datasets.length;
+            document.getElementById('ddnameCount').textContent = allData.ddNames.length;
         }
 
         // Render all tabs
@@ -811,7 +812,7 @@
             renderCobolGrid(allData.programs);
             renderJclGrid(allData.jcls);
             renderCopybookGrid(allData.copybooks);
-            renderDatasetGrid(allData.datasets);
+            renderDDNameGrid(allData.ddNames);
         }
 
         // Render COBOL programs grid
@@ -880,12 +881,12 @@
                             </div>
                         </div>
                         <div class="card-section">
-                            <div class="card-section-label">Datasets Used</div>
+                            <div class="card-section-label">DD Names Used</div>
                             <div class="tag-list">
-                                ${jcl.datasets.length > 0 
-                                    ? jcl.datasets.slice(0, 2).map(ds => `<span class="tag dataset" title="${ds}">${ds.length > 25 ? ds.substring(0, 25) + '...' : ds}</span>`).join('')
-                                    + (jcl.datasets.length > 2 ? `<span class="tag dataset">+${jcl.datasets.length - 2} more</span>` : '')
-                                    : '<span class="empty-state">No datasets</span>'}
+                                ${jcl.ddNames.length > 0 
+                                    ? jcl.ddNames.slice(0, 2).map(dd => `<span class="tag ddname" title="${dd}">${dd.length > 25 ? dd.substring(0, 25) + '...' : dd}</span>`).join('')
+                                    + (jcl.ddNames.length > 2 ? `<span class="tag ddname">+${jcl.ddNames.length - 2} more</span>` : '')
+                                    : '<span class="empty-state">No DD names</span>'}
                             </div>
                         </div>
                     </div>
@@ -922,31 +923,31 @@
             `).join('');
         }
 
-        // Render datasets grid
-        function renderDatasetGrid(datasets) {
-            const grid = document.getElementById('datasetGrid');
-            if (datasets.length === 0) {
-                grid.innerHTML = '<div class="no-results"><h3>No datasets found</h3><p>Try adjusting your search</p></div>';
+        // Render DD names grid
+        function renderDDNameGrid(ddNames) {
+            const grid = document.getElementById('ddnameGrid');
+            if (ddNames.length === 0) {
+                grid.innerHTML = '<div class="no-results"><h3>No DD names found</h3><p>Try adjusting your search</p></div>';
                 return;
             }
-            grid.innerHTML = datasets.map(ds => {
-                const dsName = typeof ds.name === 'object' ? ds.name.name : ds.name;
-                const displayName = dsName.length > 30 ? dsName.substring(0, 30) + '...' : dsName;
+            grid.innerHTML = ddNames.map(dd => {
+                const ddName = typeof dd.name === 'object' ? dd.name.name : dd.name;
+                const displayName = ddName.length > 30 ? ddName.substring(0, 30) + '...' : ddName;
                 return `
-                <div class="card" onclick="showDatasetDetail('${dsName}')">
+                <div class="card" onclick="showDDNameDetail('${ddName}')">
                     <div class="card-header">
                         <div class="card-title">
-                            <div class="card-icon dataset">💾</div>
-                            <span title="${dsName}">${displayName}</span>
+                            <div class="card-icon ddname">💾</div>
+                            <span title="${ddName}">${displayName}</span>
                         </div>
                     </div>
                     <div class="card-body">
                         <div class="card-section">
-                            <div class="card-section-label">Referenced by ${ds.usedByJcls.length} JCL(s)</div>
+                            <div class="card-section-label">Referenced by ${dd.usedByJcls.length} JCL(s)</div>
                             <div class="tag-list">
-                                ${ds.usedByJcls.length > 0 
-                                    ? ds.usedByJcls.slice(0, 4).map(jcl => `<span class="tag jcl">${jcl}</span>`).join('') 
-                                    + (ds.usedByJcls.length > 4 ? `<span class="tag jcl">+${ds.usedByJcls.length - 4} more</span>` : '')
+                                ${dd.usedByJcls.length > 0 
+                                    ? dd.usedByJcls.slice(0, 4).map(jcl => `<span class="tag jcl">${jcl}</span>`).join('') 
+                                    + (dd.usedByJcls.length > 4 ? `<span class="tag jcl">+${dd.usedByJcls.length - 4} more</span>` : '')
                                     : '<span class="empty-state">No JCL references</span>'}
                             </div>
                         </div>
@@ -1042,13 +1043,13 @@
                     </ul>` : '<p class="empty-state">No programs executed</p>'}
                 </div>
                 <div class="detail-section">
-                    <div class="detail-section-title">Datasets (${jcl.datasets.length})</div>
-                    ${jcl.datasets.length > 0 ? `<ul class="detail-list">
-                        ${jcl.datasets.map(ds => `<li onclick="showDatasetDetail('${ds}')">
-                            <span class="card-icon dataset" style="width:24px;height:24px;font-size:12px;">💾</span>
-                            <span style="word-break:break-all;font-size:12px;">${ds}</span>
+                    <div class="detail-section-title">DD Names (${jcl.ddNames.length})</div>
+                    ${jcl.ddNames.length > 0 ? `<ul class="detail-list">
+                        ${jcl.ddNames.map(dd => `<li onclick="showDDNameDetail('${dd}')">
+                            <span class="card-icon ddname" style="width:24px;height:24px;font-size:12px;">💾</span>
+                            <span style="word-break:break-all;font-size:12px;">${dd}</span>
                         </li>`).join('')}
-                    </ul>` : '<p class="empty-state">No datasets used</p>'}
+                    </ul>` : '<p class="empty-state">No DD names</p>'}
                 </div>
             `;
             openPanel();
@@ -1089,28 +1090,28 @@
             openPanel();
         }
 
-        function showDatasetDetail(name) {
-            const ds = allData.datasets.find(d => d.name === name);
-            if (!ds) return;
+        function showDDNameDetail(name) {
+            const dd = allData.ddNames.find(d => d.name === name);
+            if (!dd) return;
 
-            const dsName = typeof ds.name === 'object' ? ds.name.name : ds.name;
-            document.getElementById('detailTitle').textContent = dsName;
+            const ddName = typeof dd.name === 'object' ? dd.name.name : dd.name;
+            document.getElementById('detailTitle').textContent = ddName;
             document.getElementById('detailBody').innerHTML = `
                 <div class="detail-section">
-                    <div class="detail-section-title">Dataset Info</div>
+                    <div class="detail-section-title">DD Name Info</div>
                     <div class="info-row">
                         <span class="info-label">Full Name</span>
-                        <span class="info-value" style="word-break:break-all;font-size:12px;">${dsName}</span>
+                        <span class="info-value" style="word-break:break-all;font-size:12px;">${ddName}</span>
                     </div>
                     <div class="info-row">
                         <span class="info-label">References</span>
-                        <span class="info-value">${ds.usedByJcls.length} JCL files</span>
+                        <span class="info-value">${dd.usedByJcls.length} JCL files</span>
                     </div>
                 </div>
                 <div class="detail-section">
-                    <div class="detail-section-title">Referenced by JCL Files (${ds.usedByJcls.length})</div>
-                    ${ds.usedByJcls.length > 0 ? `<ul class="detail-list">
-                        ${ds.usedByJcls.map(jcl => `<li onclick="showJclDetail('${jcl}')">
+                    <div class="detail-section-title">Referenced by JCL Files (${dd.usedByJcls.length})</div>
+                    ${dd.usedByJcls.length > 0 ? `<ul class="detail-list">
+                        ${dd.usedByJcls.map(jcl => `<li onclick="showJclDetail('${jcl}')">
                             <span class="card-icon jcl" style="width:24px;height:24px;font-size:12px;">⚙️</span>
                             ${jcl}
                         </li>`).join('')}
@@ -1149,7 +1150,7 @@
                 renderCobolGrid(allData.programs);
                 renderJclGrid(allData.jcls);
                 renderCopybookGrid(allData.copybooks);
-                renderDatasetGrid(allData.datasets);
+                renderDDNameGrid(allData.ddNames);
                 return;
             }
 
@@ -1164,7 +1165,7 @@
                 j.name.toLowerCase().includes(query) ||
                 j.jobName?.toLowerCase().includes(query) ||
                 j.programs.some(p => p.toLowerCase().includes(query)) ||
-                j.datasets.some(d => (typeof d === 'object' ? d.name : d).toLowerCase().includes(query))
+                j.ddNames.some(d => (typeof d === 'object' ? d.name : d).toLowerCase().includes(query))
             );
 
             const filteredCopybooks = allData.copybooks.filter(c =>
@@ -1172,16 +1173,16 @@
                 c.usedBy.some(u => u.program.toLowerCase().includes(query))
             );
 
-            const filteredDatasets = allData.datasets.filter(d => {
-                const dsName = typeof d.name === 'object' ? d.name.name : d.name;
-                return dsName.toLowerCase().includes(query) ||
+            const filteredDDNames = allData.ddNames.filter(d => {
+                const ddName = typeof d.name === 'object' ? d.name.name : d.name;
+                return ddName.toLowerCase().includes(query) ||
                     d.usedByJcls.some(j => j.toLowerCase().includes(query));
             });
 
             renderCobolGrid(filteredPrograms);
             renderJclGrid(filteredJcls);
             renderCopybookGrid(filteredCopybooks);
-            renderDatasetGrid(filteredDatasets);
+            renderDDNameGrid(filteredDDNames);
         });
 
         // Close panel handlers
