@@ -29,12 +29,7 @@ try:
     from jcl_parser import JCLParser
     JCL_PARSER_AVAILABLE = True
 except ImportError:
-    try:
-        # Alternative import path for legacylens package
-        from legacylens_jcl_parser import JCLParser
-        JCL_PARSER_AVAILABLE = True
-    except ImportError:
-        JCL_PARSER_AVAILABLE = False
+    JCL_PARSER_AVAILABLE = False
 
 
 def extract_pgm_from_jcl_ast(jcl_file_path):
@@ -75,7 +70,7 @@ def extract_pgm_from_jcl_ast(jcl_file_path):
                             pgm_clean = pgm.split(',')[0].strip().upper()
                             programs.add(pgm_clean)
         
-        return list(programs) if programs else extract_pgm_from_jcl_regex(jcl_file_path)
+        return list(programs)
         
     except Exception as e:
         # Log error and fallback to regex
