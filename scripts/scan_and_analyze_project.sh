@@ -724,6 +724,50 @@ fi
 echo ""
 
 # ============================================================================
+# STEP 5: GENERATE UI JSON FILES (jcl-analysis.json, copybook-analysis-complete.json)
+# ============================================================================
+
+echo -e "${BLUE}[Step 5/5] Generating UI JSON files${NC}"
+
+# UI JSON script is now in the jcl parser folder
+UI_JSON_SCRIPT="$PROJECT_ROOT/smojol-jcl/python/generate_ui_json.py"
+
+# Check for virtual environment with jcl-parser installed
+UI_PYTHON=""
+if [[ -f "$PROJECT_ROOT/.venv/bin/python" ]]; then
+    UI_PYTHON="$PROJECT_ROOT/.venv/bin/python"
+elif [[ -f "$PROJECT_ROOT/.venv/Scripts/python.exe" ]]; then
+    UI_PYTHON="$PROJECT_ROOT/.venv/Scripts/python.exe"
+fi
+
+if [[ -z "$UI_PYTHON" ]]; then
+    # Try system Python
+    for cmd in python python3; do
+        if command -v "$cmd" &>/dev/null 2>&1 && "$cmd" --version &>/dev/null 2>&1; then
+            UI_PYTHON="$cmd"
+            break
+        fi
+    done
+fi
+
+if [[ -n "$UI_PYTHON" ]] && [[ -f "$UI_JSON_SCRIPT" ]]; then
+    "$UI_PYTHON" "$UI_JSON_SCRIPT" \
+        -j "$JCL_DIR" \
+        -r "$REPORT_DIR" \
+        -o "$OUTPUT_DIR" 2>&1 | while read line; do echo "  $line"; done
+    
+    if [[ -f "$OUTPUT_DIR/jcl-analysis.json" ]] && [[ -f "$OUTPUT_DIR/copybook-analysis-complete.json" ]]; then
+        echo -e "  ${GREEN}✓ UI JSON files generated${NC}"
+    else
+        echo -e "  ${YELLOW}⚠ Some UI JSON files may be missing${NC}"
+    fi
+else
+    echo -e "  ${YELLOW}Warning: Cannot generate UI JSON files (Python or script not found)${NC}"
+fi
+
+echo ""
+
+# ============================================================================
 # SUMMARY
 # ============================================================================
 
@@ -772,6 +816,10 @@ fi
 if [[ "$GENERATE_GRAPHS" == "true" ]]; then
     echo "  🔗 Graphs:        $PROGRAM_GRAPHS_DIR"
 fi
+if [[ -f "$OUTPUT_DIR/jcl-analysis.json" ]]; then
+    echo "  🖥️  UI JSON:       $OUTPUT_DIR/jcl-analysis.json"
+    echo "                    $OUTPUT_DIR/copybook-analysis-complete.json"
+fi
 echo ""
 echo ""
 
@@ -781,5 +829,9 @@ echo "  2. Check ASTs:      ls -la $REPORT_DIR"
 if [[ "$GENERATE_METRICS" == "true" ]]; then
     echo "  3. View metrics:    cat $METRICS_FILE"
     echo "  4. View metrics JSON: cat $METRICS_JSON | jq ."
+fi
+if [[ -f "$OUTPUT_DIR/jcl-analysis.json" ]]; then
+    echo "  3. Serve UI:        cd $PROJECT_ROOT && python -m http.server 8080"
+    echo "                      Then open: http://localhost:8080/smojol-ui/?dataPath=$OUTPUT_DIR"
 fi
 echo ""
