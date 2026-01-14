@@ -36,6 +36,16 @@ try:
 except ImportError:
     JCL_PARSER_AVAILABLE = False
 
+# Import preprocessing utilities
+try:
+    from jcl_preprocessing import preprocess_jcl_continuations, fix_jcl_parameters_in_result
+except ImportError:
+    # Fallback if not available (shouldn't happen in normal usage)
+    def preprocess_jcl_continuations(content):
+        return content
+    def fix_jcl_parameters_in_result(result):
+        return result
+
 
 # System programs that should be excluded from COBOL mapping
 SYSTEM_PROGRAMS = {
@@ -204,6 +214,9 @@ class JCLAnalyzer:
             parsed.parse_error = f"Failed to read file: {e}"
             return parsed
         
+        # Preprocess JCL to handle multi-line continuations
+        content = preprocess_jcl_continuations(content)
+        
         # Parse with AST parser if available
         if self.parser:
             try:
@@ -218,6 +231,10 @@ class JCLAnalyzer:
                     parsed.raw_data = result
                 else:
                     parsed.raw_data = {'steps': []}
+                
+                # Fix parameter parsing (generic solution for parentheses, quotes, etc.)
+                if parsed.raw_data:
+                    parsed.raw_data = fix_jcl_parameters_in_result(parsed.raw_data)
                     
             except Exception as e:
                 self._log(f"[WARN] AST parsing failed for {jcl_path.name}: {e}")

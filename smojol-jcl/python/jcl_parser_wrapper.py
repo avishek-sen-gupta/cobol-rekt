@@ -7,6 +7,7 @@ import sys
 import json
 from pathlib import Path
 from jcl_parser import JCLParser
+from jcl_preprocessing import preprocess_jcl_continuations, fix_jcl_parameters_in_result
 
 
 def parse_jcl_file(jcl_file_path: str) -> dict:
@@ -26,13 +27,22 @@ def parse_jcl_file(jcl_file_path: str) -> dict:
         with open(jcl_file_path, 'r', encoding='utf-8') as f:
             jcl_content = f.read()
         
+        # Preprocess JCL to handle multi-line continuations
+        jcl_content = preprocess_jcl_continuations(jcl_content)
+        
         # Parse the JCL
         parsed_jcl = parser.parse_string(jcl_content)
+        
+        # Convert to dict if needed
+        jcl_dict = parsed_jcl.to_json() if hasattr(parsed_jcl, 'to_json') else parsed_jcl
+        
+        # Fix parameter parsing (generic solution for parentheses, quotes, etc.)
+        jcl_dict = fix_jcl_parameters_in_result(jcl_dict)
         
         return {
             "status": "success",
             "file": jcl_file_path,
-            "jcl": parsed_jcl.to_json() if hasattr(parsed_jcl, 'to_json') else parsed_jcl
+            "jcl": jcl_dict
         }
         
     except FileNotFoundError:

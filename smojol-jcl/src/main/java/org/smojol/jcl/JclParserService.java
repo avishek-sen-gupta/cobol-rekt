@@ -56,6 +56,7 @@ public class JclParserService {
     
     /**
      * Locate the Python script in the classpath or filesystem.
+     * Extracts all necessary Python files (including dependencies like jcl_preprocessing.py).
      *
      * @return Path to the Python script
      * @throws JclParsingException if script cannot be found
@@ -65,11 +66,22 @@ public class JclParserService {
         try (InputStream is = getClass().getClassLoader()
                 .getResourceAsStream("python/" + PYTHON_SCRIPT)) {
             if (is != null) {
-                // Extract to temp directory
-                Path tempScript = Files.createTempFile("jcl_parser_wrapper", ".py");
+                // Create temp directory for all Python files
+                Path tempDir = Files.createTempDirectory("jcl_parser_");
+                tempDir.toFile().deleteOnExit();
+                
+                // Extract main script
+                Path tempScript = tempDir.resolve(PYTHON_SCRIPT);
                 Files.copy(is, tempScript, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
                 tempScript.toFile().deleteOnExit();
-                LOGGER.fine("Using Python script from resources: " + tempScript);
+                
+                // Extract dependency: jcl_preprocessing.py
+                extractPythonDependency("jcl_preprocessing.py", tempDir);
+                
+                // Extract dependency: jcl_analysis.py (might be needed)
+                extractPythonDependency("jcl_analysis.py", tempDir);
+                
+                LOGGER.fine("Using Python scripts from resources: " + tempDir);
                 return tempScript;
             }
         } catch (IOException e) {
@@ -91,6 +103,28 @@ public class JclParserService {
         }
         
         throw new JclParsingException("Could not locate Python script: " + PYTHON_SCRIPT);
+    }
+    
+    /**
+     * Extract a Python dependency file from resources to the temp directory.
+     *
+     * @param filename name of the Python file to extract
+     * @param targetDir directory to extract to
+     */
+    private void extractPythonDependency(String filename, Path targetDir) {
+        try (InputStream is = getClass().getClassLoader()
+                .getResourceAsStream("python/" + filename)) {
+            if (is != null) {
+                Path targetFile = targetDir.resolve(filename);
+                Files.copy(is, targetFile, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+                targetFile.toFile().deleteOnExit();
+                LOGGER.fine("Extracted Python dependency: " + filename);
+            } else {
+                LOGGER.fine("Python dependency not found in resources: " + filename);
+            }
+        } catch (IOException e) {
+            LOGGER.warning("Failed to extract Python dependency " + filename + ": " + e.getMessage());
+        }
     }
     
     /**
