@@ -120,6 +120,9 @@ public class JCLFile {
         @JsonProperty("datasets")
         private List<String> datasets;
 
+        @JsonProperty("dd_statements")
+        private List<DdStatement> ddStatements;
+
         @JsonProperty("parameters")
         private Map<String, String> parameters;
     }

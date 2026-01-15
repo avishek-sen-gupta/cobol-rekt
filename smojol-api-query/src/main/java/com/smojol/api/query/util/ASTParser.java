@@ -110,7 +110,34 @@ public class ASTParser {
             // Extraire les programmes et datasets utilisés
             builder.programs(extractProgramsFromJcl(root));
             builder.datasets(extractDatasetsFromJcl(root));
-            builder.steps(extractJclSteps(root));
+            
+            // NOUVEAU: Utiliser JclMetadataTransformer pour extraire les steps avec DD statements
+            try {
+                JsonNode jclExecutionContextNode = root.get("jclExecutionContext");
+                if (jclExecutionContextNode != null) {
+                    @SuppressWarnings("unchecked")
+                    Map<String, Object> jclExecutionContext = 
+                        mapper.convertValue(jclExecutionContextNode, Map.class);
+                    
+                    if (jclExecutionContext != null && !jclExecutionContext.isEmpty()) {
+                        JclMetadataTransformer transformer = new JclMetadataTransformer();
+                        List<JCLFile.JCLStep> steps = transformer.transformSteps(jclExecutionContext);
+                        builder.steps(steps);
+                        logger.debug("Populated {} JCL steps with DD statements for: {}", 
+                            steps.size(), name);
+                    } else {
+                        logger.debug("No jclExecutionContext found, falling back to simple steps");
+                        builder.steps(extractJclSteps(root));
+                    }
+                } else {
+                    logger.debug("No jclExecutionContext node, falling back to simple steps");
+                    builder.steps(extractJclSteps(root));
+                }
+            } catch (Exception e) {
+                logger.warn("Error transforming jclExecutionContext for {}: {}, falling back to simple steps", 
+                    name, e.getMessage());
+                builder.steps(extractJclSteps(root));
+            }
             
             // Stocker les données JCL
             builder.jclData(mapper.convertValue(root, Map.class));

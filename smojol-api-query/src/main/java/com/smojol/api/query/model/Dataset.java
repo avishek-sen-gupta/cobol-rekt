@@ -1,13 +1,17 @@
 package com.smojol.api.query.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.smojol.api.query.jcl.ParameterGroup;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Représentation d'un dataset utilisé par les programmes COBOL et JCL
@@ -62,6 +66,41 @@ public class Dataset {
 
     @JsonProperty("last_modified")
     private long lastModified;
+    
+    // Groupes de paramètres génériques
+    @JsonProperty("parameter_groups")
+    private Map<String, ParameterGroup> parameterGroups;
+
+    /**
+     * Ajoute un groupe de paramètres générique
+     */
+    public void addParameterGroup(String groupName, ParameterGroup group) {
+        if (parameterGroups == null) {
+            parameterGroups = new HashMap<>();
+        }
+        parameterGroups.put(groupName, group);
+    }
+    
+    /**
+     * Récupère un groupe de paramètres
+     */
+    public ParameterGroup getParameterGroup(String groupName) {
+        return parameterGroups != null ? parameterGroups.get(groupName) : new ParameterGroup(new HashMap<>());
+    }
+    
+    /**
+     * Vérifie si un groupe existe
+     */
+    public boolean hasParameterGroup(String groupName) {
+        return parameterGroups != null && parameterGroups.containsKey(groupName);
+    }
+    
+    /**
+     * Retourne tous les noms de groupes
+     */
+    public Set<String> getParameterGroupNames() {
+        return parameterGroups != null ? parameterGroups.keySet() : new HashSet<>();
+    }
 
     /**
      * Vérifie si le dataset est valide
