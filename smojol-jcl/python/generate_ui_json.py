@@ -175,7 +175,7 @@ def main():
     if JCL_ANALYZER_AVAILABLE:
         analyzer = JCLAnalyzer(verbose=True)
         jcl_count = analyzer.load_jcl_directory(args.jcl_dir)
-        jcl_analysis = analyzer.get_jcl_analysis_json()
+        jcl_analysis = analyzer.get_jcl_analysis_json(include_details=True)
         print(f"  Total JCL files: {jcl_count}", file=sys.stderr)
     else:
         jcl_analysis = {'jcl_files': [], 'summary': {'total_jcl_files': 0, 'datasets': []}}

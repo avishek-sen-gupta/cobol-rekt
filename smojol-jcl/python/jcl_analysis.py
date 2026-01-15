@@ -149,20 +149,180 @@ class ParsedJCL:
                     })
         return self._steps
     
-    def to_dict(self) -> Dict[str, Any]:
-        """Convert to dictionary for JSON serialization."""
-        return {
+    def _extract_datasets(self) -> Dict[str, List[Dict[str, Any]]]:
+        """Extract and categorize datasets (INPUT, OUTPUT, SYSOUT)."""
+        datasets = {
+            'INPUT': [],
+            'OUTPUT': [],
+            'SYSOUT': []
+        }
+        
+        if not self.raw_data:
+            return datasets
+        
+        for step in self.raw_data.get('steps', []):
+            for dd in step.get('dd_statements', []):
+                dd_name = dd.get('name', '')
+                params = dd.get('parameters', {})
+                
+                if not isinstance(params, dict):
+                    continue
+                
+                # SYSOUT
+                if 'SYSOUT' in params:
+                    datasets['SYSOUT'].append({
+                        'dd_name': dd_name,
+                        'destination': params['SYSOUT']
+                    })
+                    continue
+                
+                # Datasets with DSN
+                dsn = params.get('DSN', '')
+                if dsn:
+                    disp_str = params.get('DISP', '')
+                    
+                    # Parse disposition to determine INPUT/OUTPUT
+                    disposition = 'SHR'  # Default
+                    if disp_str:
+                        # Remove parentheses if present
+                        disp_clean = disp_str.strip('()')
+                        disposition = disp_clean.split(',')[0].upper()
+                    
+                    dataset_entry = {
+                        'dd_name': dd_name,
+                        'dsn': dsn,
+                        'disposition': disposition
+                    }
+                    
+                    # Add additional info for OUTPUT datasets
+                    if disposition in ['NEW', 'MOD']:
+                        if 'SPACE' in params:
+                            dataset_entry['space'] = params['SPACE']
+                        
+                        if 'DCB' in params:
+                            dcb_str = params['DCB'].strip('()')
+                            dcb_parts = {}
+                            for part in dcb_str.split(','):
+                                if '=' in part:
+                                    k, v = part.split('=', 1)
+                                    dcb_parts[k.lower()] = v
+                            if dcb_parts:
+                                dataset_entry['dcb'] = dcb_parts
+                        
+                        datasets['OUTPUT'].append(dataset_entry)
+                    else:
+                        # SHR, OLD = INPUT
+                        datasets['INPUT'].append(dataset_entry)
+        
+        return datasets
+    
+    def _enrich_dd_statement(self, dd: Dict[str, Any]) -> Dict[str, Any]:
+        """Enrich a DD statement with parsed dataset information."""
+        enriched = {
+            'name': dd.get('name', ''),
+            'line': dd.get('line', 0),
+            'parameters': dd.get('parameters', {})
+        }
+        
+        params = dd.get('parameters', {})
+        if isinstance(params, dict):
+            # Add dataset_info if DSN is present
+            dsn = params.get('DSN', '')
+            if dsn:
+                disp_str = params.get('DISP', '')
+                disposition = 'SHR'
+                dataset_type = 'INPUT'
+                
+                if disp_str:
+                    disp_clean = disp_str.strip('()')
+                    disposition = disp_clean.split(',')[0].upper()
+                    if disposition in ['NEW', 'MOD']:
+                        dataset_type = 'OUTPUT'
+                
+                dataset_info = {
+                    'dsn': dsn,
+                    'disposition': disposition,
+                    'type': dataset_type
+                }
+                
+                # Extract DCB information
+                dcb_str = params.get('DCB', '')
+                if dcb_str:
+                    dcb_clean = dcb_str.strip('()')
+                    for part in dcb_clean.split(','):
+                        if '=' in part:
+                            k, v = part.split('=', 1)
+                            k_lower = k.lower()
+                            if k_lower == 'recfm':
+                                dataset_info['recordFormat'] = v
+                            elif k_lower == 'lrecl':
+                                try:
+                                    dataset_info['recordLength'] = int(v)
+                                except ValueError:
+                                    dataset_info['recordLength'] = v
+                            elif k_lower == 'blksize':
+                                try:
+                                    dataset_info['blockSize'] = int(v)
+                                except ValueError:
+                                    dataset_info['blockSize'] = v
+                
+                enriched['dataset_info'] = dataset_info
+        
+        return enriched
+    
+    def to_dict(self, include_details: bool = False) -> Dict[str, Any]:
+        """
+        Convert to dictionary for JSON serialization.
+        
+        Args:
+            include_details: If True, include detailed DD statement parameters
+        """
+        result = {
             'name': self.name,
             'stem': self.stem,
             'path': str(self.path),
             'job_name': self.job_name,
             'programs': self.programs,
             'dd_names': [d['name'] for d in self.dd_names],
-            'steps': self.steps,
+            'steps': self.steps if not include_details else self._get_detailed_steps(),
             'lines': self._lines,
             'size': self._size,
             'parse_error': self.parse_error
         }
+        
+        if include_details:
+            result['datasets'] = self._extract_datasets()
+        
+        return result
+    
+    def _get_detailed_steps(self) -> List[Dict[str, Any]]:
+        """Get steps with detailed DD statement information."""
+        if not self.raw_data:
+            return []
+        
+        detailed_steps = []
+        for step in self.raw_data.get('steps', []):
+            params = step.get('parameters', {})
+            pgm = ''
+            if isinstance(params, dict):
+                pgm = params.get('PGM') or params.get('pgm') or ''
+                if pgm:
+                    pgm = pgm.split(',')[0].strip()
+            
+            dd_statements = [
+                self._enrich_dd_statement(dd)
+                for dd in step.get('dd_statements', [])
+            ]
+            
+            detailed_steps.append({
+                'name': step.get('name', ''),
+                'program': pgm,
+                'line': step.get('line', 0),
+                'dd_count': len(dd_statements),
+                'dd_statements': dd_statements
+            })
+        
+        return detailed_steps
 
 
 class JCLAnalyzer:
@@ -393,23 +553,89 @@ class JCLAnalyzer:
     # Output formats for different consumers
     # ========================================================================
     
-    def get_jcl_analysis_json(self) -> Dict[str, Any]:
+    def get_jcl_analysis_json(self, include_details: bool = True) -> Dict[str, Any]:
         """
         Get JCL analysis in the format expected by smojol-ui.
         Used by generate_ui_json.py.
+        
+        Args:
+            include_details: If True, include detailed DD parameters and dataset info
         """
         self._compute_dd_names()
         
         jcl_list = []
+        total_dd_statements = 0
+        total_datasets = 0
+        dataset_summary = {'INPUT': 0, 'OUTPUT': 0, 'SYSOUT': 0}
+        
         for parsed in sorted(self.jcl_files.values(), key=lambda p: p.name):
-            jcl_list.append(parsed.to_dict())
+            jcl_dict = parsed.to_dict(include_details=include_details)
+            jcl_list.append(jcl_dict)
+            
+            if include_details:
+                # Count DD statements
+                for step in jcl_dict.get('steps', []):
+                    total_dd_statements += len(step.get('dd_statements', []))
+                
+                # Count datasets
+                datasets = jcl_dict.get('datasets', {})
+                for dataset_type, ds_list in datasets.items():
+                    count = len(ds_list)
+                    total_datasets += count
+                    if dataset_type in dataset_summary:
+                        dataset_summary[dataset_type] += count
+        
+        # Enrich summary with DD name type information
+        dd_names_enriched = []
+        for dd_name, dd_info in self._all_dd_names.items():
+            # Determine type by checking actual usage across JCL files
+            dd_type = 'unknown'
+            count = len(dd_info['jcl_files'])
+            
+            # Check first occurrence to determine type
+            for parsed in self.jcl_files.values():
+                if not parsed.raw_data:
+                    continue
+                for step in parsed.raw_data.get('steps', []):
+                    for dd in step.get('dd_statements', []):
+                        if dd.get('name') == dd_name:
+                            params = dd.get('parameters', {})
+                            if isinstance(params, dict):
+                                if 'SYSOUT' in params:
+                                    dd_type = 'SYSOUT'
+                                elif 'DSN' in params:
+                                    disp = params.get('DISP', 'SHR')
+                                    if disp and disp.strip('()').split(',')[0].upper() in ['NEW', 'MOD']:
+                                        dd_type = 'OUTPUT'
+                                    else:
+                                        dd_type = 'INPUT'
+                            break
+                    if dd_type != 'unknown':
+                        break
+                if dd_type != 'unknown':
+                    break
+            
+            dd_names_enriched.append({
+                'name': dd_name,
+                'jcl_files': dd_info['jcl_files'],
+                'type': dd_type,
+                'count': count
+            })
+        
+        summary = {
+            'total_jcl_files': len(jcl_list),
+            'dd_names': dd_names_enriched
+        }
+        
+        if include_details:
+            summary['total_programs'] = sum(len(p.programs) for p in self.jcl_files.values())
+            summary['total_dd_statements'] = total_dd_statements
+            summary['total_datasets'] = total_datasets
+            summary['dataset_summary'] = dataset_summary
         
         return {
             'jcl_files': jcl_list,
-            'summary': {
-                'total_jcl_files': len(jcl_list),
-                'dd_names': list(self._all_dd_names.values())
-            }
+            'summary': summary
         }
     
     def get_cobol_mapping_json(self) -> Dict[str, Any]:
