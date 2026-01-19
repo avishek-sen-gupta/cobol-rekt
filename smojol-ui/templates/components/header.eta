@@ -1,0 +1,17 @@
+<header class="header">
+    <div class="header-content">
+        <div class="logo">
+            <div class="logo-icon">CB</div>
+            <div class="logo-text">COBOL <span>Explorer</span></div>
+        </div>
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="Search programs, JCLs, copybooks, datasets..." id="searchInput">
+        </div>
+        <div class="header-right">
+            <div class="api-status" id="apiStatus">
+                API: <%= it.apiUrl %>
+            </div>
+            <div id="loadStatus" class="badge warning">⏳ Loading</div>
+        </div>
+    </div>
+</header>

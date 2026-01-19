@@ -1,0 +1,96 @@
+// Data storage
+let allData = {
+    programs: [],
+    jcls: [],
+    copybooks: [],
+    datasets: []
+};
+
+// Load all data from API
+async function loadData() {
+    console.log('[Data Loader] Fetching data from API:', API_BASE);
+    
+    try {
+        const [programs, jcls, copybooks, datasets] = await Promise.all([
+            fetch(`${API_BASE}/programs`).then(r => {
+                if (!r.ok) throw new Error(`Programs API error: ${r.status}`);
+                return r.json();
+            }),
+            fetch(`${API_BASE}/jcls`).then(r => {
+                if (!r.ok) throw new Error(`JCLs API error: ${r.status}`);
+                return r.json();
+            }),
+            fetch(`${API_BASE}/copybooks`).then(r => {
+                if (!r.ok) throw new Error(`Copybooks API error: ${r.status}`);
+                return r.json();
+            }),
+            fetch(`${API_BASE}/datasets`).then(r => {
+                if (!r.ok) throw new Error(`Datasets API error: ${r.status}`);
+                return r.json();
+            })
+        ]);
+
+        allData.programs = programs;
+        allData.jcls = jcls;
+        allData.copybooks = copybooks;
+        allData.datasets = datasets;
+
+        console.log('[Data Loader] Data loaded successfully:', {
+            programs: programs.length,
+            jcls: jcls.length,
+            copybooks: copybooks.length,
+            datasets: datasets.length
+        });
+
+        updateStats();
+        updateCounts();
+        renderAllTabs();
+        
+        document.getElementById('loadStatus').innerHTML = '✓ Data Loaded';
+        document.getElementById('loadStatus').className = 'badge success';
+    } catch (error) {
+        console.error('[Data Loader] Error loading data:', error);
+        document.getElementById('loadStatus').innerHTML = '⚠ Error Loading';
+        document.getElementById('loadStatus').className = 'badge error';
+        
+        // Show error in all grids
+        const errorHtml = `
+            <div class="no-results">
+                <h3>Failed to load data</h3>
+                <p>Could not connect to API: ${API_BASE}</p>
+                <p style="margin-top: 8px; font-size: 12px; color: var(--accent-red);">
+                    ${error.message}
+                </p>
+                <p style="margin-top: 16px; font-size: 12px; color: var(--text-secondary);">
+                    Make sure the Java API is running on port 8080
+                </p>
+            </div>
+        `;
+        document.getElementById('cobolGrid').innerHTML = errorHtml;
+        document.getElementById('jclGrid').innerHTML = errorHtml;
+        document.getElementById('copybookGrid').innerHTML = errorHtml;
+        document.getElementById('datasetGrid').innerHTML = errorHtml;
+    }
+}
+
+// Update statistics
+function updateStats() {
+    document.getElementById('statCobol').textContent = allData.programs.length;
+    document.getElementById('statJcl').textContent = allData.jcls.length;
+    document.getElementById('statCopybook').textContent = allData.copybooks.length;
+    document.getElementById('statDataset').textContent = allData.datasets.length;
+}
+
+// Update tab counts
+function updateCounts() {
+    document.getElementById('cobolCount').textContent = allData.programs.length;
+    document.getElementById('jclCount').textContent = allData.jcls.length;
+    document.getElementById('copybookCount').textContent = allData.copybooks.length;
+    document.getElementById('datasetCount').textContent = allData.datasets.length;
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('[Data Loader] Initializing...');
+    loadData();
+});

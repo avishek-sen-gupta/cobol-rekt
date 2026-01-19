@@ -1,0 +1,82 @@
+<%~ include('layout', { 
+    title: 'COBOL Explorer',
+    apiUrl: it.apiUrl || 'http://localhost:8080/api',
+    content: `
+        <!-- Stats Grid -->
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card cobol">
+                <div class="stat-value" id="statCobol">0</div>
+                <div class="stat-label">COBOL Programs</div>
+            </div>
+            <div class="stat-card jcl">
+                <div class="stat-value" id="statJcl">0</div>
+                <div class="stat-label">JCL Files</div>
+            </div>
+            <div class="stat-card copybook">
+                <div class="stat-value" id="statCopybook">0</div>
+                <div class="stat-label">Copybooks</div>
+            </div>
+            <div class="stat-card dataset">
+                <div class="stat-value" id="statDataset">0</div>
+                <div class="stat-label">Datasets</div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" data-tab="cobol">
+                <span>📄</span> COBOL Programs
+                <span class="tab-badge" id="cobolCount">0</span>
+            </button>
+            <button class="tab" data-tab="jcl">
+                <span>⚙️</span> JCL Files
+                <span class="tab-badge" id="jclCount">0</span>
+            </button>
+            <button class="tab" data-tab="copybooks">
+                <span>📋</span> Copybooks
+                <span class="tab-badge" id="copybookCount">0</span>
+            </button>
+            <button class="tab" data-tab="datasets">
+                <span>💾</span> Datasets
+                <span class="tab-badge" id="datasetCount">0</span>
+            </button>
+        </div>
+
+        <!-- Content Panels -->
+        <div id="cobol" class="content-panel active">
+            <div class="card-grid" id="cobolGrid">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    Loading COBOL programs...
+                </div>
+            </div>
+        </div>
+
+        <div id="jcl" class="content-panel">
+            <div class="card-grid" id="jclGrid">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    Loading JCL files...
+                </div>
+            </div>
+        </div>
+
+        <div id="copybooks" class="content-panel">
+            <div class="card-grid" id="copybookGrid">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    Loading copybooks...
+                </div>
+            </div>
+        </div>
+
+        <div id="datasets" class="content-panel">
+            <div class="card-grid" id="datasetGrid">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    Loading datasets...
+                </div>
+            </div>
+        </div>
+    `
+}) %>

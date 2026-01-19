@@ -110,4 +110,32 @@ public interface ASTQueryService {
      * @return List des Copybooks inclus par ce copybook (sans cycles)
      */
     List<Copybook> findCopybooksUsedByCopybook(String copybookName);
+
+    /**
+     * Récupère tous les programmes COBOL disponibles
+     *
+     * @return List de tous les CBLFiles
+     */
+    List<CBLFile> getAllCbl();
+
+    /**
+     * Récupère tous les fichiers JCL disponibles
+     *
+     * @return List de tous les JCLFiles
+     */
+    List<JCLFile> getAllJcl();
+
+    /**
+     * Récupère tous les copybooks disponibles
+     *
+     * @return List de tous les Copybooks
+     */
+    List<Copybook> getAllCopybooks();
+
+    /**
+     * Récupère tous les datasets disponibles
+     *
+     * @return List de tous les Datasets
+     */
+    List<Dataset> getAllDatasets();
 }

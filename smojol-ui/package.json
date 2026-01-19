@@ -1,0 +1,25 @@
+{
+  "name": "smojol-ui",
+  "version": "1.0.0",
+  "description": "COBOL Explorer UI with ETA templating",
+  "main": "build.js",
+  "scripts": {
+    "build": "node build.js",
+    "build:prod": "API_URL=http://production-api:8080/api node build.js",
+    "dev": "nodemon --watch templates build.js",
+    "serve": "python -m http.server 8080"
+  },
+  "keywords": [
+    "cobol",
+    "eta",
+    "template"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "eta": "^3.5.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}

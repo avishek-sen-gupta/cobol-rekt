@@ -56,12 +56,23 @@ public class JclMetadataTransformer {
     /**
      * Transforme une seule étape JCL en JCLStep object
      *
-     * @param stepData Map contenant stepName, programName, dd_statements, etc.
+     * @param stepData Map contenant name, parameters, dd_statements, etc.
      * @return JCLStep object peuplé avec DD statements
      */
     private JCLFile.JCLStep transformSingleStep(Map<String, Object> stepData) {
-        String stepName = getString(stepData, "stepName", "");
-        String programName = getString(stepData, "programName", "");
+        String stepName = getString(stepData, "name", "");
+        
+        // Extraire le nom du programme depuis parameters.PGM
+        String programName = "";
+        Object parametersObj = stepData.get("parameters");
+        if (parametersObj instanceof Map) {
+            @SuppressWarnings("unchecked")
+            Map<String, Object> parametersMap = (Map<String, Object>) parametersObj;
+            Object pgmValue = parametersMap.get("PGM");
+            if (pgmValue != null) {
+                programName = pgmValue.toString();
+            }
+        }
 
         // Extraire et transformer les DD statements
         List<DdStatement> ddStatements = transformDdStatements(stepData);
@@ -69,9 +80,13 @@ public class JclMetadataTransformer {
         // Extraire datasets (liste simple de noms)
         List<String> datasets = extractDatasetNames(ddStatements);
 
-        // Extraire parameters (si présents)
+        // Extraire parameters (si présents) - convertir en Map<String, String>
         @SuppressWarnings("unchecked")
-        Map<String, String> parameters = (Map<String, String>) stepData.getOrDefault("parameters", Map.of());
+        Map<String, Object> paramsObj = (Map<String, Object>) stepData.getOrDefault("parameters", Map.of());
+        Map<String, String> parameters = new java.util.HashMap<>();
+        for (Map.Entry<String, Object> entry : paramsObj.entrySet()) {
+            parameters.put(entry.getKey(), entry.getValue() != null ? entry.getValue().toString() : "");
+        }
 
         return JCLFile.JCLStep.builder()
                 .name(stepName)
@@ -115,12 +130,12 @@ public class JclMetadataTransformer {
     /**
      * Transforme un seul DD statement
      *
-     * @param ddData Map contenant name, parameters, lineNumber
+     * @param ddData Map contenant name, parameters, line
      * @return DdStatement object avec paramètres parsés automatiquement
      */
     private DdStatement transformSingleDdStatement(Map<String, Object> ddData) {
         String name = getString(ddData, "name", "");
-        int lineNumber = getInt(ddData, "lineNumber", 0);
+        int lineNumber = getInt(ddData, "line", 0);
 
         @SuppressWarnings("unchecked")
         Map<String, Object> parameters = (Map<String, Object>) ddData.getOrDefault("parameters", Map.of());

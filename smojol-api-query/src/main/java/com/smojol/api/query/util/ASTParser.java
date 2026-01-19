@@ -107,11 +107,10 @@ public class ASTParser {
             builder.parseStatus(ParseStatus.SUCCESS);
             builder.lastModified(System.currentTimeMillis());
             
-            // Extraire les programmes et datasets utilisés
-            builder.programs(extractProgramsFromJcl(root));
-            builder.datasets(extractDatasetsFromJcl(root));
+            // NOUVEAU: Extraire depuis jclExecutionContext si disponible
+            List<String> programs = new ArrayList<>();
+            List<String> datasets = new ArrayList<>();
             
-            // NOUVEAU: Utiliser JclMetadataTransformer pour extraire les steps avec DD statements
             try {
                 JsonNode jclExecutionContextNode = root.get("jclExecutionContext");
                 if (jclExecutionContextNode != null) {
@@ -123,21 +122,43 @@ public class ASTParser {
                         JclMetadataTransformer transformer = new JclMetadataTransformer();
                         List<JCLFile.JCLStep> steps = transformer.transformSteps(jclExecutionContext);
                         builder.steps(steps);
+                        
+                        // Extraire programmes et datasets depuis les steps
+                        for (JCLFile.JCLStep step : steps) {
+                            if (step.getProgram() != null && !step.getProgram().isEmpty()) {
+                                programs.add(step.getProgram());
+                            }
+                            if (step.getDatasets() != null) {
+                                datasets.addAll(step.getDatasets());
+                            }
+                        }
+                        
                         logger.debug("Populated {} JCL steps with DD statements for: {}", 
                             steps.size(), name);
+                        logger.debug("Found {} programs and {} datasets from jclExecutionContext", 
+                            programs.size(), datasets.size());
                     } else {
-                        logger.debug("No jclExecutionContext found, falling back to simple steps");
+                        logger.debug("No jclExecutionContext found, falling back to simple extraction");
                         builder.steps(extractJclSteps(root));
+                        programs = extractProgramsFromJcl(root);
+                        datasets = extractDatasetsFromJcl(root);
                     }
                 } else {
-                    logger.debug("No jclExecutionContext node, falling back to simple steps");
+                    logger.debug("No jclExecutionContext node, falling back to simple extraction");
                     builder.steps(extractJclSteps(root));
+                    programs = extractProgramsFromJcl(root);
+                    datasets = extractDatasetsFromJcl(root);
                 }
             } catch (Exception e) {
-                logger.warn("Error transforming jclExecutionContext for {}: {}, falling back to simple steps", 
+                logger.warn("Error transforming jclExecutionContext for {}: {}, falling back to simple extraction", 
                     name, e.getMessage());
                 builder.steps(extractJclSteps(root));
+                programs = extractProgramsFromJcl(root);
+                datasets = extractDatasetsFromJcl(root);
             }
+            
+            builder.programs(programs);
+            builder.datasets(datasets);
             
             // Stocker les données JCL
             builder.jclData(mapper.convertValue(root, Map.class));
@@ -260,26 +281,124 @@ public class ASTParser {
 
     private static List<String> extractCallees(JsonNode root) {
         List<String> callees = new ArrayList<>();
-        JsonNode callFlowNode = root.get("call_flow");
-        if (callFlowNode != null) {
-            JsonNode calleesNode = callFlowNode.get("callees");
-            if (calleesNode != null && calleesNode.isArray()) {
-                calleesNode.forEach(node -> callees.add(node.asText()));
-            }
-        }
-        return callees;
+        findCallStatements(root, callees);
+        
+        // Dédupliquer et trier
+        return callees.stream()
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
     }
 
     private static List<String> extractCallers(JsonNode root) {
-        List<String> callers = new ArrayList<>();
-        JsonNode callFlowNode = root.get("call_flow");
-        if (callFlowNode != null) {
-            JsonNode callersNode = callFlowNode.get("callers");
-            if (callersNode != null && callersNode.isArray()) {
-                callersNode.forEach(node -> callers.add(node.asText()));
+        // Les callers ne peuvent pas être extraits directement de l'AST d'un programme
+        // Ils doivent être calculés par analyse inverse dans SimpleASTQueryService
+        return new ArrayList<>();
+    }
+
+    /**
+     * Parcourt récursivement l'AST pour trouver tous les CallStatementContext
+     */
+    private static void findCallStatements(JsonNode node, List<String> callees) {
+        if (node == null) {
+            return;
+        }
+        
+        if (node.isObject()) {
+            // Vérifier si c'est un CallStatementContext
+            JsonNode nodeType = node.get("nodeType");
+            if (nodeType != null && "CallStatementContext".equals(nodeType.asText())) {
+                String callTarget = extractCallTarget(node);
+                if (callTarget != null && !callTarget.isEmpty()) {
+                    callees.add(callTarget);
+                    logger.debug("Found CALL to: {}", callTarget);
+                }
+            }
+            
+            // Parcourir tous les enfants récursivement
+            Iterator<Map.Entry<String, JsonNode>> fields = node.fields();
+            while (fields.hasNext()) {
+                Map.Entry<String, JsonNode> field = fields.next();
+                findCallStatements(field.getValue(), callees);
+            }
+        } else if (node.isArray()) {
+            for (JsonNode child : node) {
+                findCallStatements(child, callees);
             }
         }
-        return callers;
+    }
+
+    /**
+     * Extrait la cible d'un CALL depuis un CallStatementContext
+     * Cherche dans les children pour trouver le literal ou identifier
+     */
+    private static String extractCallTarget(JsonNode callNode) {
+        JsonNode children = callNode.get("children");
+        if (children == null || !children.isArray()) {
+            return null;
+        }
+        
+        for (JsonNode child : children) {
+            if (child == null || !child.isObject()) {
+                continue;
+            }
+            
+            JsonNode nodeType = child.get("nodeType");
+            if (nodeType == null) {
+                continue;
+            }
+            
+            String type = nodeType.asText();
+            
+            // Chercher dans ConstantNameContext (CALL 'LITERAL')
+            if (type.contains("ConstantName") || type.contains("Constant")) {
+                String target = extractFromLiteralNode(child);
+                if (target != null) {
+                    return target;
+                }
+            }
+            
+            // Chercher dans IdentifierContext (CALL VARIABLE)
+            if (type.contains("Identifier")) {
+                JsonNode text = child.get("text");
+                if (text != null) {
+                    return text.asText();
+                }
+            }
+        }
+        
+        return null;
+    }
+
+    /**
+     * Extrait la valeur d'un literal depuis un node (récursif pour gérer LiteralContext imbriqués)
+     */
+    private static String extractFromLiteralNode(JsonNode node) {
+        JsonNode text = node.get("text");
+        if (text != null) {
+            String value = text.asText();
+            // Retirer les quotes
+            if (value.startsWith("'") && value.endsWith("'")) {
+                return value.substring(1, value.length() - 1);
+            }
+            if (value.startsWith("\"") && value.endsWith("\"")) {
+                return value.substring(1, value.length() - 1);
+            }
+            return value;
+        }
+        
+        // Chercher récursivement dans les children
+        JsonNode children = node.get("children");
+        if (children != null && children.isArray()) {
+            for (JsonNode child : children) {
+                String result = extractFromLiteralNode(child);
+                if (result != null) {
+                    return result;
+                }
+            }
+        }
+        
+        return null;
     }
 
     private static List<String> extractProgramsFromJcl(JsonNode root) {

@@ -1,0 +1,59 @@
+// Search functionality
+let searchTimeout;
+
+document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('searchInput');
+    
+    searchInput.addEventListener('input', (e) => {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            performSearch(e.target.value.toLowerCase().trim());
+        }, 300);
+    });
+});
+
+function performSearch(query) {
+    if (!query) {
+        // Reset to full data
+        renderCobolGrid(allData.programs);
+        renderJclGrid(allData.jcls);
+        renderCopybookGrid(allData.copybooks);
+        renderDatasetGrid(allData.datasets);
+        updateCounts();
+        return;
+    }
+
+    // Filter data
+    const filteredPrograms = allData.programs.filter(p => 
+        p.name.toLowerCase().includes(query)
+    );
+    const filteredJcls = allData.jcls.filter(j => 
+        j.name.toLowerCase().includes(query)
+    );
+    const filteredCopybooks = allData.copybooks.filter(c => 
+        c.name.toLowerCase().includes(query)
+    );
+    const filteredDatasets = allData.datasets.filter(d => 
+        d.name.toLowerCase().includes(query)
+    );
+
+    // Render filtered results
+    renderCobolGrid(filteredPrograms);
+    renderJclGrid(filteredJcls);
+    renderCopybookGrid(filteredCopybooks);
+    renderDatasetGrid(filteredDatasets);
+
+    // Update counts
+    document.getElementById('cobolCount').textContent = filteredPrograms.length;
+    document.getElementById('jclCount').textContent = filteredJcls.length;
+    document.getElementById('copybookCount').textContent = filteredCopybooks.length;
+    document.getElementById('datasetCount').textContent = filteredDatasets.length;
+
+    console.log('[Search] Results:', {
+        query,
+        programs: filteredPrograms.length,
+        jcls: filteredJcls.length,
+        copybooks: filteredCopybooks.length,
+        datasets: filteredDatasets.length
+    });
+}

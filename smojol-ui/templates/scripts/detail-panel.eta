@@ -1,0 +1,149 @@
+// Detail panel functionality
+function openPanel() {
+    document.getElementById('detailPanel').classList.add('open');
+    document.getElementById('overlay').classList.add('open');
+}
+
+function closePanel() {
+    document.getElementById('detailPanel').classList.remove('open');
+    document.getElementById('overlay').classList.remove('open');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('closePanel').addEventListener('click', closePanel);
+    document.getElementById('overlay').addEventListener('click', closePanel);
+});
+
+// Show program detail
+function showProgramDetail(name) {
+    const prog = allData.programs.find(p => p.name === name);
+    if (!prog) return;
+
+    document.getElementById('detailTitle').textContent = prog.name;
+    document.getElementById('detailBody').innerHTML = `
+        <div class="detail-section">
+            <div class="detail-section-title">Program Info</div>
+            <div class="info-row">
+                <span class="info-label">Type</span>
+                <span class="info-value">COBOL Program</span>
+            </div>
+            ${prog.path ? `<div class="info-row">
+                <span class="info-label">Path</span>
+                <span class="info-value" style="font-size: 11px; word-break: break-all;">${escapeHtml(prog.path)}</span>
+            </div>` : ''}
+        </div>
+        <div class="detail-section">
+            <div class="detail-section-title">Called by JCL Files (${prog.jcls ? prog.jcls.length : 0})</div>
+            ${prog.jcls && prog.jcls.length > 0 ? `<ul class="detail-list">
+                ${prog.jcls.map(jcl => `<li onclick="showJclDetail('${escapeHtml(jcl)}')">
+                    <span class="card-icon jcl" style="width:24px;height:24px;font-size:12px;">⚙️</span>
+                    ${escapeHtml(jcl)}
+                </li>`).join('')}
+            </ul>` : '<p class="empty-state">No JCL files reference this program</p>'}
+        </div>
+        <div class="detail-section">
+            <div class="detail-section-title">Copybooks Used (${prog.copybooks ? prog.copybooks.length : 0})</div>
+            ${prog.copybooks && prog.copybooks.length > 0 ? `<ul class="detail-list">
+                ${prog.copybooks.map(cpy => `<li onclick="showCopybookDetail('${escapeHtml(cpy)}')">
+                    <span class="card-icon copybook" style="width:24px;height:24px;font-size:12px;">📋</span>
+                    ${escapeHtml(cpy)}
+                </li>`).join('')}
+            </ul>` : '<p class="empty-state">No copybooks used</p>'}
+        </div>
+    `;
+    openPanel();
+}
+
+// Show JCL detail
+function showJclDetail(name) {
+    const jcl = allData.jcls.find(j => j.name === name);
+    if (!jcl) return;
+
+    document.getElementById('detailTitle').textContent = jcl.name;
+    document.getElementById('detailBody').innerHTML = `
+        <div class="detail-section">
+            <div class="detail-section-title">JCL Info</div>
+            <div class="info-row">
+                <span class="info-label">Job Name</span>
+                <span class="info-value">${escapeHtml(jcl.jobName || 'N/A')}</span>
+            </div>
+        </div>
+        <div class="detail-section">
+            <div class="detail-section-title">Programs Executed (${jcl.programs ? jcl.programs.length : 0})</div>
+            ${jcl.programs && jcl.programs.length > 0 ? `<ul class="detail-list">
+                ${jcl.programs.map(prog => `<li onclick="showProgramDetail('${escapeHtml(prog)}')">
+                    <span class="card-icon cobol" style="width:24px;height:24px;font-size:12px;">📄</span>
+                    ${escapeHtml(prog)}
+                </li>`).join('')}
+            </ul>` : '<p class="empty-state">No programs executed</p>'}
+        </div>
+        <div class="detail-section">
+            <div class="detail-section-title">Datasets (${jcl.datasets ? jcl.datasets.length : 0})</div>
+            ${jcl.datasets && jcl.datasets.length > 0 ? `<ul class="detail-list">
+                ${jcl.datasets.map(ds => `<li onclick="showDatasetDetail('${escapeHtml(ds)}')">
+                    <span class="card-icon dataset" style="width:24px;height:24px;font-size:12px;">💾</span>
+                    ${escapeHtml(ds)}
+                </li>`).join('')}
+            </ul>` : '<p class="empty-state">No datasets</p>'}
+        </div>
+    `;
+    openPanel();
+}
+
+// Show copybook detail
+function showCopybookDetail(name) {
+    const cpy = allData.copybooks.find(c => c.name === name);
+    if (!cpy) return;
+
+    document.getElementById('detailTitle').textContent = cpy.name;
+    document.getElementById('detailBody').innerHTML = `
+        <div class="detail-section">
+            <div class="detail-section-title">Copybook Info</div>
+            <div class="info-row">
+                <span class="info-label">Usage Count</span>
+                <span class="info-value">${cpy.usedBy ? cpy.usedBy.length : 0} programs</span>
+            </div>
+        </div>
+        <div class="detail-section">
+            <div class="detail-section-title">Used By Programs (${cpy.usedBy ? cpy.usedBy.length : 0})</div>
+            ${cpy.usedBy && cpy.usedBy.length > 0 ? `<ul class="detail-list">
+                ${cpy.usedBy.map(u => `<li onclick="showProgramDetail('${escapeHtml(u)}')">
+                    <span class="card-icon cobol" style="width:24px;height:24px;font-size:12px;">📄</span>
+                    ${escapeHtml(u)}
+                </li>`).join('')}
+            </ul>` : '<p class="empty-state">Not used by any programs</p>'}
+        </div>
+    `;
+    openPanel();
+}
+
+// Show dataset detail
+function showDatasetDetail(name) {
+    const ds = allData.datasets.find(d => d.name === name);
+    if (!ds) return;
+
+    document.getElementById('detailTitle').textContent = ds.name;
+    document.getElementById('detailBody').innerHTML = `
+        <div class="detail-section">
+            <div class="detail-section-title">Dataset Info</div>
+            <div class="info-row">
+                <span class="info-label">Name</span>
+                <span class="info-value" style="word-break: break-all;">${escapeHtml(ds.name)}</span>
+            </div>
+            ${ds.organization ? `<div class="info-row">
+                <span class="info-label">Organization</span>
+                <span class="info-value">${escapeHtml(ds.organization)}</span>
+            </div>` : ''}
+        </div>
+        <div class="detail-section">
+            <div class="detail-section-title">Referenced by JCLs (${ds.usedByJcls ? ds.usedByJcls.length : 0})</div>
+            ${ds.usedByJcls && ds.usedByJcls.length > 0 ? `<ul class="detail-list">
+                ${ds.usedByJcls.map(jcl => `<li onclick="showJclDetail('${escapeHtml(jcl)}')">
+                    <span class="card-icon jcl" style="width:24px;height:24px;font-size:12px;">⚙️</span>
+                    ${escapeHtml(jcl)}
+                </li>`).join('')}
+            </ul>` : '<p class="empty-state">Not referenced by any JCLs</p>'}
+        </div>
+    `;
+    openPanel();
+}

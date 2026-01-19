@@ -25,6 +25,9 @@ public class Dataset {
     @JsonProperty("name")
     private String name;
 
+    @JsonProperty("path")
+    private String path;
+
     @JsonProperty("type")
     private String type;
 
@@ -66,6 +69,9 @@ public class Dataset {
 
     @JsonProperty("last_modified")
     private long lastModified;
+    
+    @JsonProperty("parse_status")
+    private ParseStatus parseStatus;
     
     // Groupes de paramètres génériques
     @JsonProperty("parameter_groups")

@@ -1,0 +1,173 @@
+// Render all tabs
+function renderAllTabs() {
+    renderCobolGrid(allData.programs);
+    renderJclGrid(allData.jcls);
+    renderCopybookGrid(allData.copybooks);
+    renderDatasetGrid(allData.datasets);
+}
+
+// Render COBOL programs grid
+function renderCobolGrid(programs) {
+    const grid = document.getElementById('cobolGrid');
+    if (programs.length === 0) {
+        grid.innerHTML = '<div class="no-results"><h3>No programs found</h3><p>Try adjusting your search</p></div>';
+        return;
+    }
+    grid.innerHTML = programs.map(prog => `
+        <div class="card" onclick="showProgramDetail('${escapeHtml(prog.name)}')">
+            <div class="card-header">
+                <div class="card-title">
+                    <div class="card-icon cobol">📄</div>
+                    ${escapeHtml(prog.name)}
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="card-section">
+                    <div class="card-section-label">Called by JCL (${prog.jcls ? prog.jcls.length : 0})</div>
+                    <div class="tag-list">
+                        ${prog.jcls && prog.jcls.length > 0 
+                            ? prog.jcls.slice(0, 3).map(jcl => `<span class="tag jcl">${escapeHtml(jcl)}</span>`).join('') 
+                            + (prog.jcls.length > 3 ? `<span class="tag jcl">+${prog.jcls.length - 3} more</span>` : '')
+                            : '<span class="empty-state">No JCL references</span>'}
+                    </div>
+                </div>
+                <div class="card-section">
+                    <div class="card-section-label">Copybooks (${prog.copybooks ? prog.copybooks.length : 0})</div>
+                    <div class="tag-list">
+                        ${prog.copybooks && prog.copybooks.length > 0 
+                            ? prog.copybooks.slice(0, 4).map(cpy => `<span class="tag copybook">${escapeHtml(cpy)}</span>`).join('')
+                            + (prog.copybooks.length > 4 ? `<span class="tag copybook">+${prog.copybooks.length - 4} more</span>` : '')
+                            : '<span class="empty-state">No copybooks</span>'}
+                    </div>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Render JCL files grid
+function renderJclGrid(jcls) {
+    const grid = document.getElementById('jclGrid');
+    if (jcls.length === 0) {
+        grid.innerHTML = '<div class="no-results"><h3>No JCL files found</h3><p>Try adjusting your search</p></div>';
+        return;
+    }
+    grid.innerHTML = jcls.map(jcl => `
+        <div class="card" onclick="showJclDetail('${escapeHtml(jcl.name)}')">
+            <div class="card-header">
+                <div class="card-title">
+                    <div class="card-icon jcl">⚙️</div>
+                    ${escapeHtml(jcl.name)}
+                </div>
+                <span class="badge success">${jcl.programs ? jcl.programs.length : 0} programs</span>
+            </div>
+            <div class="card-body">
+                <div class="card-section">
+                    <div class="card-section-label">Programs Executed (${jcl.programs ? jcl.programs.length : 0})</div>
+                    <div class="tag-list">
+                        ${jcl.programs && jcl.programs.length > 0 
+                            ? jcl.programs.slice(0, 4).map(p => `<span class="tag program">${escapeHtml(p)}</span>`).join('')
+                            + (jcl.programs.length > 4 ? `<span class="tag program">+${jcl.programs.length - 4} more</span>` : '')
+                            : '<span class="empty-state">No programs</span>'}
+                    </div>
+                </div>
+                <div class="card-section">
+                    <div class="card-section-label">Datasets Used (${jcl.datasets ? jcl.datasets.length : 0})</div>
+                    <div class="tag-list">
+                        ${jcl.datasets && jcl.datasets.length > 0 
+                            ? jcl.datasets.slice(0, 2).map(ds => `<span class="tag dataset">${escapeHtml(ds)}</span>`).join('')
+                            + (jcl.datasets.length > 2 ? `<span class="tag dataset">+${jcl.datasets.length - 2} more</span>` : '')
+                            : '<span class="empty-state">No datasets</span>'}
+                    </div>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Render copybooks grid
+function renderCopybookGrid(copybooks) {
+    const grid = document.getElementById('copybookGrid');
+    if (copybooks.length === 0) {
+        grid.innerHTML = '<div class="no-results"><h3>No copybooks found</h3><p>Try adjusting your search</p></div>';
+        return;
+    }
+    grid.innerHTML = copybooks.map(cpy => `
+        <div class="card" onclick="showCopybookDetail('${escapeHtml(cpy.name)}')">
+            <div class="card-header">
+                <div class="card-title">
+                    <div class="card-icon copybook">📋</div>
+                    ${escapeHtml(cpy.name)}
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="card-section">
+                    <div class="card-section-label">Used by ${cpy.usedBy ? cpy.usedBy.length : 0} program(s)</div>
+                    <div class="tag-list">
+                        ${cpy.usedBy && cpy.usedBy.length > 0 
+                            ? cpy.usedBy.slice(0, 4).map(u => `<span class="tag program">${escapeHtml(u)}</span>`).join('')
+                            + (cpy.usedBy.length > 4 ? `<span class="tag program">+${cpy.usedBy.length - 4} more</span>` : '')
+                            : '<span class="empty-state">Not used</span>'}
+                    </div>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Render datasets grid
+function renderDatasetGrid(datasets) {
+    const grid = document.getElementById('datasetGrid');
+    if (datasets.length === 0) {
+        grid.innerHTML = '<div class="no-results"><h3>No datasets found</h3><p>Try adjusting your search</p></div>';
+        return;
+    }
+    grid.innerHTML = datasets.map(ds => `
+        <div class="card" onclick="showDatasetDetail('${escapeHtml(ds.name)}')">
+            <div class="card-header">
+                <div class="card-title">
+                    <div class="card-icon dataset">💾</div>
+                    ${escapeHtml(ds.name)}
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="card-section">
+                    <div class="card-section-label">Referenced by ${ds.usedByJcls ? ds.usedByJcls.length : 0} JCL(s)</div>
+                    <div class="tag-list">
+                        ${ds.usedByJcls && ds.usedByJcls.length > 0 
+                            ? ds.usedByJcls.slice(0, 4).map(jcl => `<span class="tag jcl">${escapeHtml(jcl)}</span>`).join('') 
+                            + (ds.usedByJcls.length > 4 ? `<span class="tag jcl">+${ds.usedByJcls.length - 4} more</span>` : '')
+                            : '<span class="empty-state">No JCL references</span>'}
+                    </div>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Utility: Escape HTML
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// Tab switching
+document.addEventListener('DOMContentLoaded', () => {
+    const tabs = document.querySelectorAll('.tab');
+    const panels = document.querySelectorAll('.content-panel');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const tabName = tab.dataset.tab;
+            
+            // Update active tab
+            tabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            
+            // Update active panel
+            panels.forEach(p => p.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+        });
+    });
+});

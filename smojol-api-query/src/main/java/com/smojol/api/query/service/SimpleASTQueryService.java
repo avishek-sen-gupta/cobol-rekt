@@ -2,10 +2,12 @@ package com.smojol.api.query.service;
 
 import com.smojol.api.query.config.ASTConfig;
 import com.smojol.api.query.util.ASTLoader;
+import com.smojol.api.query.util.JclAnalysisParser;
 import com.smojol.api.query.model.CBLFile;
 import com.smojol.api.query.model.Copybook;
 import com.smojol.api.query.model.Dataset;
 import com.smojol.api.query.model.JCLFile;
+import com.smojol.api.query.model.ParseStatus;
 import com.smojol.api.query.util.CopybookIncludesResolver;
 import com.smojol.api.query.util.CycleDetector;
 import com.smojol.api.query.util.SimpleCache;
@@ -51,6 +53,10 @@ public class SimpleASTQueryService implements ASTQueryService {
 
     public SimpleASTQueryService(String astBasePath) {
         this(ASTConfig.builder().astBasePath(astBasePath).build());
+    }
+
+    public ASTConfig getConfig() {
+        return config;
     }
 
     @Override
@@ -427,12 +433,21 @@ public class SimpleASTQueryService implements ASTQueryService {
     public void preloadAllAndResolveIncludes() {
         logger.info("Preloading all ASTs and resolving includes...");
         Path basePath = config.getAstBasePath();
+        
         try {
-            Files.list(basePath)
+            // Vérifier si le répertoire report existe
+            Path reportPath = basePath.resolve("report");
+            Path scanPath = Files.exists(reportPath) ? reportPath : basePath;
+            
+            logger.info("Scanning for AST files in: {}", scanPath.toAbsolutePath());
+            
+            // Scanner récursivement pour trouver tous les fichiers *-aggregated.json
+            Files.walk(scanPath, 10)
                     .filter(p -> p.getFileName().toString().endsWith("-aggregated.json"))
                     .forEach(p -> {
                         String fileName = p.getFileName().toString();
                         String name = fileName.replace("-aggregated.json", "");
+                        logger.debug("Loading program: {}", name);
                         getCbl(name);  // Load and cache
                     });
 
@@ -449,9 +464,69 @@ public class SimpleASTQueryService implements ASTQueryService {
 
             logger.info("Preload complete. Cached {} CBLs, {} Copybooks. Includes resolved.",
                 allCbls.size(), allCopybooks.size());
+            
+            // Construire le graphe des callers après le chargement de tous les programmes
+            buildCallGraph();
+            
         } catch (IOException e) {
-            logger.error("Error during preload: {}", e.getMessage());
+            logger.error("Error during preload: {}", e.getMessage(), e);
         }
+    }
+
+    /**
+     * Construit le graphe d'appels en calculant les callers pour tous les programmes.
+     * Cette méthode doit être appelée après le chargement de tous les programmes.
+     * 
+     * Algorithme:
+     * 1. Parcourir tous les programmes et leurs callees
+     * 2. Construire une map inverse: callee -> list of callers
+     * 3. Mettre à jour chaque programme avec ses callers
+     */
+    public void buildCallGraph() {
+        logger.info("Building call graph...");
+        
+        // 1. Construire la map inverse (callee -> callers)
+        Map<String, List<String>> callersMap = new HashMap<>();
+        
+        for (CBLFile program : allCbls.values()) {
+            String programName = program.getName();
+            List<String> callees = program.getCallees();
+            
+            if (callees != null && !callees.isEmpty()) {
+                for (String callee : callees) {
+                    callersMap.computeIfAbsent(callee, k -> new ArrayList<>()).add(programName);
+                }
+            }
+        }
+        
+        // 2. Mettre à jour tous les programmes avec leurs callers
+        int updatedCount = 0;
+        for (CBLFile program : allCbls.values()) {
+            String programName = program.getName();
+            List<String> callers = callersMap.get(programName);
+            
+            if (callers != null && !callers.isEmpty()) {
+                // Trier pour cohérence
+                Collections.sort(callers);
+                program.setCallers(callers);
+                updatedCount++;
+                
+                logger.debug("Program {} has {} callers: {}", programName, callers.size(), callers);
+            }
+        }
+        
+        logger.info("Call graph built. Updated {} programs with callers", updatedCount);
+        
+        // Log statistiques
+        int programsWithCallees = (int) allCbls.values().stream()
+                .filter(p -> p.getCallees() != null && !p.getCallees().isEmpty())
+                .count();
+        int programsWithCallers = (int) allCbls.values().stream()
+                .filter(p -> p.getCallers() != null && !p.getCallers().isEmpty())
+                .count();
+        
+        logger.info("Call graph stats: {} programs have callees, {} programs have callers",
+                programsWithCallees, programsWithCallers);
     }
 
     /**
@@ -495,4 +570,258 @@ public class SimpleASTQueryService implements ASTQueryService {
     public int getCopybookCacheSize() {
         return copybookCache.size();
     }
+
+    @Override
+    public List<CBLFile> getAllCbl() {
+        logger.info("getAllCbl called - scanning for CBL files...");
+        
+        // Charger tous les fichiers .cbl avec scan récursif dans report/
+        List<CBLFile> allPrograms = new ArrayList<>();
+        Path basePath = config.getAstBasePath();
+        logger.info("Base path: {}", basePath.toAbsolutePath());
+        
+        try {
+            // Scanner récursivement dans report/*/ast/aggregated/
+            Path reportPath = basePath.resolve("report");
+            logger.info("Looking for report directory at: {}", reportPath.toAbsolutePath());
+            
+            if (Files.exists(reportPath) && Files.isDirectory(reportPath)) {
+                logger.info("Report directory exists, scanning recursively...");
+                Files.walk(reportPath)
+                    .filter(Files::isRegularFile)
+                    .filter(p -> {
+                        boolean matches = p.getFileName().toString().endsWith("-aggregated.json");
+                        if (matches) {
+                            logger.debug("Found aggregated file: {}", p);
+                        }
+                        return matches;
+                    })
+                    .filter(p -> {
+                        boolean contains = p.toString().contains("ast" + java.io.File.separator + "aggregated");
+                        if (!contains) {
+                            logger.debug("Skipping file (not in ast/aggregated): {}", p);
+                        }
+                        return contains;
+                    })
+                    .forEach(p -> {
+                        String fileName = p.getFileName().toString();
+                        String programName = fileName.replace("-aggregated.json", "");
+                        logger.info("Processing AST file: {} for program: {}", p, programName);
+                        Optional<CBLFile> cbl = getCbl(programName);
+                        if (cbl.isPresent()) {
+                            allPrograms.add(cbl.get());
+                            logger.info("Successfully loaded program: {}", programName);
+                        } else {
+                            logger.warn("Failed to load program: {}", programName);
+                        }
+                    });
+            } else {
+                logger.warn("Report directory not found at: {}, trying fallback...", reportPath.toAbsolutePath());
+                // Fallback: scanner au niveau racine (ancien format)
+                Files.list(basePath)
+                    .filter(p -> p.getFileName().toString().endsWith(".cbl-aggregated.json"))
+                    .forEach(p -> {
+                        String fileName = p.getFileName().toString();
+                        String programName = fileName.replace(".cbl-aggregated.json", "");
+                        getCbl(programName).ifPresent(allPrograms::add);
+                    });
+            }
+        } catch (IOException e) {
+            logger.error("Error listing all CBL files: {}", e.getMessage(), e);
+        }
+        
+        logger.info("Completed scan - Found {} CBL programs", allPrograms.size());
+        
+        // NOUVEAU: Créer index inversé JCL→Programme
+        buildJclProgramIndex(allPrograms);
+        
+        return allPrograms;
+    }
+    
+    /**
+     * Crée un index inversé pour lier chaque programme aux JCL qui l'appellent
+     */
+    private void buildJclProgramIndex(List<CBLFile> programs) {
+        logger.debug("Building JCL→Program index...");
+        
+        // 1. Charger tous les JCL si pas encore fait
+        List<JCLFile> allJcls = getAllJcl();
+        
+        // 2. Pour chaque programme, trouver les JCL qui le référencent
+        for (CBLFile program : programs) {
+            List<String> callingJcls = new ArrayList<>();
+            
+            for (JCLFile jcl : allJcls) {
+                if (jcl.getPrograms() != null && jcl.getPrograms().contains(program.getName())) {
+                    callingJcls.add(jcl.getName());
+                }
+            }
+            
+            // 3. Mettre à jour le programme avec ses JCL appelants
+            program.setJcls(callingJcls);
+            logger.debug("Program {} is called by {} JCL(s): {}", 
+                program.getName(), callingJcls.size(), callingJcls);
+        }
+        
+        logger.info("JCL→Program index built: {} programs indexed", programs.size());
+    }
+
+    @Override
+    public List<JCLFile> getAllJcl() {
+        logger.debug("getAllJcl called");
+        
+        Path basePath = config.getAstBasePath();
+        Path jclAnalysisPath = basePath.resolve("jcl-analysis.json");
+        
+        // 1. Charger depuis jcl-analysis.json en priorité
+        if (Files.exists(jclAnalysisPath)) {
+            logger.info("Loading JCLs from jcl-analysis.json");
+            JclAnalysisParser parser = new JclAnalysisParser();
+            List<JCLFile> jclFiles = parser.parseJclAnalysis(jclAnalysisPath);
+            logger.info("Loaded {} JCLs from jcl-analysis.json", jclFiles.size());
+            return jclFiles;
+        }
+        
+        // 2. Fallback: scanner les fichiers AST
+        logger.info("jcl-analysis.json not found, falling back to AST scanning");
+        
+        return scanAstForJclFiles();
+    }
+
+    /**
+     * Scanner les fichiers AST pour extraire les JCL
+     */
+    private List<JCLFile> scanAstForJclFiles() {
+        List<JCLFile> jclFiles = new ArrayList<>();
+        Path basePath = config.getAstBasePath();
+        
+        try {
+            Path reportPath = basePath.resolve("report");
+            
+            if (Files.exists(reportPath) && Files.isDirectory(reportPath)) {
+                // Scanner récursivement dans report/*/ast/aggregated/
+                Files.walk(reportPath)
+                    .filter(Files::isRegularFile)
+                    .filter(p -> p.getFileName().toString().endsWith("-aggregated.json"))
+                    .filter(p -> p.toString().contains("ast" + java.io.File.separator + "aggregated"))
+                    .forEach(p -> {
+                        String jclName = extractNameFromAggregatedFile(p);
+                        getJcl(jclName).ifPresent(jclFiles::add);
+                    });
+            } else {
+                // Fallback: scanner au niveau racine
+                Files.list(basePath)
+                    .filter(p -> p.getFileName().toString().endsWith("-aggregated.json"))
+                    .filter(p -> !p.getFileName().toString().endsWith(".cbl-aggregated.json"))
+                    .forEach(p -> {
+                        String jclName = extractNameFromAggregatedFile(p);
+                        getJcl(jclName).ifPresent(jclFiles::add);
+                    });
+            }
+        } catch (IOException e) {
+            logger.error("Error scanning AST for JCL files: {}", e.getMessage());
+        }
+        
+        logger.info("Found {} JCL files from AST scanning", jclFiles.size());
+        return jclFiles;
+    }
+
+    /**
+     * Extrait le nom depuis un fichier aggregated (ex: CBEXPORT-aggregated.json → CBEXPORT)
+     */
+    private String extractNameFromAggregatedFile(Path filePath) {
+        return filePath.getFileName().toString().replace("-aggregated.json", "");
+    }
+
+    @Override
+    public List<Copybook> getAllCopybooks() {
+        logger.debug("getAllCopybooks called");
+        
+        // Map pour accumuler les usages de chaque copybook
+        Map<String, List<String>> copybookUsages = new HashMap<>();
+        
+        // 1. Scanner tous les programmes pour collecter les copybooks
+        List<CBLFile> allPrograms = getAllCbl();
+        
+        for (CBLFile program : allPrograms) {
+            if (program.getCopybooks() != null) {
+                for (String copybookName : program.getCopybooks()) {
+                    copybookUsages.computeIfAbsent(copybookName, k -> new ArrayList<>())
+                        .add(program.getName());
+                }
+            }
+        }
+        
+        // 2. Créer les objets Copybook avec toutes les données
+        List<Copybook> result = new ArrayList<>();
+        for (Map.Entry<String, List<String>> entry : copybookUsages.entrySet()) {
+            Copybook copybook = Copybook.builder()
+                .name(entry.getKey())
+                .path("")
+                .parseStatus(ParseStatus.SUCCESS)
+                .lastModified(System.currentTimeMillis())
+                .usedByCobol(entry.getValue())
+                .usedByCopybook(new ArrayList<>())
+                .includes(new ArrayList<>())
+                .build();
+            result.add(copybook);
+        }
+        
+        logger.info("Found {} unique copybooks across {} programs", result.size(), allPrograms.size());
+        return result;
+    }
+
+    @Override
+    public List<Dataset> getAllDatasets() {
+        logger.debug("getAllDatasets called");
+        
+        // Maps pour accumuler les usages de chaque dataset
+        Map<String, List<String>> datasetUsagesByJcl = new HashMap<>();
+        Map<String, List<String>> datasetUsagesByCobol = new HashMap<>();
+        
+        // 1. Collecter datasets depuis JCL
+        List<JCLFile> allJcls = getAllJcl();
+        for (JCLFile jcl : allJcls) {
+            if (jcl.getDatasets() != null) {
+                for (String datasetName : jcl.getDatasets()) {
+                    datasetUsagesByJcl.computeIfAbsent(datasetName, k -> new ArrayList<>())
+                        .add(jcl.getName());
+                }
+            }
+        }
+        
+        // 2. Collecter datasets depuis CBL
+        List<CBLFile> allPrograms = getAllCbl();
+        for (CBLFile program : allPrograms) {
+            if (program.getDatasets() != null) {
+                for (String datasetName : program.getDatasets()) {
+                    datasetUsagesByCobol.computeIfAbsent(datasetName, k -> new ArrayList<>())
+                        .add(program.getName());
+                }
+            }
+        }
+        
+        // 3. Créer les objets Dataset avec toutes les données
+        Set<String> allDatasetNames = new HashSet<>();
+        allDatasetNames.addAll(datasetUsagesByJcl.keySet());
+        allDatasetNames.addAll(datasetUsagesByCobol.keySet());
+        
+        List<Dataset> result = new ArrayList<>();
+        for (String datasetName : allDatasetNames) {
+            Dataset dataset = Dataset.builder()
+                .name(datasetName)
+                .path("")
+                .parseStatus(ParseStatus.SUCCESS)
+                .lastModified(System.currentTimeMillis())
+                .usedByJcl(datasetUsagesByJcl.getOrDefault(datasetName, new ArrayList<>()))
+                .usedByCobol(datasetUsagesByCobol.getOrDefault(datasetName, new ArrayList<>()))
+                .build();
+            result.add(dataset);
+        }
+        
+        logger.info("Found {} unique datasets across {} JCLs and {} programs", 
+            result.size(), allJcls.size(), allPrograms.size());
+        return result;
+    }
 }
+

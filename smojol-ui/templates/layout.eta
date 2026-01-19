@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= it.title %></title>
+    <style>
+        <%~ include('styles') %>
+    </style>
+</head>
+<body>
+    <%~ include('components/header', { apiUrl: it.apiUrl }) %>
+    
+    <main class="main-container">
+        <%~ it.content %>
+    </main>
+
+    <div class="overlay" id="overlay"></div>
+    
+    <aside class="detail-panel" id="detailPanel">
+        <div class="detail-header">
+            <h2 class="detail-title" id="detailTitle">Details</h2>
+            <button class="close-btn" id="closePanel">×</button>
+        </div>
+        <div class="detail-body" id="detailBody">
+            <!-- Detail content will be populated here -->
+        </div>
+    </aside>
+
+    <script>
+        const API_BASE = '<%= it.apiUrl %>';
+    </script>
+    <script>
+        <%~ include('scripts/data-loader') %>
+    </script>
+    <script>
+        <%~ include('scripts/ui-renderer') %>
+    </script>
+    <script>
+        <%~ include('scripts/search') %>
+    </script>
+    <script>
+        <%~ include('scripts/detail-panel') %>
+    </script>
+</body>
+</html>

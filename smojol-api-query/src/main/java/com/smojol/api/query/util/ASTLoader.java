@@ -32,14 +32,19 @@ public class ASTLoader {
      */
     public Optional<CBLFile> loadCbl(String programName) {
         try {
+            logger.debug("Loading CBL file for program: {}", programName);
             Optional<String> json = loadAstFile(programName);
             if (json.isEmpty()) {
-                logger.debug("AST file not found for program: {}", programName);
+                logger.warn("AST file not found for program: {}", programName);
                 return Optional.empty();
             }
-            return Optional.of(parser.parseCbl(json.get(), programName));
+            logger.debug("AST file loaded, parsing for program: {}", programName);
+            CBLFile cbl = parser.parseCbl(json.get(), programName);
+            logger.debug("Successfully parsed CBL file for program: {}", programName);
+            return Optional.of(cbl);
         } catch (Exception e) {
-            logger.error("Error loading CBL file for {}: {}", programName, e.getMessage(), e);
+            logger.error("Error loading CBL file for {}: {} - {}", programName, e.getClass().getName(), e.getMessage());
+            logger.error("Stack trace:", e);
             return Optional.empty();
         }
     }
@@ -54,7 +59,15 @@ public class ASTLoader {
                 logger.debug("AST file not found for JCL: {}", jclName);
                 return Optional.empty();
             }
-            return Optional.of(parser.parseJcl(json.get(), jclName));
+            
+            // Vérifier si le fichier contient un jclExecutionContext
+            String jsonContent = json.get();
+            if (!jsonContent.contains("\"jclExecutionContext\"")) {
+                logger.debug("File {} does not contain jclExecutionContext, not a JCL", jclName);
+                return Optional.empty();
+            }
+            
+            return Optional.of(parser.parseJcl(jsonContent, jclName));
         } catch (Exception e) {
             logger.error("Error loading JCL file for {}: {}", jclName, e.getMessage(), e);
             return Optional.empty();
@@ -102,12 +115,15 @@ public class ASTLoader {
     public Optional<String> loadAstFile(String fileName) {
         try {
             String filePath = getFilePath(fileName);
+            logger.debug("Attempting to load AST file from: {}", filePath);
             Path path = Paths.get(filePath);
             if (!Files.exists(path)) {
+                logger.warn("AST file does not exist: {}", path.toAbsolutePath());
                 return Optional.empty();
             }
+            logger.debug("Reading AST file: {}", path.toAbsolutePath());
             String content = Files.readString(path, StandardCharsets.UTF_8);
-            logger.trace("Loaded AST file: {}", filePath);
+            logger.debug("Successfully loaded AST file ({} bytes): {}", content.length(), filePath);
             return Optional.of(content);
         } catch (IOException e) {
             logger.error("Error reading AST file for {}: {}", fileName, e.getMessage());
@@ -120,13 +136,23 @@ public class ASTLoader {
      */
     public String getFilePath(String fileName) {
         String cleanName = fileName.toUpperCase().replace(".CPY", "").replace(".CBL", "").replace(".JCL", "");
-        // Format report: {astBasePath}/{NAME}.cbl.report/ast/aggregated/{NAME}-aggregated.json
+        
+        // Format report avec sous-répertoire: {astBasePath}/report/{NAME}.cbl.report/ast/aggregated/{NAME}-aggregated.json
+        String reportSubdirPath = astBasePath + "/report/" + cleanName + ".cbl.report/ast/aggregated/" + cleanName + "-aggregated.json";
+        Path reportSubdirFile = Paths.get(reportSubdirPath);
+        if (Files.exists(reportSubdirFile)) {
+            logger.debug("Found AST file at: {}", reportSubdirPath);
+            return reportSubdirPath;
+        }
+        
+        // Format report direct: {astBasePath}/{NAME}.cbl.report/ast/aggregated/{NAME}-aggregated.json
         String reportPath = astBasePath + "/" + cleanName + ".cbl.report/ast/aggregated/" + cleanName + "-aggregated.json";
         Path reportFile = Paths.get(reportPath);
         if (Files.exists(reportFile)) {
             logger.debug("Found AST file at: {}", reportPath);
             return reportPath;
         }
+        
         // Fallback au format simple: {path}/{NAME}-aggregated.json
         String simplePath = astBasePath + "/" + cleanName + "-aggregated.json";
         Path simpleFile = Paths.get(simplePath);
@@ -134,9 +160,10 @@ public class ASTLoader {
             logger.debug("Found AST file at: {}", simplePath);
             return simplePath;
         }
+        
         // Si aucun fichier trouvé, retourner le chemin report par défaut
-        logger.debug("No AST file found for {}, using default path: {}", cleanName, reportPath);
-        return reportPath;
+        logger.debug("No AST file found for {}, using default path: {}", cleanName, reportSubdirPath);
+        return reportSubdirPath;
     }
 
     /**
