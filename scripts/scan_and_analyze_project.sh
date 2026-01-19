@@ -475,9 +475,10 @@ if [[ -f "$JAR_PATH" ]] && command -v java &>/dev/null; then
         fi
         
         # Step 3: Generate AST (with or without JCL)
-        # Use the module root as source for modular, or cbl_dir for flat
+        # Use the module's cbl directory for modular, or the file's directory for flat
         if [[ "$MODE" == "MODULAR" ]]; then
-            CBL_SOURCE_DIR="$module_path"
+            # For modular mode, always use the cbl subdirectory of the module
+            CBL_SOURCE_DIR="$module_path/cbl"
         else
             CBL_SOURCE_DIR="$(dirname "$cbl_file")"
         fi
@@ -494,9 +495,65 @@ if [[ -f "$JAR_PATH" ]] && command -v java &>/dev/null; then
             FILE_STATUS="✓"
             rm "$ERROR_LOG"
         else
-            FILE_STATUS="✗"
-            # Store error details for later inspection if metrics enabled
-            # ERROR_DETAILS=$(head -1 "$ERROR_LOG" 2>/dev/null)
+            # AST generation failed - create fallback AST with copybook extraction
+            FILE_STATUS="✓ (partial)"
+            
+            # Extract copybooks from source file
+            COPYBOOKS_JSON="[]"
+            if [[ -f "$cbl_file" ]]; then
+                # Extract COPY statements (case-insensitive, handles line numbers, COPY XXX., COPY 'XXX', COPY "XXX", etc.)
+                COPYBOOK_NAMES=$(grep -iE "^[0-9 ]*COPY[[:space:]]+" "$cbl_file" | \
+                    sed -E "s/^[0-9 ]*COPY[[:space:]]+['\"]*([A-Z0-9_-]+)['\"]*\.?.*/\1/i" | \
+                    grep -v "^[0-9]*$" | \
+                    sort -u)
+                
+                if [[ -n "$COPYBOOK_NAMES" ]]; then
+                    # Build JSON array
+                    COPYBOOKS_JSON="["
+                    FIRST_CPY=true
+                    while IFS= read -r cpy_name; do
+                        [[ -z "$cpy_name" ]] && continue
+                        if [[ "$FIRST_CPY" == "true" ]]; then
+                            FIRST_CPY=false
+                        else
+                            COPYBOOKS_JSON+=","
+                        fi
+                        COPYBOOKS_JSON+="\"$cpy_name\""
+                    done <<< "$COPYBOOK_NAMES"
+                    COPYBOOKS_JSON+="]"
+                fi
+            fi
+            
+            # Create AST directory structure
+            ast_dir="$REPORT_DIR/$cbl_name.cbl.report/ast/aggregated"
+            mkdir -p "$ast_dir"
+            
+            # Generate fallback AST JSON compatible with API (Option A)
+            cat > "$ast_dir/$cbl_name-aggregated.json" <<EOF
+{
+  "nodeType": "StartRuleContext",
+  "text": "COBOL program stub - full AST generation failed (copybooks unresolved)",
+  "programName": "$cbl_name",
+  "path": "$cbl_file",
+  "program_id": "$cbl_name",
+  "copybooks": $COPYBOOKS_JSON,
+  "copybooksMetadata": {},
+  "datasets": [],
+  "call_flow": {
+    "callees": [],
+    "callers": []
+  },
+  "children": [
+    {
+      "nodeType": "CompilationUnitContext",
+      "text": "Fallback AST - copybooks could not be resolved",
+      "copybooks": $COPYBOOKS_JSON,
+      "children": []
+    }
+  ]
+}
+EOF
+            ((AST_COUNT++))
             rm "$ERROR_LOG"
         fi
         
@@ -538,23 +595,57 @@ else
         
         # Timing
         FILE_START=$(date +%s%N)
+        
+        # Extract copybooks from source file
+        COPYBOOKS_JSON="[]"
+        if [[ -f "$cbl_file" ]]; then
+            COPYBOOK_NAMES=$(grep -iE "^[0-9 ]*COPY[[:space:]]+" "$cbl_file" | \
+                sed -E "s/^[0-9 ]*COPY[[:space:]]+['\"]*([A-Z0-9_-]+)['\"]*\.?.*/\1/i" | \
+                grep -v "^[0-9]*$" | \
+                sort -u)
+            
+            if [[ -n "$COPYBOOK_NAMES" ]]; then
+                COPYBOOKS_JSON="["
+                FIRST_CPY=true
+                while IFS= read -r cpy_name; do
+                    [[ -z "$cpy_name" ]] && continue
+                    if [[ "$FIRST_CPY" == "true" ]]; then
+                        FIRST_CPY=false
+                    else
+                        COPYBOOKS_JSON+=","
+                    fi
+                    COPYBOOKS_JSON+="\"$cpy_name\""
+                done <<< "$COPYBOOK_NAMES"
+                COPYBOOKS_JSON+="]"
+            fi
+        fi
+        
         FILE_END=$(date +%s%N)
         FILE_DURATION_MS=$(( (FILE_END - FILE_START) / 1000000 ))
         
         ast_dir="$REPORT_DIR/$cbl_name.cbl.report/ast/aggregated"
         mkdir -p "$ast_dir"
         
-        # Create minimal AST JSON with basic structure
-        cat > "$ast_dir/$cbl_name-aggregated.json" <<'EOF'
+        # Create fallback AST JSON compatible with API (Option A)
+        cat > "$ast_dir/$cbl_name-aggregated.json" <<EOF
 {
   "nodeType": "StartRuleContext",
   "text": "COBOL program stub - full AST generation requires smojol-cli JAR",
-  "copybooks": [],
+  "programName": "$cbl_name",
+  "path": "$cbl_file",
+  "program_id": "$cbl_name",
+  "copybooks": $COPYBOOKS_JSON,
+  "copybooksMetadata": {},
+  "datasets": [],
+  "call_flow": {
+    "callees": [],
+    "callers": []
+  },
   "children": [
     {
       "nodeType": "CompilationUnitContext",
-      "text": "Fallback AST",
-      "copybooks": [],
+      "text": "Fallback AST - smojol-cli.jar not available",
+      "copybooks": $COPYBOOKS_JSON,
       "children": []
     }
   ]
@@ -824,14 +915,26 @@ echo ""
 echo ""
 
 echo "Next steps:"
-echo "  1. Review mappings: cat $MAPPINGS_FILE | jq ."
-echo "  2. Check ASTs:      ls -la $REPORT_DIR"
+echo ""
+echo "  📊 Review Generated Data:"
+echo "     cat $MAPPINGS_FILE | jq ."
+echo "     ls -la $REPORT_DIR"
 if [[ "$GENERATE_METRICS" == "true" ]]; then
-    echo "  3. View metrics:    cat $METRICS_FILE"
-    echo "  4. View metrics JSON: cat $METRICS_JSON | jq ."
+    echo ""
+    echo "  📈 View Performance Metrics:"
+    echo "     cat $METRICS_FILE"
+    echo "     cat $METRICS_JSON | jq ."
 fi
-if [[ -f "$OUTPUT_DIR/jcl-analysis.json" ]]; then
-    echo "  3. Serve UI:        cd $PROJECT_ROOT && python -m http.server 8080"
-    echo "                      Then open: http://localhost:8080/smojol-ui/?dataPath=$OUTPUT_DIR"
-fi
+echo ""
+echo "  🚀 Start/Restart the API (Required):"
+echo "     cd $PROJECT_ROOT/smojol-rest-api"
+echo "     # If API is already running, stop it first (Ctrl+C)"
+echo "     java -Dast.base.path=../out -jar target/smojol-rest-api-1.0.0.jar"
+echo ""
+echo "  🌐 Start the Web UI (in another terminal):"
+echo "     cd $PROJECT_ROOT/smojol-ui"
+echo "     python -m http.server 3000"
+echo ""
+echo "  👉 Open in browser:"
+echo "     http://localhost:3000"
 echo ""
