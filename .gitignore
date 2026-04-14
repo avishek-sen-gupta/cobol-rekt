@@ -141,3 +141,6 @@ artifacts/
 **/test-code/out/
 
 **/*.sqlite
+
+# Serena
+.serena/
