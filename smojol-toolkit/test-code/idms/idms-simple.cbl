@@ -1,0 +1,12 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. IDMS-TEST.
+       ENVIRONMENT DIVISION.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 WS-VAR1          PIC X(10).
+       01 WS-VAR2          PIC S9(2) COMP VALUE ZERO.
+       PROCEDURE DIVISION.
+       MAIN-PARA.
+           MOVE 'HELLO' TO WS-VAR1.
+           MOVE 1 TO WS-VAR2.
+           STOP RUN.
