@@ -9,7 +9,6 @@ import com.mojo.algorithms.domain.TranspilerFlowgraph;
 import com.mojo.algorithms.domain.TranspilerInstruction;
 import com.mojo.algorithms.domain.TranspilerNode;
 import org.jgrapht.graph.DefaultEdge;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.smojol.common.dialect.LanguageDialect;
 import com.mojo.algorithms.visualisation.FlowchartOutputFormat;
@@ -26,6 +25,7 @@ import com.mojo.algorithms.task.AnalysisTaskResultOK;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
@@ -33,14 +33,13 @@ import static com.mojo.algorithms.task.CommandLineAnalysisTask.BUILD_BASE_ANALYS
 
 public class ReachingConditionTaskRegressionTest {
     @Test
-    @Disabled
     public void canFindReachingConditionForSimpleAcyclicGraph() throws IOException {
         UUIDProvider idProvider = new UUIDProvider();
-        Map<String, List<AnalysisTaskResult>> result = new CodeTaskRunner("/Users/asgupta/code/smojol/smojol-test-code",
-                "/Users/asgupta/code/smojol/out/report",
-                ImmutableList.of(new File("/Users/asgupta/code/smojol/smojol-test-code")),
-                "/Users/asgupta/code/smojol/che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar",
-                LanguageDialect.IDMS, new FullProgram(FlowchartOutputFormat.PNG, idProvider), idProvider, new OccursIgnoringFormat1DataStructureBuilder(), new ProgramSearch(), new LocalFilesystemOperations())
+        Map<String, List<AnalysisTaskResult>> result = new CodeTaskRunner(dir("../smojol-test-code"),
+                dir("test-code/out"),
+                ImmutableList.of(new File(dir("../smojol-test-code"))),
+                dir("../che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar"),
+                LanguageDialect.COBOL, new FullProgram(FlowchartOutputFormat.PNG, idProvider), idProvider, new OccursIgnoringFormat1DataStructureBuilder(), new ProgramSearch(), new LocalFilesystemOperations())
                 .runForPrograms(ImmutableList.of(BUILD_BASE_ANALYSIS), ImmutableList.of("simple-if.cbl"));
 
         AnalysisTaskResult value = result.values().stream().toList().getFirst().getFirst();
@@ -53,5 +52,9 @@ public class ReachingConditionTaskRegressionTest {
         GraphSlice<TranspilerInstruction, DefaultEdge> slice = new GraphSliceTask<>(transpilerFlowgraph.instructionFlowgraph(), DefaultEdge.class).run(start, printInstruction);
         Map<TranspilerInstruction, TranspilerNode> reachingConditions = new ReachingConditionDefinitionTask<>(slice).run();
         System.out.println("DONE");
+    }
+
+    private static String dir(String path) {
+        return Paths.get(System.getProperty("user.dir"), path).toString();
     }
 }

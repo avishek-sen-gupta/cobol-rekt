@@ -1,12 +1,14 @@
        IDENTIFICATION DIVISION.
        PROGRAM-ID. IDMS-TEST.
        ENVIRONMENT DIVISION.
+       IDMS-CONTROL SECTION.
+       PROTOCOL. MODE IS BATCH DEBUG.
        DATA DIVISION.
        WORKING-STORAGE SECTION.
-       01 WS-VAR1          PIC X(10).
-       01 WS-VAR2          PIC S9(2) COMP VALUE ZERO.
+       01 WS-STATUS           PIC X(4) VALUE SPACES.
        PROCEDURE DIVISION.
        MAIN-PARA.
-           MOVE 'HELLO' TO WS-VAR1.
-           MOVE 1 TO WS-VAR2.
+           BIND RUN-UNIT.
+           READY.
+           FINISH.
            STOP RUN.

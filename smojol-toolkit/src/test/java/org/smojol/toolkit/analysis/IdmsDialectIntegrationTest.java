@@ -3,7 +3,6 @@ package org.smojol.toolkit.analysis;
 import com.google.common.collect.ImmutableList;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.smojol.common.ast.CobolTreeVisualiser;
 import org.smojol.common.dependency.ComponentsBuilder;
@@ -51,20 +50,22 @@ public class IdmsDialectIntegrationTest {
     }
 
     /**
-     * Tests IDMS dialect parsing with real IDMS COBOL source (BIND, OBTAIN, FINISH verbs).
-     * Requires the IDMS dialect JAR to be discoverable by DialectDiscoveryService via Guice DI.
-     * Currently disabled because the standalone test Guice context does not load the IDMS dialect
-     * plugin from the JAR — the DialectService reports "IDMS dialect is missing".
-     * This test is exercised end-to-end via the CLI instead.
+     * Tests IDMS dialect parsing with synthetic IDMS COBOL source (BIND, READY, FINISH verbs).
+     * Exercises the full dialect loading chain: LanguageDialect.IDMS → AnalysisConfig.idmsConfig()
+     * → DialectProcessingStage → DialectDiscoveryFolderService (reflective JAR loading)
+     * → DialectIntegratorListener (dialect node re-injection into parse tree).
      */
     @Test
-    @Disabled("IDMS dialect JAR discovery requires full Guice DI wiring not available in unit tests")
     void canParseIdmsCobolWithDialectReinjection() throws IOException {
+        String dialectJarPath = java.nio.file.Paths.get(System.getProperty("user.dir"),
+                "..", "che-che4z-lsp-for-cobol-integration",
+                "server", "dialect-idms", "target", "dialect-idms.jar").toString();
+
         SourceConfig sourceConfig = new SourceConfig(
-                "flowgraph-idms.cbl",
-                "../smojol-test-code",
-                ImmutableList.of(new File("../smojol-test-code")),
-                "../che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar");
+                "idms-simple.cbl",
+                dir("test-code/idms"),
+                ImmutableList.of(new File(dir("test-code/idms"))),
+                dialectJarPath);
 
         ComponentsBuilder ops = new ComponentsBuilder(
                 new CobolTreeVisualiser(),
