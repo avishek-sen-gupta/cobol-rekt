@@ -7,6 +7,7 @@ import org.smojol.common.ast.FlowNodeService;
 import com.mojo.algorithms.visualisation.FlowchartOutputFormat;
 import com.mojo.algorithms.id.IdProvider;
 import org.smojol.common.navigation.CobolEntityNavigator;
+import org.smojol.common.navigation.SectionNameExtractor;
 import org.smojol.common.vm.strategy.UnresolvedReferenceDoNothingStrategy;
 import org.smojol.common.vm.structure.Format1DataStructure;
 import org.smojol.toolkit.ast.BuildFlowNodesTask;
@@ -35,7 +36,7 @@ public class PerSection extends FlowchartGenerationStrategy {
                     new Format1DataStructure(0, new UnresolvedReferenceDoNothingStrategy()),
                     idProvider);
             FlowNode flowSection = new BuildFlowNodesTask(nodeService).run(section);
-            String sectionLabel = section.cobolWord() != null ? section.cobolWord().getText() : section.integerLiteral(0).getText();
+            String sectionLabel = new SectionNameExtractor().sectionName(section);
             LOGGER.info("Generating flowchart for section: " + sectionLabel);
             new FlowchartBuilder(flowSection).build(
                     FlowchartGenerationStrategy.outputPath(section, dotFileOutputDir, "dot"),
