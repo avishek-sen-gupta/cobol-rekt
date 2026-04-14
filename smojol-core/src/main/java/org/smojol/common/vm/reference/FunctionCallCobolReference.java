@@ -16,7 +16,7 @@ public class FunctionCallCobolReference implements CobolReference {
     private final List<CobolExpression> arguments;
 
     public FunctionCallCobolReference(CobolParser.FunctionCallContext functionCallContext) {
-        functionName = functionCallContext.functionName().getText();
+        functionName = functionCallContext.functionReference().functionName().getText();
         arguments = functionCallContext.argument().stream().map(arg -> new CobolExpressionBuilder().arithmetic(arg.arithmeticExpression())).toList();
         proxyReturnValue = new DetachedDataStructure(TypedRecord.typedNumber(1));
     }

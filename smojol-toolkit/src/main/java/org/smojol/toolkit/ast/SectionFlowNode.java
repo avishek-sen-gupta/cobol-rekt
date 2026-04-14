@@ -5,6 +5,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.FlowNodeService;
+import org.smojol.common.navigation.SectionNameExtractor;
 import org.smojol.common.vm.interpreter.CobolInterpreter;
 import org.smojol.common.vm.interpreter.CobolVmSignal;
 import org.smojol.common.vm.interpreter.FlowControl;
@@ -35,6 +36,7 @@ public class SectionFlowNode extends CompositeCobolFlowNode {
 
     @Override
     public String label() {
-        return ((CobolParser.ProcedureSectionContext) executionContext).procedureSectionHeader().sectionName().getText();
+        CobolParser.SectionOrParagraphContext ctx = (CobolParser.SectionOrParagraphContext) executionContext;
+        return new SectionNameExtractor().sectionName(ctx);
     }
 }

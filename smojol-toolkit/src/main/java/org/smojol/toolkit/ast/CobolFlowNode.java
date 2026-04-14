@@ -11,6 +11,7 @@ import org.antlr.v4.runtime.tree.TerminalNodeImpl;
 import org.eclipse.lsp.cobol.dialects.idms.IdmsParser;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.ast.*;
+import org.smojol.common.navigation.SectionNameExtractor;
 import org.smojol.common.pseudocode.SmojolSymbolTable;
 import org.smojol.common.vm.interpreter.CobolInterpreter;
 import org.smojol.common.vm.interpreter.CobolVmSignal;
@@ -91,8 +92,10 @@ public class CobolFlowNode implements FlowNode {
 
     @Override
     public String name() {
-        if (executionContext.getClass() == CobolParser.ProcedureSectionContext.class)
-            return ((CobolParser.ProcedureSectionContext) executionContext).procedureSectionHeader().sectionName().getText();
+        if (executionContext.getClass() == CobolParser.SectionOrParagraphContext.class) {
+            CobolParser.SectionOrParagraphContext ctx = (CobolParser.SectionOrParagraphContext) executionContext;
+            return new SectionNameExtractor().sectionName(ctx);
+        }
         if (executionContext.getClass() == CobolParser.ParagraphContext.class)
             return ((CobolParser.ParagraphContext) executionContext).paragraphDefinitionName().getText();
         if (executionContext.getClass() == CobolParser.StatementContext.class)

@@ -5,6 +5,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import com.mojo.algorithms.visualisation.FlowchartOutputFormat;
 import org.smojol.common.navigation.CobolEntityNavigator;
+import org.smojol.common.navigation.SectionNameExtractor;
 import org.smojol.toolkit.interpreter.FullProgram;
 
 import java.io.IOException;
@@ -46,8 +47,8 @@ public abstract class FlowchartGenerationStrategy {
         return outputDir.resolve(String.format("%s.%s", label, extension)).toString();
     }
 
-    static String outputPath(CobolParser.ProcedureSectionContext section, Path outputDir, String extension) {
-        String sectionName = section.procedureSectionHeader().sectionName().getText();
+    static String outputPath(CobolParser.SectionOrParagraphContext section, Path outputDir, String extension) {
+        String sectionName = new SectionNameExtractor().sectionName(section);
         return outputPath(sectionName, outputDir, extension);
     }
 
