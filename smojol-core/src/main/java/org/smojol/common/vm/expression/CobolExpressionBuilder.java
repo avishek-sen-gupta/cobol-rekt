@@ -47,7 +47,7 @@ public class CobolExpressionBuilder {
 
     public CobolExpression identifier(CobolParser.QualifiedDataNameContext context) {
         VariableExpression variableExpression = new VariableExpression(context.variableUsageName().getText());
-        return context.tableCall() != null ? new TableCallExpression(variableExpression, context.tableCall().arithmeticExpression())
+        return context.tableCall() != null ? new TableCallExpression(variableExpression, context.tableCall().argument().stream().map(CobolParser.ArgumentContext::arithmeticExpression).toList())
                 : variableExpression;
     }
 }

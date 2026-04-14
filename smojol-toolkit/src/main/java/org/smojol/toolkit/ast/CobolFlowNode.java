@@ -91,8 +91,10 @@ public class CobolFlowNode implements FlowNode {
 
     @Override
     public String name() {
-        if (executionContext.getClass() == CobolParser.ProcedureSectionContext.class)
-            return ((CobolParser.ProcedureSectionContext) executionContext).procedureSectionHeader().sectionName().getText();
+        if (executionContext.getClass() == CobolParser.SectionOrParagraphContext.class) {
+            CobolParser.SectionOrParagraphContext ctx = (CobolParser.SectionOrParagraphContext) executionContext;
+            return ctx.cobolWord() != null ? ctx.cobolWord().getText() : ctx.integerLiteral(0).getText();
+        }
         if (executionContext.getClass() == CobolParser.ParagraphContext.class)
             return ((CobolParser.ParagraphContext) executionContext).paragraphDefinitionName().getText();
         if (executionContext.getClass() == CobolParser.StatementContext.class)

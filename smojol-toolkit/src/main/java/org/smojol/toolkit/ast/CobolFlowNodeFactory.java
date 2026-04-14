@@ -89,7 +89,7 @@ public class CobolFlowNodeFactory {
             return new ParagraphsFlowNode(parseTree, scope, nodeService, stackFrames);
         else if (SyntaxIdentity.isOfType(parseTree, CobolParser.ParagraphContext.class))
             return new ParagraphFlowNode(parseTree, scope, nodeService, stackFrames);
-        else if (SyntaxIdentity.isOfType(parseTree, CobolParser.ProcedureSectionContext.class))
+        else if (SyntaxIdentity.isOfType(parseTree, CobolParser.SectionOrParagraphContext.class))
             return new SectionFlowNode(parseTree, scope, nodeService, stackFrames);
         else if (SyntaxIdentity.isOfType(parseTree, CobolParser.ProcedureDivisionBodyContext.class))
             return new ProcedureDivisionBodyFlowNode(parseTree, scope, nodeService, stackFrames);
@@ -175,7 +175,7 @@ public class CobolFlowNodeFactory {
             return new ParagraphsFlowNode(parseTree, scope, nodeService, stackFrames);
         else if (SyntaxIdentity.isOfType(parseTree, CobolParser.ParagraphContext.class))
             return new ParagraphFlowNode(parseTree, scope, nodeService, stackFrames);
-        else if (SyntaxIdentity.isOfType(parseTree, CobolParser.ProcedureSectionContext.class))
+        else if (SyntaxIdentity.isOfType(parseTree, CobolParser.SectionOrParagraphContext.class))
             return new SectionFlowNode(parseTree, scope, nodeService, stackFrames);
         else if (SyntaxIdentity.isOfType(parseTree, CobolParser.ProcedureDivisionBodyContext.class))
             return new ProcedureDivisionBodyFlowNode(parseTree, scope, nodeService, stackFrames);

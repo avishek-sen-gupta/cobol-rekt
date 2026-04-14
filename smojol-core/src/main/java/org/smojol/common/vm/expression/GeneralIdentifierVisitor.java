@@ -8,7 +8,7 @@ public class GeneralIdentifierVisitor extends AntlrCobolExpressionVisitor {
         if (ctx.qualifiedDataName() != null) {
             VariableExpression variableExpression = new VariableExpression(ctx.qualifiedDataName().variableUsageName().getText());
             if (ctx.qualifiedDataName().tableCall() != null)
-                expression = new TableCallExpression(variableExpression, ctx.qualifiedDataName().tableCall().arithmeticExpression());
+                expression = new TableCallExpression(variableExpression, ctx.qualifiedDataName().tableCall().argument().stream().map(CobolParser.ArgumentContext::arithmeticExpression).toList());
             else expression = variableExpression;
         } else if (ctx.functionCall() != null)
             expression = new FunctionCallExpression(ctx.functionCall());

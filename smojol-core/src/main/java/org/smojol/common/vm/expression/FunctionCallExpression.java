@@ -17,7 +17,7 @@ public class FunctionCallExpression extends CobolExpression {
     private final List<CobolExpression> arguments;
 
     public FunctionCallExpression(CobolParser.FunctionCallContext functionCallContext) {
-        this(functionCallContext.functionName().getText(), args(functionCallContext));
+        this(functionCallContext.functionReference().functionName().getText(), args(functionCallContext));
     }
 
     public FunctionCallExpression(String functionName, List<CobolExpression> arguments) {

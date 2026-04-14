@@ -29,13 +29,14 @@ public class PerSection extends FlowchartGenerationStrategy {
 
     @Override
     public void draw(CobolEntityNavigator navigator, ParseTree root, Path dotFileOutputDir, Path imageOutputDir, String programName) throws IOException, InterruptedException {
-        List<CobolParser.ProcedureSectionContext> allSections = navigator.findAllByCondition(n -> n.getClass() == CobolParser.ProcedureSectionContext.class, root).stream().map(s -> (CobolParser.ProcedureSectionContext) s).toList();
-        for (CobolParser.ProcedureSectionContext section : allSections) {
+        List<CobolParser.SectionOrParagraphContext> allSections = navigator.findAllByCondition(n -> n.getClass() == CobolParser.SectionOrParagraphContext.class && ((CobolParser.SectionOrParagraphContext) n).SECTION() != null, root).stream().map(s -> (CobolParser.SectionOrParagraphContext) s).toList();
+        for (CobolParser.SectionOrParagraphContext section : allSections) {
             FlowNodeService nodeService = new FlowNodeServiceImpl(new CobolEntityNavigator(section),
                     new Format1DataStructure(0, new UnresolvedReferenceDoNothingStrategy()),
                     idProvider);
             FlowNode flowSection = new BuildFlowNodesTask(nodeService).run(section);
-            LOGGER.info("Generating flowchart for section: " + section.procedureSectionHeader().sectionName());
+            String sectionLabel = section.cobolWord() != null ? section.cobolWord().getText() : section.integerLiteral(0).getText();
+            LOGGER.info("Generating flowchart for section: " + sectionLabel);
             new FlowchartBuilder(flowSection).build(
                     FlowchartGenerationStrategy.outputPath(section, dotFileOutputDir, "dot"),
                     FlowchartGenerationStrategy.outputPath(section, imageOutputDir, this.outputFormat.extension()), this.outputFormat);

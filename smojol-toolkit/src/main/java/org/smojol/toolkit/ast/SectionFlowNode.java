@@ -35,6 +35,7 @@ public class SectionFlowNode extends CompositeCobolFlowNode {
 
     @Override
     public String label() {
-        return ((CobolParser.ProcedureSectionContext) executionContext).procedureSectionHeader().sectionName().getText();
+        CobolParser.SectionOrParagraphContext ctx = (CobolParser.SectionOrParagraphContext) executionContext;
+        return ctx.cobolWord() != null ? ctx.cobolWord().getText() : ctx.integerLiteral(0).getText();
     }
 }
