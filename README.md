@@ -814,9 +814,11 @@ Now run your commands as usual.
 The build process has been tested on MacOS, Windows, and on the pipeline using the ```ubuntu-latest``` image.
 
 **JDK Note:**
-- The toolkit uses JDK 21 features; so you'll need the appropriate JDK set up.
-- The Che4z COBOL support repository build files specify Java 8 for building, but using JDK 21 works.
-- Using JDK 23 results in failures compiling the Che4z submodule, so avoid JDK 23: JDK 22 is ok.
+- The toolkit requires **JDK 21 (Temurin recommended)**. JDK 22 also works.
+- The Che4z COBOL support repository build files specify Java 8 for building, but JDK 21 compiles it correctly.
+- JDK 23 and above (including JDK 24/25) cause Lombok annotation processing failures in the Che4z submodule and must be avoided.
+- If your system default Java is newer than 21 (e.g. via Homebrew on macOS), switch explicitly before building: `j21` or `export JAVA_HOME=$(/usr/libexec/java_home -v 21)`.
+- Always use `mvn clean package` rather than `mvn package`. Running without `clean` after any build attempt with the wrong JDK leaves stale compiled artifacts that cause cascading failures even after switching to JDK 21.
 
 I have intentionally not updated the JDK version in Che4z to minimise changes in that submodule.
 
@@ -832,7 +834,7 @@ If you have already cloned the repository only, initialise submodules using:
 git submodule update --init --recursive
 ```
 
-Run: ```mvn clean verify```.
+Run: ```mvn clean package```.
 
 The Checkstyle step is mostly applicable for the Eclipse Cobol parser project. You can skip the Checkstyle targets with:
 
