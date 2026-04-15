@@ -9,6 +9,7 @@ import java.util.List;
 public class CommentBlock {
     private final List<String> lines = new ArrayList<>();
     @Getter private String codeContextLine;
+    @Getter private int codeContextLineNumber;
     private ParseTree nodeContext;
 
     public void add(String commentLine) {
@@ -17,6 +18,11 @@ public class CommentBlock {
 
     public void setCodeContext(String codeContextLine) {
         this.codeContextLine = codeContextLine.trim();
+    }
+
+    public void setCodeContext(String codeContextLine, int lineNumber) {
+        this.codeContextLine = codeContextLine.trim();
+        this.codeContextLineNumber = lineNumber;
     }
 
     public void setAssociatedTree(ParseTree nodeContext) {

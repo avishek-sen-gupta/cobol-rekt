@@ -1,5 +1,7 @@
 package org.smojol.toolkit.analysis.task.analysis;
 
+import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.smojol.common.ast.CommentBlock;
 import org.smojol.common.ast.CommentExtraction;
 import org.smojol.common.ast.FlowNode;
@@ -36,7 +38,21 @@ public class AttachCommentsTask implements AnalysisTask {
             List<CommentBlock> commentBlocks = new CommentExtraction().run(sourceConfig.sourcePath(), navigator);
             commentBlocks.forEach(cb -> {
                 LOGGER.finer("Attaching comments");
-                FlowNode node = new FlowNodeNavigator(astRoot).findNarrowestByCondition(n -> n.originalText().contains(cb.getCodeContextLine()));
+                FlowNode node;
+                if (cb.getCodeContextLineNumber() > 0) {
+                    // Match by line number to correctly handle duplicate statement text
+                    node = new FlowNodeNavigator(astRoot).findNarrowestByCondition(n -> {
+                        ParseTree ctx = n.getExecutionContext();
+                        if (ctx instanceof ParserRuleContext prc && prc.getStart() != null) {
+                            int startLine = prc.getStart().getLine();
+                            int stopLine = prc.getStop() != null ? prc.getStop().getLine() : startLine;
+                            return cb.getCodeContextLineNumber() >= startLine && cb.getCodeContextLineNumber() <= stopLine;
+                        }
+                        return false;
+                    });
+                } else {
+                    node = new FlowNodeNavigator(astRoot).findNarrowestByCondition(n -> n.originalText().contains(cb.getCodeContextLine()));
+                }
                 if (node != null) node.addComment(cb);
                 else {
                     CobolDataStructure dataStructure = new DataStructureNavigator(dataStructures).findByCondition(ds -> ds.getRawText().contains(cb.getCodeContextLine()));
