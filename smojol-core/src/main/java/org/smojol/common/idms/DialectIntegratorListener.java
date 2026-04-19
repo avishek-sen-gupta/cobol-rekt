@@ -24,8 +24,12 @@ public class DialectIntegratorListener extends CobolParserBaseListener {
             return;
         super.enterDialectNodeFiller(ctx);
         String guid = ctx.dialectGuid().getText();
-        LocalisedDialect dialect = PersistentData.dialect("IDMS-" + guid);
         ParseTree dialectNode = PersistentData.getDialectNode("IDMS-" + guid);
+        if (dialectNode == null) {
+            LOGGER.warning("No IDMS node found for key IDMS-" + guid + "; skipping reinjection");
+            return;
+        }
+        LocalisedDialect dialect = PersistentData.dialect("IDMS-" + guid);
         LOGGER.finer(String.format("Restoring _DIALECT_ %s: %s", guid, dialectNode.getText()));
         ctx.addChild(new DialectContainerNode(dialectNode, ctx, dialect));
         restores++;

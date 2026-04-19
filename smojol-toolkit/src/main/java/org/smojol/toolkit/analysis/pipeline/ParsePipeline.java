@@ -98,7 +98,7 @@ public class ParsePipeline {
         BenchmarkService benchmarkService = diCtx.getInstance(BenchmarkService.class);
         ErrorFinalizerService errorFinalizerService = diCtx.getInstance(ErrorFinalizerService.class);
         if (src == null) {
-            LOG.error("src must be provided");
+            LOGGER.severe("src must be provided");
             throw new RuntimeException("src must be provided");
         }
 
