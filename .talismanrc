@@ -3,6 +3,8 @@ fileignoreconfig:
   checksum: 076f2e54e0504ee9b91abce0f6331dd088439246729c151b70c06bad13160fcc
 - filename: woof
   checksum: 7d588457269a756bd01fbea071f543692092ac1f201e319ca2766165574923cd
+- filename: mojo-common
+  checksum: d4373e6536aa784caefa7e8e7b8d80981e94a0f7130d15a2f5436242da5cb466
 - filename: smojol-test-code/nist85.cbl
   checksum: ab6eb548ef861a2d4b399b74e67ce9ea6234721a82021d07040583f4e15f9648
 - filename: python/src/llm/common/env_vars.py
@@ -15,38 +17,62 @@ fileignoreconfig:
   checksum: 9947105be22802bd2f8a4c3cd269b8ad3bf7a3120ab86e04b0fd3e8c2d21c7b0
 - filename: smojol_python/src/llm/common/env_vars.py
   checksum: 326393cb7dc2e676a5b9c4d49147b64d4eb50bb519bafdf683ae65f7d6924fb8
-- filename: smojol_python/src/llm/common/env_vars.py
-  checksum: d6d7c40bafaebbd6f25e7d1c89f545eab5539e88654ddfbb800e3fe49240f906
-- filename: woof
-  checksum: 7d588457269a756bd01fbea071f543692092ac1f201e319ca2766165574923cd
-- filename: che-che4z-lsp-for-cobol-integration
-  checksum: 076f2e54e0504ee9b91abce0f6331dd088439246729c151b70c06bad13160fcc
-- filename: woof
-  checksum: 7d588457269a756bd01fbea071f543692092ac1f201e319ca2766165574923cd
 - filename: smojol_python/src/analysis/neo4j_pattern_matcher.py
   checksum: 2716c08eeeaab8c987dae4619ca0a8cfb72d1093cd28f1687f3f2c197d882d43
 - filename: smojol_python/src/common/scrub_neo4j.py
   checksum: c8e93f7e1dab2e2bc6f9a811c878371d8729835f1dbced72e0c0490b7eb130c3
 - filename: smojol_python/src/analysis/frequent_pattern_miner.py
   checksum: b5d7135135db97c9de436f53d9b4da33d95f8f8459f471bcb59589733eb09ede
-- filename: smojol-app/cobol-lect/package-lock.json
-  checksum: b1fabdb9cf26426c7aa512759aa901fe1f860f2c6981a191884861cb1063d2c2
-- filename: smojol-app/cobol-lect/package-lock.json
-  checksum: df93dabfb6378307a680bff4ea5f26c93a7b611e08260427590d769f6ea0a839
-- filename: smojol-app/cobol-lect/package-lock.json
-  checksum: 416cbeac29fcd4fe3c0f64f89cdf3a83917a022651cabc6413a7a2ab6e25e2fe
-- filename: smojol-app/cobol-lect/package-lock.json
-  checksum: 6e14609c629aa4b01e855469e2a8626af17eb4364c508b18fde3094874d39f44
+- filename: smojol-app/cobol-lekt/package-lock.json
+  checksum: 8dcdeeb4fe03c5211e94d51bf78d65c0ab25ab51e8a707b5bf73dcfdc2ba4a35
+- filename: smojol-app/cobol-lekt/package-lock.json
+  checksum: 419fd47a1f271daf25687c1852c6aab7be9a0b056074a0bd96d95c7423578b11
+- filename: smojol-app/cobol-lekt/package-lock.json
+  checksum: 5f86e8d9f3485099ee06111a84b2043f6e77633a9966153838b54b10bf392102
 - filename: smojol-toolkit/src/test/java/org/smojol/toolkit/analysis/SqliiteAccessTest.java
   checksum: 77d595a74c39c963211a5a00197e82d1337449df2baf5133594f738024b4c5a3
+- filename: smojol-toolkit/src/test/java/org/smojol/toolkit/analysis/SqliiteAccessTest.java
+  checksum: 85544f6cae9092fd81dedfe28042f135f913ab78838257aadb036671bb49797c
 - filename: smojol-toolkit/src/main/java/org/smojol/toolkit/examples/BackendPipelineMain.java
   checksum: 6335fe8c5da9566ceda010bac9daf5a449c95e9274a0063ae698cd32b324e9c7
-- filename: smojol-app/cobol-lekt/package-lock.json
-  checksum: 1d51d8d376706db4450e1022ff13a3c7b4b063df2e0e016d82bfee90b740152f
+- filename: smojol-toolkit/src/main/java/org/smojol/toolkit/analysis/error/DiagnosticRuntimeError.java
+  checksum: d7a54480f61ea884cd18aeaa84511fb0a25d9532585f6383c1f2523dc3351500
+- filename: smojol-toolkit/src/main/java/org/smojol/toolkit/analysis/graph/graphml/GraphMLRedefinitionVisitor.java
+  checksum: dc190fe1d1f2a4416fffbf5aac72a49c2b9b9128c82e62787b4d3d4895905bb1
+- filename: smojol-toolkit/src/main/java/org/smojol/toolkit/analysis/graph/graphml/Neo4JDataDependencyBuilderVisitor.java
+  checksum: 5b4fea63ad82a92d8b9b1a6ec04cecc3d2e33c926f75648a591a6084cf990117
+- filename: smojol-toolkit/src/main/java/org/smojol/toolkit/ast/FlowNodeGraphvizVisitor.java
+  checksum: 4174ab4d4875005b6f662bddcbce453172c7da3a66c6f3ce66dae852ce82b0e8
+- filename: smojol-toolkit/src/main/java/org/smojol/toolkit/examples/ReachingConditionBuildMain.java
+  checksum: 973fd74e5b892d60658e39c93b9a02329d89d77838803352ed2b4ce7a5b4ac72
+- filename: smojol-toolkit/src/main/java/org/smojol/toolkit/examples/SummariseThroughLLMMain_Issue58.java
+  checksum: 6bd7e53cdf4c53ec03c4848f20c683711635a1b5e41aefc0728b77c629719490
 - filename: smojol-api/src/main/java/org/smojol/api/database/ConnectionBuilder.java
   checksum: f05076806e47e9a264139bfad8e1563d58dde5cb191e00515bcc618e33990c0e
-- filename: smojol-app/cobol-lekt/package-lock.json
-  checksum: 8675f4cce8fa71dad6ef7a60ec3072e35ff2f7a56d6b626317a78c20ba66e8a9
+- filename: smojol-api/src/main/java/org/smojol/api/database/DbContext.java
+  checksum: b6fc353386f888011c9cea17dc83da012f4e139fcc4e5c2ee502f81c5e3609eb
+- filename: smojol-api/src/main/java/org/smojol/api/database/DbContext.java
+  checksum: a73687c7cf949ec5b83e619f9e62aedb680b09a34d951abc3219853cfdf3b518
+- filename: smojol-api/src/main/java/org/smojol/api/pipeline/BackendPipelineMain.java
+  checksum: c6bdf7f696522d3d0c895f1bb0e36a76ef8517b079dd587a01c57131cb73e661
+- filename: smojol-api/src/main/java/org/smojol/api/pipeline/BackendPipelineMain.java
+  checksum: 3077cce73d73004dad2ce5d2ff0c68c961db11c277442e29d9736efa30cd66f3
+- filename: smojol-api/src/main/java/org/smojol/api/pipeline/BackendPipelineMain.java
+  checksum: 6b8ef990ed0712fb6f6e0402e34215da958925e77f56bb2b9567ca25253e7196
+- filename: smojol-api/src/main/java/org/smojol/api/IntermediateFormService.java
+  checksum: d48f8d053a53ba4f650005da2436ce553a9642bdc176fd33b9969ca1f55036c7
+- filename: smojol-core/src/test/java/org/smojol/common/idms/DialectIntegratorListenerMissingKeyTest.java
+  checksum: ed2cdf9a271216de12dc5d76a2454fce103f9f4ad315660fafe4d9adb3009813
+- filename: smojol-core/src/main/java/org/smojol/common/typeadapter/RuntimeTypeAdapterFactory.java
+  checksum: baf279b1e1881510d7e81a7777fca766a38b04d5bdef15c967ae4759c09015ec
+- filename: smojol-core/src/main/java/org/smojol/common/vm/memory/MemoryRegion.java
+  checksum: 91fe5ca277114f479b4df2af58fb0d48822b993bf987ace65df030fd5a47b4c0
+- filename: README.md
+  checksum: 9a1890534ecbc051bc3866d7cec20611f9a9b800eb0f189c270c683d521aa3bd
+- filename: README.md
+  checksum: 6da2c89d18f9096c1547cae26762d8a9ec2d808e80a58c411e3362a69c0779d6
+- filename: README.md
+  checksum: e3e0192e7f8a73434e40b2820d41a5ee15b9f5290e033f492bf49446a19ae56c
 - filename: db/migrations/U1__create_person_table.sql
   checksum: 171095374c29f97ebeef90014e25ceb27c845ac6719c839cb897caafd8794aaf
 - filename: db/migrations/U2__create_project_table.sql
@@ -55,6 +81,16 @@ fileignoreconfig:
   checksum: b277f10527452a57f90f425bdacab21b1b75fb8addd5b33cdb8369285cd1e5c5
 - filename: db/migrations/U4__create_ir_ast.sql
   checksum: 19088e1b8a1feec40af9060d1d5821b79aeb847bab642e7a8a711f7fd67f5b3b
+- filename: db/migrations/U5__create_ir_cfg_table.sql
+  checksum: 7d1ee143c3b2212efb6a5aecd481014536e1a93d241753ef00b5927fb2f6af3a
+- filename: db/migrations/U6__create_loop_body_table.sql
+  checksum: c3cd1a6fb94ce7bcccfc132cc62583dcd4f0d6ffee517ad988c21986feb9f8cd
+- filename: db/migrations/U7__create_t1_t2_analysis_table.sql
+  checksum: c3530af21a19776af0a20e2ab469490e3bb1b5ac4c7d64a84fef132946103079
+- filename: db/migrations/U8__create_unified_flow_table.sql
+  checksum: 06ee54e75466dba0dbf7507b155e36850183fa0b69bce82a8f94d7acbb1ff553
+- filename: db/migrations/U9__create_flowchart_table.sql
+  checksum: 36052a17c6f74adc8608cfa30ac97834bfbebd76a8cf812e7d5d2ee0e8604263
 - filename: db/migrations/V1__create_person_table.sql
   checksum: 559ef0ecdbb5b83c87fd6e2163140361c4d07dac613f19349f494d2725c83d22
 - filename: db/migrations/V2__create_project_table.sql
@@ -65,47 +101,30 @@ fileignoreconfig:
   checksum: 4f63ba6190ee2b30ade6d9e8736ff255841256aa59f4c53d649bf13f44923ac8
 - filename: db/migrations/V5__create_ir_cfg_table.sql
   checksum: b96aa1585d8b220f0624d6ee32748aee9d086ea26b3552de9de9dd6384d186b8
-- filename: smojol-api/src/main/java/org/smojol/api/database/DbContext.java
-  checksum: b6fc353386f888011c9cea17dc83da012f4e139fcc4e5c2ee502f81c5e3609eb
-- filename: README.md
-  checksum: 9a1890534ecbc051bc3866d7cec20611f9a9b800eb0f189c270c683d521aa3bd
-- filename: README.md
-  checksum: 6da2c89d18f9096c1547cae26762d8a9ec2d808e80a58c411e3362a69c0779d6
-- filename: README.md
-  checksum: e3e0192e7f8a73434e40b2820d41a5ee15b9f5290e033f492bf49446a19ae56c
 - filename: db/migrations/V6__create_loop_body_table.sql
   checksum: a99f9d7b729a101156e2221ad2670892ebd66bc8d64e83c0095d74eaa3f9fbcd
-- filename: db/migrations/U5__create_ir_cfg_table.sql
-  checksum: 7d1ee143c3b2212efb6a5aecd481014536e1a93d241753ef00b5927fb2f6af3a
-- filename: db/migrations/U6__create_loop_body_table.sql
-  checksum: c3cd1a6fb94ce7bcccfc132cc62583dcd4f0d6ffee517ad988c21986feb9f8cd
 - filename: db/migrations/V6__create_loop_body_table.sql
   checksum: 9604e1384809a2ce35da5cac7c59ee79de796e668ccd9a8db97573ffd3da8618
 - filename: db/migrations/V6__create_loop_body_table.sql
   checksum: 16500107ccaa7dadc313d47923ddbae1d2553f678299dc94fcb7560dff208343
-- filename: db/migrations/U7__create_t1_t2_analysis_table.sql
-  checksum: c3530af21a19776af0a20e2ab469490e3bb1b5ac4c7d64a84fef132946103079
 - filename: db/migrations/V7__create_t1_t2_analysis_table.sql
   checksum: 59bc72977a67c9090f6fe7aabf4b05e8ef172c9ce99c58898047d544505903ca
-- filename: db/migrations/U8__create_unified_flow_table.sql
-  checksum: 06ee54e75466dba0dbf7507b155e36850183fa0b69bce82a8f94d7acbb1ff553
 - filename: db/migrations/V8__create_unified_flow_table.sql
   checksum: 5d1231eee8fb4ee6990114a77062857ff7d96b3f28bac095306f32ed4c6f56db
 - filename: db/migrations/V8__create_unified_flow_table.sql
   checksum: c617b4e7ba7e8e7712639908720f04c1d38a0f65a93d30e235bb0e0429088145
-- filename: db/migrations/U9__create_flowchart_table.sql
-  checksum: 36052a17c6f74adc8608cfa30ac97834bfbebd76a8cf812e7d5d2ee0e8604263
 - filename: db/migrations/V9__create_flowchart_table.sql
   checksum: 470f2cc14a67ab28030ef47ecbe1ca104e819bb1ab78e025f24f520df4857c5f
-- filename: smojol-app/cobol-lekt/package-lock.json
-  checksum: 8dcdeeb4fe03c5211e94d51bf78d65c0ab25ab51e8a707b5bf73dcfdc2ba4a35
-- filename: smojol-app/cobol-lekt/package-lock.json
-  checksum: 419fd47a1f271daf25687c1852c6aab7be9a0b056074a0bd96d95c7423578b11
+- filename: smojol-api/src/main/java/org/smojol/api/database/DbContext.java
+  checksum: a73687c7cf949ec5b83e619f9e62aedb680b09a34d951abc3219853cfdf3b518
 - filename: smojol-api/src/main/java/org/smojol/api/pipeline/BackendPipelineMain.java
-  checksum: c6bdf7f696522d3d0c895f1bb0e36a76ef8517b079dd587a01c57131cb73e661
+  checksum: 6b8ef990ed0712fb6f6e0402e34215da958925e77f56bb2b9567ca25253e7196
+- filename: smojol-toolkit/src/test/java/org/smojol/toolkit/analysis/SqliiteAccessTest.java
+  checksum: 85544f6cae9092fd81dedfe28042f135f913ab78838257aadb036671bb49797c
+- filename: smojol-toolkit/src/test/java/org/smojol/toolkit/analysis/SqliiteAccessTest.java
+  checksum: 85544f6cae9092fd81dedfe28042f135f913ab78838257aadb036671bb49797c
+- filename: smojol-api/src/main/java/org/smojol/api/database/DbContext.java
+  checksum: a73687c7cf949ec5b83e619f9e62aedb680b09a34d951abc3219853cfdf3b518
 - filename: smojol-api/src/main/java/org/smojol/api/pipeline/BackendPipelineMain.java
-  checksum: 3077cce73d73004dad2ce5d2ff0c68c961db11c277442e29d9736efa30cd66f3
-- filename: smojol-app/cobol-lekt/package-lock.json
-  checksum: 5f86e8d9f3485099ee06111a84b2043f6e77633a9966153838b54b10bf392102
-- filename: mojo-common
-  checksum: d4373e6536aa784caefa7e8e7b8d80981e94a0f7130d15a2f5436242da5cb466
+  checksum: 6b8ef990ed0712fb6f6e0402e34215da958925e77f56bb2b9567ca25253e7196
+version: "1.0"
