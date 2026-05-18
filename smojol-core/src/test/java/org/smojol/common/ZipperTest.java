@@ -1,5 +1,9 @@
 package org.smojol.common;
 
+import static com.mojo.algorithms.transpiler.TreeMatcher.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+
 import com.google.common.collect.ImmutableList;
 import com.mojo.algorithms.domain.TranspilerNode;
 import com.mojo.algorithms.domain.TypedRecord;
@@ -7,160 +11,134 @@ import com.mojo.algorithms.transpiler.*;
 import io.vavr.collection.List;
 import org.junit.jupiter.api.Test;
 
-import static com.mojo.algorithms.transpiler.TreeMatcher.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotSame;
-
 public class ZipperTest {
-    @Test
-    public void canModifyTranspilerNodesUsingZipper() {
-        TranspilerNode set1 = set("ABC", 30);
-        TranspilerNode set2 = set("DEF", 40);
-        TranspilerNode set3 = set("PQR", 50);
-        TranspilerNode set4 = set("KLM", 70);
-        TranspilerNode set5 = set("NOP", 80);
-        TranspilerNode set6 = set("RST", 90);
-        EqualToNode condition = new EqualToNode(new SymbolReferenceNode("EFG"), new PrimitiveValueTranspilerNode(TypedRecord.TRUE));
-        JumpIfTranspilerNode jumpTranspilerNode = new JumpIfTranspilerNode(new NamedLocationNode("SOME_BLOCK"), condition);
-        IfTranspilerNode ifStmt = new IfTranspilerNode(condition, new TranspilerCodeBlockNode(ImmutableList.of(new TranspilerCodeBlockNode(ImmutableList.of(jumpTranspilerNode, set6)), set("abcd", 12))));
-        TranspilerCodeBlockNode block = new TranspilerCodeBlockNode(ImmutableList.of(set4, set5));
-        TranspilerNode program = new TranspilerCodeBlockNode(ImmutableList.of(set1, set3, block, ifStmt));
+  @Test
+  public void canModifyTranspilerNodesUsingZipper() {
+    TranspilerNode set1 = set("ABC", 30);
+    TranspilerNode set2 = set("DEF", 40);
+    TranspilerNode set3 = set("PQR", 50);
+    TranspilerNode set4 = set("KLM", 70);
+    TranspilerNode set5 = set("NOP", 80);
+    TranspilerNode set6 = set("RST", 90);
+    EqualToNode condition =
+        new EqualToNode(
+            new SymbolReferenceNode("EFG"), new PrimitiveValueTranspilerNode(TypedRecord.TRUE));
+    JumpIfTranspilerNode jumpTranspilerNode =
+        new JumpIfTranspilerNode(new NamedLocationNode("SOME_BLOCK"), condition);
+    IfTranspilerNode ifStmt =
+        new IfTranspilerNode(
+            condition,
+            new TranspilerCodeBlockNode(
+                ImmutableList.of(
+                    new TranspilerCodeBlockNode(ImmutableList.of(jumpTranspilerNode, set6)),
+                    set("abcd", 12))));
+    TranspilerCodeBlockNode block = new TranspilerCodeBlockNode(ImmutableList.of(set4, set5));
+    TranspilerNode program =
+        new TranspilerCodeBlockNode(ImmutableList.of(set1, set3, block, ifStmt));
 
-        block_(
-                set_(),
-                set_(),
-                block_(
-                        set_(),
-                        set_()
-                ),
-                if_(block_(
-                        block_(
-                                jmpIf_(),
-                                set_()
-                        ),
-                        set_()
-                ), any_())
-        ).verify(program);
+    block_(
+            set_(),
+            set_(),
+            block_(set_(), set_()),
+            if_(block_(block_(jmpIf_(), set_()), set_()), any_()))
+        .verify(program);
 
-        BridgeZipper<TranspilerNode> zippy = new BridgeZipper<>(io.vavr.collection.List.of(), program, TranspilerCloneOperation::clone);
-        BridgeZipper<TranspilerNode> down = zippy.down(set1);
+    BridgeZipper<TranspilerNode> zippy =
+        new BridgeZipper<>(io.vavr.collection.List.of(), program, TranspilerCloneOperation::clone);
+    BridgeZipper<TranspilerNode> down = zippy.down(set1);
 
-        assertEquals(io.vavr.collection.List.of(program), down.getThread());
-        assertEquals(set1, down.getCurrent());
+    assertEquals(io.vavr.collection.List.of(program), down.getThread());
+    assertEquals(set1, down.getCurrent());
 
+    BridgeZipper<TranspilerNode> insideBlock = zippy.down(block).down(set4);
+    assertEquals(io.vavr.collection.List.of(block, program), insideBlock.getThread());
+    assertEquals(set4, insideBlock.getCurrent());
 
-        BridgeZipper<TranspilerNode> insideBlock = zippy.down(block).down(set4);
-        assertEquals(io.vavr.collection.List.of(block, program), insideBlock.getThread());
-        assertEquals(set4, insideBlock.getCurrent());
+    BridgeZipper<TranspilerNode> backUpToBlock = insideBlock.up();
+    assertEquals(io.vavr.collection.List.of(program), backUpToBlock.getThread());
+    assertEquals(block, backUpToBlock.getCurrent());
+    BridgeZipper<TranspilerNode> newRootZipper = backUpToBlock.replaceChildren(List.of(set2));
 
-        BridgeZipper<TranspilerNode> backUpToBlock = insideBlock.up();
-        assertEquals(io.vavr.collection.List.of(program), backUpToBlock.getThread());
-        assertEquals(block, backUpToBlock.getCurrent());
-        BridgeZipper<TranspilerNode> newRootZipper = backUpToBlock.replaceChildren(List.of(set2));
+    block_(
+            set_(),
+            set_(),
+            block_(set_(), set_()),
+            if_(block_(block_(jmpIf_(), set_()), set_()), any_()))
+        .verify(program);
 
-        block_(
-                set_(),
-                set_(),
-                block_(
-                        set_(),
-                        set_()
-                ),
-                if_(block_(
-                        block_(
-                                jmpIf_(),
-                                set_()
-                        ),
-                        set_()
-                ), any_())
-        ).verify(program);
+    block_(set_(), set_(), block_(set_()), if_(block_(block_(jmpIf_(), set_()), set_()), any_()))
+        .verify(newRootZipper.getCurrent());
+  }
 
-        block_(
-                set_(),
-                set_(),
-                block_(
-                        set_()
-                ),
-                if_(block_(
-                        block_(
-                                jmpIf_(),
-                                set_()
-                        ),
-                        set_()
-                ), any_())
-        ).verify(newRootZipper.getCurrent());
-    }
+  @Test
+  public void canTraverseTranspilerNodesUsingZipper() {
+    TranspilerNode set1 = set("ABC", 30);
+    TranspilerNode set3 = set("PQR", 50);
+    TranspilerNode set4 = set("KLM", 70);
+    TranspilerNode set5 = set("NOP", 80);
+    TranspilerNode set6 = set("RST", 90);
+    EqualToNode condition =
+        new EqualToNode(
+            new SymbolReferenceNode("EFG"), new PrimitiveValueTranspilerNode(TypedRecord.TRUE));
+    JumpIfTranspilerNode jumpTranspilerNode =
+        new JumpIfTranspilerNode(new NamedLocationNode("SOME_BLOCK"), condition);
+    IfTranspilerNode ifStmt =
+        new IfTranspilerNode(
+            condition,
+            new TranspilerCodeBlockNode(
+                ImmutableList.of(
+                    new TranspilerCodeBlockNode(ImmutableList.of(jumpTranspilerNode, set6)),
+                    set("abcd", 12))));
+    TranspilerCodeBlockNode block = new TranspilerCodeBlockNode(ImmutableList.of(set4, set5));
+    TranspilerNode program =
+        new TranspilerCodeBlockNode(ImmutableList.of(set1, set3, block, ifStmt));
 
-    @Test
-    public void canTraverseTranspilerNodesUsingZipper() {
-        TranspilerNode set1 = set("ABC", 30);
-        TranspilerNode set3 = set("PQR", 50);
-        TranspilerNode set4 = set("KLM", 70);
-        TranspilerNode set5 = set("NOP", 80);
-        TranspilerNode set6 = set("RST", 90);
-        EqualToNode condition = new EqualToNode(new SymbolReferenceNode("EFG"), new PrimitiveValueTranspilerNode(TypedRecord.TRUE));
-        JumpIfTranspilerNode jumpTranspilerNode = new JumpIfTranspilerNode(new NamedLocationNode("SOME_BLOCK"), condition);
-        IfTranspilerNode ifStmt = new IfTranspilerNode(condition, new TranspilerCodeBlockNode(ImmutableList.of(new TranspilerCodeBlockNode(ImmutableList.of(jumpTranspilerNode, set6)), set("abcd", 12))));
-        TranspilerCodeBlockNode block = new TranspilerCodeBlockNode(ImmutableList.of(set4, set5));
-        TranspilerNode program = new TranspilerCodeBlockNode(ImmutableList.of(set1, set3, block, ifStmt));
+    BridgeZipper<TranspilerNode> zippy =
+        new BridgeZipper<>(io.vavr.collection.List.of(), program, TranspilerCloneOperation::clone);
+    BridgeZipper<TranspilerNode> down = zippy.down(set1);
 
-        BridgeZipper<TranspilerNode> zippy = new BridgeZipper<>(io.vavr.collection.List.of(), program, TranspilerCloneOperation::clone);
-        BridgeZipper<TranspilerNode> down = zippy.down(set1);
+    assertEquals(io.vavr.collection.List.of(program), down.getThread());
+    assertEquals(set1, down.getCurrent());
 
-        assertEquals(io.vavr.collection.List.of(program), down.getThread());
-        assertEquals(set1, down.getCurrent());
+    BridgeZipper<TranspilerNode> insideBlock = zippy.down(block).down(set4);
+    assertEquals(io.vavr.collection.List.of(block, program), insideBlock.getThread());
+    assertEquals(set4, insideBlock.getCurrent());
 
+    BridgeZipper<TranspilerNode> backUpToBlock = insideBlock.up();
+    assertEquals(io.vavr.collection.List.of(program), backUpToBlock.getThread());
+    assertEquals(block, backUpToBlock.getCurrent());
 
-        BridgeZipper<TranspilerNode> insideBlock = zippy.down(block).down(set4);
-        assertEquals(io.vavr.collection.List.of(block, program), insideBlock.getThread());
-        assertEquals(set4, insideBlock.getCurrent());
+    block_(
+            set_(),
+            set_(),
+            block_(set_(), set_()),
+            if_(block_(block_(jmpIf_(), set_()), set_()), any_()))
+        .verify(program);
+  }
 
-        BridgeZipper<TranspilerNode> backUpToBlock = insideBlock.up();
-        assertEquals(io.vavr.collection.List.of(program), backUpToBlock.getThread());
-        assertEquals(block, backUpToBlock.getCurrent());
+  @Test
+  public void canUseZipperNatively() {
+    NativeZipperNode nn = n("A", n("B"), n("C", n("D"), n("E")));
 
-        block_(
-                set_(),
-                set_(),
-                block_(
-                        set_(),
-                        set_()
-                ),
-                if_(block_(
-                        block_(
-                                jmpIf_(),
-                                set_()
-                        ),
-                        set_()
-                ), any_())
-        ).verify(program);
-    }
+    NativeZipper<NativeZipperNode> zippy = new NativeZipper<>(io.vavr.collection.List.of(), nn);
+    NativeZipper<NativeZipperNode> atB = zippy.down(n -> n.id().equals("B"));
+    NativeZipper<NativeZipperNode> atRoot =
+        atB.replaceChildren(io.vavr.collection.List.of(n("B1"), n("B2")));
+    NativeZipperNode newRootZipper = atRoot.current();
+    NativeZipperNode nodeB = newRootZipper.astChildren().get(0);
+    assertNotSame(atB.getCurrent().astChildren().size(), nodeB.astChildren().size());
+    assertEquals("B", nodeB.id());
+    assertEquals("B1", nodeB.astChildren().get(0).id());
+    assertEquals("B2", nodeB.astChildren().get(1).id());
+  }
 
-    @Test
-    public void canUseZipperNatively() {
-        NativeZipperNode nn = n("A",
-                n("B"),
-                n("C",
-                        n("D"),
-                        n("E")
-                )
-        );
+  private NativeZipperNode n(String id, NativeZipperNode... children) {
+    return new NativeZipperNode(id, io.vavr.collection.List.of(children));
+  }
 
-        NativeZipper<NativeZipperNode> zippy = new NativeZipper<>(io.vavr.collection.List.of(), nn);
-        NativeZipper<NativeZipperNode> atB = zippy.down(n -> n.id().equals("B"));
-        NativeZipper<NativeZipperNode> atRoot = atB.replaceChildren(io.vavr.collection.List.of(n("B1"), n("B2")));
-        NativeZipperNode newRootZipper = atRoot.current();
-        NativeZipperNode nodeB = newRootZipper.astChildren().get(0);
-        assertNotSame(atB.getCurrent().astChildren().size(), nodeB.astChildren().size());
-        assertEquals("B", nodeB.id());
-        assertEquals("B1", nodeB.astChildren().get(0).id());
-        assertEquals("B2", nodeB.astChildren().get(1).id());
-    }
-
-    private NativeZipperNode n(String id, NativeZipperNode... children) {
-        return new NativeZipperNode(id, io.vavr.collection.List.of(children));
-    }
-
-    private static SetTranspilerNode set(String variable, int value) {
-        return new SetTranspilerNode(new SymbolReferenceNode(variable), new PrimitiveValueTranspilerNode(TypedRecord.typedNumber(value)));
-    }
+  private static SetTranspilerNode set(String variable, int value) {
+    return new SetTranspilerNode(
+        new SymbolReferenceNode(variable),
+        new PrimitiveValueTranspilerNode(TypedRecord.typedNumber(value)));
+  }
 }

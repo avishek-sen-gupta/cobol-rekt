@@ -5,5 +5,8 @@ import org.smojol.common.structure.SourceSection;
 import org.smojol.common.vm.strategy.UnresolvedReferenceStrategy;
 
 public interface Format1DataStructureBuildStrategy {
-    Format1DataStructure build(CobolParser.DataDescriptionEntryFormat1Context format1Structure, UnresolvedReferenceStrategy strategy, SourceSection sourceSection);
+  Format1DataStructure build(
+      CobolParser.DataDescriptionEntryFormat1Context format1Structure,
+      UnresolvedReferenceStrategy strategy,
+      SourceSection sourceSection);
 }

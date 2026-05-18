@@ -10,18 +10,20 @@ import org.smojol.toolkit.intermediate.SectionParagraphMap;
 import org.smojol.toolkit.transpiler.TranspilerTreeBuilder;
 
 public class BuildTranspilerASTTask {
-    private final ParseTree rawAST;
-    private final CobolDataStructure dataStructures;
-    private final SmojolSymbolTable symbolTable;
+  private final ParseTree rawAST;
+  private final CobolDataStructure dataStructures;
+  private final SmojolSymbolTable symbolTable;
 
-    public BuildTranspilerASTTask(ParseTree rawAST, CobolDataStructure dataStructures, SmojolSymbolTable symbolTable) {
-        this.rawAST = rawAST;
-        this.dataStructures = dataStructures;
-        this.symbolTable = symbolTable;
-    }
+  public BuildTranspilerASTTask(
+      ParseTree rawAST, CobolDataStructure dataStructures, SmojolSymbolTable symbolTable) {
+    this.rawAST = rawAST;
+    this.dataStructures = dataStructures;
+    this.symbolTable = symbolTable;
+  }
 
-    public TranspilerNode run() {
-        FlowNode flowRoot = new IntermediateASTNodeBuilder(rawAST, dataStructures, symbolTable).build();
-        return TranspilerTreeBuilder.flowToTranspiler(flowRoot, dataStructures, new SectionParagraphMap(flowRoot));
-    }
+  public TranspilerNode run() {
+    FlowNode flowRoot = new IntermediateASTNodeBuilder(rawAST, dataStructures, symbolTable).build();
+    return TranspilerTreeBuilder.flowToTranspiler(
+        flowRoot, dataStructures, new SectionParagraphMap(flowRoot));
+  }
 }

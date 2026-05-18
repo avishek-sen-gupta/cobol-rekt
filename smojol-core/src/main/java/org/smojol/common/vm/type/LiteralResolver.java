@@ -8,13 +8,15 @@ import org.smojol.common.vm.expression.LiteralVisitor;
 import org.smojol.common.vm.expression.PrimitiveCobolExpression;
 
 public class LiteralResolver {
-    public CobolExpression literal(CobolParser.LiteralContext ctx, AbstractCobolType expectedType) {
-        LiteralVisitor literalVisitor = new LiteralVisitor(expectedType);
-        ctx.accept(literalVisitor);
-        return literalVisitor.getExpression();
-    }
+  public CobolExpression literal(CobolParser.LiteralContext ctx, AbstractCobolType expectedType) {
+    LiteralVisitor literalVisitor = new LiteralVisitor(expectedType);
+    ctx.accept(literalVisitor);
+    return literalVisitor.getExpression();
+  }
 
-    public CobolExpression literal(CobolParser.IntegerLiteralContext integerLiteralContext, AbstractCobolType expectedType) {
-        return new PrimitiveCobolExpression(TypedRecord.typedNumber(Integer.parseInt(integerLiteralContext.getText())));
-    }
+  public CobolExpression literal(
+      CobolParser.IntegerLiteralContext integerLiteralContext, AbstractCobolType expectedType) {
+    return new PrimitiveCobolExpression(
+        TypedRecord.typedNumber(Integer.parseInt(integerLiteralContext.getText())));
+  }
 }

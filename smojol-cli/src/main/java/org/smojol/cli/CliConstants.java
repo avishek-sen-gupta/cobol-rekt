@@ -1,7 +1,8 @@
 package org.smojol.cli;
 
 public class CliConstants {
-    public static final String BANNER = """
+  public static final String BANNER =
+      """
               \s
               \s
               .oooooo.              .o8                 oooo          ooooooooo.   oooooooooooo oooo    oooo ooooooooooooo\s

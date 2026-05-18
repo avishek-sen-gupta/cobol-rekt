@@ -1,41 +1,42 @@
 package org.smojol.toolkit.ast;
 
 import com.google.common.collect.ImmutableList;
+import com.mojo.algorithms.domain.FlowNodeType;
+import com.mojo.algorithms.domain.SemanticCategory;
+import java.util.ArrayList;
+import java.util.List;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.ast.FlowNode;
-import com.mojo.algorithms.domain.SemanticCategory;
 import org.smojol.common.ast.FlowNodeService;
-import com.mojo.algorithms.domain.FlowNodeType;
 import org.smojol.common.vm.stack.StackFrames;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class AtEndPhraseFlowNode extends CompositeCobolFlowNode {
-    private List<FlowNode> conditionalStatements = new ArrayList<>();
-    public AtEndPhraseFlowNode(ParseTree parseTree, FlowNode scope, FlowNodeService nodeService, StackFrames stackFrames) {
-        super(parseTree, scope, nodeService, stackFrames);
-    }
+  private List<FlowNode> conditionalStatements = new ArrayList<>();
 
-    @Override
-    public List<? extends ParseTree> getChildren() {
-        CobolParser.AtEndPhraseContext atEndPhrase = (CobolParser.AtEndPhraseContext) executionContext;
-        return atEndPhrase.conditionalStatementCall();
-    }
+  public AtEndPhraseFlowNode(
+      ParseTree parseTree, FlowNode scope, FlowNodeService nodeService, StackFrames stackFrames) {
+    super(parseTree, scope, nodeService, stackFrames);
+  }
 
-    @Override
-    public String label() {
-        return "";
-    }
+  @Override
+  public List<? extends ParseTree> getChildren() {
+    CobolParser.AtEndPhraseContext atEndPhrase = (CobolParser.AtEndPhraseContext) executionContext;
+    return atEndPhrase.conditionalStatementCall();
+  }
 
-    @Override
-    public FlowNodeType type() {
-        return FlowNodeType.AT_END_PHRASE;
-    }
+  @Override
+  public String label() {
+    return "";
+  }
 
-    @Override
-    public List<SemanticCategory> categories() {
-        return ImmutableList.of(SemanticCategory.CODE_BLOCK);
-    }
+  @Override
+  public FlowNodeType type() {
+    return FlowNodeType.AT_END_PHRASE;
+  }
+
+  @Override
+  public List<SemanticCategory> categories() {
+    return ImmutableList.of(SemanticCategory.CODE_BLOCK);
+  }
 }

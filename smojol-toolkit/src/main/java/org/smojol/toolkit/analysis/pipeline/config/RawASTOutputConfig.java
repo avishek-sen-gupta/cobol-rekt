@@ -1,8 +1,7 @@
 package org.smojol.toolkit.analysis.pipeline.config;
 
+import java.nio.file.Path;
 import org.smojol.common.ast.CobolTreeVisualiser;
 
-import java.nio.file.Path;
-
-public record RawASTOutputConfig(Path astOutputDir, String cobolParseTreeOutputPath, CobolTreeVisualiser visualiser) {
-}
+public record RawASTOutputConfig(
+    Path astOutputDir, String cobolParseTreeOutputPath, CobolTreeVisualiser visualiser) {}

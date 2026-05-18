@@ -1,8 +1,6 @@
 package org.smojol.common.vm.expression;
 
+import java.util.List;
 import org.smojol.common.ast.FlowNode;
 
-import java.util.List;
-
-public record TestActionPair(CobolExpression test, List<FlowNode> actions) {
-}
+public record TestActionPair(CobolExpression test, List<FlowNode> actions) {}

@@ -1,5 +1,5 @@
 package org.smojol.common.vm.structure;
 
 public interface CobolOperation {
-    void run(CobolDataStructure cobolDataStructure);
+  void run(CobolDataStructure cobolDataStructure);
 }

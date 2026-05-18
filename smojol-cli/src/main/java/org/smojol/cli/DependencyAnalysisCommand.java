@@ -1,90 +1,113 @@
 package org.smojol.cli;
 
-import com.mojo.woof.GraphSDK;
-import com.mojo.woof.Neo4JDriverBuilder;
-import org.smojol.common.dialect.LanguageDialect;
-import org.smojol.common.logging.LoggingConfig;
-import org.smojol.common.resource.LocalFilesystemOperations;
-import org.smojol.toolkit.analysis.task.analysis.AnalyseProgramDependenciesTask;
-import org.smojol.toolkit.analysis.task.analysis.ExportProgramDependenciesTask;
-import org.smojol.toolkit.analysis.task.analysis.InjectProgramDependenciesIntoNeo4JTask;
+import com.mojo.algorithms.domain.NamespaceQualifier;
 import com.mojo.algorithms.task.AnalysisTaskResult;
 import com.mojo.algorithms.task.AnalysisTaskResultError;
 import com.mojo.algorithms.task.AnalysisTaskResultOK;
-import com.mojo.algorithms.domain.NamespaceQualifier;
-import org.smojol.toolkit.intermediate.NodeSpecBuilder;
-import org.smojol.common.program.CobolProgram;
-import org.smojol.toolkit.analysis.pipeline.*;
-import picocli.CommandLine;
-import picocli.CommandLine.Command;
-import picocli.CommandLine.Option;
-
+import com.mojo.woof.GraphSDK;
+import com.mojo.woof.Neo4JDriverBuilder;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.logging.Logger;
+import org.smojol.common.dialect.LanguageDialect;
+import org.smojol.common.logging.LoggingConfig;
+import org.smojol.common.program.CobolProgram;
+import org.smojol.common.resource.LocalFilesystemOperations;
+import org.smojol.toolkit.analysis.pipeline.*;
+import org.smojol.toolkit.analysis.task.analysis.AnalyseProgramDependenciesTask;
+import org.smojol.toolkit.analysis.task.analysis.ExportProgramDependenciesTask;
+import org.smojol.toolkit.analysis.task.analysis.InjectProgramDependenciesIntoNeo4JTask;
+import org.smojol.toolkit.intermediate.NodeSpecBuilder;
+import picocli.CommandLine;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
 
-@Command(name = "dependency", mixinStandardHelpOptions = true, version = "sourceGraph 0.1",
-        description = "Implements various operations useful for reverse engineering Cobol code")
+@Command(
+    name = "dependency",
+    mixinStandardHelpOptions = true,
+    version = "sourceGraph 0.1",
+    description = "Implements various operations useful for reverse engineering Cobol code")
 public class DependencyAnalysisCommand implements Callable<Integer> {
-    private static final Logger LOGGER = Logger.getLogger(DependencyAnalysisCommand.class.getName());
-    @Option(names = {"-dp", "--dialectJarPath"},
-            defaultValue = "che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar",
-            description = "Path to dialect .JAR")
-    private String dialectJarPath;
+  private static final Logger LOGGER = Logger.getLogger(DependencyAnalysisCommand.class.getName());
 
-    @Option(names = {"-s", "--srcDir"},
-            required = true,
-            description = "The Cobol source directory")
-    private String sourceDir;
+  @Option(
+      names = {"-dp", "--dialectJarPath"},
+      defaultValue =
+          "che-che4z-lsp-for-cobol-integration/server/dialect-idms/target/dialect-idms.jar",
+      description = "Path to dialect .JAR")
+  private String dialectJarPath;
 
-    @CommandLine.Parameters(index = "0",
-            description = "The program to analyse")
-    private String programName;
+  @Option(
+      names = {"-s", "--srcDir"},
+      required = true,
+      description = "The Cobol source directory")
+  private String sourceDir;
 
-    @Option(names = {"-cp", "--copyBooksDir"},
-            required = true,
-            description = "Copybook directories (repeatable)", split = ",")
-    private List<String> copyBookDirs;
+  @CommandLine.Parameters(index = "0", description = "The program to analyse")
+  private String programName;
 
-    @Option(names = {"-x", "--export"},
-            description = "Export path")
-    private String exportPath;
+  @Option(
+      names = {"-cp", "--copyBooksDir"},
+      required = true,
+      description = "Copybook directories (repeatable)",
+      split = ",")
+  private List<String> copyBookDirs;
 
-    @Option(names = {"-n", "--neo4j"},
-            description = "Export to Neo4J")
-    private boolean injectIntoNeo4j;
+  @Option(
+      names = {"-x", "--export"},
+      description = "Export path")
+  private String exportPath;
 
-    @Option(names = {"-d", "--dialect"},
-            defaultValue = "COBOL",
-            description = "The COBOL dialect (COBOL, IDMS)")
-    private String dialect;
+  @Option(
+      names = {"-n", "--neo4j"},
+      description = "Export to Neo4J")
+  private boolean injectIntoNeo4j;
 
-    @Option(names = {"-p", "--permissiveSearch"},
-            description = "Match filename using looser criteria")
-    private boolean isPermissiveSearch;
+  @Option(
+      names = {"-d", "--dialect"},
+      defaultValue = "COBOL",
+      description = "The COBOL dialect (COBOL, IDMS)")
+  private String dialect;
 
-    @Override
-    public Integer call() throws IOException {
-        LoggingConfig.setupLogging();
-        List<File> copyBookPaths = copyBookDirs.stream().map(c -> Paths.get(c).toAbsolutePath().toFile()).toList();
-        copyBookPaths.forEach(cbp -> LOGGER.info(cbp.getAbsolutePath()));
-        ProgramSearch programSearch = ProgramSearch.searchStrategy(isPermissiveSearch);
-        AnalysisTaskResult result = new AnalyseProgramDependenciesTask(sourceDir, copyBookPaths, "dummy", dialectJarPath, LanguageDialect.dialect(dialect), programSearch, new LocalFilesystemOperations()).run(programName);
-        CobolProgram root = switch (result) {
-            case AnalysisTaskResultOK ok -> ok.getDetail();
-            case AnalysisTaskResultError e -> throw new RuntimeException(e.getException());
+  @Option(
+      names = {"-p", "--permissiveSearch"},
+      description = "Match filename using looser criteria")
+  private boolean isPermissiveSearch;
+
+  @Override
+  public Integer call() throws IOException {
+    LoggingConfig.setupLogging();
+    List<File> copyBookPaths =
+        copyBookDirs.stream().map(c -> Paths.get(c).toAbsolutePath().toFile()).toList();
+    copyBookPaths.forEach(cbp -> LOGGER.info(cbp.getAbsolutePath()));
+    ProgramSearch programSearch = ProgramSearch.searchStrategy(isPermissiveSearch);
+    AnalysisTaskResult result =
+        new AnalyseProgramDependenciesTask(
+                sourceDir,
+                copyBookPaths,
+                "dummy",
+                dialectJarPath,
+                LanguageDialect.dialect(dialect),
+                programSearch,
+                new LocalFilesystemOperations())
+            .run(programName);
+    CobolProgram root =
+        switch (result) {
+          case AnalysisTaskResultOK ok -> ok.getDetail();
+          case AnalysisTaskResultError e -> throw new RuntimeException(e.getException());
         };
-        if (exportPath != null) new ExportProgramDependenciesTask(exportPath).run(root);
-        if (injectIntoNeo4j)
-            try (GraphSDK graphSDK = new GraphSDK(new Neo4JDriverBuilder().fromEnv())) {
-                new InjectProgramDependenciesIntoNeo4JTask(new NodeSpecBuilder(new NamespaceQualifier("DEP-GRAPH")),
-                        graphSDK).run(root);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        return 0;
-    }
+    if (exportPath != null) new ExportProgramDependenciesTask(exportPath).run(root);
+    if (injectIntoNeo4j)
+      try (GraphSDK graphSDK = new GraphSDK(new Neo4JDriverBuilder().fromEnv())) {
+        new InjectProgramDependenciesIntoNeo4JTask(
+                new NodeSpecBuilder(new NamespaceQualifier("DEP-GRAPH")), graphSDK)
+            .run(root);
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    return 0;
+  }
 }

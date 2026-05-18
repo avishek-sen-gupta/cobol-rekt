@@ -1,36 +1,37 @@
 package org.smojol.toolkit.analysis.task.analysis;
 
 import com.google.gson.annotations.Expose;
+import com.mojo.algorithms.task.AnalysisTask;
+import com.mojo.algorithms.task.AnalysisTaskResult;
+import com.mojo.algorithms.task.CommandLineAnalysisTask;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
 import org.smojol.common.ast.CallTarget;
 import org.smojol.common.ast.ExternalControlFlowNode;
 import org.smojol.common.ast.FlowNode;
 import org.smojol.common.navigation.FlowNodeNavigator;
-import com.mojo.algorithms.task.AnalysisTask;
-import com.mojo.algorithms.task.AnalysisTaskResult;
-import com.mojo.algorithms.task.CommandLineAnalysisTask;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ProgramDependenciesTask implements AnalysisTask {
-    private final FlowNode root;
-    @Expose @Getter private final List<CallTarget> dependencies = new ArrayList<>();
+  private final FlowNode root;
+  @Expose @Getter private final List<CallTarget> dependencies = new ArrayList<>();
 
-    public ProgramDependenciesTask(FlowNode root) {
-        this.root = root;
-    }
+  public ProgramDependenciesTask(FlowNode root) {
+    this.root = root;
+  }
 
-    public boolean isEmpty() {
-        return dependencies.isEmpty();
-    }
+  public boolean isEmpty() {
+    return dependencies.isEmpty();
+  }
 
-    @Override
-    public AnalysisTaskResult run() {
-        List<FlowNode> allExternalCallNodes = new FlowNodeNavigator(root).findAllByCondition(fn -> fn instanceof ExternalControlFlowNode);
-        List<CallTarget> callTargets = allExternalCallNodes.stream().map(t -> ((ExternalControlFlowNode) t).callTarget()).toList();
-        dependencies.addAll(callTargets);
+  @Override
+  public AnalysisTaskResult run() {
+    List<FlowNode> allExternalCallNodes =
+        new FlowNodeNavigator(root).findAllByCondition(fn -> fn instanceof ExternalControlFlowNode);
+    List<CallTarget> callTargets =
+        allExternalCallNodes.stream().map(t -> ((ExternalControlFlowNode) t).callTarget()).toList();
+    dependencies.addAll(callTargets);
 
-        return AnalysisTaskResult.OK(CommandLineAnalysisTask.BUILD_PROGRAM_DEPENDENCIES, dependencies);
-    }
+    return AnalysisTaskResult.OK(CommandLineAnalysisTask.BUILD_PROGRAM_DEPENDENCIES, dependencies);
+  }
 }

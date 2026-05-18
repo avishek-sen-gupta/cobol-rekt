@@ -1,34 +1,33 @@
 package org.smojol.common.ast;
 
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
 import org.antlr.v4.runtime.tree.ParseTree;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class CommentBlock {
-    private final List<String> lines = new ArrayList<>();
-    @Getter private String codeContextLine;
-    private ParseTree nodeContext;
+  private final List<String> lines = new ArrayList<>();
+  @Getter private String codeContextLine;
+  private ParseTree nodeContext;
 
-    public void add(String commentLine) {
-        lines.add(commentLine);
-    }
+  public void add(String commentLine) {
+    lines.add(commentLine);
+  }
 
-    public void setCodeContext(String codeContextLine) {
-        this.codeContextLine = codeContextLine.trim();
-    }
+  public void setCodeContext(String codeContextLine) {
+    this.codeContextLine = codeContextLine.trim();
+  }
 
-    public void setAssociatedTree(ParseTree nodeContext) {
-        this.nodeContext = nodeContext;
-    }
+  public void setAssociatedTree(ParseTree nodeContext) {
+    this.nodeContext = nodeContext;
+  }
 
-    @Override
-    public String toString() {
-        return String.join("\n", lines);
-    }
+  @Override
+  public String toString() {
+    return String.join("\n", lines);
+  }
 
-    public ParseTree getTree() {
-        return nodeContext;
-    }
+  public ParseTree getTree() {
+    return nodeContext;
+  }
 }

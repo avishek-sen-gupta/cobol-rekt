@@ -5,5 +5,6 @@ import org.smojol.common.ast.FlowNode;
 import org.smojol.common.ast.FlowNodeService;
 
 public interface BooleanResolver {
-    boolean resolve(FlowNode node, CobolParser.ConditionContext condition, FlowNodeService nodeService);
+  boolean resolve(
+      FlowNode node, CobolParser.ConditionContext condition, FlowNodeService nodeService);
 }

@@ -24,13 +24,7 @@ fileignoreconfig:
 - filename: smojol_python/src/analysis/frequent_pattern_miner.py
   checksum: b5d7135135db97c9de436f53d9b4da33d95f8f8459f471bcb59589733eb09ede
 - filename: smojol-app/cobol-lekt/package-lock.json
-  checksum: 8dcdeeb4fe03c5211e94d51bf78d65c0ab25ab51e8a707b5bf73dcfdc2ba4a35
-- filename: smojol-app/cobol-lekt/package-lock.json
-  checksum: 419fd47a1f271daf25687c1852c6aab7be9a0b056074a0bd96d95c7423578b11
-- filename: smojol-app/cobol-lekt/package-lock.json
   checksum: 5f86e8d9f3485099ee06111a84b2043f6e77633a9966153838b54b10bf392102
-- filename: smojol-toolkit/src/test/java/org/smojol/toolkit/analysis/SqliiteAccessTest.java
-  checksum: 77d595a74c39c963211a5a00197e82d1337449df2baf5133594f738024b4c5a3
 - filename: smojol-toolkit/src/test/java/org/smojol/toolkit/analysis/SqliiteAccessTest.java
   checksum: 85544f6cae9092fd81dedfe28042f135f913ab78838257aadb036671bb49797c
 - filename: smojol-toolkit/src/main/java/org/smojol/toolkit/examples/BackendPipelineMain.java
@@ -50,13 +44,7 @@ fileignoreconfig:
 - filename: smojol-api/src/main/java/org/smojol/api/database/ConnectionBuilder.java
   checksum: f05076806e47e9a264139bfad8e1563d58dde5cb191e00515bcc618e33990c0e
 - filename: smojol-api/src/main/java/org/smojol/api/database/DbContext.java
-  checksum: b6fc353386f888011c9cea17dc83da012f4e139fcc4e5c2ee502f81c5e3609eb
-- filename: smojol-api/src/main/java/org/smojol/api/database/DbContext.java
   checksum: a73687c7cf949ec5b83e619f9e62aedb680b09a34d951abc3219853cfdf3b518
-- filename: smojol-api/src/main/java/org/smojol/api/pipeline/BackendPipelineMain.java
-  checksum: c6bdf7f696522d3d0c895f1bb0e36a76ef8517b079dd587a01c57131cb73e661
-- filename: smojol-api/src/main/java/org/smojol/api/pipeline/BackendPipelineMain.java
-  checksum: 3077cce73d73004dad2ce5d2ff0c68c961db11c277442e29d9736efa30cd66f3
 - filename: smojol-api/src/main/java/org/smojol/api/pipeline/BackendPipelineMain.java
   checksum: 6b8ef990ed0712fb6f6e0402e34215da958925e77f56bb2b9567ca25253e7196
 - filename: smojol-api/src/main/java/org/smojol/api/IntermediateFormService.java
@@ -67,10 +55,6 @@ fileignoreconfig:
   checksum: baf279b1e1881510d7e81a7777fca766a38b04d5bdef15c967ae4759c09015ec
 - filename: smojol-core/src/main/java/org/smojol/common/vm/memory/MemoryRegion.java
   checksum: 91fe5ca277114f479b4df2af58fb0d48822b993bf987ace65df030fd5a47b4c0
-- filename: README.md
-  checksum: 9a1890534ecbc051bc3866d7cec20611f9a9b800eb0f189c270c683d521aa3bd
-- filename: README.md
-  checksum: 6da2c89d18f9096c1547cae26762d8a9ec2d808e80a58c411e3362a69c0779d6
 - filename: README.md
   checksum: e3e0192e7f8a73434e40b2820d41a5ee15b9f5290e033f492bf49446a19ae56c
 - filename: db/migrations/U1__create_person_table.sql
@@ -102,29 +86,11 @@ fileignoreconfig:
 - filename: db/migrations/V5__create_ir_cfg_table.sql
   checksum: b96aa1585d8b220f0624d6ee32748aee9d086ea26b3552de9de9dd6384d186b8
 - filename: db/migrations/V6__create_loop_body_table.sql
-  checksum: a99f9d7b729a101156e2221ad2670892ebd66bc8d64e83c0095d74eaa3f9fbcd
-- filename: db/migrations/V6__create_loop_body_table.sql
-  checksum: 9604e1384809a2ce35da5cac7c59ee79de796e668ccd9a8db97573ffd3da8618
-- filename: db/migrations/V6__create_loop_body_table.sql
   checksum: 16500107ccaa7dadc313d47923ddbae1d2553f678299dc94fcb7560dff208343
 - filename: db/migrations/V7__create_t1_t2_analysis_table.sql
   checksum: 59bc72977a67c9090f6fe7aabf4b05e8ef172c9ce99c58898047d544505903ca
 - filename: db/migrations/V8__create_unified_flow_table.sql
-  checksum: 5d1231eee8fb4ee6990114a77062857ff7d96b3f28bac095306f32ed4c6f56db
-- filename: db/migrations/V8__create_unified_flow_table.sql
   checksum: c617b4e7ba7e8e7712639908720f04c1d38a0f65a93d30e235bb0e0429088145
 - filename: db/migrations/V9__create_flowchart_table.sql
   checksum: 470f2cc14a67ab28030ef47ecbe1ca104e819bb1ab78e025f24f520df4857c5f
-- filename: smojol-api/src/main/java/org/smojol/api/database/DbContext.java
-  checksum: a73687c7cf949ec5b83e619f9e62aedb680b09a34d951abc3219853cfdf3b518
-- filename: smojol-api/src/main/java/org/smojol/api/pipeline/BackendPipelineMain.java
-  checksum: 6b8ef990ed0712fb6f6e0402e34215da958925e77f56bb2b9567ca25253e7196
-- filename: smojol-toolkit/src/test/java/org/smojol/toolkit/analysis/SqliiteAccessTest.java
-  checksum: 85544f6cae9092fd81dedfe28042f135f913ab78838257aadb036671bb49797c
-- filename: smojol-toolkit/src/test/java/org/smojol/toolkit/analysis/SqliiteAccessTest.java
-  checksum: 85544f6cae9092fd81dedfe28042f135f913ab78838257aadb036671bb49797c
-- filename: smojol-api/src/main/java/org/smojol/api/database/DbContext.java
-  checksum: a73687c7cf949ec5b83e619f9e62aedb680b09a34d951abc3219853cfdf3b518
-- filename: smojol-api/src/main/java/org/smojol/api/pipeline/BackendPipelineMain.java
-  checksum: 6b8ef990ed0712fb6f6e0402e34215da958925e77f56bb2b9567ca25253e7196
 version: "1.0"

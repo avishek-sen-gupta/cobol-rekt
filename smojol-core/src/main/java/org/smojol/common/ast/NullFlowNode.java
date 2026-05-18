@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.mojo.algorithms.domain.CodeSentinelType;
 import com.mojo.algorithms.domain.FlowNodeType;
 import com.mojo.algorithms.domain.SemanticCategory;
+import java.util.List;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.smojol.common.pseudocode.SmojolSymbolTable;
 import org.smojol.common.vm.interpreter.CobolInterpreter;
@@ -11,196 +12,166 @@ import org.smojol.common.vm.interpreter.CobolVmSignal;
 import org.smojol.common.vm.interpreter.FlowControl;
 import org.smojol.common.vm.structure.CobolDataStructure;
 
-import java.util.List;
-
 public class NullFlowNode implements FlowNode {
-    private final String uuid;
+  private final String uuid;
 
-    public NullFlowNode(FlowNodeService nodeService) {
-        uuid = nodeService.nextID();
-    }
+  public NullFlowNode(FlowNodeService nodeService) {
+    uuid = nodeService.nextID();
+  }
 
-    public NullFlowNode() {
-        uuid = "-999";
-    }
+  public NullFlowNode() {
+    uuid = "-999";
+  }
 
-    @Override
-    public void buildFlow() {
+  @Override
+  public void buildFlow() {}
 
-    }
+  @Override
+  public void buildOutgoingFlow() {}
 
-    @Override
-    public void buildOutgoingFlow() {
+  @Override
+  public void buildInternalFlow() {}
 
-    }
+  @Override
+  public void buildControlFlow() {}
 
-    @Override
-    public void buildInternalFlow() {
+  @Override
+  public void goesTo(FlowNode successor) {}
 
-    }
+  @Override
+  public void addIncomingNode(FlowNode flowNode) {}
 
-    @Override
-    public void buildControlFlow() {
+  @Override
+  public List<FlowNode> getOutgoingNodes() {
+    return ImmutableList.of();
+  }
 
-    }
+  @Override
+  public List<FlowNode> getIncomingNodes() {
+    return ImmutableList.of();
+  }
 
-    @Override
-    public void goesTo(FlowNode successor) {
+  @Override
+  public FlowNode next(FlowNodeCondition nodeCondition, FlowNode startingNode, boolean isComplete) {
+    return null;
+  }
 
-    }
+  @Override
+  public void linkParentToChild(FlowNodeVisitor visitor, int level) {}
 
-    @Override
-    public void addIncomingNode(FlowNode flowNode) {
+  @Override
+  public void accept(FlowNodeVisitor visitor, int level) {}
 
-    }
+  @Override
+  public void accept(FlowNodeVisitor visitor, FlowNodeCondition stopCondition, int level) {}
 
-    @Override
-    public List<FlowNode> getOutgoingNodes() {
-        return ImmutableList.of();
-    }
+  @Override
+  public List<? extends ParseTree> getChildren() {
+    return List.of();
+  }
 
-    @Override
-    public List<FlowNode> getIncomingNodes() {
-        return ImmutableList.of();
-    }
+  @Override
+  public void acceptUnvisited(FlowNodeVisitor visitor, int level) {}
 
-    @Override
-    public FlowNode next(FlowNodeCondition nodeCondition, FlowNode startingNode, boolean isComplete) {
-        return null;
-    }
+  @Override
+  public void resolve(SmojolSymbolTable symbolTable, CobolDataStructure dataStructures) {}
 
-    @Override
-    public void linkParentToChild(FlowNodeVisitor visitor, int level) {
+  @Override
+  public FlowNode findUpwards(FlowNodeCondition nodeCondition, FlowNode startingNode) {
+    return null;
+  }
 
-    }
+  @Override
+  public FlowNode tail() {
+    return this;
+  }
 
-    @Override
-    public void accept(FlowNodeVisitor visitor, int level) {
+  @Override
+  public List<FlowNode> astChildren() {
+    return List.of();
+  }
 
-    }
+  @Override
+  public ParseTree getExecutionContext() {
+    return null;
+  }
 
-    @Override
-    public void accept(FlowNodeVisitor visitor, FlowNodeCondition stopCondition, int level) {
+  @Override
+  public boolean accessesDatabase() {
+    return false;
+  }
 
-    }
+  @Override
+  public boolean isMergeable() {
+    return false;
+  }
 
-    @Override
-    public List<? extends ParseTree> getChildren() {
-        return List.of();
-    }
+  @Override
+  public boolean contains(FlowNode node) {
+    return false;
+  }
 
-    @Override
-    public void acceptUnvisited(FlowNodeVisitor visitor, int level) {
+  @Override
+  public String label() {
+    return "";
+  }
 
-    }
+  @Override
+  public String name() {
+    return "";
+  }
 
-    @Override
-    public void resolve(SmojolSymbolTable symbolTable, CobolDataStructure dataStructures) {
+  @Override
+  public String originalText() {
+    return "NULL/" + id();
+  }
 
-    }
+  @Override
+  public FlowNodeType type() {
+    return FlowNodeType.DUMMY;
+  }
 
-    @Override
-    public FlowNode findUpwards(FlowNodeCondition nodeCondition, FlowNode startingNode) {
-        return null;
-    }
+  @Override
+  public List<SemanticCategory> categories() {
+    return ImmutableList.of(SemanticCategory.UNKNOWN);
+  }
 
-    @Override
-    public FlowNode tail() {
-        return this;
-    }
+  @Override
+  public CodeSentinelType codeSentinelType() {
+    return CodeSentinelType.BODY;
+  }
 
-    @Override
-    public List<FlowNode> astChildren() {
-        return List.of();
-    }
+  @Override
+  public FlowNode passthrough() {
+    return null;
+  }
 
-    @Override
-    public ParseTree getExecutionContext() {
-        return null;
-    }
+  @Override
+  public boolean isPassthrough() {
+    return false;
+  }
 
-    @Override
-    public boolean accessesDatabase() {
-        return false;
-    }
+  @Override
+  public CobolVmSignal acceptInterpreter(CobolInterpreter interpreter, FlowControl flowControl) {
+    return CobolVmSignal.CONTINUE;
+  }
 
-    @Override
-    public boolean isMergeable() {
-        return false;
-    }
+  @Override
+  public void addComment(CommentBlock cb) {}
 
-    @Override
-    public boolean contains(FlowNode node) {
-        return false;
-    }
+  @Override
+  public List<CommentBlock> getCommentBlocks() {
+    return ImmutableList.of();
+  }
 
-    @Override
-    public String label() {
-        return "";
-    }
+  @Override
+  public void addChild(FlowNode child) {}
 
-    @Override
-    public String name() {
-        return "";
-    }
+  @Override
+  public void buildTwin() {}
 
-    @Override
-    public String originalText() {
-        return "NULL/" + id();
-    }
-
-    @Override
-    public FlowNodeType type() {
-        return FlowNodeType.DUMMY;
-    }
-
-    @Override
-    public List<SemanticCategory> categories() {
-        return ImmutableList.of(SemanticCategory.UNKNOWN);
-    }
-
-    @Override
-    public CodeSentinelType codeSentinelType() {
-        return CodeSentinelType.BODY;
-    }
-
-    @Override
-    public FlowNode passthrough() {
-        return null;
-    }
-
-    @Override
-    public boolean isPassthrough() {
-        return false;
-    }
-
-    @Override
-    public CobolVmSignal acceptInterpreter(CobolInterpreter interpreter, FlowControl flowControl) {
-        return CobolVmSignal.CONTINUE;
-    }
-
-    @Override
-    public void addComment(CommentBlock cb) {
-
-    }
-
-    @Override
-    public List<CommentBlock> getCommentBlocks() {
-        return ImmutableList.of();
-    }
-
-    @Override
-    public void addChild(FlowNode child) {
-
-    }
-
-    @Override
-    public void buildTwin() {
-
-    }
-
-    @Override
-    public String id() {
-        return "NULL/" + uuid;
-    }
+  @Override
+  public String id() {
+    return "NULL/" + uuid;
+  }
 }

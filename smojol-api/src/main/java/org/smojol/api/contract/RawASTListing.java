@@ -1,4 +1,3 @@
 package org.smojol.api.contract;
 
-public record RawASTListing(String rawASTID, String programName) {
-}
+public record RawASTListing(String rawASTID, String programName) {}

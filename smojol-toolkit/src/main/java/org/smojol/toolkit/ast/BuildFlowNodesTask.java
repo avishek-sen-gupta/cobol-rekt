@@ -6,23 +6,24 @@ import org.smojol.common.ast.FlowNodeService;
 import org.smojol.toolkit.interpreter.stack.CobolStackFrames;
 
 public class BuildFlowNodesTask {
-    private final FlowNodeService nodeService;
+  private final FlowNodeService nodeService;
 
-    public BuildFlowNodesTask(FlowNodeService nodeService) {
-        this.nodeService = nodeService;
-    }
-    private FlowNode buildFlowAST(ParseTree node) {
-        FlowNode rootFlowNode = nodeService.node(node, null, new CobolStackFrames());
-        rootFlowNode.buildFlow();
-        return rootFlowNode;
-    }
+  public BuildFlowNodesTask(FlowNodeService nodeService) {
+    this.nodeService = nodeService;
+  }
 
-    private FlowNode buildControlFlow(FlowNode root) {
-        root.accept(new ControlFlowVisitor(), 1);
-        return root;
-    }
+  private FlowNode buildFlowAST(ParseTree node) {
+    FlowNode rootFlowNode = nodeService.node(node, null, new CobolStackFrames());
+    rootFlowNode.buildFlow();
+    return rootFlowNode;
+  }
 
-    public FlowNode run(ParseTree node) {
-        return buildControlFlow(buildFlowAST(node));
-    }
+  private FlowNode buildControlFlow(FlowNode root) {
+    root.accept(new ControlFlowVisitor(), 1);
+    return root;
+  }
+
+  public FlowNode run(ParseTree node) {
+    return buildControlFlow(buildFlowAST(node));
+  }
 }

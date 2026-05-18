@@ -8,28 +8,29 @@ import org.smojol.common.vm.structure.CobolDataStructure;
 import org.smojol.common.vm.structure.ConversionStrategy;
 
 public class PrimitiveReference implements CobolReference {
-    private final TypedRecord value;
-    public PrimitiveReference(TypedRecord value) {
-        this.value = value;
-    }
+  private final TypedRecord value;
 
-    @Override
-    public TypedRecord resolveAs(AbstractCobolType type) {
-        return ConversionStrategy.convert(value, type);
-    }
+  public PrimitiveReference(TypedRecord value) {
+    this.value = value;
+  }
 
-    @Override
-    public CobolDataStructure resolve() {
-        return new DetachedDataStructure(value);
-    }
+  @Override
+  public TypedRecord resolveAs(AbstractCobolType type) {
+    return ConversionStrategy.convert(value, type);
+  }
 
-    @Override
-    public CobolExpression asExpression() {
-        return new PrimitiveCobolExpression(value);
-    }
+  @Override
+  public CobolDataStructure resolve() {
+    return new DetachedDataStructure(value);
+  }
 
-    @Override
-    public void set(CobolReference rhs) {
-        throw new UnsupportedOperationException("Cannot reference primitive expressions");
-    }
+  @Override
+  public CobolExpression asExpression() {
+    return new PrimitiveCobolExpression(value);
+  }
+
+  @Override
+  public void set(CobolReference rhs) {
+    throw new UnsupportedOperationException("Cannot reference primitive expressions");
+  }
 }
