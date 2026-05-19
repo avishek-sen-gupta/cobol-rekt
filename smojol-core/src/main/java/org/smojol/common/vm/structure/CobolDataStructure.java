@@ -218,7 +218,7 @@ public abstract class CobolDataStructure extends SimpleTreeNode {
         allPaths(List.of())
             .filter(
                 e ->
-                    e.getValue().name().equals(qualifiedName.bareName())
+                    e.getValue().name().equalsIgnoreCase(qualifiedName.bareName())
                         && qualifiedName.isSuffixMatchedBy(e.getKey()))
             .map(Map.Entry::getValue)
             .toList();
