@@ -34,7 +34,9 @@ public class CobolReferenceBuilder {
     CobolDataStructure reference = data.reference(QualifiedName.of(bareName, qualifiers));
     if (qualifiedDataNameContext.tableCall() == null) return reference;
 
-    // TODO: Might precompute this
+    // TODO: Might precompute this. Note: chain() still uses bare-name; qualifiers are not
+    // propagated here — table-call qualified access (e.g. TABLE-A OF STRUCT-1(2)) is a
+    // known gap and a separate concern from the OF/IN name-resolution fix.
     AccessChain chain = data.chain(qualifiedDataNameContext.variableUsageName().getText());
     List<CobolParser.ArithmeticExpressionContext> indices =
         qualifiedDataNameContext.tableCall().argument().stream()
@@ -43,8 +45,7 @@ public class CobolReferenceBuilder {
     List<Integer> resolvedIndices = indices.stream().map(index -> resolve(data, index)).toList();
     List<Integer> fixedIndices = resolvedIndices.stream().map(i -> i == 0 ? 1 : i).toList();
 
-    CobolDataStructure struct = chain.run(fixedIndices);
-    return struct;
+    return chain.run(fixedIndices);
   }
 
   private static int resolve(
