@@ -1,8 +1,6 @@
 // smojol-core/src/main/java/org/smojol/common/pseudocode/QualifiedName.java
 package org.smojol.common.pseudocode;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -38,8 +36,7 @@ public record QualifiedName(List<String> parts) {
      * The last element of the reversed query must match the last element of candidate.
      */
     public boolean isSuffixMatchedBy(List<String> candidate) {
-        var query = new ArrayList<>(parts);
-        Collections.reverse(query); // now outermost-first: [..., qualifier1, bareName]
+        var query = parts.reversed(); // now outermost-first: [..., qualifier1, bareName]
         return isSuffixSubsequence(query, candidate);
     }
 
@@ -48,14 +45,18 @@ public record QualifiedName(List<String> parts) {
         if (candidate.isEmpty()) return false;
         var qHead = query.get(0);
         var qTail = query.subList(1, query.size());
-        // Find the leftmost occurrence of qHead in candidate, then recurse on the remainder.
-        // When qTail is empty (this is the final/bareName element), it must match the last candidate element.
         for (int i = 0; i < candidate.size(); i++) {
             if (candidate.get(i).equalsIgnoreCase(qHead)) {
                 if (qTail.isEmpty()) {
-                    return i == candidate.size() - 1;
+                    // bareName must land at the last position
+                    if (i == candidate.size() - 1) return true;
+                    // otherwise keep scanning for a later occurrence
+                } else {
+                    if (isSuffixSubsequence(qTail, candidate.subList(i + 1, candidate.size()))) {
+                        return true;
+                    }
+                    // recursive call failed — keep scanning for another occurrence of qHead
                 }
-                return isSuffixSubsequence(qTail, candidate.subList(i + 1, candidate.size()));
             }
         }
         return false;

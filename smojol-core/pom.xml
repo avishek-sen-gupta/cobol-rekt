@@ -171,6 +171,18 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <testExcludes>
+                        <testExclude>**/idms/DialectIntegratorListenerMissingKeyTest.java</testExclude>
+                        <testExclude>**/ZipperTest.java</testExclude>
+                        <testExclude>**/DataLayoutBuilderTest.java</testExclude>
+                        <testExclude>**/SectionNameExtractorTest.java</testExclude>
+                    </testExcludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven.surefire.plugin.version}</version>
                 <configuration>

@@ -63,4 +63,11 @@ public class QualifiedNameTest {
         QualifiedName qn = QualifiedName.of("FIELD-A", List.of("STRUCT-1"));
         assertEquals("FIELD-A", qn.bareName());
     }
+
+    @Test
+    public void doesNotCommitToEarlyOccurrenceOfRepeatedLabel() {
+        // candidate has FIELD-A twice; only the last one is at the tail
+        QualifiedName qn = QualifiedName.of("FIELD-A", List.of("STRUCT-1"));
+        assertTrue(qn.isSuffixMatchedBy(List.of("ROOT", "STRUCT-1", "FIELD-A", "FIELD-A")));
+    }
 }
