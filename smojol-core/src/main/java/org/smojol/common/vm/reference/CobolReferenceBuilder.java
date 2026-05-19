@@ -2,6 +2,7 @@ package org.smojol.common.vm.reference;
 
 import java.util.List;
 import org.eclipse.lsp.cobol.core.CobolParser;
+import org.smojol.common.pseudocode.QualifiedName;
 import org.smojol.common.vm.expression.*;
 import org.smojol.common.vm.structure.AccessChain;
 import org.smojol.common.vm.structure.CobolDataStructure;
@@ -25,8 +26,11 @@ public class CobolReferenceBuilder {
 
   private static CobolDataStructure resolve(
       CobolParser.QualifiedDataNameContext qualifiedDataNameContext, CobolDataStructure data) {
-    CobolDataStructure reference =
-        data.reference(qualifiedDataNameContext.variableUsageName().getText());
+    var bareName = qualifiedDataNameContext.variableUsageName().getText();
+    var qualifiers = qualifiedDataNameContext.inData().stream()
+        .map(inData -> inData.variableUsageName().getText())
+        .toList();
+    CobolDataStructure reference = data.reference(QualifiedName.of(bareName, qualifiers));
     if (qualifiedDataNameContext.tableCall() == null) return reference;
 
     // TODO: Might precompute this
