@@ -23,14 +23,14 @@ public class SmojolSymbolTable {
         new SymbolTableVisitor(symbols, symbolReferenceBuilder);
     dataStructures.acceptScopedVisitor(legacyVisitor);
 
-    // Build qualified index
+    // Build qualified index — reuses refs from symbols map to avoid creating duplicate SymbolReference objects
     ScopedDataStructureVisitor qualifiedVisitor =
-        new QualifiedPathIndexVisitor(qualifiedIndex, symbolReferenceBuilder, List.of());
+        new QualifiedPathIndexVisitor(qualifiedIndex, symbols, List.of());
     dataStructures.acceptScopedVisitor(qualifiedVisitor);
   }
 
   public SymbolReference reference(String symbolName) {
-    return symbols.get(symbolName);
+    return symbols.getOrDefault(symbolName, NullSymbolReference.INSTANCE);
   }
 
   public void add(SymbolReference reference) {
@@ -38,8 +38,9 @@ public class SmojolSymbolTable {
   }
 
   public SymbolReference reference(CobolParser.GeneralIdentifierContext ctx) {
-    QualifiedName qualifiedName = extractQualifiedName(ctx);
-    return resolveQualified(qualifiedName);
+    var qualifiedDataName = ctx.qualifiedDataName();
+    if (qualifiedDataName == null) return NullSymbolReference.INSTANCE;
+    return resolveQualified(extractQualifiedName(ctx));
   }
 
   private SymbolReference resolveQualified(QualifiedName qualifiedName) {
@@ -53,12 +54,10 @@ public class SmojolSymbolTable {
     throw new AmbiguousQualifierException(qualifiedName, candidates);
   }
 
+  // Called only after qualifiedDataName null-check in reference(GeneralIdentifierContext)
   private static QualifiedName extractQualifiedName(
       CobolParser.GeneralIdentifierContext ctx) {
     var qualifiedDataName = ctx.qualifiedDataName();
-    if (qualifiedDataName == null) {
-      return QualifiedName.of("__NONVARIABLE__");
-    }
     var bareName = qualifiedDataName.variableUsageName().getText();
     var qualifiers = qualifiedDataName.inData().stream()
         .map(inData -> inData.variableUsageName().getText())

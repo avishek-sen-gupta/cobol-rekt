@@ -44,6 +44,16 @@ public class SmojolSymbolTableQualificationTest {
         SymbolReference ref = symbolTable.reference(ctx);
         assertNotNull(ref);
         assertFalse(ref instanceof NullSymbolReference);
+        // SymbolReference.id() returns the bare name ("FIELD-A") for both candidates;
+        // RecordSymbolReference does not expose the underlying CobolDataStructure, so a
+        // structural identity check against fieldAUnderStruct1 is not feasible here.
+        assertEquals("FIELD-A", ref.id());
+    }
+
+    @Test
+    public void unqualifiedAmbiguousNameThrowsAmbiguousQualifierException() {
+        CobolParser.GeneralIdentifierContext ctx = parseGeneralIdentifier("FIELD-A");
+        assertThrows(AmbiguousQualifierException.class, () -> symbolTable.reference(ctx));
     }
 
     @Test
