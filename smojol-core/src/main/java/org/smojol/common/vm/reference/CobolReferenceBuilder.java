@@ -27,9 +27,10 @@ public class CobolReferenceBuilder {
   private static CobolDataStructure resolve(
       CobolParser.QualifiedDataNameContext qualifiedDataNameContext, CobolDataStructure data) {
     var bareName = qualifiedDataNameContext.variableUsageName().getText();
-    var qualifiers = qualifiedDataNameContext.inData().stream()
-        .map(inData -> inData.variableUsageName().getText())
-        .toList();
+    var qualifiers =
+        qualifiedDataNameContext.inData().stream()
+            .map(inData -> inData.variableUsageName().getText())
+            .toList();
     CobolDataStructure reference = data.reference(QualifiedName.of(bareName, qualifiers));
     if (qualifiedDataNameContext.tableCall() == null) return reference;
 
