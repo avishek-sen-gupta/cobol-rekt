@@ -11,9 +11,13 @@ import hu.webarticum.treeprinter.TreeNode;
 import hu.webarticum.treeprinter.printer.listing.ListingTreePrinter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
+import org.smojol.common.pseudocode.AmbiguousQualifierException;
+import org.smojol.common.pseudocode.QualifiedName;
 import lombok.Getter;
 import org.eclipse.lsp.cobol.core.CobolDataTypes;
 import org.eclipse.lsp.cobol.core.CobolParser;
@@ -192,6 +196,35 @@ public abstract class CobolDataStructure extends SimpleTreeNode {
     List<? extends CobolDataStructure> path = searchRecursively(subRecordID, this);
     if (path.isEmpty()) return new NullDataStructure(subRecordID);
     return path.getLast();
+  }
+
+  /**
+   * Returns a stream of (fullPath, node) pairs for this node and all descendants. fullPath is
+   * root-to-leaf, outermost-first. Call as: root.allPaths(List.of())
+   */
+  public Stream<Map.Entry<List<String>, CobolDataStructure>> allPaths(List<String> ancestorPath) {
+    var currentPath = Stream.concat(ancestorPath.stream(), Stream.of(name())).toList();
+    return Stream.concat(
+        Stream.of(Map.entry(currentPath, this)),
+        structures.stream().flatMap(child -> child.allPaths(currentPath)));
+  }
+
+  /**
+   * Resolves a variable reference using COBOL OF/IN qualifier semantics. Returns NullDataStructure
+   * if no match; throws AmbiguousQualifierException if multiple match.
+   */
+  public CobolDataStructure reference(QualifiedName qualifiedName) {
+    var candidates =
+        allPaths(List.of())
+            .filter(
+                e ->
+                    e.getValue().name().equals(qualifiedName.bareName())
+                        && qualifiedName.isSuffixMatchedBy(e.getKey()))
+            .map(Map.Entry::getValue)
+            .toList();
+    if (candidates.isEmpty()) return new NullDataStructure(qualifiedName.bareName());
+    if (candidates.size() == 1) return candidates.get(0);
+    throw new AmbiguousQualifierException(qualifiedName, candidates);
   }
 
   public List<? extends CobolDataStructure> searchRecursively(
