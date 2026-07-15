@@ -123,7 +123,11 @@ Delete all nodes and relations like so:
 ```
 MATCH (n) OPTIONAL MATCH (n)-[r]-() DELETE n,r
 ```
+or
 
+```
+MATCH (n) DETACH DELETE n
+```
 Drop projected graphs like so:
 
 ```
