@@ -35,6 +35,16 @@ public class TestTaskRunner {
   public AnalysisTaskResult runTask2(
       CommandLineAnalysisTask task, Format1DataStructureBuildStrategy structureBuildStrategy)
       throws IOException {
+    return allResults(task, structureBuildStrategy).get(1);
+  }
+
+  public List<AnalysisTaskResult> allResults(CommandLineAnalysisTask task) throws IOException {
+    return allResults(task, new OccursIgnoringFormat1DataStructureBuilder());
+  }
+
+  private List<AnalysisTaskResult> allResults(
+      CommandLineAnalysisTask task, Format1DataStructureBuildStrategy structureBuildStrategy)
+      throws IOException {
     LoggingConfig.setupLogging();
     LocalFilesystemOperations resourceOperations = new LocalFilesystemOperations();
     UUIDProvider idProvider = new UUIDProvider();
@@ -52,7 +62,7 @@ public class TestTaskRunner {
                 new ProgramSearch(resourceOperations),
                 resourceOperations)
             .runForPrograms(ImmutableList.of(task), ImmutableList.of(programName));
-    return results.get(programName).get(1);
+    return results.get(programName);
   }
 
   public static String dir(String path) {

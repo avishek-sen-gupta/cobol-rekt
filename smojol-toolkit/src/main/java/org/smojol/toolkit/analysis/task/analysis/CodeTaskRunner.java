@@ -130,6 +130,12 @@ public class CodeTaskRunner {
     return runForPrograms(tasks, programFilenames, TaskRunnerMode.PRODUCTION_MODE);
   }
 
+  private static boolean needsBaseAnalysis(List<CommandLineAnalysisTask> tasks) {
+    CommandLineAnalysisTask first = tasks.getFirst();
+    return first != CommandLineAnalysisTask.BUILD_BASE_ANALYSIS
+        && first != CommandLineAnalysisTask.WRITE_RAW_AST_ONLY;
+  }
+
   private List<AnalysisTaskResult> runForProgram(
       String programFilename,
       String sourceDir,
@@ -249,7 +255,7 @@ public class CodeTaskRunner {
             idProvider,
             resourceOperations,
             new Neo4JDriverBuilder());
-    return tasks.getFirst() != CommandLineAnalysisTask.BUILD_BASE_ANALYSIS
+    return needsBaseAnalysis(tasks)
         ? pipelineTasks.run(
             Stream.concat(Stream.of(CommandLineAnalysisTask.BUILD_BASE_ANALYSIS), tasks.stream())
                 .toList())

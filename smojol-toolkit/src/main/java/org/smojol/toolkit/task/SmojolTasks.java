@@ -171,6 +171,16 @@ public class SmojolTasks {
         }
       };
 
+  public AnalysisTask WRITE_RAW_AST_ONLY =
+      new AnalysisTask() {
+        @Override
+        public AnalysisTaskResult run() {
+          return new WriteRawASTOnlyTask(
+                  pipeline, rawAstOutputConfig, resourceOperations, idProvider)
+              .run();
+        }
+      };
+
   public AnalysisTask WRITE_FLOW_AST =
       new AnalysisTask() {
         @Override
@@ -287,6 +297,7 @@ public class SmojolTasks {
                   case FLOW_TO_NEO4J -> FLOW_TO_NEO4J;
                   case FLOW_TO_GRAPHML -> FLOW_TO_GRAPHML;
                   case WRITE_RAW_AST -> WRITE_RAW_AST;
+                  case WRITE_RAW_AST_ONLY -> WRITE_RAW_AST_ONLY;
                   case DRAW_FLOWCHART -> DRAW_FLOWCHART;
                   case EXPORT_MERMAID -> EXPORT_MERMAID;
                   case WRITE_FLOW_AST -> WRITE_FLOW_AST;

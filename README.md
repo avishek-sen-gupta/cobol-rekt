@@ -862,12 +862,13 @@ The individual functionalities in the Java component can be invoked using differ
 
 This command encapsulates almost all the tasks that you are likely to run. The descriptions of the various commands are listed below.
 
-- ```BUILD_BASE_ANALYSIS```: This task builds the base analysis model which includes the raw AST, the first approximate flowgraph model (used for flowchart generation, and as an intermediate step in the transpilation model building process), and a few other entities. **Please note that ```BUILD_BASE_ANALYSIS` will always be the first task to be run before any of the following tasks, whether specified or not.**
+- ```BUILD_BASE_ANALYSIS```: This task builds the base analysis model which includes the raw AST, the first approximate flowgraph model (used for flowchart generation, and as an intermediate step in the transpilation model building process), and a few other entities. **Please note that ```BUILD_BASE_ANALYSIS` will always be the first task to be run before any of the following tasks, whether specified or not. The only exception is ```WRITE_RAW_AST_ONLY```, which runs standalone.**
 - ```WRITE_FLOW_AST```: Writes a more useful form of the AST to JSON. This form is used by the interpreter and other analyses.
 - ```FLOW_TO_NEO4J```: This injects the unified model into Neo4J. Exposing more fine-grained options is in progress. This requires the environment variable ```NEO4J_URI```, ```NEO4J_DATABASE``` (if not specified, defaults to ```neo4j```), ```NEO4J_USERNAME```, and ```NEO4J_PASSWORD``` to be defined. If you wish to include comments in the graph, the ```ATTACH_COMMENTS``` needs to have run first.
 - ```ATTACH_COMMENTS```: This parses the original source file (excluding copybooks for now) to find comments and attach them to the nearest subsequent AST node.
 - ```FLOW_TO_GRAPHML```: This exports the unified model to GraphML. Exposing more fine-grained options is in progress.
 - ```WRITE_RAW_AST```: This writes the original parse tree to JSON. Useful for downstream code to build their own AST representations.
+- ```WRITE_RAW_AST_ONLY```: Does the same thing as ```WRITE_RAW_AST```, but without building the base analysis model first. When this is the first task specified, ```BUILD_BASE_ANALYSIS``` is not prepended, so only the parse is performed. Use this when all you need is the raw parse tree.
 - ```DRAW_FLOWCHART```: This outputs flowcharts for the whole program or section-by-section of the program in PNG format.
 - ```EXPORT_MERMAID```: This outputs section-wise (one file per section) flowcharts for the program in the Mermaid format.
 - ```WRITE_CFG```: This outputs the control flow graph of the program as JSON.
@@ -899,8 +900,9 @@ Implements various operations useful for reverse engineering Cobol code
       [<programNames>...]    The programs to analyse
   -c, --commands=<commands>  The commands to run (BUILD_BASE_ANALYSIS,
                                FLOW_TO_NEO4J, FLOW_TO_GRAPHML, WRITE_RAW_AST,
-                               DRAW_FLOWCHART, WRITE_FLOW_AST, WRITE_CFG,
-                               ATTACH_COMMENTS, WRITE_DATA_STRUCTURES,
+                               WRITE_RAW_AST_ONLY, DRAW_FLOWCHART,
+                               WRITE_FLOW_AST, WRITE_CFG, ATTACH_COMMENTS,
+                               WRITE_DATA_STRUCTURES,
                                BUILD_PROGRAM_DEPENDENCIES, COMPARE_CODE,
                                EXPORT_UNIFIED_TO_JSON, EXPORT_MERMAID,
                                SUMMARISE_THROUGH_LLM, WRITE_LLM_SUMMARY)
@@ -1055,7 +1057,7 @@ The above performs the base analysis and then the actual analysis we are interes
 
 Depending upon the number of tasks invoked, the result will contain a list of ```AnalysisTaskResult``` objects, which can be either ```AnalysisTaskResultOK``` or ```AnalysisTaskResultError```. You can use them to determine what you want to do.
 
-**Please note that ```BUILD_BASE_ANALYSIS` will always be the first task to be run before any of the following tasks, whether specified or not.** Thus, the results of any actual analysis will always start from the second element.
+**Please note that ```BUILD_BASE_ANALYSIS` will always be the first task to be run before any of the following tasks, whether specified or not.** Thus, the results of any actual analysis will always start from the second element. The exception is ```WRITE_RAW_AST_ONLY```: if that is the first task specified, ```BUILD_BASE_ANALYSIS``` is not prepended, and the results start from the first element.
 
 This invocation uses some specific conventions when deciding where to output file artifacts under the ```report-dir``` directory.
 If you want more fine-grained control of the location of output artifacts, you can use the ```SmojolTasks``` class, which gives you more configurability in exchange for having to provide more detailed specifications.
