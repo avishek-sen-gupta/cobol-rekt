@@ -1,0 +1,11 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. FLOAT-CURR.
+       DATA DIVISION.
+           WORKING-STORAGE SECTION.
+                01 AMOUNT-IN PIC 9(6)V99.
+                01 AMOUNT-OUT PIC $$$$$$9.99.
+       PROCEDURE DIVISION.
+       SECTION-0 SECTION.
+        P1.
+            MOVE AMOUNT-IN TO AMOUNT-OUT.
+            DISPLAY "AMOUNT IS " AMOUNT-OUT.
