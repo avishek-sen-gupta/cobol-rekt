@@ -14,6 +14,7 @@ import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.resource.ResourceOperations;
 import org.smojol.toolkit.analysis.pipeline.ParsePipeline;
 import org.smojol.toolkit.analysis.pipeline.config.RawASTOutputConfig;
+import org.smojol.toolkit.analysis.validation.DataStructureValidation;
 
 public class WriteRawASTOnlyTask implements AnalysisTask {
   private static final Logger LOGGER = Logger.getLogger(WriteRawASTOnlyTask.class.getName());
@@ -42,7 +43,7 @@ public class WriteRawASTOnlyTask implements AnalysisTask {
                   "Memory usage: %s",
                   Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())));
       LOGGER.info(String.format("AST Output Dir is: %s", rawAstOutputConfig.astOutputDir()));
-      CobolEntityNavigator navigator = pipeline.parse();
+      CobolEntityNavigator navigator = pipeline.parse(DataStructureValidation.NO_BUILD);
       CobolParser.ProcedureDivisionBodyContext rawAST =
           navigator.procedureDivisionBody(navigator.getRoot());
       CobolContextAugmentedTreeNode serialisableAST =
