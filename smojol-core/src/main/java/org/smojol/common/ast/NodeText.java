@@ -1,8 +1,6 @@
 package org.smojol.common.ast;
 
 import java.util.function.Function;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
@@ -62,10 +60,21 @@ public class NodeText {
         : "<NULL>";
   }
 
+  /**
+   * Returns the source text unchanged.
+   *
+   * <p>This used to rewrite each {@code _DIALECT_ <guid>} marker that the che4z fork injected in
+   * place of a dialect fragment, handing the marker to {@code substitutionStrategy} so a caller
+   * could splice the original dialect text back in. The fork no longer emits any marker: dialect
+   * fragments are blanked out length-preservingly and correlated to the COBOL parse tree by
+   * document position, so no marker can appear in {@code text} and there is nothing to substitute.
+   *
+   * <p>{@code substitutionStrategy} is consequently inert for every caller of {@link
+   * #originalText(ParseTree, Function)}. Retiring that parameter, and the marker-keyed repository
+   * in {@code CobolEntityNavigator} that feeds it, is a follow-up cleanup.
+   */
   private static String dialectInlined(String text, Function<String, String> substitutionStrategy) {
-    Pattern pattern = Pattern.compile("(_DIALECT_ [0-9]+)");
-    Matcher matcher = pattern.matcher(text);
-    return matcher.replaceAll(r -> substitutionStrategy.apply(r.group()));
+    return text;
   }
 
   public static String formatted(String s) {
