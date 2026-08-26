@@ -96,5 +96,5 @@ fileignoreconfig:
 - filename: docs/superpowers/specs/2026-05-19-qualification-fix-design.md
   checksum: 9d23bdfb6c7c9b1d18f95c0f741f06181f9dccd73171ef2462f9744ce5cb18ea
 - filename: docs/superpowers/specs/2026-08-26-dialect-fork-surface-reduction-design.md
-  checksum: 9ebe1645e9ae1bce0d90418fa421c820cee5dce5d27d8a1bb534f6a1b8d655ae
+  checksum: 636b949cc0828462a804b69a5197c6dc44ee46a8207959a03daa9924f2cea635
 version: "1.0"
