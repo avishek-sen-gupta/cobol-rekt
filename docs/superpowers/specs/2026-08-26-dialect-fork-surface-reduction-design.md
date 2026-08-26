@@ -391,6 +391,26 @@ alone — it needs `-am` for `mojo-common:1.0-SNAPSHOT`.
    `CobolLexer.g4` token row both go), §3's re-apply step, §5's constraint restated with the explicit
    `reset()` requirement.
 
+### 9.1 Branching
+
+All work happens on a named branch in each repository, never directly on `poc` or `main`:
+
+| Repository | Branch | Based on | Merges to |
+|---|---|---|---|
+| `che-che4z-lsp-for-cobol-integration` (submodule) | `dialect-surface-reduction` | `merge-2.5.1` (`a11a30f1e`) | `poc` |
+| `cobol-rekt` (parent) | `dialect-surface-reduction` | this spec's commit | `main` |
+
+Same branch name in both repositories so the two halves are trivially correlated: the submodule branch
+carries the che4z changes (§4.2, §5, §6), the parent branch carries the smojol-side reader changes
+(§4.3) and the submodule pointer bump.
+
+The submodule branch is based on `merge-2.5.1`, not `poc`, because every file position and line number
+in this design is relative to upstream 2.5.1. Consequence: merging `dialect-surface-reduction` into
+`poc` also brings the 2.5.1 merge along. Land `merge-2.5.1` on `poc` first so the two merges can be
+reviewed and reverted independently.
+
+Do not bump the parent's submodule pointer until the submodule branch has merged to `poc`.
+
 Step 1 must land before 2 and 3: the reparent only collapses to "record, then delegate" once the
 marker is gone. With the marker still present the subclass would have to re-implement the
 substitution to inject a prefix, which defeats the purpose.
