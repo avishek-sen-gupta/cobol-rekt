@@ -6,19 +6,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.logging.Logger;
-import java.util.regex.Pattern;
 import lombok.Getter;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.core.CobolParser;
-import org.smojol.common.ast.NodeText;
-import org.smojol.common.idms.DialectContainerNode;
 
 public class CobolEntityNavigator {
-  private static final java.util.logging.Logger LOGGER =
-      Logger.getLogger(CobolEntityNavigator.class.getName());
   @Getter private final ParseTree root;
-  private List<ParseTree> dialectNodes;
   private Map<String, String> symbolText;
 
   public CobolEntityNavigator(ParseTree root) {
@@ -73,24 +66,23 @@ public class CobolEntityNavigator {
     return trees;
   }
 
+  /**
+   * Vestigial. The marker-keyed dialect repository this used to populate is no longer reachable.
+   *
+   * <p>It existed because the che4z fork substituted a {@code _DIALECT_ <guid>} marker into the
+   * document in place of each dialect fragment, so a guid parsed back out of the COBOL tree was the
+   * only way to find the corresponding dialect subtree. The fork no longer emits any marker:
+   * fragments are blanked out length-preservingly and correlated to the COBOL tree by document
+   * position (see {@link org.smojol.common.ast.NodeText#dialectOriginalText}). No marker string can
+   * therefore reach {@link #dialectText(String)}, and the map was provably write-only even before
+   * that: its only reader fed {@code originalText}'s now-inert {@code substitutionStrategy}.
+   *
+   * <p>{@code symbolText} is still initialised so {@link #dialectText(String)} keeps returning its
+   * argument unchanged via its own null-guard. Retiring this method, {@link #dialectText(String)}
+   * and {@code substitutionStrategy} altogether is a follow-up cleanup.
+   */
   public void buildDialectNodeRepository() {
-    dialectNodes =
-        findAllByCondition(t -> t.getClass() == CobolParser.DialectNodeFillerContext.class, root);
-    Pattern dialectMarkerPattern = Pattern.compile("_DIALECT_ ([0-9]+)", Pattern.MULTILINE);
-
     symbolText = new HashMap<>();
-    dialectNodes.forEach(
-        n -> {
-          LOGGER.info("Adding to repository dialect node " + n.getText());
-          if (n.getChildCount() == 0) {
-            LOGGER.info("WARNING: The following dialect node has no children: " + n.getText());
-          }
-          String markerID = "_DIALECT_ " + n.getChild(1).getText();
-          ParseTree idmsContainer =
-              findByCondition(n, c -> c.getClass() == DialectContainerNode.class, 1);
-          String text = NodeText.originalText(idmsContainer.getChild(0), NodeText::PASSTHROUGH);
-          symbolText.put(markerID, text);
-        });
   }
 
   public String dialectText(String marker) {

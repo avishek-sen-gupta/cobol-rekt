@@ -34,6 +34,18 @@ public class NodeText {
     return NodeText.originalText(fragment.tree, NodeText::PASSTHROUGH);
   }
 
+  /**
+   * Returns the original source text spanned by {@code astNode}, or {@code astNode.getText()} where
+   * no source interval is recoverable.
+   *
+   * @param substitutionStrategy inert, and retiring it is a follow-up cleanup. It used to be handed
+   *     each {@code _DIALECT_ <guid>} marker that the che4z fork substituted into the document in
+   *     place of a dialect fragment, so a caller could splice the original dialect text back in. The
+   *     fork no longer emits any marker: fragments are blanked out length-preservingly and
+   *     correlated to the COBOL parse tree by document position (see {@link
+   *     #dialectOriginalText(ParseTree, FlowNodeService)}), so no marker can appear in the returned
+   *     text and there is nothing to substitute.
+   */
   public static String originalText(
       ParseTree astNode, Function<String, String> substitutionStrategy) {
     Token startToken =
@@ -55,26 +67,7 @@ public class NodeText {
     if (interval.a == -1 || interval.b == -1) {
       return astNode.getText();
     }
-    return stopIndex >= startToken.getStartIndex()
-        ? dialectInlined(cs.getText(interval), substitutionStrategy)
-        : "<NULL>";
-  }
-
-  /**
-   * Returns the source text unchanged.
-   *
-   * <p>This used to rewrite each {@code _DIALECT_ <guid>} marker that the che4z fork injected in
-   * place of a dialect fragment, handing the marker to {@code substitutionStrategy} so a caller
-   * could splice the original dialect text back in. The fork no longer emits any marker: dialect
-   * fragments are blanked out length-preservingly and correlated to the COBOL parse tree by
-   * document position, so no marker can appear in {@code text} and there is nothing to substitute.
-   *
-   * <p>{@code substitutionStrategy} is consequently inert for every caller of {@link
-   * #originalText(ParseTree, Function)}. Retiring that parameter, and the marker-keyed repository
-   * in {@code CobolEntityNavigator} that feeds it, is a follow-up cleanup.
-   */
-  private static String dialectInlined(String text, Function<String, String> substitutionStrategy) {
-    return text;
+    return stopIndex >= startToken.getStartIndex() ? cs.getText(interval) : "<NULL>";
   }
 
   public static String formatted(String s) {

@@ -10,6 +10,7 @@ import java.util.List;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.common.poc.LocalisedDialect;
 import org.eclipse.lsp.cobol.common.poc.PersistentData;
+import org.eclipse.lsp.cobol.core.CobolParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.smojol.common.ast.CobolTreeVisualiser;
@@ -28,17 +29,27 @@ import org.smojol.toolkit.interpreter.structure.OccursIgnoringFormat1DataStructu
 /**
  * Integration tests for the IDMS dialect grafting mechanism.
  *
- * <p>The mechanism has two phases:
+ * <p>The mechanism has two phases, correlated purely by document position — no marker text is
+ * injected into the source:
  *
  * <ol>
- *   <li><em>Extraction</em> (che4z side): IDMS DML statements are replaced with {@code _DIALECT_ N
- *       .} placeholders in the preprocessed text; the original IDMS parse tree nodes are registered
- *       in {@link PersistentData} under the key {@code "IDMS-N"}.
+ *   <li><em>Extraction</em> (che4z side): each IDMS DML statement is blanked out of the extended
+ *       document length-preservingly (every non-space, non-newline character becomes a zero-width
+ *       space), and the region it occupied is recorded in {@link PersistentData} together with the
+ *       original IDMS parse tree. Because the blanking preserves length, the recorded start position
+ *       is still the position the fragment occupied.
  *   <li><em>Reinjection</em> (smojol side): {@code DialectIntegratorListener} walks the final COBOL
- *       parse tree, finds each {@code dialectNodeFiller} context (the matched placeholder), looks
- *       up the original IDMS node from {@code PersistentData}, and attaches a {@code
- *       DialectContainerNode} wrapper as a child.
+ *       parse tree, and for each {@code dialectNodeFiller} context — the run of zero-width spaces
+ *       the COBOL parser matched where the fragment used to be — claims the recorded fragment
+ *       covering that context's start position and attaches a {@code DialectContainerNode} wrapper
+ *       as a child.
  * </ol>
+ *
+ * <p>The one substitution that is <em>not</em> length-preserving is the {@code _IF_ } prefix the
+ * visitor puts in front of a fragment carrying an IDMS {@code ON} path-status clause, so the COBOL
+ * parser treats what follows as a {@code dialectIfStatment}. That shifts the filler five columns
+ * right of the recorded position, which is why fragment lookup is a range test rather than an exact
+ * match. {@code idms-multiline.cbl} exercises it.
  *
  * <p>These tests verify the reinjection half end-to-end. The extraction half is tested separately
  * in {@code TestPersistentDataExtraction} in the dialect-idms module.
@@ -86,8 +97,8 @@ public class IdmsDialectIntegrationTest {
   /**
    * idms-simple.cbl has 4 IDMS-extracted constructs: 1. PROTOCOL. MODE IS BATCH DEBUG. (in
    * IDMS-CONTROL SECTION) 2. BIND RUN-UNIT. 3. READY. 4. FINISH. Verifies exactly 4
-   * DialectContainerNodes appear in the tree. Note: PersistentData.counter is NOT reset by
-   * ParsePipeline — it accumulates across parses.
+   * DialectContainerNodes appear in the tree — one per recorded fragment, each claimed by the filler
+   * context at its position.
    */
   @Test
   void dialectContainerNodeCountMatchesIdmsStatementCount() throws IOException {
@@ -132,8 +143,8 @@ public class IdmsDialectIntegrationTest {
 
   /**
    * getText() on each reinjected node must return the original IDMS DML text — non-empty, non-null,
-   * and must NOT contain the {@code _DIALECT_} placeholder marker. This exercises
-   * NodeText.originalText() via DialectContainerNode.getText().
+   * and free of any {@code _DIALECT_} marker (the fork no longer emits one; this asserts no marker
+   * ever leaks back in). This exercises NodeText.originalText() via DialectContainerNode.getText().
    */
   @Test
   void reinjectedNodesReturnNonEmptyOriginalText() throws IOException {
@@ -161,8 +172,8 @@ public class IdmsDialectIntegrationTest {
 
   /**
    * The parent of every DialectContainerNode must be a DialectNodeFillerContext. This confirms that
-   * reinjection attaches nodes exactly at the placeholder positions in the COBOL parse tree, not at
-   * arbitrary locations.
+   * reinjection attaches nodes exactly at the blanked-out fragment positions in the COBOL parse
+   * tree, not at arbitrary locations.
    */
   @Test
   void eachDialectContainerNodeHasDialectNodeFillerParent() throws IOException {
@@ -234,6 +245,148 @@ public class IdmsDialectIntegrationTest {
     }
   }
 
+  // ---------- multi-line fragments and the _IF_ prefix ----------
+
+  /**
+   * idms-multiline.cbl deliberately exercises what idms-simple.cbl cannot, because every construct in
+   * idms-simple.cbl sits on a single line.
+   *
+   * <p>It has 5 IDMS-extracted constructs:
+   *
+   * <ol>
+   *   <li>{@code IDMS-CONTROL SECTION.} + {@code PROTOCOL. MODE IS BATCH DEBUG.} — one fragment
+   *       spanning two lines
+   *   <li>{@code BIND RUN-UNIT.}
+   *   <li>{@code READY.}
+   *   <li>{@code FINISH TASK} + {@code ON ANY-STATUS} — one fragment spanning two lines, and the one
+   *       carrying an {@code ON} path-status clause, so it gets the {@code _IF_ } prefix
+   *   <li>{@code IX-EMP EMPTY} — the condition of an IDMS {@code IF <entity> EMPTY}
+   * </ol>
+   */
+  @Test
+  void multiLineIdmsFixtureReinjectsEveryFragment() throws IOException {
+    ParsePipeline pipeline = idmsPipeline("idms-multiline.cbl");
+    CobolEntityNavigator navigator = pipeline.parse(DataStructureValidation.NO_BUILD);
+
+    List<ParseTree> dialectNodes =
+        navigator.findAllByCondition(n -> n instanceof DialectContainerNode);
+    assertEquals(
+        5,
+        dialectNodes.size(),
+        "Expected exactly 5 DialectContainerNodes for idms-multiline.cbl — one per extracted IDMS"
+            + " construct. A lower count means a fragment lost its graft anchor");
+
+    for (ParseTree node : dialectNodes) {
+      DialectContainerNode dcn = (DialectContainerNode) node;
+      String parentName =
+          dcn.getParent() == null ? "null" : dcn.getParent().getClass().getSimpleName();
+      assertEquals(
+          "DialectNodeFillerContext",
+          parentName,
+          "Each DialectContainerNode must be a direct child of a DialectNodeFillerContext");
+      assertEquals(1, dcn.getChildCount(), "Each DialectContainerNode wraps exactly one IDMS node");
+      assertEquals(LocalisedDialect.IDMS, dcn.getDialect());
+      assertFalse(dcn.getText().isBlank(), "Reinjected text must be the original IDMS text");
+    }
+  }
+
+  /**
+   * The load-bearing {@code +} in {@code dialectNodeFiller : ZERO_WIDTH_SPACE+ ...}.
+   *
+   * <p>The lexer rule is {@code ZERO_WIDTH_SPACE: '​' ('​' | [ ])*}, whose continuation
+   * class matches a literal space but never a newline, so a fragment blanked across N source lines
+   * lexes as N separate ZERO_WIDTH_SPACE tokens. Without the {@code +}, a filler context would stop
+   * at the first line and the remaining tokens would fail to match — dialect subtrees would silently
+   * vanish from the tree rather than throwing.
+   */
+  @Test
+  void multiLineFragmentProducesAMultiTokenFillerRun() throws IOException {
+    ParsePipeline pipeline = idmsPipeline("idms-multiline.cbl");
+    CobolEntityNavigator navigator = pipeline.parse(DataStructureValidation.NO_BUILD);
+
+    List<ParseTree> fillers =
+        navigator.findAllByCondition(
+            n -> n.getClass() == CobolParser.DialectNodeFillerContext.class);
+    assertFalse(fillers.isEmpty(), "Precondition: filler contexts must be present");
+
+    long multiLineFillers =
+        fillers.stream()
+            .map(CobolParser.DialectNodeFillerContext.class::cast)
+            .filter(
+                ctx ->
+                    ctx.ZERO_WIDTH_SPACE().size() >= 2
+                        && ctx.getStop() != null
+                        && ctx.getStop().getLine() > ctx.getStart().getLine())
+            .count();
+    assertEquals(
+        2,
+        multiLineFillers,
+        "idms-multiline.cbl has exactly 2 fragments blanked across more than one line (the"
+            + " IDMS-CONTROL SECTION/PROTOCOL pair and FINISH TASK/ON ANY-STATUS), each of which"
+            + " must lex to 2+ ZERO_WIDTH_SPACE tokens matched by a single filler context");
+  }
+
+  /**
+   * The {@code _IF_ } prefix path — the only substitution that is not length-preserving.
+   *
+   * <p>A fragment carrying an IDMS {@code ON} path-status clause is replaced by {@code "_IF_ "}
+   * followed by the blanked text, so the COBOL parser sees a {@code dialectIfStatment} wrapping the
+   * filler and keeps the trailing COBOL imperative statement. The five prefix columns push the filler
+   * right of the position recorded during extraction, so an exact-position lookup would miss it and
+   * the fragment would silently never be grafted. This asserts the shifted filler still claims its
+   * fragment.
+   */
+  @Test
+  void onClauseFragmentIsCorrelatedDespiteTheIfPrefixColumnShift() throws IOException {
+    ParsePipeline pipeline = idmsPipeline("idms-multiline.cbl");
+    CobolEntityNavigator navigator = pipeline.parse(DataStructureValidation.NO_BUILD);
+
+    List<ParseTree> dialectNodes =
+        navigator.findAllByCondition(n -> n instanceof DialectContainerNode);
+    List<ParseTree> underDialectIf =
+        dialectNodes.stream()
+            .filter(
+                n ->
+                    n.getParent() != null
+                        && n.getParent().getParent()
+                            instanceof CobolParser.DialectIfStatmentContext)
+            .toList();
+
+    assertEquals(
+        1,
+        underDialectIf.size(),
+        "Exactly one fragment in idms-multiline.cbl carries an ON clause, so exactly one"
+            + " DialectContainerNode must sit under a dialectIfStatment");
+
+    DialectContainerNode dcn = (DialectContainerNode) underDialectIf.get(0);
+    String text = dcn.getText().toUpperCase();
+    assertTrue(
+        text.contains("FINISH TASK") && text.contains("ON ANY-STATUS"),
+        "The _IF_ -prefixed fragment must reinject the original FINISH TASK / ON ANY-STATUS text;"
+            + " got: "
+            + dcn.getText());
+
+    // The filler really is shifted right of the recorded fragment start, so an exact-position
+    // lookup would have missed it and this fragment would never have been grafted.
+    CobolParser.DialectNodeFillerContext filler =
+        (CobolParser.DialectNodeFillerContext) dcn.getParent();
+    int fillerLine = filler.getStart().getLine();
+    int fillerChar = filler.getStart().getCharPositionInLine();
+    PersistentData.Fragment fragment = PersistentData.fragmentAt(fillerLine, fillerChar);
+    assertNotNull(
+        fragment,
+        "A recorded fragment must still cover the shifted filler position " + fillerLine + ":"
+            + fillerChar);
+    assertEquals(fillerLine, fragment.startLine, "Fragment and filler must start on the same line");
+    assertTrue(
+        fragment.startChar < fillerChar,
+        "The _IF_ prefix must shift the filler right of the recorded start ("
+            + fragment.startChar
+            + " -> "
+            + fillerChar
+            + "), which is exactly why Fragment.covers is a range test");
+  }
+
   // ---------- no-dialect baseline ----------
 
   /**
@@ -260,12 +413,13 @@ public class IdmsDialectIntegrationTest {
   // ---------- sequential file parsing ----------
 
   /**
-   * Parsing two IDMS files back-to-back must produce the correct reinjected nodes for each file
-   * independently. The counter accumulates across parses (no reset between files), so the second
-   * parse extracts IDs 5-8; reinjection resolves them correctly because both sets of entries remain
-   * in PersistentData.
+   * Parsing the same IDMS file twice back-to-back must produce the correct reinjected nodes on each
+   * parse independently. ParsePipeline does not reset PersistentData between parses, so the second
+   * parse's fragments are recorded alongside the first parse's. Reinjection still resolves correctly
+   * because a fragment is claimed once and only fillers at a matching position can claim it — so the
+   * second parse's fillers pick up the second parse's fragments, not the already-claimed ones.
    *
-   * <p>idms-simple.cbl produces 4 extractions per parse (PROTOCOL + BIND RUN-UNIT + READY +
+   * <p>idms-simple.cbl produces 4 recorded fragments per parse (PROTOCOL + BIND RUN-UNIT + READY +
    * FINISH).
    */
   @Test
