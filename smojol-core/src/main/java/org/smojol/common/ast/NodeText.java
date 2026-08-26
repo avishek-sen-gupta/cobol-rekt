@@ -1,7 +1,5 @@
 package org.smojol.common.ast;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -65,7 +63,6 @@ public class NodeText {
   }
 
   private static String dialectInlined(String text, Function<String, String> substitutionStrategy) {
-    List<String> allDialectPlaceholders = new ArrayList<>();
     Pattern pattern = Pattern.compile("(_DIALECT_ [0-9]+)");
     Matcher matcher = pattern.matcher(text);
     return matcher.replaceAll(r -> substitutionStrategy.apply(r.group()));
