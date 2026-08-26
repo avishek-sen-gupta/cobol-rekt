@@ -116,8 +116,8 @@ public class IdmsDialectIntegrationTest {
   // ---------- dialect annotation ----------
 
   /**
-   * Every reinjected DialectContainerNode must carry LocalisedDialect.IDMS. This annotation is set
-   * recursively by IdmsDialect.setDialectRecursively() during extraction and propagated into the
+   * Every reinjected DialectContainerNode must carry LocalisedDialect.IDMS. The dialect is recorded
+   * once per fragment on PersistentData.Fragment.dialect at extraction time, and propagated into the
    * wrapper at reinjection time.
    */
   @Test
