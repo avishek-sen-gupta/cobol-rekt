@@ -174,7 +174,6 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <testExcludes>
-                        <testExclude>**/idms/DialectIntegratorListenerMissingKeyTest.java</testExclude>
                         <testExclude>**/ZipperTest.java</testExclude>
                         <testExclude>**/DataLayoutBuilderTest.java</testExclude>
                         <testExclude>**/SectionNameExtractorTest.java</testExclude>

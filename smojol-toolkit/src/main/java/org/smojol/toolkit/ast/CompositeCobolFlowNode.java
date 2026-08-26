@@ -7,7 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.eclipse.lsp.cobol.common.poc.PersistentData;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.ast.*;
 import org.smojol.common.navigation.CobolEntityNavigator;
@@ -63,8 +65,10 @@ public class CompositeCobolFlowNode extends CobolFlowNode {
 
   private boolean isNullDialectNode(FlowNode node) {
     ParseTree n = node.getExecutionContext();
-    return n.getClass() == CobolParser.DialectNodeFillerContext.class
-        && ((CobolParser.DialectNodeFillerContext) n).whatever() != null;
+    if (n.getClass() != CobolParser.DialectNodeFillerContext.class) return false;
+    Token start = ((CobolParser.DialectNodeFillerContext) n).getStart();
+    return start == null
+        || !PersistentData.isCovered(start.getLine(), start.getCharPositionInLine());
   }
 
   @Override

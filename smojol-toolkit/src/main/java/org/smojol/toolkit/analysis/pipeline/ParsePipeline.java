@@ -18,6 +18,7 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.eclipse.lsp.cobol.cli.di.CliModule;
 import org.eclipse.lsp.cobol.cli.modules.CliClientProvider;
+import org.eclipse.lsp.cobol.common.poc.PersistentData;
 import org.eclipse.lsp.cobol.common.CleanerPreprocessor;
 import org.eclipse.lsp.cobol.common.ResultWithErrors;
 import org.eclipse.lsp.cobol.common.benchmark.BenchmarkService;
@@ -87,6 +88,9 @@ public class ParsePipeline {
    */
   public CobolEntityNavigator parse(DataStructureValidation dataStructureValidation)
       throws IOException {
+    // Fragment state is static (see COBOL-LSP-INTEGRATION.md section 5). Reset it per parse so
+    // sequential parses cannot claim fragments recorded by the previous one.
+    PersistentData.reset();
     Injector diCtx = Guice.createInjector(new CliModule());
 
     CliClientProvider cliClientProvider = diCtx.getInstance(CliClientProvider.class);

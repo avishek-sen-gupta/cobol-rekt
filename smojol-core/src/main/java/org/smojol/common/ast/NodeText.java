@@ -26,14 +26,16 @@ public class NodeText {
 
   public static String dialectOriginalText(ParseTree astNode, FlowNodeService nodeService) {
     CobolEntityNavigator navigator = nodeService.getNavigator();
-    ParseTree dialectGuidContext =
+    ParseTree filler =
         navigator.findByCondition(
-            astNode, t -> t.getClass() == CobolParser.DialectGuidContext.class);
-    if (dialectGuidContext == null) return astNode.getText();
-    String guid = dialectGuidContext.getText();
-
-    ParseTree idmsTextNode = PersistentData.getDialectNode("IDMS-" + guid);
-    return NodeText.originalText(idmsTextNode, NodeText::PASSTHROUGH);
+            astNode, t -> t.getClass() == CobolParser.DialectNodeFillerContext.class);
+    if (filler == null) return astNode.getText();
+    Token start = ((CobolParser.DialectNodeFillerContext) filler).getStart();
+    if (start == null) return astNode.getText();
+    PersistentData.Fragment fragment =
+        PersistentData.fragmentAt(start.getLine(), start.getCharPositionInLine());
+    if (fragment == null) return astNode.getText();
+    return NodeText.originalText(fragment.tree, NodeText::PASSTHROUGH);
   }
 
   public static String originalText(
