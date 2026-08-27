@@ -31,6 +31,7 @@ import org.eclipse.lsp.cobol.common.message.MessageService;
 import org.eclipse.lsp.cobol.common.pipeline.Pipeline;
 import org.eclipse.lsp.cobol.common.pipeline.PipelineResult;
 import org.eclipse.lsp.cobol.common.pipeline.StageResult;
+import org.eclipse.lsp.cobol.common.poc.PersistentData;
 import org.eclipse.lsp.cobol.core.engine.analysis.AnalysisContext;
 import org.eclipse.lsp.cobol.core.engine.dialects.DialectService;
 import org.eclipse.lsp.cobol.core.engine.errors.ErrorFinalizerService;
@@ -87,6 +88,9 @@ public class ParsePipeline {
    */
   public CobolEntityNavigator parse(DataStructureValidation dataStructureValidation)
       throws IOException {
+    // Fragment state is static (see COBOL-LSP-INTEGRATION.md section 5). Reset it per parse so
+    // sequential parses cannot claim fragments recorded by the previous one.
+    PersistentData.reset();
     Injector diCtx = Guice.createInjector(new CliModule());
 
     CliClientProvider cliClientProvider = diCtx.getInstance(CliClientProvider.class);
@@ -160,6 +164,7 @@ public class ParsePipeline {
     DialectIntegratorListener dialectIntegrationListener = new DialectIntegratorListener();
     walker.walk(dialectIntegrationListener, tree);
     LOGGER.info("Restored " + dialectIntegrationListener.getRestores() + " nodes.");
+    reportUngraftedFragments(dialectIntegrationListener.getRestores());
     LOGGER.info("Building tree...");
     LOGGER.info("Built tree");
 
@@ -168,6 +173,32 @@ public class ParsePipeline {
     dataStructures = dataStructureValidation.run(ops.getDataStructureBuilder(navigator));
     LOGGER.info(gson.toJson(timingResult));
     return navigator;
+  }
+
+  /**
+   * Reconciles grafts against recorded fragments so a fragment that was blanked out of the document
+   * but never re-attached leaves a trace. Without this, positional correlation degrades silently:
+   * the dialect subtree simply disappears from the tree and the only symptom is a FINER log line in
+   * {@code DialectIntegratorListener}.
+   *
+   * <p>This warns rather than throws. A shortfall is suspicious but not necessarily a defect: a
+   * recorded fragment goes unclaimed whenever its filler run does not surface as a {@code
+   * dialectNodeFiller} context, and there are known, accepted cases: a fragment nested inside
+   * another recorded fragment is deliberately not grafted twice, and two adjacent fragments on the
+   * same source line collapse into a single graft because telling them apart needs an end column
+   * that {@code PersistentData.Fragment} does not record. Throwing would turn either into a hard
+   * parse failure. All three current fixtures reconcile exactly, so a warning here means something
+   * changed and is worth investigating.
+   */
+  private static void reportUngraftedFragments(int restores) {
+    int recorded = PersistentData.fragmentCount();
+    if (restores >= recorded) return;
+    LOGGER.warning(
+        String.format(
+            "Positional correlation shortfall: %d dialect fragments were recorded but only %d were"
+                + " grafted back into the parse tree — %d fragment(s) were blanked out of the"
+                + " document and never re-attached.",
+            recorded, restores, recorded - restores));
   }
 
   private static Pipeline setupPipeline(Injector diCtx, CleanerPreprocessor preprocessor) {

@@ -3,9 +3,11 @@ package org.smojol.common.dialect;
 import java.util.List;
 import java.util.logging.Logger;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.eclipse.lsp.cobol.common.AnalysisConfig;
 import org.eclipse.lsp.cobol.common.copybook.CopybookProcessingMode;
+import org.eclipse.lsp.cobol.common.poc.PersistentData;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.smojol.common.navigation.CobolEntityNavigator;
 import org.smojol.common.navigation.EntityNavigatorBuilder;
@@ -36,8 +38,8 @@ public enum LanguageDialect {
               n ->
                   n.getClass() == CobolParser.DialectStatementContext.class
                       && ((CobolParser.DialectStatementContext) n).dialectNodeFiller() != null
-                      && ((CobolParser.DialectStatementContext) n).dialectNodeFiller().whatever()
-                          != null,
+                      && !coveredByFragment(
+                          ((CobolParser.DialectStatementContext) n).dialectNodeFiller()),
               tree);
       nullDialectStatements.forEach(
           n -> {
@@ -49,7 +51,7 @@ public enum LanguageDialect {
           navigator.findAllByCondition(
               n ->
                   n.getClass() == CobolParser.DialectNodeFillerContext.class
-                      && ((CobolParser.DialectNodeFillerContext) n).whatever() != null,
+                      && !coveredByFragment((ParserRuleContext) n),
               tree);
 
       if (!nullIdmsNodes.isEmpty())
@@ -62,6 +64,16 @@ public enum LanguageDialect {
     else if (dialectAsString.equals(IDMS.name())) return IDMS;
     else if (dialectAsString.equals(COBOL.name())) return COBOL;
     else return COBOL;
+  }
+
+  /**
+   * Whether a filler context sits inside a region that a dialect visitor recorded as a fragment.
+   * Replaces the old test for the absence of a {@code _DIALECT_ <guid>} marker.
+   */
+  private static boolean coveredByFragment(ParserRuleContext ctx) {
+    Token start = ctx.getStart();
+    return start != null
+        && PersistentData.isCovered(start.getLine(), start.getCharPositionInLine());
   }
 
   public abstract AnalysisConfig analysisConfig(String dialectConfigJarPath);

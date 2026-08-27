@@ -1,10 +1,6 @@
 package org.smojol.common.ast;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Function;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
@@ -26,16 +22,30 @@ public class NodeText {
 
   public static String dialectOriginalText(ParseTree astNode, FlowNodeService nodeService) {
     CobolEntityNavigator navigator = nodeService.getNavigator();
-    ParseTree dialectGuidContext =
+    ParseTree filler =
         navigator.findByCondition(
-            astNode, t -> t.getClass() == CobolParser.DialectGuidContext.class);
-    if (dialectGuidContext == null) return astNode.getText();
-    String guid = dialectGuidContext.getText();
-
-    ParseTree idmsTextNode = PersistentData.getDialectNode("IDMS-" + guid);
-    return NodeText.originalText(idmsTextNode, NodeText::PASSTHROUGH);
+            astNode, t -> t.getClass() == CobolParser.DialectNodeFillerContext.class);
+    if (filler == null) return astNode.getText();
+    Token start = ((CobolParser.DialectNodeFillerContext) filler).getStart();
+    if (start == null) return astNode.getText();
+    PersistentData.Fragment fragment =
+        PersistentData.fragmentAt(start.getLine(), start.getCharPositionInLine());
+    if (fragment == null) return astNode.getText();
+    return NodeText.originalText(fragment.tree, NodeText::PASSTHROUGH);
   }
 
+  /**
+   * Returns the original source text spanned by {@code astNode}, or {@code astNode.getText()} where
+   * no source interval is recoverable.
+   *
+   * @param substitutionStrategy inert, and retiring it is a follow-up cleanup. It used to be handed
+   *     each {@code _DIALECT_ <guid>} marker that the che4z fork substituted into the document in
+   *     place of a dialect fragment, so a caller could splice the original dialect text back in.
+   *     The fork no longer emits any marker: fragments are blanked out length-preservingly and
+   *     correlated to the COBOL parse tree by document position (see {@link
+   *     #dialectOriginalText(ParseTree, FlowNodeService)}), so no marker can appear in the returned
+   *     text and there is nothing to substitute.
+   */
   public static String originalText(
       ParseTree astNode, Function<String, String> substitutionStrategy) {
     Token startToken =
@@ -57,16 +67,7 @@ public class NodeText {
     if (interval.a == -1 || interval.b == -1) {
       return astNode.getText();
     }
-    return stopIndex >= startToken.getStartIndex()
-        ? dialectInlined(cs.getText(interval), substitutionStrategy)
-        : "<NULL>";
-  }
-
-  private static String dialectInlined(String text, Function<String, String> substitutionStrategy) {
-    List<String> allDialectPlaceholders = new ArrayList<>();
-    Pattern pattern = Pattern.compile("(_DIALECT_ [0-9]+)");
-    Matcher matcher = pattern.matcher(text);
-    return matcher.replaceAll(r -> substitutionStrategy.apply(r.group()));
+    return stopIndex >= startToken.getStartIndex() ? cs.getText(interval) : "<NULL>";
   }
 
   public static String formatted(String s) {
