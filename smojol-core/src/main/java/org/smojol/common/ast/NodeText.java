@@ -40,8 +40,8 @@ public class NodeText {
    *
    * @param substitutionStrategy inert, and retiring it is a follow-up cleanup. It used to be handed
    *     each {@code _DIALECT_ <guid>} marker that the che4z fork substituted into the document in
-   *     place of a dialect fragment, so a caller could splice the original dialect text back in. The
-   *     fork no longer emits any marker: fragments are blanked out length-preservingly and
+   *     place of a dialect fragment, so a caller could splice the original dialect text back in.
+   *     The fork no longer emits any marker: fragments are blanked out length-preservingly and
    *     correlated to the COBOL parse tree by document position (see {@link
    *     #dialectOriginalText(ParseTree, FlowNodeService)}), so no marker can appear in the returned
    *     text and there is nothing to substitute.

@@ -13,6 +13,8 @@ import org.eclipse.lsp.cobol.common.poc.PersistentData;
 import org.eclipse.lsp.cobol.core.CobolParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.smojol.common.ast.CobolTreeVisualiser;
 import org.smojol.common.dependency.ComponentsBuilder;
 import org.smojol.common.dialect.LanguageDialect;
@@ -36,8 +38,8 @@ import org.smojol.toolkit.interpreter.structure.OccursIgnoringFormat1DataStructu
  *   <li><em>Extraction</em> (che4z side): each IDMS DML statement is blanked out of the extended
  *       document length-preservingly (every non-space, non-newline character becomes a zero-width
  *       space), and the region it occupied is recorded in {@link PersistentData} together with the
- *       original IDMS parse tree. Because the blanking preserves length, the recorded start position
- *       is still the position the fragment occupied.
+ *       original IDMS parse tree. Because the blanking preserves length, the recorded start
+ *       position is still the position the fragment occupied.
  *   <li><em>Reinjection</em> (smojol side): {@code DialectIntegratorListener} walks the final COBOL
  *       parse tree, and for each {@code dialectNodeFiller} context — the run of zero-width spaces
  *       the COBOL parser matched where the fragment used to be — claims the recorded fragment
@@ -54,6 +56,7 @@ import org.smojol.toolkit.interpreter.structure.OccursIgnoringFormat1DataStructu
  * <p>These tests verify the reinjection half end-to-end. The extraction half is tested separately
  * in {@code TestPersistentDataExtraction} in the dialect-idms module.
  */
+@Execution(ExecutionMode.SAME_THREAD)
 public class IdmsDialectIntegrationTest {
 
   @BeforeEach
@@ -97,8 +100,8 @@ public class IdmsDialectIntegrationTest {
   /**
    * idms-simple.cbl has 4 IDMS-extracted constructs: 1. PROTOCOL. MODE IS BATCH DEBUG. (in
    * IDMS-CONTROL SECTION) 2. BIND RUN-UNIT. 3. READY. 4. FINISH. Verifies exactly 4
-   * DialectContainerNodes appear in the tree — one per recorded fragment, each claimed by the filler
-   * context at its position.
+   * DialectContainerNodes appear in the tree — one per recorded fragment, each claimed by the
+   * filler context at its position.
    */
   @Test
   void dialectContainerNodeCountMatchesIdmsStatementCount() throws IOException {
@@ -117,8 +120,8 @@ public class IdmsDialectIntegrationTest {
 
   /**
    * Every reinjected DialectContainerNode must carry LocalisedDialect.IDMS. The dialect is recorded
-   * once per fragment on PersistentData.Fragment.dialect at extraction time, and propagated into the
-   * wrapper at reinjection time.
+   * once per fragment on PersistentData.Fragment.dialect at extraction time, and propagated into
+   * the wrapper at reinjection time.
    */
   @Test
   void allReinjectedNodesCarryIdmsDialect() throws IOException {
@@ -248,8 +251,8 @@ public class IdmsDialectIntegrationTest {
   // ---------- multi-line fragments and the _IF_ prefix ----------
 
   /**
-   * idms-multiline.cbl deliberately exercises what idms-simple.cbl cannot, because every construct in
-   * idms-simple.cbl sits on a single line.
+   * idms-multiline.cbl deliberately exercises what idms-simple.cbl cannot, because every construct
+   * in idms-simple.cbl sits on a single line.
    *
    * <p>It has 5 IDMS-extracted constructs:
    *
@@ -258,8 +261,8 @@ public class IdmsDialectIntegrationTest {
    *       spanning two lines
    *   <li>{@code BIND RUN-UNIT.}
    *   <li>{@code READY.}
-   *   <li>{@code FINISH TASK} + {@code ON ANY-STATUS} — one fragment spanning two lines, and the one
-   *       carrying an {@code ON} path-status clause, so it gets the {@code _IF_ } prefix
+   *   <li>{@code FINISH TASK} + {@code ON ANY-STATUS} — one fragment spanning two lines, and the
+   *       one carrying an {@code ON} path-status clause, so it gets the {@code _IF_ } prefix
    *   <li>{@code IX-EMP EMPTY} — the condition of an IDMS {@code IF <entity> EMPTY}
    * </ol>
    */
@@ -293,10 +296,10 @@ public class IdmsDialectIntegrationTest {
   /**
    * The load-bearing {@code +} in {@code dialectNodeFiller : ZERO_WIDTH_SPACE+ ...}.
    *
-   * <p>The lexer rule is {@code ZERO_WIDTH_SPACE: '​' ('​' | [ ])*}, whose continuation
-   * class matches a literal space but never a newline, so a fragment blanked across N source lines
-   * lexes as N separate ZERO_WIDTH_SPACE tokens. Without the {@code +}, a filler context would stop
-   * at the first line and the remaining tokens would fail to match — dialect subtrees would silently
+   * <p>The lexer rule is {@code ZERO_WIDTH_SPACE: '​' ('​' | [ ])*}, whose continuation class
+   * matches a literal space but never a newline, so a fragment blanked across N source lines lexes
+   * as N separate ZERO_WIDTH_SPACE tokens. Without the {@code +}, a filler context would stop at
+   * the first line and the remaining tokens would fail to match — dialect subtrees would silently
    * vanish from the tree rather than throwing.
    */
   @Test
@@ -331,10 +334,10 @@ public class IdmsDialectIntegrationTest {
    *
    * <p>A fragment carrying an IDMS {@code ON} path-status clause is replaced by {@code "_IF_ "}
    * followed by the blanked text, so the COBOL parser sees a {@code dialectIfStatment} wrapping the
-   * filler and keeps the trailing COBOL imperative statement. The five prefix columns push the filler
-   * right of the position recorded during extraction, so an exact-position lookup would miss it and
-   * the fragment would silently never be grafted. This asserts the shifted filler still claims its
-   * fragment.
+   * filler and keeps the trailing COBOL imperative statement. The five prefix columns push the
+   * filler right of the position recorded during extraction, so an exact-position lookup would miss
+   * it and the fragment would silently never be grafted. This asserts the shifted filler still
+   * claims its fragment.
    */
   @Test
   void onClauseFragmentIsCorrelatedDespiteTheIfPrefixColumnShift() throws IOException {
@@ -375,7 +378,9 @@ public class IdmsDialectIntegrationTest {
     PersistentData.Fragment fragment = PersistentData.fragmentAt(fillerLine, fillerChar);
     assertNotNull(
         fragment,
-        "A recorded fragment must still cover the shifted filler position " + fillerLine + ":"
+        "A recorded fragment must still cover the shifted filler position "
+            + fillerLine
+            + ":"
             + fillerChar);
     assertEquals(fillerLine, fragment.startLine, "Fragment and filler must start on the same line");
     assertTrue(
@@ -413,14 +418,18 @@ public class IdmsDialectIntegrationTest {
   // ---------- sequential file parsing ----------
 
   /**
-   * Parsing the same IDMS file twice back-to-back must produce the correct reinjected nodes on each
-   * parse independently. ParsePipeline does not reset PersistentData between parses, so the second
-   * parse's fragments are recorded alongside the first parse's. Reinjection still resolves correctly
-   * because a fragment is claimed once and only fillers at a matching position can claim it — so the
-   * second parse's fillers pick up the second parse's fragments, not the already-claimed ones.
+   * Parsing the same IDMS file twice back-to-back must produce the same reinjected nodes on each
+   * parse independently.
+   *
+   * <p>{@code PersistentData} is static, so without isolation the second parse would be correlating
+   * its fillers against a fragment list containing both parses' fragments — and because {@code
+   * Fragment.covers} is a range test rather than an exact match, a filler could claim the previous
+   * parse's fragment at the same position. {@code ParsePipeline.parse} calls {@code
+   * PersistentData.reset()} on entry precisely to prevent that, and this test is what pins it: drop
+   * the reset and the second parse's assertions start reporting the first parse's trees.
    *
    * <p>idms-simple.cbl produces 4 recorded fragments per parse (PROTOCOL + BIND RUN-UNIT + READY +
-   * FINISH).
+   * FINISH), so both parses must show 4.
    */
   @Test
   void sequentialParsesResolveNodesCorrectly() throws IOException {

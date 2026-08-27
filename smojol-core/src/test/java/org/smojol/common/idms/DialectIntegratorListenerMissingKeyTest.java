@@ -3,8 +3,12 @@ package org.smojol.common.idms;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.Arrays;
+import java.util.List;
 import org.antlr.v4.runtime.CommonToken;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.tree.TerminalNode;
+import org.antlr.v4.runtime.tree.TerminalNodeImpl;
 import org.eclipse.lsp.cobol.common.poc.LocalisedDialect;
 import org.eclipse.lsp.cobol.common.poc.PersistentData;
 import org.eclipse.lsp.cobol.core.CobolParser;
@@ -18,8 +22,8 @@ import org.mockito.Mockito;
  * Unit tests for {@link DialectIntegratorListener} correlation against {@link PersistentData}.
  *
  * <p>When no recorded fragment covers a {@code dialectNodeFiller}'s position, the listener must
- * skip gracefully rather than throw. That happens legitimately: upstream blanks some regions
- * (for example IDMS {@code visitObtainLRStatement}) without the fork recording a fragment, so
+ * skip gracefully rather than throw. That happens legitimately: upstream blanks some regions (for
+ * example IDMS {@code visitObtainLRStatement}) without the fork recording a fragment, so
  * unclaimable fillers are expected, not exceptional.
  */
 @Execution(ExecutionMode.SAME_THREAD)
@@ -30,23 +34,51 @@ class DialectIntegratorListenerMissingKeyTest {
     PersistentData.reset();
   }
 
+  /** A filler context holding exactly one ZERO_WIDTH_SPACE token, i.e. a single blanked line. */
   private static CobolParser.DialectNodeFillerContext fillerAt(int line, int charPos) {
-    CommonToken start = new CommonToken(1, "​");
-    start.setLine(line);
-    start.setCharPositionInLine(charPos);
+    return fillerRun(new int[][] {{line, charPos}});
+  }
+
+  /**
+   * A filler context holding one ZERO_WIDTH_SPACE token per {@code {line, charPos}} pair, which is
+   * what the lexer produces for a blanked region spanning several source lines — whether those
+   * lines belong to one fragment or to several adjacent ones.
+   */
+  private static CobolParser.DialectNodeFillerContext fillerRun(int[][] positions) {
+    List<TerminalNode> fillers =
+        Arrays.stream(positions)
+            .map(p -> fillerToken(p[0], p[1]))
+            .map(TerminalNode.class::cast)
+            .toList();
     CobolParser.DialectNodeFillerContext ctx =
         Mockito.mock(CobolParser.DialectNodeFillerContext.class);
-    Mockito.when(ctx.getStart()).thenReturn(start);
+    Mockito.when(ctx.ZERO_WIDTH_SPACE()).thenReturn(fillers);
+    Mockito.when(ctx.getStart()).thenReturn(fillers.get(0).getSymbol());
     return ctx;
   }
 
-  private static ParserRuleContext dialectTreeAt(int line, int charPos) {
-    ParserRuleContext ctx = new ParserRuleContext();
-    CommonToken token = new CommonToken(1, "FINISH");
+  private static TerminalNodeImpl fillerToken(int line, int charPos) {
+    CommonToken token = new CommonToken(CobolParser.ZERO_WIDTH_SPACE, "​");
     token.setLine(line);
     token.setCharPositionInLine(charPos);
-    ctx.start = token;
-    ctx.stop = token;
+    return new TerminalNodeImpl(token);
+  }
+
+  private static ParserRuleContext dialectTreeAt(int line, int charPos) {
+    return dialectTreeSpanning(line, charPos, line);
+  }
+
+  /** A stand-in dialect parse tree whose start/stop tokens span {@code startLine..endLine}. */
+  private static ParserRuleContext dialectTreeSpanning(int startLine, int charPos, int endLine) {
+    ParserRuleContext ctx = new ParserRuleContext();
+    CommonToken start = new CommonToken(1, "FINISH");
+    start.setLine(startLine);
+    start.setCharPositionInLine(charPos);
+    CommonToken stop = new CommonToken(1, "TASK");
+    stop.setLine(endLine);
+    stop.setCharPositionInLine(charPos);
+    ctx.start = start;
+    ctx.stop = stop;
     return ctx;
   }
 
@@ -70,15 +102,29 @@ class DialectIntegratorListenerMissingKeyTest {
   }
 
   @Test
-  void nullStartTokenIsHandledGracefully() {
+  void anEmptyFillerRunIsHandledGracefully() {
     DialectIntegratorListener listener = new DialectIntegratorListener();
     CobolParser.DialectNodeFillerContext ctx =
         Mockito.mock(CobolParser.DialectNodeFillerContext.class);
-    Mockito.when(ctx.getStart()).thenReturn(null);
+    Mockito.when(ctx.ZERO_WIDTH_SPACE()).thenReturn(List.of());
 
     assertDoesNotThrow(
-        () -> listener.enterDialectNodeFiller(ctx), "A null start token must not throw");
-    assertEquals(0, listener.getRestores(), "No restore must be counted for a null start token");
+        () -> listener.enterDialectNodeFiller(ctx),
+        "A filler context with no tokens must not throw");
+    assertEquals(0, listener.getRestores(), "No restore must be counted for an empty filler run");
+  }
+
+  @Test
+  void aNullFillerAccessorResultIsHandledGracefully() {
+    DialectIntegratorListener listener = new DialectIntegratorListener();
+    CobolParser.DialectNodeFillerContext ctx =
+        Mockito.mock(CobolParser.DialectNodeFillerContext.class);
+    Mockito.when(ctx.ZERO_WIDTH_SPACE()).thenReturn(null);
+
+    assertDoesNotThrow(
+        () -> listener.enterDialectNodeFiller(ctx),
+        "A null ZERO_WIDTH_SPACE() result must not throw");
+    assertEquals(0, listener.getRestores(), "No restore must be counted for a null filler list");
   }
 
   @Test
@@ -103,6 +149,44 @@ class DialectIntegratorListenerMissingKeyTest {
         1,
         listener.getRestores(),
         "claim() consumes the fragment, so a second filler at the same position must not graft");
+  }
+
+  /**
+   * Two adjacent fragments with no intervening {@code DOT_FS} are swallowed by the greedy {@code +}
+   * in {@code dialectNodeFiller : ZERO_WIDTH_SPACE+ ...} into a single filler context. Claiming
+   * once per context grafted only the first and silently dropped the second, so claiming must be
+   * per filler token instead.
+   */
+  @Test
+  void twoAdjacentFragmentsInOneContextAreBothGrafted() {
+    PersistentData.record(dialectTreeAt(12, 11), LocalisedDialect.IDMS);
+    PersistentData.record(dialectTreeAt(13, 11), LocalisedDialect.IDMS);
+    DialectIntegratorListener listener = new DialectIntegratorListener();
+
+    listener.enterDialectNodeFiller(fillerRun(new int[][] {{12, 11}, {13, 11}}));
+
+    assertEquals(
+        2,
+        listener.getRestores(),
+        "Both adjacent fragments collapsed into one filler context must be grafted");
+  }
+
+  /**
+   * The counterpart invariant: a single fragment blanked across several lines also produces several
+   * filler tokens in one context, and must still graft exactly once. {@code claimedThroughLine} is
+   * what tells this case apart from two adjacent single-line fragments.
+   */
+  @Test
+  void aSingleMultiLineFragmentIsGraftedExactlyOnce() {
+    PersistentData.record(dialectTreeSpanning(12, 11, 14), LocalisedDialect.IDMS);
+    DialectIntegratorListener listener = new DialectIntegratorListener();
+
+    listener.enterDialectNodeFiller(fillerRun(new int[][] {{12, 11}, {13, 11}, {14, 11}}));
+
+    assertEquals(
+        1,
+        listener.getRestores(),
+        "A single fragment spanning lines 12-14 must be grafted once, not once per blanked line");
   }
 
   @Test
