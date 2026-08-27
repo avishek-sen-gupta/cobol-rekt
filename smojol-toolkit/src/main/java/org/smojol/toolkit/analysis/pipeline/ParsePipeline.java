@@ -183,11 +183,12 @@ public class ParsePipeline {
    *
    * <p>This warns rather than throws. A shortfall is suspicious but not necessarily a defect: a
    * recorded fragment goes unclaimed whenever its filler run does not surface as a {@code
-   * dialectNodeFiller} context, and there is at least one known, accepted case — two adjacent
-   * fragments on the same source line collapse into a single graft, because telling them apart needs
-   * an end column that {@code PersistentData.Fragment} does not record. Throwing would turn that
-   * into a hard parse failure. All three current fixtures reconcile exactly, so a warning here means
-   * something changed and is worth investigating.
+   * dialectNodeFiller} context, and there are known, accepted cases: a fragment nested inside
+   * another recorded fragment is deliberately not grafted twice, and two adjacent fragments on the
+   * same source line collapse into a single graft because telling them apart needs an end column
+   * that {@code PersistentData.Fragment} does not record. Throwing would turn either into a hard
+   * parse failure. All three current fixtures reconcile exactly, so a warning here means something
+   * changed and is worth investigating.
    */
   private static void reportUngraftedFragments(int restores) {
     int recorded = PersistentData.fragmentCount();

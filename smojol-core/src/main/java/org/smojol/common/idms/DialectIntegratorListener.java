@@ -32,6 +32,13 @@ import org.eclipse.lsp.cobol.core.CobolParserBaseListener;
  * token up to and including the claimed fragment's {@code endLine} belongs to that same fragment
  * and is skipped. The first token past it starts a new fragment.
  *
+ * <p>For the multi-line case the guard is belt-and-braces — {@code claim} consumes, so later tokens
+ * of the same fragment would find it claimed anyway. The guard is load-bearing for <em>nested</em>
+ * fragments: the visitors record {@code idmsIfStatement} and then the {@code idmsIfCondition} inside
+ * it, so the inner fragment is a distinct, still-unclaimed entry whose tree is already a subtree of
+ * the outer one. Without the guard a token on the inner fragment's line claims and grafts it,
+ * attaching the same dialect subtree twice.
+ *
  * <p>Known limitation: two adjacent fragments on the <em>same</em> line still collapse into a
  * single graft. Telling them apart needs the end column, which {@code PersistentData.Fragment} does
  * not record.

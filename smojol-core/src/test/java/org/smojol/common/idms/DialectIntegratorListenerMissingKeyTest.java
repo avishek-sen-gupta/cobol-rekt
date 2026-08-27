@@ -173,8 +173,12 @@ class DialectIntegratorListenerMissingKeyTest {
 
   /**
    * The counterpart invariant: a single fragment blanked across several lines also produces several
-   * filler tokens in one context, and must still graft exactly once. {@code claimedThroughLine} is
-   * what tells this case apart from two adjacent single-line fragments.
+   * filler tokens in one context, and must still graft exactly once.
+   *
+   * <p>Note this one holds for a weaker reason than it looks: {@code claim} consumes, so the second
+   * and third tokens find the fragment already claimed and graft nothing even without {@code
+   * claimedThroughLine}. What the guard is actually load-bearing for is {@link
+   * #aNestedFragmentInsideAlreadyClaimedLinesIsNotGraftedSeparately}.
    */
   @Test
   void aSingleMultiLineFragmentIsGraftedExactlyOnce() {
@@ -187,6 +191,31 @@ class DialectIntegratorListenerMissingKeyTest {
         1,
         listener.getRestores(),
         "A single fragment spanning lines 12-14 must be grafted once, not once per blanked line");
+  }
+
+  /**
+   * Recorded fragments nest: {@code IdmsSubstitutingVisitor} records {@code idmsIfStatement} and
+   * then the {@code idmsIfCondition} inside it, so an inner fragment's tree is already a subtree of
+   * an outer fragment's tree. Grafting the inner one separately would attach the same dialect
+   * subtree to the COBOL tree twice.
+   *
+   * <p>Consuming claims alone do not prevent that — the inner fragment is a <em>different</em>,
+   * still-unclaimed fragment, so a token on its line claims it happily. {@code claimedThroughLine}
+   * is the only thing that suppresses it: after the outer fragment is claimed, every token up to and
+   * including its {@code endLine} is known to belong to it. Deleting the guard turns this test red.
+   */
+  @Test
+  void aNestedFragmentInsideAlreadyClaimedLinesIsNotGraftedSeparately() {
+    PersistentData.record(dialectTreeSpanning(12, 11, 14), LocalisedDialect.IDMS);
+    PersistentData.record(dialectTreeAt(13, 11), LocalisedDialect.IDMS);
+    DialectIntegratorListener listener = new DialectIntegratorListener();
+
+    listener.enterDialectNodeFiller(fillerRun(new int[][] {{12, 11}, {13, 11}, {14, 11}}));
+
+    assertEquals(
+        1,
+        listener.getRestores(),
+        "Only the outer fragment may be grafted; the nested one is already inside its subtree");
   }
 
   @Test
