@@ -1,0 +1,16 @@
+repos:
+
+  - repo: local
+    hooks:
+      - id: terminology-guard
+        name: Terminology Guard
+        entry: precommit-scripts/check-terminology
+        language: script
+        pass_filenames: false
+        always_run: true
+
+      - id: terminology-commit-msg
+        name: Terminology Guard (commit message)
+        entry: precommit-scripts/check-commit-msg
+        language: script
+        stages: [commit-msg]

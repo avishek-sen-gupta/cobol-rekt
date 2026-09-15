@@ -1,0 +1,24 @@
+#!/bin/bash
+# Scan full git history (file contents + commit messages) for forbidden terminology
+# using betterleaks. Uses the same rules as the betterleaks pre-commit guard.
+# Exit 0 = clean, Exit 1 = hits found.
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+source "$SCRIPT_DIR/lib-terminology.sh"
+
+bl_require_rules || exit 0
+bl_require_binary || exit 1
+
+status=0
+
+echo "== File contents (all commits)"
+betterleaks git --no-banner -v -c "$RULES" . || status=1
+
+# Prefix every message line with its short SHA so body hits are traceable.
+echo ""
+echo "== Commit messages (all refs)"
+git log --all --format='__scan_history_sha__ %h%n%B' \
+  | awk '$1 == "__scan_history_sha__" { sha = $2; next } { print sha " " $0 }' \
+  | betterleaks stdin --no-banner -v -c "$RULES" || status=1
+
+exit $status

@@ -1,0 +1,16 @@
+#!/bin/bash
+# Terminology guard (betterleaks) — blocks staged changes containing forbidden terms.
+# Rules live at ~/.config/git/terminology.toml (see blocklist-to-toml).
+# Exit 0 = clean, Exit 1 = blocked.
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+source "$SCRIPT_DIR/lib-terminology.sh"
+
+bl_require_rules || exit 0
+bl_require_binary || exit 1
+
+if ! betterleaks git --pre-commit --staged --no-banner -v -c "$RULES" .; then
+  bl_blocked
+  exit 1
+fi
+exit 0

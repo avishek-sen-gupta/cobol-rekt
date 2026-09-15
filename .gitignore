@@ -144,3 +144,6 @@ artifacts/
 
 # Serena
 .serena/
+
+.specs/
+.claude/

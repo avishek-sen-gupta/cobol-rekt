@@ -1,0 +1,24 @@
+#!/bin/bash
+# Terminology guard (betterleaks) for commit messages.
+# Receives the commit message file path as $1 (standard commit-msg hook contract).
+# Rules live at ~/.config/git/terminology.toml (see blocklist-to-toml).
+# Exit 0 = clean, Exit 1 = blocked.
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+source "$SCRIPT_DIR/lib-terminology.sh"
+
+bl_require_rules || exit 0
+
+MSG_FILE="$1"
+if [ -z "$MSG_FILE" ] || [ ! -f "$MSG_FILE" ]; then
+  echo "check-commit-msg: no message file provided" >&2
+  exit 1
+fi
+
+bl_require_binary || exit 1
+
+if ! betterleaks stdin --no-banner -v -c "$RULES" < "$MSG_FILE"; then
+  bl_blocked
+  exit 1
+fi
+exit 0
