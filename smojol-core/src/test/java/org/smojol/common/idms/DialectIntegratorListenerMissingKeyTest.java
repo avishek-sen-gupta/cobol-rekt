@@ -201,8 +201,9 @@ class DialectIntegratorListenerMissingKeyTest {
    *
    * <p>Consuming claims alone do not prevent that — the inner fragment is a <em>different</em>,
    * still-unclaimed fragment, so a token on its line claims it happily. {@code claimedThroughLine}
-   * is the only thing that suppresses it: after the outer fragment is claimed, every token up to and
-   * including its {@code endLine} is known to belong to it. Deleting the guard turns this test red.
+   * is the only thing that suppresses it: after the outer fragment is claimed, every token up to
+   * and including its {@code endLine} is known to belong to it. Deleting the guard turns this test
+   * red.
    */
   @Test
   void aNestedFragmentInsideAlreadyClaimedLinesIsNotGraftedSeparately() {
