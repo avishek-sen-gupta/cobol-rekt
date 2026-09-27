@@ -14,3 +14,19 @@ repos:
         entry: precommit-scripts/check-commit-msg
         language: script
         stages: [commit-msg]
+
+  # Talisman (secrets scanner). It was installed globally as a bare
+  # .git/hooks/pre-commit symlink, which `pre-commit install` took over -- moving
+  # talisman aside to .git/hooks/pre-commit.legacy. pre-commit still runs that
+  # legacy hook and ORs its exit code in, but talisman derives its hook type from
+  # the name it is invoked under and rejects "pre-commit.legacy", so every commit
+  # failed while nothing was ever scanned. Run it as a hook here instead, where
+  # pre-commit owns the ordering and --githook states the hook type explicitly.
+  # stages is explicit: with no default_stages, a hook that omits it runs at every
+  # installed stage, so talisman would scan twice if commit-msg is ever installed.
+  - repo: https://github.com/thoughtworks/talisman
+    rev: v1.37.0
+    hooks:
+      - id: talisman-commit
+        entry: cmd --githook pre-commit
+        stages: [pre-commit]
