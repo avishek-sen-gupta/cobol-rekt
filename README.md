@@ -1,5 +1,7 @@
 ![Cobol-REKT Banner](/documentation/cobol-rekt-banner.png)
 
+A lot of COBOL static analysis, and execution capabilities of CICS, JCL, etc. are happening over at [RedDragonForge](https://github.com/avishek-sen-gupta/red-dragon-forge). Check it out!
+
 # Cobol-REKT (Cobol Reverse Engineering KiT)
 
 [![Maven Package](https://github.com/avishek-sen-gupta/cobol-rekt/actions/workflows/maven-publish.yml/badge.svg)](https://github.com/avishek-sen-gupta/cobol-rekt/actions/workflows/maven-publish.yml)
